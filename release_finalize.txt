@@ -1,0 +1,8 @@
+This is what you have to do before each relase canidate is beeing cleared:
+
+UPATE FILES:
+game\mod_hzm_coop\Documents\changelog.txt
+game\mod_hzm_coop\Documents\classes.txt
+game\mod_hzm_coop\Documents\cvars.txt
+game\mod_hzm_coop\Documents\player_commands.txt
+game\mod_hzm_coop\Documents\server_commands.txt

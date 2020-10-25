@@ -1,0 +1,4 @@
+﻿#!/bin/bash
+cp -v /home/chrissstrahl/Schreibtisch/ef2Server/_compile/code_gamex86.dll/linux/releasei386/ef2gamei386.so /home/chrissstrahl/Schreibtisch/ef2Server/_compile/code_gamex86.dll/linux/debugi386/ef2gamei386.so
+cd /home/chrissstrahl/Schreibtisch/ef2Server/_compile/code_gamex86.dll/linux/debugi386
+./linuxef2ded +set fs_basepath /home/chrissstrahl/Schreibtisch/ef2Server/_compile/code_gamex86.dll/linux/debugi386/ +set fs_filedir /home/chrissstrahl/Schreibtisch/ef2Server/_compile/code_gamex86.dll/linux/debugi386/base/maps +set dedicated 2 +set developer 1 +set com_printwarnings 1 +set dedicated 2 +exec server.cfg +set net_port 29253 +map zoo1
