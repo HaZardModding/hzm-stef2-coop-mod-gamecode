@@ -1,0 +1,160 @@
+//Configuration-Variables Listing for the HaZardModding
+//Co-Op script Mod for Ritual Entertainment's
+//Star Trek: Elite Force II
+
+
+The Co-Op Mod uses configuration variables (Cvars) to
+allow for different game modes and personalized
+configuration of the Mod. These Cvars can be changed
+via the Game/Server Console or directly inside your
+server configuration file (*.cfg).
+
+Use seta <variablename> <value> to create a Cvar, if the
+game console tells you that the Cvar does not exist.
+
+
+Useful Game Configuration Variables
+::::::::::::::::::::::::::::::::::::::::::::::::
+//Maximum Number of Players
+	sv_maxclients 1/32
+//Password
+	password ""
+//Server Name
+	sv_hostname
+//Multiplayer game (Windows issue)
+	g_gametype 1
+
+
+Co-op Configuration Variables
+::::::::::::::::::::::::::::::::::::::::::::::::
+//Developer Mode, activate debugs and print internal events
+	coop_dev 0/1
+//Diagnose Modus, loads all maps, used to check for script errors
+//needs coop developer cvar to be enabled
+	coop_diag 0/1
+//Disable Automatic Server reboot(shutdown/quit)
+	coop_disReboot 0/1
+//Disables Classes; Medic, Technician, Heavy Weapons
+	coop_disClass 0/1
+//Disables Health and Energy Dispensers
+	coop_disDisp 0/1
+//Maximum ammount of active Co-op Players, independent from sv_maxclients
+	coop_maxPlayers 2-8
+//Lock Triciorder Puzzles to be solveable only by Technicians
+	coop_techOnly 0/1
+//Co-op Mod Skill/Dificulty level (Higher=Harder), seperate of the regular "skill" cvar
+	coop_skill 1-5
+//Movement Speed for all players during Co-op (independant from sv_maxspeed)
+	coop_maxSpeed 200-???
+//Weapon Firing-Movement-Speed
+	coop_weapSpeed 15 - ???
+
+Co-op Internal Configuration Variables (do not change them)
+::::::::::::::::::::::::::::::::::::::::::::::::
+//Stores the ammount of map(weight) which have been loaded
+//since the last reboot of the server, decides when to reboot
+	coop_lvlL
+//Used for alternate objectives at Mission 1 Borg Sphere
+	coop_lvlP
+//Tells the Mod that the server has been rebooted
+	coop_svRebooted
+//Map to load after server reboot, last unfinished map or next Mission map
+	coop_startMap
+//Next Map to load when in Diagnose Modus (coop_diag 1)
+	coop_diagM
+//Map Command to execute when server Starts
+	coop_sv_startcmd
+//Coop Mod Versions Variable(multiplied with 10), runs setup on server if version changed
+	coop_ver
+//Storing the Player Coop Mod model tiki
+	coop_pModel
+//Storing the status of the setup
+	coop_setup
+//Storing the status of the Setup-Assistent
+	coop_setupA
+//Storing the reset-model tiki for Multiplayer
+	coop_pModelReset
+//Storing the chat font type and size	
+	coop_font
+//Storing your crosshair information
+	coop_crs
+//Storing your 3rd Person View information
+	coop_3rd
+//Storing the current server build
+	coop_svB
+//Storing Server Skill information
+	coop_iSkill
+//Storing Server Player Class information
+	coop_iDisClass
+//Storing Server Technician Modulation information
+	coop_iTechOnly
+//Storing Server Dispenser information
+	coop_iDisDisp
+//Storing your class information
+	coop_class
+//Restores your class huds
+	coop_classR
+//Active Players using Medic Class, for Class Hud
+	coop_cm
+//Active Players using Technichian Class, for Class Hud
+	coop_ct
+//Active Players using Heavy Weapons Class, for Class Hud
+	coop_ch
+//Player 1-8 Current Health, for Medic Monitor hud 
+	coop_1,coop_2,coop_3,coop_4,coop_5,coop_6,coop_7,coop_8
+//Story of the current Level/Map, for the Mission Objective Menu
+	coop_story
+//Objective 1-8 Status, for the Mission Objective Menu
+	coop_one_s,coop_two_s,seta coop_three_s,seta coop_four_s,coop_five_s,
+	coop_six_s,coop_seven_s,coop_eight_s
+//Objective 1-8 Text, for the Mission Objective Menu
+	coop_one,coop_two,coop_three,coop_four,coop_five,coop_six,
+	coop_seven,coop_eight
+//Tactical Mission Information 1-3, for the Mission Objective Menu
+	coop_t1,coop_t2,coop_t3
+//Objective Update Notification, player has read(checked) the Objectives
+	coop_checked
+//Communicator current Label (Order/Confirm/Notify)
+	coop_comL
+//Communicator, send Message to Team/All
+	coop_comT
+//Next Map to vote String, for the Call Vote Menu
+	coop_nMap
+//Previouse Map to vote String, for the Call Vote Menu
+	coop_pMap
+//Next Mission to vote String, for the Call Vote Menu
+	coop_nMission
+//Current Selected Mission List to vote, for the Call Vote Menu
+	coop_ui_sm
+//Current Selected Vote Option (Campaign/Secret/Regular Maps)
+	coop_ui_vt
+//Secret Weapon players found on for current Level/Mission
+	coop_eWtik
+//Storing your Network Settings Status
+	coop_ui_netw
+
+//Information Gathering Mission CVARS
+//Information Gathering Mission CVARS
+//Information Gathering Mission CVARS
+
+//Current IGM Number (game.globalMissionEnterprise)
+	coop_igm
+//Current IGM Turbolift Deck to change to (level.deckToChangeToIGM)
+	coop_igmT
+//Current IGM Turbolift ride (lock door,play sound) (game.globalTurboliftRide)
+	coop_igmTr
+//Current IMG Rooms visted/Objectives achived (game.checkEntMission2RoomsVisited)
+	coop_igmR
+//Current IMG alternative objective/cinmatic/ending
+	coop_igmAlt
+//Spawn inside/Outside the Holodeck on ent-deck8 (game.holoDeckIGM1Done,)
+	coop_igmH
+//Holodeck mission visited (game.holoMissionVisited)
+	coop_igmHv
+//Love Choise Kleeya
+	coop_lcK
+//Love Choise Telsia
+	coop_lcT
+//Love Choise None
+	coop_lcN
+

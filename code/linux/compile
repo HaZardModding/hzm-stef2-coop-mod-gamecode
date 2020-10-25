@@ -1,0 +1,5 @@
+﻿#!/bin/bash
+cd /home/chrissstrahl/Schreibtisch/ef2Server/_compile/code_gamex86.dll/linux
+echo compile | sudo -S make clean
+echo compile | sudo -S make -f Makefile_daggolin
+sleep 9999999999999
