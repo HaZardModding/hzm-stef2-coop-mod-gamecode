@@ -2633,33 +2633,6 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 			startAt = 14;
 		}
 	}
-	else if ( !Q_stricmpn( "dialogrunthread " , tempText , 16 ) )
-	{
-		if (	!Q_stricmpn( "dialogrunthread cinematicArm_MeetOmag_DialogChoice" , tempText , 50) ||
-				!Q_stricmpn( "dialogrunthread failedBranch" , tempText , 28 ) ||
-				!Q_stricmpn( "dialogrunthread cinematicArm_InigorDeath_Start" , tempText , 46 ) ||
-				!Q_stricmpn( "dialogrunthread campsiteNiceChoice" , tempText , 34 ) ||
-				!Q_stricmpn( "dialogrunthread campsiteJerkChoice" , tempText , 34 ) ||
-				!Q_stricmpn( "dialogrunthread careerOption" , tempText , 28 ) ||
-				!Q_stricmpn( "dialogrunthread branch1Choice" , tempText , 29 ) ||
-				!Q_stricmpn( "dialogrunthread branch2Choice" , tempText , 29 ) ||
-				!Q_stricmpn( "dialogrunthread branch3Choice" , tempText , 29 ) ||
-				!Q_stricmpn( "dialogrunthread IGM7_DialogChoice" , tempText , 33 ) ||
-				!Q_stricmpn( "dialogrunthread entDeck7cIGM" , tempText , 28 ) ||
-				!Q_stricmpn( "dialogrunthread entDeck1IGM" , tempText , 27 ) ||
-				!Q_stricmpn( "dialogrunthread entDeck8IGM" , tempText , 16 ) 
-		){
-
-			//hzm gameupdate chrissstrahl - clear out the current dialog actor
-			player->clearBranchDialogActor();
-
-			//hzm gameupdate chrissstrahl - let the game know that a branchdoalig is over
-			game.branchdialog_active = false;
-
-			threadIsValid = 1;
-			startAt = 16;			
-		}
-	}
 
 	if ( threadIsValid )
 	{

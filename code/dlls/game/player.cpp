@@ -5884,17 +5884,6 @@ void Player::ClientThink( Event *ev )
 	if ( multiplayerManager.inMultiplayer() )
 		multiplayerManager.playerInput( this , new_buttons );
 
-
-	//hzm gameupdate chrissstrahl - check for branchdialog hud removal 
-	if ( g_gametype->integer != GT_SINGLE_PLAYER && this->branchdialog_active ){
-		//hzm gameupdate chrissstrahl - failsafe triggered on timeout and other events
-		if ( ( game.branchdialog_startingTime + game.branchdialog_timeout ) < level.time ){
-//DelayedServerCommand( this->entnum , "popmenu 0" );//WARNING, this does not work: hidemenu branchdialog
-			DelayedServerCommand( this->entnum , "popmenu branchdialog 1" );//[b608] Chrissstrahl - this should work fine
-			this->branchdialog_active = false;
-		}
-	}
-
 	//hzm coop mod chrissstrahl - handle coop specific stuff in here
 	coop_playerThink( this );
 
@@ -14940,8 +14929,6 @@ void Player::isPlayerOnGround( Event *ev )
 //-----------------------------------------------------
 void Player::setBranchDialogActor( const Actor* actor )
 {
-	//hzm gameupdate chrissstrahl - let the game know that a branchdoalig is active
-	game.branchdialog_active = true;
 	this->branchdialog_active = true;
 
 	if ( _branchDialogActor != 0 )
@@ -14969,8 +14956,6 @@ void Player::clearBranchDialogActor( void )
 
 	_branchDialogActor = 0;
 
-	//hzm gameupdate chrissstrahl - let the game know that a branchdoalig is over
-	game.branchdialog_active = false;
 	this->branchdialog_active = false;
 }
 
