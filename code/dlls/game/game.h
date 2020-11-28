@@ -55,7 +55,8 @@ class Game : public Class
 	   str coop_serverLoadedSkaListing[COOP_MAX_SKA_LISTING];
 	   str coop_serverLoadedSpritesListing[COOP_MAX_SPRITES_LISTING];
 //hzm gameupdate chrissstrahl - used to check if a branchdialog
-	   bool			branchdialog_active;
+	   EntityPtr	branchdialog_chosenPlayer; //[b608] chrissstrahl - used to store player that is valid to select the dialog
+	   bool			branchdialog_selectionActive;
 	   float		branchdialog_startingTime;
 	   str			branchdialog_name;
 	   int			branchdialog_timeout;

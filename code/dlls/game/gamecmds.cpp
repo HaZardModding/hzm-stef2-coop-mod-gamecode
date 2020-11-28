@@ -80,7 +80,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "purchaseSkill",		G_PurchaseSkillCmd,		false },
 	{ "swapItem",			G_SwapItemCmd,			false },
 	{ "dropItem",			G_DropItemCmd,			false },
-	{ "dialogrunthread",	G_DialogRunThread,		false },
+	{ "dialogrunthread",	G_DialogRunThread,		true }, //[b608] chrissstrahl - allow this in multiplayer/coop
 	{ NULL,					NULL,					NULL }
 };
 
@@ -1395,14 +1395,30 @@ qboolean G_DropItemCmd( const gentity_t *ent )
 //-----------------------------------------------------
 qboolean G_DialogRunThread( const gentity_t *ent )
 {
-	str		threadName;
-	
+	//[b608] chrissstrahl - make sure dialog stuff works right - prevent double execution
+	if (g_gametype->integer != GT_SINGLE_PLAYER && !game.branchdialog_selectionActive ) {
+		//return true so it isn't printed as chat
+		return qtrue;
+	}
+
+	//[b608] chrissstrahl - prevent other players from abousing this opertunity
+	if (ent->entity->isSubclassOf(Player)) {
+		Player* player = (Player*)ent->entity;
+		if ((Entity *)player != game.branchdialog_chosenPlayer) {
+			//return true so it isn't printed as chat
+			return qtrue;
+		}
+	}
+
 	// clear out the current dialog actor
 	if(ent->entity->isSubclassOf(Player))
 	{
 		Player* player = (Player*)ent->entity;
 		player->clearBranchDialogActor();
 	}
+
+	game.branchdialog_selectionActive = false;
+	game.branchdialog_chosenPlayer = NULL; //[b608] chrissstrahl - used to store player that is valid to select the dialog
 
 	return G_ClientRunThreadCmd( ent );
 }

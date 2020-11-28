@@ -11813,13 +11813,16 @@ void Actor::setBranchDialog( void )
 		}
 
 		//hzm gameupdate chrissstrahl, this is our failsafe
-		game.branchdialog_active = true;
+		game.branchdialog_selectionActive = true;
 		game.branchdialog_name = _branchDialogName;
 		game.branchdialog_startingTime = level.time;
 	}
 	
 	str commandString;
 	if( player ){
+		//[b608] chrissstrahl - used to store player that is valid to select the dialog
+		game.branchdialog_chosenPlayer = (Entity *)player;
+
 		commandString = "displaybranchdialog ";
 		commandString += _branchDialogName;
 
@@ -11843,8 +11846,6 @@ void Actor::setBranchDialog( void )
 //-----------------------------------------------------
 void Actor::clearBranchDialog( void )
 {
-	//hzm gameupdate chrissstrahl - let the game know that a branchdoalig is over
-	game.branchdialog_active = false;
 	_branchDialogName = "";
 }
 

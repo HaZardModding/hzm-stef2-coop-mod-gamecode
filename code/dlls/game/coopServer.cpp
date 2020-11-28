@@ -74,7 +74,8 @@ void coop_serverInizializeGameVars(void)
 	game.isCoopIncludedLevel = false;
 	game.isStandardLevel = false;
 	game.levelType = 0;
-	game.branchdialog_active = false;
+	game.branchdialog_chosenPlayer = NULL; //[b608] chrissstrahl - used to store player that is valid to select the dialog
+	game.branchdialog_selectionActive = false;
 	game.branchdialog_startingTime = 0.0f;
 	game.branchdialog_name = "";
 	game.branchdialog_timeout = 20;
