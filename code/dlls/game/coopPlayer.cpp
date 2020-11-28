@@ -2592,10 +2592,10 @@ void handleDelayedServerCommands( void )
 						str sText		= "";
 
 						//[b607] chrissstrahl - optimize data string by not adding stufftext when not needed
+						//[b608] chrissstrahl - popmenu with a menuname does not work purly clientside, it needs stufftext prefix which is why it has been removed from the checks
 						foundSpace = coop_returnIntFind(pendingCommand->command, " ");
 						if (Q_stricmpn("hudprint ", pendingCommand->command, foundSpace) == 0 ||
 							Q_stricmpn("status ", pendingCommand->command, foundSpace) == 0 ||
-							Q_stricmpn("popmenu ", pendingCommand->command, foundSpace) == 0 ||			//2019.12.15
 							Q_stricmpn("score ", pendingCommand->command, foundSpace) == 0 
 							)
 						{
