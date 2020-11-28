@@ -4,6 +4,8 @@ code/dlls/Debug/
 code/ipch/
 code/fucking_delete.bat
 
+*.vs/
+
 code/linux/debugi386
 code/linux/releasei386
 
