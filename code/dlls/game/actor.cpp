@@ -63,6 +63,9 @@ Container<BehaviorPackageType_t *> PackageList; //Global list of all behavior pa
 
 extern Container<int> SpecialPathNodes;
 
+//[b608] chrissstrahl - stop electrified or other effects in -> void Actor::Dead( Event *ev )
+extern Event EV_ClearCustomShader;
+
 Event EV_Actor_SetSelfDetonateModel
    (
    "selfdetonatemodel",
@@ -7289,6 +7292,13 @@ void Actor::Dead( Event *ev )
 		//client shows as connecting but is then dropped with the above error
 		
 		if (coop_actorDeadBodiesHandle( (Entity*)this )) {
+			//[b608] chrissstrahl - stop electrified effect on dead body
+			Event *newEvent;
+			newEvent = new Event(EV_ClearCustomShader);
+			newEvent->AddString("electriclines");
+			Entity *eAct = (Entity*)this;
+			eAct->PostEvent(newEvent, 5.0f);
+			//[b608] end
 			return;
 		}
 		
