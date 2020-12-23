@@ -514,6 +514,9 @@ bool coop_playerSetup( Player *player )
 
 	//chrissstrahl - overwrite GameTypeName in scoreboard [b607]
 	if (game.coop_isActive) {
+		//[b608] chrissstrahl - only execute this if the server is running a coop map - used to be in detect.cfg which is also executed on regular mp
+		DelayedServerCommand(player->entnum, "vstr coop_class");
+
 		//DelayedServerCommand(player->entnum, va("set mp_gametypename ^5H^8a^5Z^8ard^5M^8odding ^5Coop ^8Mod %i",COOP_BUILD));
 		DelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
 	}
