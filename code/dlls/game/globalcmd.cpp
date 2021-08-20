@@ -1626,6 +1626,13 @@ void CThread::getStringPlayerName( Event *ev )
 		return;
 	}
 
+	//[b608] chrissstrahl - return also player name in singleplayer instead of crashing
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		cvar_t *cvar = gi.cvar_get("name");
+		ev->ReturnString(cvar ? cvar->string : "");
+		return;
+	}
+
 	str s;
 	Player* p = ( Player* )e;
 	s = multiplayerManager._playerData[p->entnum]._name;
