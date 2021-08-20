@@ -9,7 +9,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>A:\Games\Star Trek\Elite Force II\Master EF2\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>+cheats 1 +set g_gametype 1 +set timescale 1 +set logfile 1 +mp_warmuptime 0 +devmap m8l2a-drull_ruins2</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+cheats 1 +set g_gametype 1 +set timescale 1 +set logfile 1 +mp_warmuptime 0 +devmap coop_ente</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MP|Win32'">
     <LocalDebuggerWorkingDirectory>D:\GAMES\Star Trek\Elite Force II\Server EF2\</LocalDebuggerWorkingDirectory>

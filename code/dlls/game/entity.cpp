@@ -4541,6 +4541,8 @@ void Entity::SetAngles
 //-----------------------------------------------------
 void Entity::GetAngles(Event* ev)
 {
+	//gi.Printf("%s[%d] angles get: %d %d %d \n", targetname.c_str(), entnum, angles[0], angles[1], angles[2]);
+	//gi.Printf("%s[%d] localangles get: %d %d %d \n", targetname.c_str(), entnum, localangles[0], localangles[1], localangles[2]);
 	ev->ReturnVector(angles);
 }
 
