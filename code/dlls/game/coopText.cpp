@@ -260,14 +260,12 @@ str coop_textCleanAllButLettersAndLower( str sText )
 	return sNew;
 }
 
-
-
 //================================================================
 // Name:        coop_textReplaceWhithespace
 // Class:       -
 //              
 // Description:		replaces the current string after all whithespaces have been replaced
-//					used for locationprint strings
+//					used for locationprint strings and menu related stuff (Coop communicator Transporetr Menu)
 //              
 // Parameters:  str sText
 //              

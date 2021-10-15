@@ -315,6 +315,10 @@ void Level::CleanUp( qboolean restart )
 	gi.cvar_set( "bosshealth", "0" );
 	
 	_earthquakes.ClearObjectList();
+
+	//[b610] chrissstrahl - added cleanup func
+	//I am pretty sure some more issues with not reset vars will come up over time
+
 	
 	_cleanup = false;
 }

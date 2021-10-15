@@ -2578,7 +2578,6 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	int startAt = 0;
 	bool threadIsValid = 0;
 
-
 	//hzm gameupdate chrissstrahl - remove useless ^
 	//check if player accidently typed ^ into console
 	// hzm gameupdate chrissstrahl - check if player used /, thats a bad habbit from older games
@@ -2587,7 +2586,7 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	{		
 		if ( tempText[i] == '^' || tempText[i] == '/' || tempText[i] == '\\')
 		{
-			startLoc++;		
+			startLoc++;
 		}
 		else
 		{
@@ -2596,6 +2595,7 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	}
 	// hzm gameupdate chrissstrahl - remove useless ^ from text
 	tempText = coop_returnStringStartingFrom( tempText , startLoc );
+
 	if ( !stricmp( tempText.c_str() , "" ) ) { return; }
 
 	//hzm gameupdate chrissstrahl - make tricorderpuzzels an other default gamplay components from singleplayer work

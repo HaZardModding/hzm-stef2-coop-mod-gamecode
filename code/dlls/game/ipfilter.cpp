@@ -311,9 +311,9 @@ of the parameters
 bool G_ServerCommand( void )
 {
 	const char *cmd;
-	
-	//hzm gamefix daggolin - console commands - Changed from "1" to "0"
 	cmd = gi.argv(0);
+
+	//hzm gamefix daggolin - console commands - Changed from "1" to "0"
 	if ( Q_stricmp( cmd, "addip" ) == 0 )
 	{
 		SVCmd_AddIP_f();

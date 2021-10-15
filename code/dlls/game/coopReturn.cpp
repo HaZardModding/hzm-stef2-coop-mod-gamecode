@@ -342,6 +342,7 @@ str coop_returnStringTrim( str sTrim , const str sTrimMatch )
 	coop_manipulateStringTrim( sTrim , sTrimMatch );
 	return sTrim;
 }
+
 //================================================================
 // Name:        coop_returnStringCleanedCvar
 // Class:       -
