@@ -32,7 +32,7 @@
 extern Event EV_Actor_Fade;
 
 //================================================================
-// Name:        coop_serverInizializeGameVars
+// Name:        coop_actorDeadBodiesRemove
 // Class:       -
 //              
 // Description: Removes all dead bodies on the map (that are related to this feature)
@@ -58,7 +58,7 @@ void coop_actorDeadBodiesRemove()
 }
 
 //================================================================
-// Name:        coop_serverInizializeGameVars
+// Name:        coop_actorDeadBodiesHandle
 // Class:       -
 //              
 // Description: Inizialized all coop gamevars, to prevent accessing empty vars
