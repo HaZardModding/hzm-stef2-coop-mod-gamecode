@@ -1169,8 +1169,8 @@ Event EV_ScriptThread_getStringPlayerName
 (
 	"getStringPlayerName" ,
 	EV_SCRIPTONLY ,
-	"@se" ,
-	"retunedString entity" ,
+	"@seS" ,
+	"retunedString entity string" ,
 	"Returns multiplayer name of given player-entity"
 );
 Event EV_ScriptThread_getStringEntitySubclass
@@ -1626,7 +1626,7 @@ void CThread::getStringPlayerName( Event *ev )
 		return;
 	}
 
-	//[b608] chrissstrahl - return also player name in singleplayer instead of crashing
+	//[b609] chrissstrahl - return also player name in singleplayer instead of crashing
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		cvar_t *cvar = gi.cvar_get("name");
 		ev->ReturnString(cvar ? cvar->string : "");
@@ -1636,6 +1636,26 @@ void CThread::getStringPlayerName( Event *ev )
 	str s;
 	Player* p = ( Player* )e;
 	s = multiplayerManager._playerData[p->entnum]._name;
+
+	//[b609] chrissstrahl - updated to allow replacing
+	// orientate on func SetCanBeFinishedBy for a neat solution with multiple arguments
+	str sReplace = "_";
+	if (ev->NumArgs() > 1) {
+		sReplace = ev->GetString(2);
+		str sPlayername = s;
+		int		i;
+		s = "";
+
+		for (i = 0; i < sPlayername.length(); i++) {
+			if (sPlayername[i] == ' ') {
+				s += sReplace;
+			}
+			else {
+				s += sPlayername[i];
+			}
+		}
+	}
+
 	ev->ReturnString( s.c_str() );
 }
 void CThread::getStringEntitySubclass( Event *ev )
