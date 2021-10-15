@@ -46,7 +46,8 @@ extern Event EV_ScriptThread_StuffCommand;
 // Name:        coop_serverInizializeGameVars
 // Class:       -
 //              
-// Description: Inizialized all coop gamevars, to prevent accessing empty vars
+// Description: Inizialized all coop gamevars ONLY ONCE the Game Server is created to prevent accessing empty vars
+//				This is NOT executed each time a level is loaded.
 //              
 // Parameters:  NONE
 //              
@@ -979,13 +980,6 @@ void coop_serverCoop()
 		gi.Printf( va( "==== %s is included in this coop build! ====\n" , currentMapName.c_str() ) );
 	}
 
-	//hzm coop mod chrissstrahl - standard maps always have ritual entertainment as author
-	if ( game.isStandardLevel ) {
-		game.coop_author = "Ritual_Entertainment";
-	}//else{
-		//game.coop_author = "UNKOWN";
-	//}
-
 	//hzm coop mod chrissstrahl - NO MORE - Gallifrey Falls No More
 	if ( g_gametype->integer != GT_MULTIPLAYER ) {
 		return;
@@ -1390,7 +1384,7 @@ str coop_serverModifiedFile( str standardPath )
 
 
 //================================================================
-// Name:        coop_serverManagePlayers
+// Name:        coop_serverError
 // Class:       -
 //              
 // Description: handels serverside stuff
@@ -1431,7 +1425,7 @@ bool coop_serverError( str sError, bool bFatal )
 }
 
 //================================================================
-// Name:        coop_serverManagePlayers
+// Name:        coop_serverThink
 // Class:       -
 //              
 // Description: handels serverside stuff each frame (called by worldspawn)
@@ -1484,4 +1478,21 @@ void coop_serverThink( void )
 	}
 }
 
-
+//[b610] chrissstrahl - executed from Level::CleanUp
+//================================================================
+// Name:        coop_serverCleanup
+// Class:       -
+//              
+// Description: Cleans up vars and other stuff once the level is cleaned up
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+void coop_serverCleanup(void)
+{
+	game.coop_author = "";
+	game.coop_story = "";
+	game.coop_story_deu = "";
+}

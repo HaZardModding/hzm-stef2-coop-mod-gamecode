@@ -90,5 +90,6 @@ bool coop_serverRunScriptThread( str scriptThread );
 void coop_serverManageAi( void );
 str coop_serverModifiedFile( str standardPath );
 void coop_serverThink( void );
+void coop_serverCleanup(void); //[b610] chrissstrahl - used to reset vars and clean up stuff
 
 #endif /* coopServer.hpp */

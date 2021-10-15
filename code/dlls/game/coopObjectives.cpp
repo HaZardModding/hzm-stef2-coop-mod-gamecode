@@ -202,8 +202,16 @@ void coop_objectivesSetup( Player *player)
 			DelayedServerCommand( player->entnum , va( "set %s ^0" , sCvar.c_str() ) );
 		}
 	}
-	if ( game.coop_author.length() < 1){
-		game.coop_author = program.getStringVariableValue( "coop_string_levelAuthor" );
+
+	//[b610] chrissstrahl - moved it here
+	//standard maps always have ritual entertainment as author
+	if (game.isStandardLevel) {
+		game.coop_author = "Ritual_Entertainment";
+	}
+	else {
+		if (game.coop_author.length() < 1) {
+			game.coop_author = program.getStringVariableValue( "coop_string_levelAuthor" );
+		}
 		if ( game.coop_author.length() < 1 ){
 			game.coop_author = "$$Empty$$";
 		}
