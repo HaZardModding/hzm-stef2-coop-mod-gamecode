@@ -262,7 +262,7 @@ int coop_vote_friendlyfireValidate(Player* player, const str &command, const str
 		fVal = 0.0f;
 	}
 
-	_voteString = va("coop_ff %d", fVal);
+	_voteString = va("coop_ff %f", fVal);
 	return 2;//votestring could have been changed (args)
 }
 
