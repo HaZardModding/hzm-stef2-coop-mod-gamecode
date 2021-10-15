@@ -108,7 +108,6 @@ void G_InitConsoleCommands( void )
 
 qboolean	G_ConsoleCommand( void )
 {
-	gentity_t *ent;
 	qboolean result;
 	
 	result = false;
@@ -139,6 +138,7 @@ qboolean	G_ConsoleCommand( void )
 
 		if ( !result )
 		{
+			gentity_t *ent;
 			ent = &g_entities[ 0 ];
 			result = G_ProcessClientCommand( ent );
 		}
@@ -158,6 +158,37 @@ void G_ClientCommand( gentity_t *ent )
 	{
 		if ( ent && !G_ProcessClientCommand( ent ) )
 		{
+			//[b609] hzm gameupdate chrissstrahl - remove leading / or \ or ^
+			//the slashes for ef1 users convinience and ^ for general convinience
+			//then sends this data back to client and client console decides what to do and sends it possibly back to server
+			const char *cmd;
+			cmd = gi.argv(0);
+			bool bFiltered = false;
+			while (*cmd == '^' || *cmd == '/' || *cmd == '\\') {
+				cmd++;
+				bFiltered = true;
+			}
+
+			if (bFiltered && gi.GetNumFreeReliableServerCommands(ent->entity->entnum) > 32)
+			{
+				int cmdNum = 1;
+				str cmdGlueUp ="";
+				char *checkCmdPresent;
+
+				cmdGlueUp = va("%s", cmd);
+
+				checkCmdPresent = gi.argv(cmdNum);
+				while (checkCmdPresent && strlen(checkCmdPresent) > 0) {
+					cmdGlueUp += va(" %s", checkCmdPresent);
+					cmdNum++;
+					checkCmdPresent = gi.argv(cmdNum);
+				}
+				//send back to client and client console will decide it it wants to send it again
+				gi.SendServerCommand(ent->entity->entnum, va("stufftext \"%s\"\n", cmdGlueUp.c_str()));
+				return;
+			}
+			//end
+
 			// anything that doesn't match a command will be a chat
 			G_Say( ent, false, true );
 		}
