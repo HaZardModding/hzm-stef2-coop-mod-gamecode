@@ -50,6 +50,7 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+//[b607] chrissstrahl - updated and improved and also fixed player names with space not showing
 //================================================================
 // Name:        coop_playerCommunicator
 // Class:       -
@@ -68,46 +69,44 @@ void coop_playerCommunicator(Player* player, int iAdd)
 	}
 
 	str sName;
-	Player *otherPlayer = NULL;
+	Player *currentPlayer = NULL;
 	int iMaxCients = maxclients->integer;
 	if (iMaxCients > COOP_MAX_PLAYERS) {
 		iMaxCients = COOP_MAX_PLAYERS;
 	}
 
-	//add/remove new/renamed player for other players
-	if (iAdd == 1 || iAdd == 2) {
-		if (iAdd == 1) {
-			sName = player->client->pers.netname;
-		}
-		else {
-			sName = "$$Empty$$";
-		}
-
-		for (int i = 0; i < iMaxCients; i++) {
-			//don't send update info to leaving player 
-			if (iAdd == 2 && i == player->entnum) {
-				continue;
-			}
-
-			otherPlayer = (Player *)g_entities[i].entity;
-			if (otherPlayer && otherPlayer->client && otherPlayer->isSubclassOf(Player) && otherPlayer->coopPlayer.installed) {
-				DelayedServerCommand(i, va("globalwidgetcommand coop_comTrans%i title %s", player->entnum, sName.c_str()));
-			}
-		}
+	//grab player name or set empty for the slot in the menu
+	if (iAdd<=0){
+		sName = "$$Empty$$";
 	}
-	//add other players in menu for this player
-	else{
-		if (player->coopPlayer.installed) {
-			for (int i = 0; i < iMaxCients; i++) {
-				otherPlayer = (Player *)g_entities[i].entity;
-				if (otherPlayer && otherPlayer->client && otherPlayer->isSubclassOf(Player)) {
-					sName = otherPlayer->client->pers.netname;
-				}
-				else {
-					sName = "$$Empty$$";
-				}
-				DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comTrans%i title %s", i, sName.c_str()));
+	else {
+		sName = player->client->pers.netname;
+	}
+
+	//don't send update info to leaving player 
+	for (int i = 0; i < iMaxCients; i++) {
+		currentPlayer = (Player *)g_entities[i].entity;
+
+		//don't send update info to player without mod menu or if it is bot
+		if (!currentPlayer || !currentPlayer->coopPlayer.installed || currentPlayer->edict->svflags & SVF_BOT) { continue; }
+
+		//don't send update info to leaving player
+		if (iAdd <= 0 && i == player->entnum) { continue; }
+
+		//send list to current player communicator menu, menu has 8 slots
+		for (int j = 0; j < 8; j++) {
+			str sListName;
+			Player *listPlayer = (Player *)g_entities[j].entity;
+
+			if (!listPlayer || !listPlayer->isClient() || iAdd <= 0 ) {
+				sListName = "$$Empty$$";
 			}
+			else {
+				sListName = listPlayer->client->pers.netname;
+				sListName = coop_textReplaceWhithespace(sListName);
+			}
+
+			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTrans%i title %s",j, sListName.c_str()));
 		}
 	}
 }
@@ -626,9 +625,6 @@ void coop_playerSetupCoop( Player *player )
 
 	coop_classSet( player , "current" );
 
-	//[b607] chrissstrahl - send other client names to communicator menu buttons (Transport) of this player
-	coop_playerCommunicator(player,0);
-
 	player->coopPlayer.setupComplete = true;
 
 	//[b607] chrissstrahl - dublicated, is set in coop_objectivesSetup
@@ -996,6 +992,7 @@ bool coop_playerSay( Player *player , str sayString)
 				//player->hudPrint( "^5!heal^8		Heilt Sie ! (ENTWICKLER Befehl)\n" );
 				//chrissstrahl -  [b607]
 				player->hudPrint("^5!login^8		Zeigt die Coop Admin Login Schnittstelle an.\n");
+				player->hudPrint("^5!logout^8		Entzieht Ihnen Coop Admin Rechte.\n");
 				player->hudPrint("^5!noclip^8		Schaltet keine Kollision an/aus (ENTWICKLER Befehl) \n");
 				player->hudPrint("^5!reboot^8		Rebootet den Server sofort (ENTWICKLER Befehl) \n");
 				player->hudPrint("^5!levelend^8		Startet die level end Funktion (ENTWICKLER Befehl) \n");
@@ -1024,6 +1021,7 @@ bool coop_playerSay( Player *player , str sayString)
 				//chrissstrahl -  [b607]
 				//player->hudPrint( "^5!heal^8		Heals you ! (development command) \n" );
 				player->hudPrint( "^5!login^8		Promts the Coop Admin Login Menu.\n");
+				player->hudPrint( "^5!logout^8		Revokes your Coop Admin Status.\n");
 				player->hudPrint("^5!noclip^8		Turns no clipping on/off (development command) \n");
 				player->hudPrint("^5!reboot^8		Reboots the Server right now (development command) \n");
 				player->hudPrint("^5!levelend^8		Runs the level end function now (development command) \n");
@@ -1050,8 +1048,22 @@ bool coop_playerSay( Player *player , str sayString)
 				gi.SendConsoleCommand(va("kick %i\n", i));
 			}
 		}
-		//chrissstrahl -  [b607] - used to promt login menu
+		//[b609] chrissstrahl - added !logout feature
+		else if (!Q_stricmpn("!logout", sayString, 7)) {
+			if (player->coopPlayer.admin) {
+				player->coopPlayer.admin = 0;
+				player->hudPrint("^3You are now logged out.\n");
+				return true;
+			}
+		}
 		else if (!Q_stricmpn("!login", sayString, 6)) {
+			//[b609] chrissstrahl - added logout feature if admin uses login again
+			if (player->coopPlayer.admin) {
+				player->coopPlayer.admin = 0;
+				player->hudPrint("^3You are now logged out.\n");
+				return true;
+			}
+
 			player->hudPrint("^5login started\n");
 			player->entityVars.SetVariable("uservar1", "mom_codepanel2");
 			player->entityVars.SetVariable("uservar2", "coop_login");
@@ -1539,7 +1551,8 @@ bool coop_playerSay( Player *player , str sayString)
 
 			//hzm coop mod chrissstrahl - fix transporting to spectator
 			//[b607] chrissstrahl - fix nullpointer if target player does not exist
-			if (!targetPlayer || multiplayerManager.isPlayerSpectator( targetPlayer ) ) {
+			//[b609] chrissstrahl - prevent beaming to dead player
+			if (!targetPlayer || multiplayerManager.isPlayerSpectator( targetPlayer ) || targetPlayer->health <= 0 ) {
 				bTransportFailed = true;
 			}
 
@@ -1969,7 +1982,10 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	if ( !attacker->isSubclassOf( Actor ) && !owner->isSubclassOf( Player ) && !owner->isSubclassOf( Actor ) )
 	{
 		gi.Printf( va( "inflictor: %i - ePurp: %i\n" , inflictor->entnum , ePurp->entnum) );
-		//ePurp = inflictor;//inflictor
+		//[609] chrissstrahl - reenabled this, because a trigger (mod_electric) killing a player
+		//would make the code use $world from attacker, instead of using the inflictor which is
+		//the actual cause for the damage - if world is really the attacker it is also the inflictor
+		ePurp = (Entity *)inflictor;//inflictor
 	}
 
 	//if inflictor (mostly kill triggers) is marked as badspot, it means we don't want players to respawn there
@@ -1981,6 +1997,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		meansOfDeath == MOD_EAT ||
 		//meansOfDeath == MOD_SUICIDE || //- disabled for testing
 		meansOfDeath == MOD_NONE ||
+		meansOfDeath == MOD_ELECTRIC || //[609] chrissstrahl - added to prevent players from respawning there
 		meansOfDeath == MOD_VAPORIZE_COMP ||
 		meansOfDeath == MOD_VAPORIZE_DISRUPTOR ||
 		meansOfDeath == MOD_VAPORIZE_PHOTON ||
@@ -1996,44 +2013,46 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	}
 
 	str sEntityName , eEntityKillmessage;
-	for ( i = 1; i < 5; i++ ){
-		int j = 0;
-		entityData = NULL;
-		sEntityName = "";
-		eEntityKillmessage = NULL;
-		entityData = ePurp->entityVars.GetVariable( va( "uservar%d" , i ) );
-		if ( entityData == NULL ){
-			continue;
-		}
-		sEntityName = entityData->stringValue();
+	//[609] chrissstrahl - falldamage should always be falldamage
+	if (meansOfDeath != MOD_FALLING) {
+		for (i = 1; i < 5; i++) {
+			int j = 0;
+			entityData = NULL;
+			sEntityName = "";
+			eEntityKillmessage = NULL;
+			entityData = ePurp->entityVars.GetVariable(va("uservar%d", i));
+			if (entityData == NULL) {
+				continue;
+			}
+			sEntityName = entityData->stringValue();
 
-		if ( !Q_stricmpn( "killmessage" , sEntityName , 11 ) ){
-			if ( sEntityName.length() > 12 ){
-				str tempName = sEntityName;
-				sEntityName = NULL;
-				for ( j = 12; j < tempName.length(); j++ ){
-					sEntityName += tempName[j];
+			if (!Q_stricmpn("killmessage", sEntityName, 11)) {
+				if (sEntityName.length() > 12) {
+					str tempName = sEntityName;
+					sEntityName = NULL;
+					for (j = 12; j < tempName.length(); j++) {
+						sEntityName += tempName[j];
+					}
+					printString += sEntityName;
+					idendified = true;
+					break;
 				}
-				printString += sEntityName;
-				idendified = true;
+			}
+			else if (!Q_stricmpn("name", sEntityName, 4)) {
+				if (sEntityName.length() > 5) {
+					str tempName = sEntityName;
+					sEntityName = "";
+					printString += "^8 was neutralized by ";
+					for (j = 5; j < tempName.length(); j++) {
+						sEntityName += tempName[j];
+					}
+					printString += sEntityName;
+					idendified = true;
+				}
 				break;
 			}
 		}
-		else if ( !Q_stricmpn( "name" , sEntityName , 4 ) ){
-			if ( sEntityName.length() > 5 ){
-				str tempName = sEntityName;
-				sEntityName = "";
-				printString += "^8 was neutralized by ";
-				for ( j = 5; j < tempName.length(); j++ ){
-					sEntityName += tempName[j];
-				}
-				printString += sEntityName;
-				idendified = true;
-			}
-			break;
-		}
 	}
-
 //custom defined kill message, print it and exit here
 	if ( idendified == true ){
 		//gi.Printf( va( "Used custom name or killmessage in uservar%d of '$%s' (%s)\n" , i , ePurp->targetname , ePurp->getClassname() ) );
@@ -2482,7 +2501,7 @@ void coop_playerLeft( Player *player )
 	coop_serverLmsCheckFailure();
 
 	//[b607] chrissstrahl - clear player name from all other players their communicator transport buttons
-	coop_playerCommunicator(player, 2);
+	coop_playerCommunicator(player, 0);
 }
 
 //================================================================
