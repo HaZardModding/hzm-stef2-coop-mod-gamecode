@@ -687,6 +687,7 @@ World::World()
 	else
 	{
 		//hzm gameupdate chrissstrahl - prints message that NO script has been added even when developer is off
+		//loads default script to have basic coop functionality if the map is not a multiplayer map and has no script at all
 		if ( game.levelType == MAPTYPE_MULTIPLAYER )
 		{
 			gi.Printf( "Script file: '%s' not found, no scripts added!\n" , mapname.c_str() );

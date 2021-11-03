@@ -184,8 +184,6 @@ void MultiplayerManager::start( void )
 	_talkingIconIndex = gi.imageindex( "sysimg/icons/mp/talking" );
 	_waitingToRespawnIconIndex = gi.imageindex( "sysimg/icons/mp/elimination_eliminated" );
 
-
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
 	//disabling the code block below reduces the number of errors
 	// Start the modifiers
 	for ( int i = 1 ; i <= _modifiers.NumObjects() ; i++ )
@@ -270,8 +268,6 @@ void MultiplayerManager::update( float frameTime )
 	if ( _needToAddBots )
 		addBots();
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block below did not make any difference
 	// Update all of the modifiers
 	if ( _multiplayerGame->inMatch() )
 	{
@@ -569,9 +565,6 @@ void MultiplayerManager::initMultiplayerGame( void )
 	// Add all of the needed modifiers
 	addModifiers();
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
-
 	// Initialize all of the needed modifiers
 	for ( i = 1; i <= _modifiers.NumObjects(); i++ )
 	{
@@ -609,8 +602,6 @@ void MultiplayerManager::initItems( void )
 	if ( !_inMultiplayerGame || game.coop_isActive )
 		return;
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Tell all of the modifiers to initialize items
 	for ( i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
@@ -628,8 +619,6 @@ void MultiplayerManager::initItems( void )
 
 	// TODO: move this to a seperate proc
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	for ( i = 0; i < MAX_GENTITIES; i++ )
 	{
 		if ( g_entities[ i ].inuse && g_entities[ i ].entity )
@@ -921,8 +910,6 @@ void MultiplayerManager::addPlayer( Player *player )
 
 	_multiplayerGame->AddPlayer( player );
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Inform all of the modifiers about the new player
 	for ( int i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
@@ -967,8 +954,6 @@ void MultiplayerManager::removePlayer( Player *player )
 
 	_playerData[ player->entnum ].reset();
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Inform all of the modifiers about the player being removed
 	for ( int i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
@@ -1049,8 +1034,6 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 			player->setSolidType( SOLID_NOT );
 		}
 
-		//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-		//disabling the code block did not have any effect
 		for ( int i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 		{
 			MultiplayerModifier *modifier;
@@ -1170,8 +1153,6 @@ void MultiplayerManager::matchOver( void )
 
 	int i;
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Inform all of the modifiers about the match being over
 	for ( i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
@@ -1790,8 +1771,6 @@ bool MultiplayerManager::checkGameType( const char *gameType )
 	if ( _multiplayerGame->checkGameType( gameType ) )
 		return true;
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Check for the gametype with  all of the modifiers
 	for ( int i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
@@ -3911,8 +3890,6 @@ void MultiplayerManager::startMatch( void )
 
 	_inMatch = true;
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Inform all of the modifiers that the match is starting
 	for ( i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
@@ -3929,8 +3906,6 @@ void MultiplayerManager::startMatch( void )
 
 	_multiplayerGame->startMatch();
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Inform all of the modifiers that the match has started
 	for ( i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
@@ -3951,8 +3926,6 @@ void MultiplayerManager::restartMatch( void )
 
 	_multiplayerGame->endMatch();
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Inform all of the modifiers that the match has started
 	for ( int i = 1; i <= _modifiers.NumObjects(); i++ )
 	{
@@ -3972,8 +3945,6 @@ void MultiplayerManager::restartMatch( void )
 
 	_multiplayerGame->restartMatch();
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	// Inform all of the modifiers that the match has started
 	for ( int i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
@@ -4660,8 +4631,6 @@ bool MultiplayerManager::skipWeaponReloads( void )
 	if ( _multiplayerGame->skipWeaponReloads() )
 		return true;
 
-	//hzm errortrace chrissstrahl - trying to find out what is causing the crash - ObjectAt : index out of range
-	//disabling the code block did not have any effect
 	for ( int i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 	{
 		MultiplayerModifier *modifier;
