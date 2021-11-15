@@ -366,13 +366,19 @@ bool coop_serverLmsCheckFailure( void )
 			if ( player->coopPlayer.deathTime < game.coop_levelStartTime ) {
 				iActive++;
 			}
+gi.Printf(va("COOPDEBUG coop_serverLmsCheckFailure: %s death[%d] vs startlms[%d]\n", multiplayerManager._playerData[player->entnum]._name.c_str(), player->coopPlayer.deathTime, game.coop_levelStartTime));
 		}
 	}
+
+gi.Printf("COOPDEBUG coop_serverLmsCheckFailure: all[%i] vs active[%i]\n", iAll, iActive);
 
 	//fail mission if all are dead
 	if ( iAll > 0 && iActive == 0 )
 	{
-		G_MissionFailed("PlayerKilled"); //[b607] needs to be exactly this to trigger playerDeathThread
+		//[b607] needs to be exactly this to trigger playerDeathThread
+		//[b610] chrissstrahl - changed string to include $$ to fix issue
+		//select a random player suicide kill message range 1 to 10
+		G_MissionFailed(va("$$PlayerKilled%i$$", ((int)G_Random(9.0f) + 1)));
 		return true;
 	}
 	return false;
