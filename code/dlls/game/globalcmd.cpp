@@ -1829,8 +1829,8 @@ void CThread::getIntPlayerHasCoop( Event *ev )
 
 	Player  *player = ( Player* )entity;
 	//value is -1 while the mod is detecting, make sure we only return bool
-	int i = player->coopPlayer.installed;
-	if( i != 1) {
+	int i = player->coopPlayer.installedVersion;
+	if( i < 0) {
 		i = 0;
 	}
 	ev->ReturnFloat( (float)i );
