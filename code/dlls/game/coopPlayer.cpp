@@ -91,7 +91,10 @@ void coop_playerCommunicator(Player* player, int iAdd)
 		if (!currentPlayer || !currentPlayer->coopPlayer.installed || currentPlayer->edict->svflags & SVF_BOT) { continue; }
 
 		//don't send update info to leaving player
-		if (iAdd <= 0 && i == player->entnum) { continue; }
+		if (iAdd <= 0 && i == player->entnum) {
+gi.Printf(va("COOPDEBUG [%s] Leaving Player skipped: %s\n", currentPlayer->client->pers.netname, player->client->pers.netname));
+			continue;
+		}
 
 		//send list to current player communicator menu, menu has 8 slots
 		for (int j = 0; j < 8; j++) {
@@ -107,6 +110,7 @@ void coop_playerCommunicator(Player* player, int iAdd)
 			}
 
 			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTrans%i title %s",j, sListName.c_str()));
+gi.Printf(va("COOPDEBUG [%s] coop_comTrans%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
 		}
 	}
 }
@@ -127,6 +131,13 @@ bool coop_playerCheckAdmin(Player *player)
 {
 	//already logged in
 	if (player->coopPlayer.admin) {
+		return true;
+	}
+
+	//[b610] chrissstrahl - auto login if player is host
+	if (dedicated->integer == 0 && player->entnum == 0) {
+		player->coopPlayer.admin = 0;
+		player->hudPrint("^3You are now logged in (Host auto-!login).\n");
 		return true;
 	}
 
@@ -159,7 +170,8 @@ bool coop_playerCheckAdmin(Player *player)
 // Name:        coop_playerGetDataSegment
 // Class:       -
 //              
-// Description: returns a specific data segment fot a player from ini file
+// Description: returns a specific data segment for a player id from ini file
+//				like health, ammo and other statistics
 //              
 // Parameters:  Player*, sort int
 //              
@@ -238,19 +250,17 @@ bool coop_playerSpawnLms( Player *player )
 		return true;
 
 	//player died after this map was started
-	if ( player->coopPlayer.deathTime > game.coop_levelStartTime ){
-		if ( ( player->coopPlayer.timeEntered + 3 ) < level.time ){
-			multiplayerManager.makePlayerSpectator(player, SPECTATOR_TYPE_FOLLOW, false);
+	if ( player->coopPlayer.deathTime > game.coop_levelStartTime &&  ( player->coopPlayer.timeEntered + 3 ) < level.time){
+		multiplayerManager.makePlayerSpectator(player, SPECTATOR_TYPE_FOLLOW, false);
 
-			if ( !level.mission_failed && ( player->coopPlayer.lastTimeHudMessage + 3 ) < level.time ){
-				player->coopPlayer.lastTimeHudMessage = level.time;
+		if ( !level.mission_failed && ( player->coopPlayer.lastTimeHudMessage + 3 ) < level.time ){
+			player->coopPlayer.lastTimeHudMessage = level.time;
 
-				if ( !Q_stricmp( player->coopPlayer.language , "Deu" ) ) {
-					multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Aktiv^8 - ^1Sie sind momentan ausgeschaltet.\n" );
-				}
-				else {
-					multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Active^8 - ^1You are neutralised for the Moment.\n" );
-				}
+			if ( !Q_stricmp( player->coopPlayer.language , "Deu" ) ) {
+				multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Aktiv^8 - ^1Sie sind momentan ausgeschaltet.\n" );
+			}
+			else {
+				multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Active^8 - ^1You are neutralised for the Moment.\n" );
 			}
 		}
 		return false;
@@ -401,9 +411,9 @@ bool coop_playerSetup( gentity_t *ent )
 }
 
 extern Event EV_World_AutoFailure;
-bool coop_playerSetup( Player *player )
+bool coop_playerSetup(Player *player)
 {
-	if ( !player )
+	if (!player)
 		return false;
 
 	//[b607] chrissstrahl - allow cancelation of pending Missionfailure event (only if autofail because of empty server)
@@ -420,6 +430,10 @@ bool coop_playerSetup( Player *player )
 	if (level.spawn_bot) {
 		ent->svflags |= SVF_BOT;
 		player->entityVars.SetVariable("_playerIsBot", 1.0f);
+	}
+	//[b610] chrissstrahl - add also var if no bot
+	else{
+		player->entityVars.SetVariable("_playerIsBot", 0.0f);
 	}
 
 	//[b607] chrissstrahl - make sure we do not handle bots
@@ -468,8 +482,8 @@ bool coop_playerSetup( Player *player )
 			}
 			//hzm coop mod chrissstrahl - hosting player does not yet have a id
 			if ( !bIdFound ) {
-				gi.Printf( "======================\nSAVING NEW PLAYER ID\n======================\n" );
-				coop_parserIniSet( "coop_status.ini" , player->coopPlayer.coopId , "100 40 0 0 0 0" , "client" );
+				//[b610] chrissstrahl - put in a seperate func
+				coop_playerSaveNewPlayerId(player);
 
 				//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
 				player->coopPlayer.deathTime = 0;
@@ -484,6 +498,11 @@ bool coop_playerSetup( Player *player )
 		DelayedServerCommand( player->entnum , "globalwidgetcommand DialogConsole rect 100000 0 0 0" );
 	}
 
+	//hzm coop mod chrissstrahl - disable radar hud selected symbol
+	player->coopPlayer.radarSelectedActive = false;
+	//[b607] chrissstrahl - this is used to reduce nettraffic on first spawn - needs to be false on start
+	player->coopPlayer.radarFirstResetDone = false;
+
 	//hzm coop mod chrissstrahl - exit on solomatch
 	if ( g_gametype->integer == GT_BOT_SINGLE_PLAYER ) {
 		return true;
@@ -495,21 +514,18 @@ bool coop_playerSetup( Player *player )
 		return true;
 	}
 
-	//hzm coop mod chrissstrahl - get player langauge and player id - do this with every player
-	DelayedServerCommand( player->entnum , "vstr local_language" );
 
+
+	//[b610] chrissstrahl - changed the order how things are executed
+	//This data needs to be extracted from all players
+	// 1. get player language
+	// 2. get player id
+	// 3. Co
 	// - if player is NOT host, the host will be read via cvar
 	if ( dedicated->integer != 0 || player->entnum != 0 ) {
-		DelayedServerCommand( player->entnum , "vstr coop_pId" );
+		DelayedServerCommand( player->entnum , "vstr local_language;vstr coop_pId" );
 	}
-
-	//hzm coop mod chrissstrahl - disable radar hud selected symbol
-	player->coopPlayer.radarSelectedActive = false;
-	//[b607] chrissstrahl - this is used to reduce nettraffic on first spawn - needs to be false on start
-	player->coopPlayer.radarFirstResetDone = false;
-	
-	//needs to be executed to check if player has coop and to set class (vstr)
-	DelayedServerCommand( player->entnum , "exec coop_mod/cfg/detect.cfg" );
+	DelayedServerCommand(player->entnum, "vstr coop_verInfo");
 
 	//chrissstrahl - overwrite GameTypeName in scoreboard [b607]
 	if (game.coop_isActive) {
@@ -541,6 +557,28 @@ bool coop_playerSetup( Player *player )
 	//[b607] chrissstrahl - add this player to the coomunicator menu
 	coop_playerCommunicator(player,1);
 	return true;
+}
+
+//================================================================
+// Name:        coop_playerSaveNewPlayerId
+// Class:       -
+//              
+// Description: Setup the player for coop, execute clientside cfg, set entity vars on player for script use
+//              
+// Parameters:  gentity_t *ent
+//              
+// Returns:     void
+//              
+//================================================================
+void coop_playerSaveNewPlayerId(Player *player)
+{
+	//hzm coop mod chrissstrahl - hosting player does not yet have a id
+	gi.Printf("======================\nCoop Mod: SAVING NEW PLAYER ID\n======================\n");
+	coop_parserIniSet("coop_status.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
+	
+	//this need to be removed, this is just for debugging
+	multiplayerManager.HUDPrintAllClients("COOPDEBUG: SAVING NEW PLAYER ID\n");
+	gi.Printf(va("COOPDEBUG %s, %s, %i\n", player->client->pers.netname, player->coopPlayer.coopId, player->entnum));
 }
 
 //================================================================
@@ -1088,7 +1126,6 @@ bool coop_playerSay( Player *player , str sayString)
 				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
 				return true;
 			}
-			player->hudPrint("^5testspawn started\n");
 
 			ExecuteThread("globalCoop_level_testSpawn", true, (Entity *)player);
 			return true;
@@ -1099,7 +1136,6 @@ bool coop_playerSay( Player *player , str sayString)
 				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
 				return true;
 			}
-			player->hudPrint("^5showspawn started\n");
 
 			ExecuteThread("globalCoop_level_showSpawn", true, (Entity *)player);
 			return true;
@@ -1110,7 +1146,6 @@ bool coop_playerSay( Player *player , str sayString)
 				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
 				return true;
 			}
-			player->hudPrint("^5hidespawn started\n");
 
 			ExecuteThread("globalCoop_level_hideSpawn", true, (Entity *)player);
 			return true;
@@ -1629,8 +1664,8 @@ bool coop_playerSay( Player *player , str sayString)
 		str ss = coop_parserIniGet( "coop_status.ini" , player->coopPlayer.coopId , "client" );
 		if ( ss == "" )
 		{
-			gi.Printf( "======================\nCoop Mod: SAVING NEW PLAYER ID\n======================\n" );
-			coop_parserIniSet( "coop_status.ini" , player->coopPlayer.coopId , "100 40 0 0 0 0" , "client" );
+			//[b610] chrissstrahl - put in a seperate func
+			coop_playerSaveNewPlayerId(player);
 
 			//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
 			player->coopPlayer.deathTime = 0;
