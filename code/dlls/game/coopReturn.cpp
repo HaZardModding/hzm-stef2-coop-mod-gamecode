@@ -1535,9 +1535,8 @@ int coop_returnPlayerQuantity( short condition )
 			}
 			//[b607] chrissstrahl - filter bots option
 			else if ( condition == 3 ) {
-				gclient_t	*cl;
-				cl = game.clients + i;
-				if ( !g_entities[cl->ps.clientNum].svflags & SVF_BOT) {
+				gentity_t *ent = player->edict;
+				if (!(ent->svflags & SVF_BOT) ) { //[b610] chrissstrahl - fixed logic error only counting bots
 					iQuantity++;
 				}
 			}
