@@ -87,6 +87,7 @@ void coop_armoryEquipPlayer(Player *player)
 			//make this work in coop and singleplayer
 			if(g_gametype->integer != GT_SINGLE_PLAYER ){
 				multiplayerManager.givePlayerItem( player->entnum , sTikiName.c_str() );
+//gi.Printf(va("COOPDEBUG: Equiping %s with %s\n", player->client->pers.netname, sTikiName.c_str()));
 			}else{
 				Event *event;
 				event = new Event( EV_Player_GiveCheat );
@@ -143,14 +144,11 @@ void coop_armoryEquipPlayer(Player *player)
 		}
 	}
 
+	//[b610] chrissstrahl - print out how many weapons player got at start
+	gi.Printf(va("INFO COOP: %i script-specified Weapons given to %s\n", iWeapons, player->client->pers.netname));
+
 	//hzm coop mod chrissstrahl - exit here if there are no weapons to handle
-	//print info into console, in cahe someone makes a new map or changes scripts
-	//not that this is likley to happen in 2015 or beyond, but well, we tried
-	//to think of almost everything
 	if ( iWeapons == 0 ){
-		if ( game.isStandardLevel == false ){
-			gi.Printf( va( "INFO COOP: Could not equip: %s\nNo weapons specified in the level-script!\n" , player->client->pers.netname ) );
-		}
 		return;
 	}
 
