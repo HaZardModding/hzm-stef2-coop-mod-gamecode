@@ -429,12 +429,9 @@ bool coop_playerSetup(Player *player)
 	//[b607] daggolin - Restore bot state on player object
 	if (level.spawn_bot) {
 		ent->svflags |= SVF_BOT;
-		player->entityVars.SetVariable("_playerIsBot", 1.0f);
 	}
-	//[b610] chrissstrahl - add also var if no bot
-	else{
-		player->entityVars.SetVariable("_playerIsBot", 0.0f);
-	}
+	//[b610] chrissstrahl - add var in any case
+	player->entityVars.SetVariable("_playerIsBot", (float)(int)level.spawn_bot);
 
 	//[b607] chrissstrahl - make sure we do not handle bots
 	if (ent->svflags & SVF_BOT) {
