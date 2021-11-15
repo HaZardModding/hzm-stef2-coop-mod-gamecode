@@ -2403,7 +2403,8 @@ void G_MissionFailed( const str& reason )
 
 	playerDeathThread = level.getPlayerDeathThread();
 
-	if ( ( strnicmp( reason.c_str(), "PlayerKilled", strlen( "PlayerKilled" ) ) == 0 ) && ( playerDeathThread.length() ) )
+	//[b610] chrissstrahl - changed to accomedate changes made to coop_serverLmsCheckFailure
+	if ( ( coop_returnIntFind(reason, "PlayerKilled") != -1) && ( playerDeathThread.length() ) )
 	{
 		ExecuteThread( playerDeathThread, true, NULL );
 	}
