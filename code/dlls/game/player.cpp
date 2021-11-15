@@ -13286,7 +13286,8 @@ void Player::Score( Event *ev )
 		if (!this->coopPlayer.clickFireHudActive) {
 			this->coopPlayer.clickFireHudActive = true;
 			gi.SendServerCommand(this->entnum, "stufftext \"-objectives_score\"\n");
-			if (this->coopPlayer.installed) {
+			//[b610] chrissstrahl - added check if player is even allowed to spawn befor telling the player he could
+			if (this->coopPlayer.installed && coop_playerSpawnLms(this)) {
 				this->addHud("coop_fireToSpawn");
 			}
 		}
