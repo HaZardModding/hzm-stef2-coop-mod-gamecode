@@ -831,7 +831,7 @@ void MultiplayerManager::updateVotes( Player * player, bool bLeaving )
 	if ( player->coopPlayer.startedVote || _playerData[player->entnum]._voted ){
 		_voteYes--;
 	}
-	_numVoters = ( coop_returnPlayerQuantity(3) - 1 );  //[b607] chrissstrahl - excluding bots
+	_numVoters = ( coop_returnPlayerQuantity(3) - 1 );  //[b607] chrissstrahl - 3 excluding bots and substracting leaving player
 }
 
 bool MultiplayerManager::inMultiplayer( void )
@@ -2056,8 +2056,6 @@ Team* MultiplayerManager::getPlayersTeam( const Player *player )
 //there is a seperate function for when a player casts his vote: MultiplayerManager::vote
 void MultiplayerManager::callVote( Player *player , const str &command , const str &arg )
 {
-	int count;
-
 	if ( !_inMultiplayerGame )
 		return;
 
@@ -2259,22 +2257,22 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 	player->coopPlayer.startedVote = true;
 	//hzm eof
 
-	count = 1;
-
 	// Clear all the other player's voteflags
 
-	for (int i = 0; i < maxclients->integer; i++ )
+	for (int clientNumberA = 0; clientNumberA < maxclients->integer; clientNumberA++ )
 	{
 		Player *currentPlayer;
-		gentity_t *ent = g_entities + i;
+		gentity_t *ent = g_entities + clientNumberA;
 
-		if ( !ent->inuse || !ent->client || !ent->entity )
+		if (!ent->inuse || !ent->client || !ent->entity) {
 			continue;
+		}
 
-		if ( ent->svflags & SVF_BOT )
+		if (ent->svflags & SVF_BOT) {
 			continue;
+		}
 
-		currentPlayer = getPlayer( i );
+		currentPlayer = getPlayer(clientNumberA);
 
 		if (currentPlayer == player ){
 			//hzm gamefix chrissstrahl - show info to player who started the vote
@@ -2283,14 +2281,11 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 				currentPlayer->setVoteText( va("Ihre Abstimmung ist aktiv:\n%s", _voteString.c_str()));
 			else
 				currentPlayer->setVoteText( va("Your Vote is in Progress:\n%s", _voteString.c_str()));
-
-			currentPlayer->coopPlayer.startedVote = true;
 			//hzm eof
-
 			continue;
 		}
 
-		_playerData[i]._voted = false;
+		_playerData[clientNumberA]._voted = false;
 
 		if ( currentPlayer )
 		{
@@ -2321,9 +2316,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 			//[b608] chrissstrahl - restored default vote text
 			currentPlayer->setVoteText(va("$$NewVote$$: %s", sVoteText.c_str()));
 		}
-		count++;
 	}
-	_numVoters = count;
 }
 
 void MultiplayerManager::vote( Player *player, const str &vote )
@@ -2361,6 +2354,8 @@ void MultiplayerManager::vote( Player *player, const str &vote )
 	{
 		_voteYes++;
 
+gi.Printf(va("COOPDEBUG $$VoteCast$$ - $$Yes$$: %s\n", player->client->pers.netname));
+
 		//[b607] chrisssttrahl - let others know that this player has voted
 		HUDPrintAllClients(va("$$VoteCast$$ - $$Yes$$: %s\n", player->client->pers.netname));
 		//HUDPrint( player->entnum, "$$VoteCast$$ - $$Yes$$" );
@@ -2368,6 +2363,8 @@ void MultiplayerManager::vote( Player *player, const str &vote )
 	else
 	{
 		_voteNo++;
+
+gi.Printf(va("COOPDEBUG $$VoteCast$$ - $$No$$: %s\n", player->client->pers.netname));
 
 		//[b607] chrisssttrahl - let others know that this player has voted
 		HUDPrintAllClients(va("$$VoteCast$$ - $$No$$: %s\n", player->client->pers.netname));
@@ -2413,6 +2410,9 @@ void MultiplayerManager::checkVote( void )
 	else
 	{
 		// See if we have a majority vote yet
+		//[b610] chrissstrahl - get playercount excluding bots
+		//this fixes a bug where this var was randomly 0 when a vote was started
+		_numVoters = coop_returnPlayerQuantity(3);
 
 		if ( _voteYes > ( _numVoters / 2.0f ) )
 		{
@@ -2421,6 +2421,7 @@ void MultiplayerManager::checkVote( void )
 			//hzm gameupdate - don't display the message if there is only 1 player on the server, and don't display message when a cinematic is skipped, it spoils the mood
 			if ( level.cinematic == false){ //[b607] chrissstrahl - removed that he message is not shown if only one player is on the server
 				multiplayerManager.HUDPrintAllClients( va("$$VotePassed$$: %s\n", _voteString.c_str()) );
+gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes, _numVoters));
 			}
 
 			//allow vote for skipping cinematics
@@ -2459,6 +2460,7 @@ void MultiplayerManager::checkVote( void )
 		{
 			// Vote failed - same behavior as a timeout
 			multiplayerManager.HUDPrintAllClients( "$$VoteFailed$$\n" );
+gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VoteFailed$$ [%i][%i]\n", _voteYes, _numVoters));
 		}
 		else
 		{
@@ -2474,6 +2476,9 @@ void MultiplayerManager::checkVote( void )
 		Player *currentPlayer;
 		currentPlayer = getPlayer( i );
 		if ( currentPlayer ){
+			//[b610] chrissstrahl - reset vote status
+			_playerData[i]._voted = false;
+
 			currentPlayer->clearVoteText();
 		}
 	}
