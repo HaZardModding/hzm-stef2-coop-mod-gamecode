@@ -100,7 +100,7 @@ public:
 	int		installed;
 	//hzm coop mod chrissstrahl - used to determin what class the player does have
 	str		className;
-	//hzm coop mod chrissstrahl - used to store player ANONYMOUSE idendity! Don't want admins have to much power, seen it far to often to go wrong
+	//hzm coop mod chrissstrahl - used to store player Anonymous idendity! Don't want admins have to much power, seen it far to often to go wrong
 	str		coopId;
 	//hzm coop mod chrissstrahl - inventory and health status to compare if the ini file should be updated
 	str		coopStatus;
@@ -229,6 +229,7 @@ void coop_manageIntervalTransmit( Player* player , str sData , float fInterval ,
 void coop_playerRestore( Player *player );
 bool coop_playerSetup( gentity_t *ent );
 bool coop_playerSetup( Player *player );
+void coop_playerSaveNewPlayerId(Player *player);
 void coop_playerSetupNoncoop( Player *player );
 void coop_playerSetupCoop( Player *player );
 bool coop_playerTransportToSpawn( Player *player );
