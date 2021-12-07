@@ -574,8 +574,8 @@ void coop_playerSaveNewPlayerId(Player *player)
 	coop_parserIniSet("coop_status.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
 	
 	//this need to be removed, this is just for debugging
-	multiplayerManager.HUDPrintAllClients("COOPDEBUG: SAVING NEW PLAYER ID\n");
-	gi.Printf(va("COOPDEBUG %s, %s, %i\n", player->client->pers.netname, player->coopPlayer.coopId, player->entnum));
+	//multiplayerManager.HUDPrintAllClients("COOPDEBUG: SAVING NEW PLAYER ID\n");
+	//gi.Printf(va("COOPDEBUG %s, %s, %i\n", player->client->pers.netname, player->coopPlayer.coopId, player->entnum));
 }
 
 //================================================================
