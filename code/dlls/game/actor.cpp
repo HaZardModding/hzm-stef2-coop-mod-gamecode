@@ -11534,6 +11534,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		dialog_length = gi.SoundLength( localizedDialogName );
 	}
 //IF VPL NOT FOUND PRINT ERROR
+	/* [b610] chrissstrahl - disabled as it might cause confusion
 	if (g_gametype->integer == 1) {
 		if (fDialogDeuLength <= 0) {
 			gi.Printf(va("ERROR: loc/deu/%s NOT FOUND OR EMPTY\n", sLazyCodingSolutionHack.c_str()));
@@ -11541,7 +11542,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		if (fDialogEngLength <= 0) {
 			gi.Printf(va("ERROR: loc/eng/%s NOT FOUND OR EMPTY\n", sLazyCodingSolutionHack.c_str()));
 		}
-	}
+	}*/
 	sLazyCodingSolutionHack = ""; //no longer in beathe uhse, free memory, go memory go, you are free now!!! //in case you are wondering, it was just one cup of coffe
 
 	//DEBUG
