@@ -90,6 +90,26 @@ void coop_serverInizializeGameVars(void)
 	game.levelRestarted = false;//[b607] chrissstrahl - allow us to detect if the game was restarted  via restart or loaded
 	game.coop_stasisTime = 0;//[b607] chrissstrahl - allow us to set stasistime for idryll staff weapon against ai
 	game.coop_autoFailPending=false; //[b607] chrissstrahl - if this is true pending missionfailure event will be stoped (auto fail if sv empty)
+
+	//[b610] Chrissstrahl - make sure windows dedicated server uses not the same cfg as the user
+	//set CONFIG CVAR
+	#ifdef WIN32
+	bool bConfigChange = true;
+	#else
+	bool bConfigChange = false;
+	#endif
+
+	//gametype 0=sp 1=mp 2=solo, dedicated 0=listen 1=landedicated 2=internetdedicated
+	if (bConfigChange && g_gametype->integer > 0 && dedicated->integer > 0) {
+		cvar_t *cvarUser = gi.cvar_get("username");
+		str sUser = (cvarUser ? cvarUser->string : "");
+		cvar_t *cvarConfig = gi.cvar_get("config");
+		str sConfig = (cvarConfig ? cvarConfig->string : "");
+
+		if (sConfig == sUser && sUser != "server"){
+			gi.cvar_set("config", "server");
+		}
+	}
 }
 
 //===========================================================[b607]
@@ -939,6 +959,30 @@ void coop_serverResetAllClientData( void )
 //================================================================
 void coop_serverCoop()
 {
+//[b610] chrissstrahl - moved here from main.scr
+//this removes the level end triggers from mission maps, so they can't be accidentially triggered by a player in coop
+	if (game.isStandardLevel) {
+		str classname = "TriggerChangeLevel";
+		gentity_t * from;
+		Entity *ent;
+
+		for (from = &g_entities[game.maxclients]; from < &g_entities[globals.num_entities]; from++){
+			if (!from->inuse)
+			{
+				continue;
+			}
+
+			assert(from->entity);
+
+			ent = from->entity;
+
+			if (ent->inheritsFrom(classname.c_str()))
+			{
+				ent->PostEvent(Event(EV_Remove), 0.0f);
+			}
+		}
+	}
+
 //hzm coop mod chrissstrahl - decide based upon the mapname and gametype if we are going in to coop mod modus
 	int i;
 	str currentMapName = level.mapname.tolower();
