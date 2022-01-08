@@ -100,7 +100,8 @@ void coop_serverInizializeGameVars(void)
 	#endif
 
 	//gametype 0=sp 1=mp 2=solo, dedicated 0=listen 1=landedicated 2=internetdedicated
-	if (bConfigChange && g_gametype->integer > 0 && dedicated->integer > 0) {
+	//[b611] chrissstrahl - fixed crash on accsess to uninizialized cvar
+	if (bConfigChange && g_gametype && g_gametype->integer > 0 && dedicated->integer > 0) {
 		cvar_t *cvarUser = gi.cvar_get("username");
 		str sUser = (cvarUser ? cvarUser->string : "");
 		cvar_t *cvarConfig = gi.cvar_get("config");
