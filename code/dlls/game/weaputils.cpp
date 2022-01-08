@@ -1948,10 +1948,44 @@ Projectile *ProjectileAttack( const Vector &start, Vector &dir, Entity *owner, c
 		return NULL;
 	}
 	
-	if ( obj->isSubclassOf( Projectile ) )
-		proj = ( Projectile * )obj;
-	else
-		gi.WDPrintf( "%s is not of class projectile\n", projectileModel.c_str() );
+	if (obj->isSubclassOf(Projectile)) {
+		proj = (Projectile *)obj;
+	}else {
+		gi.WDPrintf("%s is not of class projectile\n", projectileModel.c_str());
+	
+	//[b611] chrissstrahl - added handling for placing objects with a weapon
+		delete obj;
+		obj = NULL;
+
+		// Notify any actor that is in way of projectile
+		Vector end_pos;
+		trace_t trace;
+
+		//end_pos = (dir * 1000.0f) + start;
+		end_pos = (dir * 100.0f) + start;
+		trace = G_Trace(start, vec_zero, vec_zero, end_pos, owner, MASK_PROJECTILE, false, "ProjectileAttack");
+
+		Entity   *obj2;
+		//if object could not be placed
+		if ( trace.endpos[2] > owner->origin[2] + 70 ){
+			args.setArg("classname", "script_model");
+			args.setArg("model", "models/weapons/projectile_airstrike_photonball.tik" );
+			obj2 = args.Spawn();
+			obj2->PostEvent(EV_Remove, 2.0f);
+		}
+		//place object
+		else {
+			//obj->setModel(projectileModel);
+			args.setArg("model", projectileModel );
+			//args.setArg("ai_off", "1");
+			obj2 = args.Spawn();
+		}
+		obj2->CancelEventsOfType(EV_ProcessInitCommands);
+		obj2->ProcessInitCommands(obj2->edict->s.modelindex);
+		obj2->setAngles(owner->angles);
+		obj2->setOrigin(trace.endpos );
+		return NULL;
+	}
 	
 	if ( !proj )
 		return NULL;
