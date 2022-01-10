@@ -39,6 +39,7 @@ consolecmd_t G_ConsoleCmds[] =
 {
 	//   command name       function             available in multiplayer?
 //	{ "login",				G_kickBots,				true }, //[b607] test
+	{ "coopitem",			G_coopItem,		true }, //[b611] chrissstrahl - add command allowing players to make use of special coop inventory
 	{ "coopinstalled",		G_coopInstalled,		true },
 	{ "vtaunt",				G_VTaunt,				true },
 //	{ "vsay_team",			G_VTaunt,				true },
@@ -330,6 +331,57 @@ qboolean G_coopInstalled( const gentity_t *ent )
 		player->coopPlayer.installedVersion = atoi( coopVer );
 	}
 	coop_playerSetupCoop( player );
+
+	return true;
+}
+
+//================================================================
+// Name:        G_coopItem
+// Class:       -
+//              
+// Description: Add a new command, used to detect coop mod client installation
+//              
+// Parameters:  int entNum
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_coopItem( const gentity_t *ent )
+//[b611] chrissstrahl - add command allowing players to make use of special coop inventory
+//allowing to place objects like mines and turrets
+{
+	if ( !ent || !ent->inuse || !ent->client )
+		return false;
+
+	Player *player = ( Player * )ent->entity;
+
+	str sModel;
+	bool bValid = false;
+	const char *coopItem = gi.argv(  1 );
+
+	//remove old placable right now
+	if (player->coopPlayer.ePlacable) {
+		player->coopPlayer.ePlacable->PostEvent(EV_Remove,0.0f); //used to be 0.0f
+		player->coopPlayer.ePlacable = NULL;
+	}
+
+	//placable explosive/mine
+	if (!Q_stricmpn("mine",coopItem , 4)){
+		bValid = true;
+		sModel = "models/item/alien_actor_explosive.tik";
+	}
+
+	//if item is valid allow placing it
+	if (bValid) {
+		SpawnArgs      args;
+		Entity         *obj;
+		args.setArg("model", sModel.c_str());
+		args.setArg("classname", "script_model");
+		args.setArg("notsolid", "1");
+		obj = args.Spawn();
+		player->coopPlayer.ePlacable = obj;	
+		player->coopPlayer.ePlacable->setOrigin(player->client->ps.origin);
+	}
 
 	return true;
 }

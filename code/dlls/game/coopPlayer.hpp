@@ -213,6 +213,8 @@ public:
 	bool admin;
 	//[b607] chrissstrahl - addad delayed equip routine to prevent issues we are having especially in singleplayer and on fast computers
 	bool armoryNeedstoBeEquiped = false;
+	//[b611] chrissstrahl - used to allow playing of objects - this will be the temp model used to visualize where a object will be placed
+	Entity *ePlacable = NULL;
 };
 
 

@@ -2341,6 +2341,48 @@ void coop_playerThink( Player *player )
 		}
 	}
 
+	//[b611] chrissstrahl - update the Origin and Angle of players placable object
+	if (player->coopPlayer.ePlacable) {
+		//last_ucmd.upmove < 0
+
+		Vector vPlayer,vPlayerAngle,end_pos;
+		trace_t trace;
+		vec3_t fwd;
+		AngleVectors(player->client->ps.viewangles, fwd, NULL, NULL);
+		Vector forward = fwd;
+		//end_pos = (fwd * 100.0f) + start;
+		
+		//trace = G_Trace(start, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
+		vPlayer = player->client->ps.origin;
+		float fBboxHeight = player->maxs[2];
+		fBboxHeight = (fBboxHeight - (fBboxHeight / 100 * 20));
+		vPlayer[2] += fBboxHeight; //set z height to 80% of bbox size
+		end_pos = (forward * 100.0f + vPlayer);
+		trace = G_Trace(vPlayer, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
+		//player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+		trace.endpos[2] = vPlayer[2];
+		vPlayerAngle[1] = player->client->ps.viewangles[1];
+		if (player->coopPlayer.ePlacable) {
+			player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+			player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
+			//drop about 100 units - do stuff here if it could not be dropped
+			if (!player->coopPlayer.ePlacable->droptofloor(100)) {
+				//if object could not be placed, display it at the height of feet of player and change animation so it changes skin/texture
+				trace.endpos[2] = player->client->ps.origin[2];
+				player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+				player->coopPlayer.ePlacable->animate->RandomAnimate("invalid_location");
+				//gi.Printf("ePlacable - can't be placed here\n");
+			}
+			else {
+				extern Event EV_Object_SetAnim;
+				Event *event;
+				event = new Event(EV_Object_SetAnim);
+				event->AddString("idle");
+				player->coopPlayer.ePlacable->ProcessEvent(event);
+			}
+		}
+	}
+
 	//[608] chrissstrahl - moved up here
 	//hzm coop mod chrissstrahl - update objectives every secound in sp
 	if ( g_gametype->integer == GT_SINGLE_PLAYER ){

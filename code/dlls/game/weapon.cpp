@@ -2976,8 +2976,8 @@ void Weapon::AttachGun( weaponhand_t hand, qboolean holstering )
 
 		if ( owner->isSubclassOf( Player ) )
 		{
-		//hzm gamefix chrissstrahl - do not allow big guns in singleplayer
-		//hzm coop mod chrissstrahl - dissable big gun mode in coop
+//hzm gamefix chrissstrahl - do not allow big guns in singleplayer
+//hzm coop mod chrissstrahl - dissable big gun mode in coop
 			if ( mp_bigGunMode->integer && !game.coop_isActive && g_gametype->integer >  GT_SINGLE_PLAYER )
 				setScale( _weildedScale * 2.0f );
 			else
