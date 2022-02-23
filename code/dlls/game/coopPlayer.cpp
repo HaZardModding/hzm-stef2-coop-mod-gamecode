@@ -2343,43 +2343,68 @@ void coop_playerThink( Player *player )
 
 	//[b611] chrissstrahl - update the Origin and Angle of players placable object
 	if (player->coopPlayer.ePlacable) {
-		//last_ucmd.upmove < 0
+		//if player is jumping abbort
+		if (	!player->client->ps.jumped &&
+				(player->getLastDamageTime() + 0.5f) < level.time &&
+				level.cinematic == qfalse &&
+				!multiplayerManager.isPlayerSpectator(player) &&
+				player->health > 0)
+		{
+			Vector vPlayer, vPlayerAngle, end_pos;
+			trace_t trace;
+			vec3_t fwd;
+			AngleVectors(player->client->ps.viewangles, fwd, NULL, NULL);
+			Vector forward = fwd;
+			//end_pos = (fwd * 100.0f) + start;
 
-		Vector vPlayer,vPlayerAngle,end_pos;
-		trace_t trace;
-		vec3_t fwd;
-		AngleVectors(player->client->ps.viewangles, fwd, NULL, NULL);
-		Vector forward = fwd;
-		//end_pos = (fwd * 100.0f) + start;
-		
-		//trace = G_Trace(start, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
-		vPlayer = player->client->ps.origin;
-		float fBboxHeight = player->maxs[2];
-		fBboxHeight = (fBboxHeight - (fBboxHeight / 100 * 20));
-		vPlayer[2] += fBboxHeight; //set z height to 80% of bbox size
-		end_pos = (forward * 100.0f + vPlayer);
-		trace = G_Trace(vPlayer, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
-		//player->coopPlayer.ePlacable->setOrigin(trace.endpos);
-		trace.endpos[2] = vPlayer[2];
-		vPlayerAngle[1] = player->client->ps.viewangles[1];
-		if (player->coopPlayer.ePlacable) {
-			player->coopPlayer.ePlacable->setOrigin(trace.endpos);
-			player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
-			//drop about 100 units - do stuff here if it could not be dropped
-			if (!player->coopPlayer.ePlacable->droptofloor(100)) {
-				//if object could not be placed, display it at the height of feet of player and change animation so it changes skin/texture
-				trace.endpos[2] = player->client->ps.origin[2];
+			//trace = G_Trace(start, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
+			vPlayer = player->client->ps.origin;
+			float fBboxHeight = player->maxs[2];
+			fBboxHeight = (fBboxHeight - (fBboxHeight / 100 * 20));
+			vPlayer[2] += fBboxHeight; //set z height to 80% of bbox size
+			end_pos = (forward * 100.0f + vPlayer);
+			trace = G_Trace(vPlayer, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
+			//player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+			trace.endpos[2] = vPlayer[2];
+			vPlayerAngle[1] = player->client->ps.viewangles[1];
+			if (player->coopPlayer.ePlacable) {
 				player->coopPlayer.ePlacable->setOrigin(trace.endpos);
-				player->coopPlayer.ePlacable->animate->RandomAnimate("invalid_location");
-				//gi.Printf("ePlacable - can't be placed here\n");
+				player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
+				//drop about 100 units - do stuff here if it could not be dropped
+				if (!player->coopPlayer.ePlacable->droptofloor(100)) {
+					//if object could not be placed, display it at the height of feet of player and change animation so it changes skin/texture
+					trace.endpos[2] = player->client->ps.origin[2];
+					player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+					player->coopPlayer.ePlacable->animate->RandomAnimate("location_invalid");
+					//gi.Printf("ePlacable - can't be placed here\n");
+				}
+				else {
+					extern Event EV_Object_SetAnim;
+					Event *event;
+					event = new Event(EV_Object_SetAnim);
+					event->AddString("location_valid");
+					player->coopPlayer.ePlacable->ProcessEvent(event);
+
+					if (player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
+						SpawnArgs      args;
+						Entity         *obj;
+						str			sModel = player->coopPlayer.ePlacable->model;
+						args.setArg("model", sModel.c_str());
+						//args.setArg("model", "models/char/alienLurker.tik");
+						args.setArg("classname", "actor");
+						args.setArg("anim", "idle");
+						obj = args.Spawn();
+						obj->setOrigin(player->coopPlayer.ePlacable->origin);
+						obj->setAngles(player->coopPlayer.ePlacable->angles);
+						player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
+						player->coopPlayer.ePlacable = NULL;
+					}
+				}
 			}
-			else {
-				extern Event EV_Object_SetAnim;
-				Event *event;
-				event = new Event(EV_Object_SetAnim);
-				event->AddString("idle");
-				player->coopPlayer.ePlacable->ProcessEvent(event);
-			}
+		}
+		else {
+			player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
+			player->coopPlayer.ePlacable = NULL;
 		}
 	}
 
