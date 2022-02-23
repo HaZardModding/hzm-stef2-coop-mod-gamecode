@@ -108,6 +108,9 @@ typedef enum
 #define DAMAGE_NO_PROTECTION	0x00000020  // armor, shields, invulnerability, and godmode have no effect
 #define DAMAGE_NO_SKILL			0x00000040  // damage is not affected by skill level
 
+//[b611] chrissstrahl - add boster script entity event
+extern Event EV_BoosterNearbyPlayer;
+
 extern Event EV_ClientMove;
 extern Event EV_ClientEndFrame;
 
@@ -449,6 +452,9 @@ class Entity : public Listener
 		int					watertype;
 		int					waterlevel;
 		
+		//[b611] chrissstrahl - add boster script entity event
+		void				boosterNearbyPlayer( Event *ev );
+
 		//hzm coop mod chrissstrahl - added	for the new coop triggers
 		void				SetIdleAnimation( Event *ev );
 		//end of hzm

@@ -46,6 +46,7 @@
 #include "entity.h"
 #include "worldspawn.h"
 #include "scriptmaster.h"
+
 #include "sentient.h"
 #include "specialfx.h"
 #include "misc.h"
@@ -1771,8 +1772,20 @@ Event EV_NetworkDetail
 	"Sets this entity as detail that doesn't get sent across the network of set as low bandwidth by the client"
 );
 
+//[b611] chrissstrahl - add boster script entity event
+Event EV_BoosterNearbyPlayer
+(
+	"boosterNearbyPlayer",
+	EV_DEFAULT,
+	"sfFF",
+	"typeOfBoost bostRange ammount maximum",
+	"Gives a boost to players within range (ammo,health,armor)"
+);
+
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
+		//[b611] chrissstrahl - add boster script entity event
+		{ &EV_BoosterNearbyPlayer ,			&Entity::boosterNearbyPlayer } ,
 		//hzm coop mod chrissstrahl - new event to set a idle animation, used for the new coop triggers
 		{ &EV_Idle ,						&Entity::SetIdleAnimation } ,
 		{ &EV_SetUserVar5,					&Entity::SetUserVar5 },
@@ -1979,6 +1992,101 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	};
 
 //--------------------------------------------------------------
+//[b611] chrissstrahl - gives specified boost to near by players
+//typeofboost,range,amount,maximum
+//ammo,armor,health
+//--------------------------------------------------------------
+void Entity::boosterNearbyPlayer(Event *ev)
+{
+	Player *player	= NULL;
+	Entity *eTemp	= NULL;
+	str sBoostType;
+	float amount = 10.0f;
+	float maximum;
+	float distance;
+	float returnValue;
+
+	sBoostType	= ev->GetString(1);
+	distance	= ev->GetFloat(2);
+	if (ev->NumArgs() > 2) {
+		amount = ev->GetFloat(3);
+		if (ev->NumArgs() > 3) {
+			maximum = ev->GetFloat(4);
+		}
+	}
+
+	int i;
+	for (i = 0; i < maxclients->integer; i++) {
+		eTemp = g_entities[i].entity;
+		if (eTemp && eTemp->isClient() && eTemp->isSubclassOf(Player)) {
+			player = (Player *)eTemp;
+			if (WithinDistance((Entity*)player, distance)) {
+				if (!strcmpi(sBoostType.c_str(), "ammo")) {
+					bool bGiveAmmo = false;
+					if (player->AmmoCount("Plasma") < player->MaxAmmoCount("Plasma") ) {
+						player->GiveAmmo("Plasma", 10, 0, player->MaxAmmoCount("Plasma"));
+						bGiveAmmo = true;
+					}
+					if (player->AmmoCount("Idryll") < player->MaxAmmoCount("Idryll")) {
+						player->GiveAmmo("Idryll", 10, 0, player->MaxAmmoCount("Idryll"));
+						bGiveAmmo = true;
+					}
+					if (player->AmmoCount("Federation") < player->MaxAmmoCount("Federation")) {
+						player->GiveAmmo("Federation", 10, 0, player->MaxAmmoCount("Federation"));
+						bGiveAmmo = true;
+					}
+					if (bGiveAmmo) {
+						player->Sound("sound/misc/mp_pickup2.wav", CHAN_BODY, 0.75, 64);
+					}
+				}
+				else if (!strcmpi(sBoostType.c_str(), "health")) {
+					float fHealthMax = player->max_health;
+					float fHealthToGive = 10.0f;
+					if (ev->NumArgs() > 2) {
+						fHealthToGive = amount;
+						if (ev->NumArgs() > 3) {
+							fHealthMax = maximum;
+						}
+					}
+
+					if ((fHealthToGive + player->health) > fHealthMax) {
+						fHealthToGive = (fHealthMax - player->health);
+					}
+
+					if (fHealthToGive) {
+						player->health = float(fHealthToGive + player->health);
+						player->Sound("sound/misc/mp_healthshard.wav", CHAN_BODY, 0.75, 64);
+					}
+				}
+				else {
+					float fArmorMax = 200.0f;
+					float fArmor	= 10.0f;
+					if (ev->NumArgs() > 2) {
+						fArmor = amount;
+						if (ev->NumArgs() > 3) {
+							fArmorMax = maximum;
+						}
+					}
+
+					if ((player->GetArmorValue() + fArmor) > fArmorMax) {
+						fArmor = (fArmorMax - player->GetArmorValue());
+					}
+
+					if (fArmor) {
+						Event *armorEvent;
+						armorEvent = new Event(EV_Sentient_GiveArmor);
+						armorEvent->AddString("BasicArmor");
+						armorEvent->AddFloat(fArmor);
+						player->ProcessEvent(armorEvent);
+						player->Sound("sound/misc/mp_armorshard.wav", CHAN_BODY, 0.75, 64);
+					}
+				}
+			}
+		}
+	}
+}
+
+//--------------------------------------------------------------
 //
 // Name:			SetIdleAnimation
 // Class:			Entity
@@ -2149,6 +2257,11 @@ Entity::~Entity()
 		num = bindlist.NumObjects();
 		for( i = 1; i <= num; i++ )
 		{
+			//[b611] chrissstrahl - make sure we delete previousely attached entities (atttachmodel hack)
+			if (bindlist.ObjectAt(i)->bind_info->detach_at_death == qfalse) {
+				bindlist.ObjectAt(i)->PostEvent(EV_Remove, 0.01f);
+			}
+
 			bindlist.ObjectAt( i )->unbind();
 		}
 		
@@ -2981,15 +3094,15 @@ void Entity::setOrigin
 
 		VectorClear( edict->s.netorigin );
 		ent = ( Entity * )G_GetEntity( edict->s.parent );
-
+		
 		//ent->GetTag(( edict->s.tag_num & TAG_MASK, &origin );
-		ent->GetTag( edict->s.tag_num & TAG_MASK , &orient );
+		ent->GetTag(edict->s.tag_num & TAG_MASK, &orient);
 
-		MatrixTransformVector( edict->s.attach_offset , orient.axis , origin );
+		MatrixTransformVector(edict->s.attach_offset, orient.axis, origin);
 
 		//origin += edict->s.attach_offset;
 		origin += orient.origin;
-
+		
 		SetLocalOrigin( vec_zero );
 	}
 	else
@@ -4797,10 +4910,12 @@ qboolean Entity::attach
       setSolidType( SOLID_NOT );
       parent->bind_info->children[i] = entnum;
       parent->bind_info->numchildren++;
+	 
 	  if ( tag_num >= 0 )
 	  {
 		edict->s.tag_num = tag_num;
 	  }
+
 		edict->s.attach_use_angles = use_angles;
 		offset.copyTo( edict->s.attach_offset );
 		angles_offset.copyTo( edict->s.attach_angles_offset );
@@ -5509,113 +5624,124 @@ void Entity::AttachModelEvent
 	Event * ev
 	)
 	{
-   Entity * obj;
-   const char * bone;
-   str modelname;
-   int tagnum;
+	Entity * obj;
+	const char * bone;
+	str modelname;
+	int tagnum;
 	float remove_time,fade_time,fade_delay;
 	Vector offset;
 	Vector angles_offset;
 	qboolean use_angles = false;
 
-   obj = new Entity( ENTITY_CREATE_FLAG_ANIMATE );
+	obj = new Entity( ENTITY_CREATE_FLAG_ANIMATE );
+	modelname = ev->GetString( 1 );
+	bone = ev->GetString( 2 );
+
+	if (ev->NumArgs() > 2){
+		obj->setScale(ev->GetFloat(3));
+	}
+	if (ev->NumArgs() > 3){
+		obj->SetTargetName(ev->GetString(4));
+	}
+
+	if (ev->NumArgs() > 5) {
+		remove_time = ev->GetFloat(6);
+
+		if (remove_time > 0.0f) {
+			Event *remove_event = new Event(EV_Remove);
+			obj->PostEvent(remove_event, remove_time);
+		}
+	}
+	if (ev->NumArgs() > 6) {
+		Event *fade_event;
+		fade_time = ev->GetFloat(7);
+
+		if (fade_time > 0.0f) {
+			obj->setAlpha(0.0f);
+			fade_event = new Event(EV_FadeIn);
+			fade_event->AddFloat(fade_time);
+			obj->PostEvent(fade_event, 0.0f);
+		}
+	}
+
+	if (ev->NumArgs() > 7){
+		Event *fade_event;
+		fade_delay = ev->GetFloat(8);
+
+		if (fade_delay != -1.0f){
+			if (ev->NumArgs() > 8) {
+				fade_time = ev->GetFloat(9);
+			}
+			else {
+				fade_time = 0.0f;
+			}
+
+			fade_event = new Event(EV_Fade);
+
+			if (fade_time > 0.0f) {
+				fade_event->AddFloat(fade_time);
+			}
+			obj->PostEvent(fade_event, fade_delay);
+		}
+	}
+
+	obj->setModel(modelname);
+
+	if (ev->NumArgs() > 9) {
+		offset = ev->GetVector(10);
+	}
+
+	if (ev->NumArgs() > 10){
+		angles_offset = ev->GetVector(11);
+		use_angles = false;
+	}
+
+	if (!obj->animate){
+		Animate *newAnimate = 0;
+		newAnimate = new Animate;
+		if (newAnimate) {
+			obj->animate = newAnimate;
+		}
+	}
+
+	int anim_num = gi.Anim_Random(obj->edict->s.modelindex, "idle");
+	if (anim_num != -1 && obj->animate){
+		obj->animate->NewAnim(anim_num);
+	}
 
 	obj->bind_info = CreateBindInfo();
 
-	modelname = ev->GetString( 1 );
-   bone = ev->GetString( 2 );
-   if ( ev->NumArgs() > 2 )
-		{
-      obj->setScale( ev->GetFloat( 3 ) );
+	if (ev->NumArgs() > 4) {
+		obj->bind_info->detach_at_death = ev->GetInteger(5);
+	}
+
+	//[b611] chrissstrahl - allow to attach a model to origin of given entity (attachmodel hack)
+	//this allowes us to attach a model to a entity without using tags
+	if ((!strcmpi(bone, "none"))) {
+		Vector vOriginNew = this->origin;
+		if (offset.length()) {
+			vOriginNew += offset;
 		}
-   if ( ev->NumArgs() > 3 )
-		{
-      obj->SetTargetName( ev->GetString( 4 ) );
-		}
-
-	if ( ev->NumArgs() > 4 )
-      obj->bind_info->detach_at_death = ev->GetInteger( 5 );
-
-	if ( ev->NumArgs() > 5 )
-		{
-		remove_time = ev->GetFloat( 6 );
-
-		if ( remove_time > 0.0f )
-			{
-			Event *remove_event = new Event( EV_Remove );
-			obj->PostEvent( remove_event, remove_time );
-			}
+		if (angles_offset.length()) {
+			obj->addAngles(angles_offset);
 		}
 
-	if ( ev->NumArgs() > 6 )
-		{
-		Event *fade_event;
-
-      fade_time = ev->GetFloat( 7 );
-
-      if ( fade_time > 0.0f )
-         {
-   		obj->setAlpha( 0.0f );
-
-	   	fade_event = new Event( EV_FadeIn );
-		   fade_event->AddFloat( fade_time );
-		   obj->PostEvent( fade_event, 0.0f );
-         }
+		//make sure it is removed on default
+		if (ev->NumArgs() < 5) {
+			obj->bind_info->detach_at_death = 0;
 		}
 
- 	if ( ev->NumArgs() > 7 )
-		{
-		Event *fade_event;
-
-      fade_delay = ev->GetFloat( 8 );
-
-      if ( fade_delay != -1.0f )
-         {
-         if ( ev->NumArgs() > 8 )
-            fade_time = ev->GetFloat( 9 );
-         else
-            fade_time = 0.0f;
-
-	   	fade_event = new Event( EV_Fade );
-
-         if ( fade_time > 0.0f )
-            fade_event->AddFloat( fade_time );
-
-		   obj->PostEvent( fade_event, fade_delay );
-         }
-		}
-
-	if ( ev->NumArgs() > 9 )
-		offset = ev->GetVector( 10 );
-
-	if ( ev->NumArgs() > 10 )
-		{
-		angles_offset = ev->GetVector( 11 );
-		use_angles = false;
-		}
-
-   obj->setModel( modelname );
-	
-	if ( !obj->animate )
-		{
-		Animate *newAnimate = 0;
-		newAnimate = new Animate;
-		if ( newAnimate )
-			obj->animate = newAnimate;
-		}
-				
-	int anim_num = gi.Anim_Random ( obj->edict->s.modelindex, "idle" );
-	if ( anim_num != -1 && obj->animate )
-		{
-		obj->animate->NewAnim( anim_num );
-		}
+		obj->addOrigin(vOriginNew);
+		obj->bind(this);
+		return;
+	}
 
    tagnum = gi.Tag_NumForName( edict->s.modelindex, bone );
    if ( tagnum >= 0 )
       {
       if ( !obj->attach( this->entnum, tagnum, use_angles, offset, angles_offset ) )
          {
-         //warning( "AttachModelEvent", "Could not attach model %s", modelname.c_str() );
+		warning( "AttachModelEvent", "Could not attach model %s", modelname.c_str() ); //[b611] chrissstrahl - let us know if it fails
          delete obj;
          return;
          }
