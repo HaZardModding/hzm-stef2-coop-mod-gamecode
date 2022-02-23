@@ -1941,6 +1941,15 @@ void Weapon::SetAmmoInClip( Event * ev )
 // to also call UseAmmo here for loopfire weapons
 void Weapon::Shoot( Event *ev )
 {
+	//[b611] chrissstrahl - do not fire weapon if player intents to place a object or has placed a object moments ago
+	if (this->owner->isSubclassOf(Player)) {
+		Player *player = (Player *)(Entity *)this->owner;
+//this needs to be managed with a timecheck :'(
+		if (player->coopPlayer.ePlacable) {
+			return;
+		}
+	}
+
 	Vector      pos, forward, right, up, delta;
 	firemode_t  mode = FIRE_MODE1;
 	firemode_t  realmode = FIRE_MODE1;
