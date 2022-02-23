@@ -83,6 +83,38 @@ extern Event EV_ScriptThread_RoundEvent ;
 extern Event EV_ScriptThread_ConfigstringRemoveCombatSounds;
 extern Event EV_ScriptThread_ConfigstringRemove;
 
+//[b611] chrissstrahl - added events support for all coop script stuff
+extern Event EV_ScriptThread_sendWidgetCommand;
+extern Event EV_ScriptThread_getStringFromStringWithLengt;
+extern Event EV_ScriptThread_getStringToUpper;
+extern Event EV_ScriptThread_getStringToLower;
+extern Event EV_ScriptThread_getIntStringLength;
+extern Event EV_ScriptThread_getIntStringFind;
+extern Event EV_ScriptThread_getStringPlayerName;
+extern Event EV_ScriptThread_getStringEntitySubclass;
+extern Event EV_ScriptThread_getIntPlayerSpectator;
+extern Event EV_ScriptThread_getVectorScriptVariable;
+extern Event EV_ScriptThread_getFloatScriptVariable;
+extern Event EV_ScriptThread_getStringScriptVariable;
+extern Event EV_ScriptThread_setVectorScriptVariable;
+extern Event EV_ScriptThread_setFloatScriptVariable;
+extern Event EV_ScriptThread_setStringScriptVariable;
+extern Event EV_ScriptThread_getStringPlayerLanguage;
+extern Event EV_ScriptThread_getIntPlayerScore;
+extern Event EV_ScriptThread_getIntPlayerDeaths;
+extern Event EV_ScriptThread_getIntPlayerKills;
+extern Event EV_ScriptThread_addPlayerIntScore;
+extern Event EV_ScriptThread_getIntPlayerLastDamaged;
+extern Event EV_ScriptThread_getStringPlayerTeam;
+extern Event EV_ScriptThread_getIntPlayerTeamScore;
+extern Event EV_ScriptThread_getIntPlayerHasCoop;
+extern Event EV_ScriptThread_isEntityInsideOfEntity;
+extern Event EV_ScriptThread_solidAsap;
+extern Event EV_ScriptThread_getLevelParamaterValue;
+extern Event EV_ScriptThread_getFloatFromString;
+extern Event EV_ScriptThread_isDigit;
+extern Event EV_ScriptThread_missionFailed;
+
 class CThread : public Interpreter
 {
 	private:
@@ -99,6 +131,9 @@ class CThread : public Interpreter
 
 		CThread();
 
+		//[b611] chrissstrahl - added command to allow a widget with white-spaces like regular text contains
+		void sendWidgetCommand(Event *ev);
+		void hasItem(Event *ev);
 		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 		void configstringRemoveCombatSounds(Event *ev);
 		void configstringRemove(Event *ev);
