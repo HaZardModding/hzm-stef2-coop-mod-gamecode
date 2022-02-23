@@ -406,6 +406,7 @@ public:
 class HoldableItemExplosive : public HoldableItem
 {
 private:
+	str							_explosiveModel;
 	bool						_explosiveArmed;
 	bool						_explosiveAlive;
 	float						_explosiveArmTime;
@@ -419,8 +420,11 @@ private:
 public:
 	CLASS_PROTOTYPE( HoldableItemExplosive );
 
-								HoldableItemExplosive();
-								~HoldableItemExplosive();
+	HoldableItemExplosive();
+	~HoldableItemExplosive();
+
+	//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+	void explosiveModel(Event * ev);
 
 	/* virtual */ bool			use( void );
 	/* virtual */ void			specificUpdate( float frameTime );
@@ -432,6 +436,7 @@ inline void HoldableItemExplosive::Archive( Archiver &arc )
 {
 	HoldableItem::Archive( arc );
 
+	arc.ArchiveString( &_explosiveModel);
 	arc.ArchiveBool( &_explosiveArmed );
 	arc.ArchiveBool( &_explosiveAlive );
 	arc.ArchiveFloat( &_explosiveArmTime );

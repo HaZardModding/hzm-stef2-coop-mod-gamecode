@@ -924,13 +924,36 @@ bool HoldableItemTransporter::use( void )
 	return false;
 }
 
+//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+Event EV_HoldableItem_ExplosiveModel
+(
+	"explosiveModel",
+	EV_TIKIONLY,
+	"s",
+	"explosiveModel",
+	"Sets the model to be used when the explosive is placed."
+);
+
+//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+void HoldableItemExplosive::explosiveModel(Event *ev)
+{
+	_explosiveModel = ev->GetString(1);
+}
+
+
 CLASS_DECLARATION( HoldableItem, HoldableItemExplosive, NULL )
 {
+	//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+	{ &EV_HoldableItem_ExplosiveModel, &HoldableItemExplosive::explosiveModel },
 	{ NULL, NULL }
 };
 
 HoldableItemExplosive::HoldableItemExplosive()
 {
+	//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+	_explosiveModel = "";
+
+
 	_explosiveArmed = false;
 	_explosiveAlive = true;
 
@@ -1017,7 +1040,14 @@ bool HoldableItemExplosive::use( void )
 
 			_explosive = new Entity( ENTITY_CREATE_FLAG_ANIMATE );
 
-			_explosive->setModel( "models/item/holdable_explosive.tik" );
+			//[b611] chrissstrahl - for coop alien
+			//allow holdable explosive to have custom models
+			if (_explosiveModel.length() != 0) {
+				_explosive->setModel(_explosiveModel);
+			}
+			else {
+				_explosive->setModel("models/item/holdable_explosive.tik");
+			}
 
 			_explosive->CancelEventsOfType( EV_ProcessInitCommands );
 			_explosive->ProcessInitCommands( _explosive->edict->s.modelindex );
