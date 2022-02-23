@@ -1357,6 +1357,22 @@ Event EV_ScriptThread_MissionFailed
 	"reason" ,
 	"Displays the mission failed screen on the client side"
 	);
+Event EV_ScriptThread_sendWidgetCommand
+(
+	"sendWidgetCommand",
+	EV_SCRIPTONLY,
+	"essS",
+	"entity string string string",
+	"send widgetcommand (for a menu or hud element) to player"
+);
+Event EV_ScriptThread_hasItem
+(
+	"hasItem",
+	EV_SCRIPTONLY,
+	"es",
+	"entity string",
+	"checks if a player or actor has the specified item"
+);
 //end of hzm
 
 CLASS_DECLARATION( Interpreter, CThread, NULL )
@@ -1504,6 +1520,9 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_ConnectPathnodes,			&CThread::connectPathnodes },
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
+	//[b611] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
+	{ &EV_ScriptThread_sendWidgetCommand,			&CThread::sendWidgetCommand },
+	{ &EV_ScriptThread_hasItem,						&CThread::hasItem },
 	//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 	{ &EV_ScriptThread_ConfigstringRemove, &CThread::configstringRemove },
 	{ &EV_ScriptThread_ConfigstringRemoveCombatSounds, &CThread::configstringRemoveCombatSounds },
@@ -1541,6 +1560,70 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 
 	{ NULL, NULL }
 };
+
+//[b611] chrissstrahl - add command to check if player/actor has a specific item
+//sentity, string-weaponname
+void CThread::hasItem(Event *ev)
+{
+	Sentient *sEnt = (Sentient*)(Entity*)ev->GetEntity(1);
+	if (sEnt == NULL) {
+		ev->ReturnFloat(0.0f); 
+		return;
+	}
+
+	str sName;
+	sName = ev->GetString(2);
+
+	if (strlen(sName) > 0) {
+		Item * item;
+		item = sEnt->FindItem(sName);
+		if (item) {
+			ev->ReturnFloat(1.0f);
+			return;
+		}
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+//[b611] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
+//widgetname,commandparameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter
+void CThread::sendWidgetCommand(Event *ev)
+{
+	//make sure we have at least the player-ent widgetname and a commandparameter
+	if (ev->NumArgs() < 3) {
+		return;
+	}
+	
+	Entity *ent = ev->GetEntity(1);		//player
+	str sData;
+	str sParameters = ev->GetString(2);	//widgetname
+	sParameters += " "; //spacer
+	sParameters += ev->GetString(3);	//widgetcommandparameter
+
+	
+	if(ev->NumArgs() > 3){
+		sParameters += " "; //spacer
+		str sTemp = ev->GetString(4);
+		
+		//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
+		if (coop_returnIntFind(sParameters, "labeltext") != -1) {
+			int i;
+			for (i = 0; i < strlen(sTemp); i++) {
+				if (sTemp[i] == '\n' || sTemp[i] == '#')
+					sTemp[i] = '~';
+				if (sTemp[i] == ' ')
+					sTemp[i] = '^';
+			}
+		}
+
+		sParameters += sTemp;
+	}
+	sData += "stufftext \"globalwidgetcommand ";
+	sData += sParameters;
+	sData += "\"\n";
+	gi.SendServerCommand(ent->edict - g_entities, sData.c_str());
+}
+
 //[b607] chrissstrahl - remove given string from configstrings
 void CThread::configstringRemove(Event *ev)
 {
@@ -1590,8 +1673,8 @@ void CThread::getStringFromStringWithLengt( Event *ev )
 		ev->ReturnString("");
 		return;
 	}
-	int iEnd = ev->GetInteger( 3 );
-	coop_manipulateStringFromWithLength( s , iStart , iEnd );
+	int iLength = ev->GetInteger( 3 );
+	coop_manipulateStringFromWithLength( s , iStart , iLength);
 	ev->ReturnString( s.length() ? va("%s", s.c_str() ) : "" );
 }
 void CThread::getStringToLower(Event *ev)
