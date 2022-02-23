@@ -151,6 +151,16 @@ Event EV_PuzzleObject_BecomeModBarInSkill
 	"Tells a puzzleobject to just display a timed modulation bar in any skill less than or equal to the specified one."
 );
 
+//[b611] chrissstrahl - thread called when puzzle is started to be used
+Event EV_PuzzleObject_SetUsedStartThread
+(
+	"puzzleobject_usedStartThread",
+	EV_DEFAULT,
+	"s",
+	"threadname",
+	"The thread to call when the puzzle is used, works on any puzzle type"
+);
+
 //---------------------------------------------------------
 //             PUZZLE OBJECT
 //---------------------------------------------------------
@@ -171,6 +181,7 @@ model						 <model name>	- the tiki model to use for the puzzle object
 puzzleobject_opendistance	 <distance>		- the amount of distance the player should be before the puzzle opens.
 puzzleobject_itemtouse		 <item name>	- the name of the item the player must use to execute the puzzle
 puzzleobject_itemusedthread	 <thread name>	- the name of the thread called when the item is used.
+puzzleobject_usedStartThread <thread name>	- [coop] thread called when puzzle is started to be used
 puzzleobject_failedthread	 <thread name>	- the name of the thread called when the puzzle fails
 puzzleobject_canceledthread	 <thread name>  - the name of the thread called when the puzzle is canceled
 puzzleobject_solvedthread	 <thread name>	- the name of the thread called when the puzzle is solved.
@@ -181,7 +192,8 @@ CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 	{ &EV_PuzzleObject_SetOpenDistance,		&PuzzleObject::setOpenDistance		},
 	{ &EV_PuzzleObject_AnimationDone,		&PuzzleObject::animationDone		},
 	{ &EV_PuzzleObject_SetItemToUse,		&PuzzleObject::setItemToUse		},
-	{ &EV_PuzzleObject_SetItemUsedThread,	&PuzzleObject::setItemUsedThread	},
+	{ &EV_PuzzleObject_SetItemUsedThread,	&PuzzleObject::setItemUsedThread	}, //Chrissstrahl - This only works if there is no time set on the puzzle, since we do not want to change the behaviour we added new functionality below
+	{ &EV_PuzzleObject_SetUsedStartThread,	&PuzzleObject::setUsedStartThread	}, //[b611] chrissstrahl - thread called when puzzle is started to be used
 	{ &EV_PuzzleObject_SetFailedThread,		&PuzzleObject::setFailedThread		},
 	{ &EV_PuzzleObject_SetSolvedThread,		&PuzzleObject::setSolvedThread		},
 	{ &EV_PuzzleObject_SetCanceledThread,	&PuzzleObject::setCanceledThread	},
@@ -197,6 +209,15 @@ CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 	{ &EV_PuzzleObject_BecomeModBarInSkill, &PuzzleObject::becomeModBarInSkill },
 	{NULL, NULL}
 };
+
+//[b611] chrissstrahl - thread called when puzzle is started to be used
+//-----------------------------------------------------
+void PuzzleObject::setUsedStartThread(Event* event)
+{
+	_usedStartThread = event->GetString(1);
+}
+
+
 
 //-----------------------------------------------------
 //
@@ -575,7 +596,8 @@ void PuzzleObject::useEvent(Event* event)
 	str sCoopClass;
 	ScriptVariable *uservar;
 	int i;
-	for ( i = 1; i < 5; i++ ){
+	//[b611] chrissstrahl - coop mod supports more than 4 uservars, now 10
+	for ( i = 1; i < 11; i++ ){
 		uservar = NULL;
 		uservar = entityVars.GetVariable( va("uservar%i", i) );
 		if ( uservar ){
@@ -639,7 +661,6 @@ void PuzzleObject::useEvent(Event* event)
 		}
 	}
 
-
 	if ( _itemToUse.length() > 0 )
 	{
 		Equipment *equipment;
@@ -702,7 +723,8 @@ void PuzzleObject::useEvent(Event* event)
 void PuzzleObject::normalUse( Event* event )
 //used to be void, added event parameter
 {
-	if ( _itemUsedThread.length() <= 0 )
+	//[b611] chrissstrahl - thread called when puzzle is started to be used [_usedStartThread]
+	if ( _itemUsedThread.length() <= 0 && _usedStartThread.length() <= 0)
 		return;
 
 	Entity* entity = NULL;
@@ -724,7 +746,14 @@ void PuzzleObject::normalUse( Event* event )
 	}
 
 	// let script take it from here
-	ExecuteThread( _itemUsedThread , true , this );
+	if ( _itemUsedThread.length() > 0) { //[b611] chrissstrahl - thread called when puzzle is started to be used [added check as string could be empty now]
+		ExecuteThread(_itemUsedThread, true, this);
+	}
+
+	//[b611] chrissstrahl - thread called when puzzle is started to be used
+	if (_usedStartThread.length() > 0) {
+		ExecuteThread(_usedStartThread, true, this);
+	}
 
 	_puzzleState = PUZZLE_STATE_ACTIVE_OPEN;
 	animate->RandomAnimate( "puzzle_openon" );
@@ -764,6 +793,11 @@ void PuzzleObject::timedUse( Event* event )
 
 	if ( !_hudOn )
 	{
+		//[b611] chrissstrahl - thread called when puzzle is started to be used
+		if (_usedStartThread.length() != 0) {
+			ExecuteThread(_usedStartThread, true, this);
+		}
+
 		showTimerHud( player );
 	}
 

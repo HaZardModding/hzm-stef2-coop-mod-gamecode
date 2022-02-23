@@ -57,6 +57,8 @@ class PuzzleObject : public Entity
 		void				setOpenDistance(Event* event);
 
 		//Thread setting functions
+		void				setUsedStartThread(Event* event); //[b611] chrissstrahl - thread called when puzzle is started to be used
+
 		void				setItemUsedThread(Event* event);
 		void				setFailedThread(Event* event);
 		void				setSolvedThread(Event* event);
@@ -91,6 +93,9 @@ class PuzzleObject : public Entity
 	private:
 		str					_itemToUse;
 		//Animations to use based up the state.
+
+		str					_usedStartThread;  //[b611] chrissstrahl - thread called when puzzle is started to be used
+
 		str					_itemUsedThread;
 		str					_failedThread;
 		str					_solvedThread;
@@ -121,6 +126,7 @@ inline void PuzzleObject::Archive( Archiver &arc )
 
 	arc.ArchiveString( &_itemToUse				);
 	arc.ArchiveString( &_itemUsedThread			);
+	arc.ArchiveString( &_usedStartThread		); //[b611] chrissstrahl - thread called when puzzle is started to be used
 	arc.ArchiveString( &_failedThread			);
 	arc.ArchiveString( &_solvedThread			);
 	arc.ArchiveString( &_canceledThread			);
