@@ -23,6 +23,11 @@
 #include "animate.h"
 #include "characterstate.h"
 
+
+//[b611] chrissstrahl - added so we can use it in entity.cpp at boosterNerbyPlayer
+extern Event EV_Sentient_HealAtInterval; 
+
+
 extern Event EV_Sentient_Attack;
 extern Event EV_Sentient_StartChargeFire;
 extern Event EV_Sentient_ReleaseAttack;
