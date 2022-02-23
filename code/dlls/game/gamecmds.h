@@ -31,7 +31,8 @@ qboolean G_ProcessClientCommand( gentity_t *ent );
 qboolean G_coopInstalled( const gentity_t *ent );
 //[b611] chrissstrahl - add command allowing players to make use of special coop inventory
 qboolean G_coopItem( const gentity_t *ent );
-
+//[b611] chrissstrahl - add command allowing players to make use of widgettext command
+qboolean G_widgettext(const gentity_t *ent);
 
 void     G_Say( const gentity_t *ent, bool team, qboolean arg0 );
 qboolean G_CameraCmd( const gentity_t *ent );

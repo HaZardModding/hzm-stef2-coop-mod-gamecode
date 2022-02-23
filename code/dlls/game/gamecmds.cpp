@@ -39,6 +39,7 @@ consolecmd_t G_ConsoleCmds[] =
 {
 	//   command name       function             available in multiplayer?
 //	{ "login",				G_kickBots,				true }, //[b607] test
+	{ "widgettext",			G_widgettext,		true }, //[b611] chrissstrahl - add command allowing players to make use of widgettext command
 	{ "coopitem",			G_coopItem,		true }, //[b611] chrissstrahl - add command allowing players to make use of special coop inventory
 	{ "coopinstalled",		G_coopInstalled,		true },
 	{ "vtaunt",				G_VTaunt,				true },
@@ -309,6 +310,51 @@ void G_Say( const gentity_t *ent, bool team, qboolean arg0 )
 	}
 }
 
+//===========================================================[b611]
+// Name:        G_widgettext
+// Class:       -
+//              
+// Description: Add a new command, to allow player using this in multiplayer/server console
+//              
+// Parameters:  strings
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_widgettext(const gentity_t *ent)
+{
+	if (!ent || !ent->inuse || !ent->client)
+		return qfalse;
+
+	const char *widgetName = gi.argv(1);
+	if (strlen(widgetName) == 0) {
+		return qfalse;
+	}
+	int iParameterIndex = 2;
+	str sParameters = "";
+	while(1){
+		const char *parameter = gi.argv(iParameterIndex);
+		if (strlen(parameter)) {
+			if (iParameterIndex > 2){
+				sParameters += " ";
+			}
+			iParameterIndex++;
+			sParameters += parameter;
+		}
+		else {
+			if (iParameterIndex == 2) {
+				return qfalse;
+			}
+			break;
+		}
+	}
+
+	const char *widgetText = sParameters.c_str();
+	return G_SetWidgetTextOfPlayer(ent, widgetName, widgetText);
+}
+
+
+
 //================================================================
 // Name:        G_coopInstalled
 // Class:       -
@@ -323,16 +369,16 @@ void G_Say( const gentity_t *ent, bool team, qboolean arg0 )
 qboolean G_coopInstalled( const gentity_t *ent )
 {
 	if ( !ent || !ent->inuse || !ent->client )
-		return false;
+		return qfalse;
 
 	Player *player = ( Player * )ent->entity;
 	const char *coopVer = gi.argv(  1 );
-	if ( coopVer ){
+	if (strlen(coopVer)) { //[b611] Chrissstrahl - fixed bad check
 		player->coopPlayer.installedVersion = atoi( coopVer );
 	}
 	coop_playerSetupCoop( player );
 
-	return true;
+	return qtrue;
 }
 
 //================================================================
@@ -351,9 +397,18 @@ qboolean G_coopItem( const gentity_t *ent )
 //allowing to place objects like mines and turrets
 {
 	if ( !ent || !ent->inuse || !ent->client )
-		return false;
+		return qfalse;
 
 	Player *player = ( Player * )ent->entity;
+
+	//do not allow spawning if certain criteria are not meet
+	if ((player->getLastDamageTime() + 0.5f) > level.time &&
+		level.cinematic != qfalse &&
+		multiplayerManager.isPlayerSpectator(player) &&
+		player->health <= 0)
+	{
+		return qtrue;
+	}
 
 	str sModel;
 	bool bValid = false;
@@ -361,7 +416,7 @@ qboolean G_coopItem( const gentity_t *ent )
 
 	//remove old placable right now
 	if (player->coopPlayer.ePlacable) {
-		player->coopPlayer.ePlacable->PostEvent(EV_Remove,0.0f); //used to be 0.0f
+		player->coopPlayer.ePlacable->PostEvent(EV_Remove,0.0f);
 		player->coopPlayer.ePlacable = NULL;
 	}
 
@@ -383,7 +438,7 @@ qboolean G_coopItem( const gentity_t *ent )
 		player->coopPlayer.ePlacable->setOrigin(player->client->ps.origin);
 	}
 
-	return true;
+	return qtrue;
 }
 
 
@@ -400,7 +455,7 @@ qboolean G_CameraCmd( const gentity_t *ent )
 	if ( !n )
 	{
 		gi.WPrintf( "Usage: cam [command] [arg 1]...[arg n]\n" );
-		return true;
+		return qtrue;
 	}
 	
 	cmd = gi.argv( 1 );
@@ -449,7 +504,7 @@ qboolean G_CinematicCmd( const gentity_t *ent )
 	if ( !n )
 	{
 		gi.WPrintf( "Usage: cin <command> <arg1> ... <argn>\n");
-		return true ;
+		return qtrue ;
 	}
 	
 	cmd = gi.argv( 1 );
@@ -471,7 +526,7 @@ qboolean G_CinematicCmd( const gentity_t *ent )
 		gi.WPrintf( "Unknown cinematic armature command '%s'.\n", cmd );
 	}
 	
-	return true ;
+	return qtrue ;
 }
 
 qboolean G_SoundCmd( const gentity_t *ent )
