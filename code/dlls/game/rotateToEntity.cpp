@@ -230,8 +230,6 @@ BehaviorReturnCode_t RotateToEntity::Evaluate( Actor &self )
      
    }
 
-
-
 //--------------------------------------------------------------
 //
 // Name:        End()

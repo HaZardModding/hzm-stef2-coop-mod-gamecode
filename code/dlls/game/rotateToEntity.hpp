@@ -117,5 +117,4 @@ inline void RotateToEntity::Archive( Archiver &arc	)
 	arc.ArchiveFloat	   ( &_oldTurnSpeed );
 }
 
-
 #endif /* __ROTATE_TO_ENTITY_H__ */
