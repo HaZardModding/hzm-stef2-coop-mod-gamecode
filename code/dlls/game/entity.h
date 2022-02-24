@@ -490,9 +490,6 @@ class Entity : public Listener
 		//hzm gameupdate chrissstrahl - handle make solid asap relevant vars
 		bool				_makeSolidASAP;
 		float				_makeSolidASAPTime;
-		//bool				_makeSolidASAPSupposedToBeSolid;
-
-
 
 		// Pluggable modules
 
@@ -841,12 +838,15 @@ class Entity : public Listener
 		void				SetUserVar2( Event *ev );
 		void				SetUserVar3( Event *ev );
 		void				SetUserVar4( Event *ev );
+		
+		//[b606] chrisstrahl - added support for 6 more uservars
 		void				SetUserVar5( Event *ev );
 		void				SetUserVar6( Event *ev );
 		void				SetUserVar7( Event *ev );
 		void				SetUserVar8( Event *ev );
 		void				SetUserVar9( Event *ev );
 		void				SetUserVar10( Event *ev );
+
 		void				isWithinDistanceOf( Event *ev );
 
 		void				affectingViewMode( Event *ev );
