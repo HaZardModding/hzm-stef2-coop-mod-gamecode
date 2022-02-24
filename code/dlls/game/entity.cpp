@@ -7149,6 +7149,7 @@ inline void Entity::Archive( Archiver &arc )
 			}
 		}
 //[b611] chrissstrahl - fix variables not being properly saved and loaded
+	if (LoadingSavegame) {}
 	if (arc.Saving()) {}
 	if (arc.Loading()) {}
 	arc.ArchiveFloat(&bubbleSplashMax);
