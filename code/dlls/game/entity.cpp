@@ -7148,9 +7148,18 @@ inline void Entity::Archive( Archiver &arc )
 			useData->Archive(arc);
 			}
 		}
-
-
-	
+//[b611] chrissstrahl - fix variables not being properly saved and loaded
+	if (arc.Saving()) {}
+	if (arc.Loading()) {}
+	arc.ArchiveFloat(&bubbleSplashMax);
+	arc.ArchiveFloat(&bubbleNextThink);
+	arc.ArchiveFloat(&bubbleMaxLife);
+	arc.ArchiveFloat(&bubbleNextSpeedIncrease);
+	arc.ArchiveFloat(&bubbleTotalSpeedIncrease);
+	arc.ArchiveInteger(&damageByWater);
+	arc.ArchiveBool(&_makeSolidASAP);
+	arc.ArchiveFloat(&_makeSolidASAPTime);
+	arc.ArchiveSafePointer(&myCoopMarker);
 }
 
 // Animate interface
