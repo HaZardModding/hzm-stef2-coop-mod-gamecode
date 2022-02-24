@@ -7149,9 +7149,14 @@ inline void Entity::Archive( Archiver &arc )
 			}
 		}
 //[b611] chrissstrahl - fix variables not being properly saved and loaded
+	// This is either a loadgame or a restart
 	if (LoadingSavegame) {}
+	// When saveing the game
 	if (arc.Saving()) {}
+	// When loading the saved game
 	if (arc.Loading()) {}
+	// Always load and save these - some vars are also used in singleplayer
+	// the coop mod does not seperate multiplayer and singleplayer quite clearly 
 	arc.ArchiveFloat(&bubbleSplashMax);
 	arc.ArchiveFloat(&bubbleNextThink);
 	arc.ArchiveFloat(&bubbleMaxLife);
