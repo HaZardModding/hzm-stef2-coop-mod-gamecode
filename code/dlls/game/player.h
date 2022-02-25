@@ -1682,6 +1682,77 @@ inline void Player::Archive( Archiver &arc )
 	//Vector				_flagAttachAngles;
 
 	arc.ArchiveBool( &_cameraCutThisFrame );
+
+
+	//[b611] chrissstrahl - fix variables not being properly saved and loaded
+	// This is either a loadgame or a restart
+	if (LoadingSavegame) {}
+	// When saveing the game
+	if (arc.Saving()) {}
+	// When loading the saved game
+	if (arc.Loading()) {}
+	// Always load and save these - some vars are also used in singleplayer
+	// the coop mod does not seperate multiplayer and singleplayer quite clearly	
+	//coopPlayer.lastTargetedEntity
+//arc.ArchiveBool(&branchdialog_active);					//this needs review, this might not be used at all - will check after commit
+//arc.ArchiveFloat(coopPlayer.lastTimeModulatingPuzzle);	//this needs review, this might not be used at all - will check after commit
+	//arc.ArchiveBool(&messageOfTheDaySend);						//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveBool(&coopPlayer.admin);							//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveVector3(&coopPlayer.lastAliveLocation);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.chatTimeLimit);					//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveInteger(&coopPlayer.setupTries);					//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.installedCheckTime);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveBool(&coopPlayer.injuredSymbolVisible);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveBool(&coopPlayer.respawned);						//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveBool(&coopPlayer.respawnAtRespawnpoint);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveBool(&coopPlayer.setupComplete);					//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveInteger(&coopPlayer.deathViewangleY);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveInteger(&coopPlayer.reviveCounter);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveInteger(&coopPlayer.lastMass);						//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveString(&coopPlayer.lastTargetedClassSend);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveInteger(&coopPlayer.lastRadarAngle);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeInjured);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeRadarUpdated);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeAppliedClass);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedClassStat);		//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeSpamInfo);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeUsedClassMsg);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeNeutralized);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeRevived);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeUsing);					//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastTimeTransported);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveBool(&coopPlayer.startedVote);						//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveString(&coopPlayer.transportUnholster);			//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveString(&coopPlayer.transportUnholsterWeaponName);	//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveBool(&coopPlayer.updateHudDisplayed);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lastScanSend);					//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveBool(&coopPlayer.clickFireHudActive);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.);								//used in multiplayer only - not relevant for zingleplaya
+	arc.ArchiveSafePointer(&last_entityTargeted);
+	arc.ArchiveString(&kill_thread);
+	arc.ArchiveString(&coopPlayer.lastScanSendData);
+	arc.ArchiveBool(&coopPlayer.showTargetedEntity);		
+	arc.ArchiveBool(&coopPlayer.armoryNeedstoBeEquiped); //only used in singleplayer to prevent loss of inventory caused by code alterations - this might be fixable else where
+	arc.ArchiveInteger(&coopPlayer.installed);
+	arc.ArchiveInteger(&coopPlayer.installedVersion);
+	//these should be reviewd properly - I was in a hurry so I added em anyway
+	arc.ArchiveBool(&coopPlayer.neutralized);
+	arc.ArchiveBool(&coopPlayer.scanning);
+	arc.ArchiveBool(&coopPlayer.scanHudActive);
+	arc.ArchiveFloat(&coopPlayer.lastTimeThink);
+	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
+	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
+	arc.ArchiveFloat(&coopPlayer.lastTimeChangedClass);
+	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);
+	arc.ArchiveFloat(&coopPlayer.diedLast);
+	arc.ArchiveFloat(&coopPlayer.timeEntered);
+	arc.ArchiveInteger(&coopPlayer.deathTime);
+	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
+	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer
+	arc.ArchiveString(&coopPlayer.className);			//Not quite Clean implemented, so also accsessed in singleplayer
+	arc.ArchiveString(&coopPlayer.language);
+	arc.ArchiveString(&coopPlayer.coopId);
+	arc.ArchiveString(&coopPlayer.coopStatus);
 	}
 
 inline Camera *Player::CurrentCamera()
