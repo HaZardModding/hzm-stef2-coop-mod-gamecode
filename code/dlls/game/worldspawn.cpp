@@ -1475,7 +1475,7 @@ void World::Think( void )
 	coop_serverThink();
 
 	//[b607] chrissstrahl - message of the day - mp_motd
-	if (g_gametype->integer == 1) {
+	if (g_gametype->integer == GT_MULTIPLAYER) {
 		updateMessageOfTheDay();
 	}
 }
