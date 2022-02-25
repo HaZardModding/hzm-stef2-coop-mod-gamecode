@@ -136,7 +136,7 @@ bool coop_playerCheckAdmin(Player *player)
 
 	//[b610] chrissstrahl - auto login if player is host
 	if (dedicated->integer == 0 && player->entnum == 0) {
-		player->coopPlayer.admin = 0;
+		player->coopPlayer.admin = false;
 		player->hudPrint("^3You are now logged in (Host auto-!login).\n");
 		return true;
 	}
@@ -1086,7 +1086,7 @@ bool coop_playerSay( Player *player , str sayString)
 		//[b609] chrissstrahl - added !logout feature
 		else if (!Q_stricmpn("!logout", sayString, 7)) {
 			if (player->coopPlayer.admin) {
-				player->coopPlayer.admin = 0;
+				player->coopPlayer.admin = false;
 				player->hudPrint("^3You are now logged out.\n");
 				return true;
 			}
@@ -1094,7 +1094,7 @@ bool coop_playerSay( Player *player , str sayString)
 		else if (!Q_stricmpn("!login", sayString, 6)) {
 			//[b609] chrissstrahl - added logout feature if admin uses login again
 			if (player->coopPlayer.admin) {
-				player->coopPlayer.admin = 0;
+				player->coopPlayer.admin = false;
 				player->hudPrint("^3You are now logged out.\n");
 				return true;
 			}
