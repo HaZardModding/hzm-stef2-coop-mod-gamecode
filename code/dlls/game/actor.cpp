@@ -16596,6 +16596,21 @@ inline void Actor::Archive( Archiver &arc )
 	arc.ArchiveFloat( &lastPathCheck_Patrol );
 	arc.ArchiveBoolean( &testing );
 
+	//[b611] chrissstrahl - fix variables not being properly saved and loaded
+	// This is either a loadgame or a restart
+	if (LoadingSavegame) {}
+	// When saveing the game
+	if (arc.Saving()) {}
+	// When loading the saved game
+	if (arc.Loading()) {}
+	arc.ArchiveString(&dialogCurrentPlaying);
+	arc.ArchiveSafePointer(&activator);
+	arc.ArchiveSafePointer(&lastAttacker);
+	arc.ArchiveSafePointer(&coop_behaviourActivate);
+	arc.ArchiveBool(&coop_behaviourAiOn);
+	arc.ArchiveInteger(&wakeUpCount);
+
+
 	if ( isThinkOn() )
 		Wakeup();
 	else
