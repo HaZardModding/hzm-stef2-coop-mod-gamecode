@@ -28,6 +28,9 @@
 #include <qcommon/gameplaymanager.h>
 #include "botmenudef.h"
 
+//[b611] chrissstrahl - make avialable to use here
+extern Event EV_SetOriginEveryFrame;
+
 typedef struct
 {
 	const char  *command;
@@ -411,6 +414,7 @@ qboolean G_coopItem( const gentity_t *ent )
 	}
 
 	str sModel;
+	str sClass;
 	bool bValid = false;
 	const char *coopItem = gi.argv(  1 );
 
@@ -420,24 +424,91 @@ qboolean G_coopItem( const gentity_t *ent )
 		player->coopPlayer.ePlacable = NULL;
 	}
 
+	SpawnArgs      args;
+	Entity         *obj;
+	Event *attach1 = NULL;
+	Event *attach2 = NULL;
+	Event *attach3 = NULL;
+
 	//placable explosive/mine
-	if (!Q_stricmpn("mine",coopItem , 4)){
+	if (!Q_stricmpn("mine", coopItem, 4)) {
 		bValid = true;
-		sModel = "models/item/alien_actor_explosive.tik";
-	}
-
-	//if item is valid allow placing it
-	if (bValid) {
-		SpawnArgs      args;
-		Entity         *obj;
-		args.setArg("model", sModel.c_str());
 		args.setArg("classname", "script_model");
+		args.setArg("model", "models/item/alien_actor_explosive.tik");
+	}
+	//placable explosive/mine
+	else if (!Q_stricmpn("medic", coopItem, 5)) {
+		bValid = true;
+		args.setArg("classname", "script_model");
+		args.setArg("model", "models/item/mp_weapon-spawn.tik");
+		args.setArg("setmovetype", "stationary");
+		args.setArg("setsize", "\"-24 -24 0\" \"24 24 32\"");
+		args.setArg("targetname", "yyy");
 		args.setArg("notsolid", "1");
-		obj = args.Spawn();
-		player->coopPlayer.ePlacable = obj;	
-		player->coopPlayer.ePlacable->setOrigin(player->client->ps.origin);
+		//args.setArg("statemap", "1212");
+
+		attach1 = new Event(EV_AttachModel);
+		attach1->AddString("item/ammo_large.tik");
+		attach1->AddString("none");
+		attach1->AddFloat(0.6f);
+		attach1->AddString("none");
+		attach1->AddInteger(0);
+		attach1->AddInteger(-1);
+		attach1->AddInteger(-0);
+		attach1->AddInteger(-1);
+		attach1->AddInteger(0);
+		attach1->AddVector(Vector(10, 10, 6));
+
+		attach2 = new Event(EV_AttachModel);
+		attach2->AddString("item/ammo_idryll_small.tik");
+		attach2->AddString("none");
+		attach2->AddFloat(0.6f);
+		attach2->AddString("none");
+		attach2->AddInteger(0);
+		attach2->AddInteger(-1);
+		attach2->AddInteger(-0);
+		attach2->AddInteger(-1);
+		attach2->AddInteger(0);
+		attach2->AddVector(Vector(-10, 10, 6));
+
+		attach3 = new Event(EV_AttachModel);
+		attach3->AddString("item/ammo_fed_small.tik");
+		attach3->AddString("none");
+		attach3->AddFloat(0.9f);
+		attach3->AddString("none");
+		attach3->AddInteger(0);
+		attach3->AddInteger(-1);
+		attach3->AddInteger(-0);
+		attach3->AddInteger(-1);
+		attach3->AddInteger(0);
+		attach3->AddVector(Vector(0, -10, 6));
+	}
+	//do not place 
+	if (!bValid) {
+		delete attach1;
+		delete attach2;
+		delete attach3;
+		obj->PostEvent(EV_Remove, 0.0f);
+		return qtrue;
 	}
 
+	//now spawn object
+	obj = args.Spawn();
+
+	//attach stuff if wanted
+	if (attach1 != NULL) {
+		obj->PostEvent(attach1, 0.1f);
+	}
+	if (attach2 != NULL) {
+		obj->PostEvent(attach2, 0.1f);
+	}
+	if (attach3 != NULL) {
+		obj->PostEvent(attach3, 0.1f);
+	}
+
+	//Place object
+	player->coopPlayer.ePlacable = obj;	
+	player->coopPlayer.ePlacable->setOrigin(player->origin);
 	return qtrue;
 }
 
