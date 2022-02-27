@@ -2020,66 +2020,68 @@ void Entity::boosterNearbyPlayer(Event *ev)
 		eTemp = g_entities[i].entity;
 		if (eTemp && eTemp->isClient() && eTemp->isSubclassOf(Player)) {
 			player = (Player *)eTemp;
-			if (WithinDistance((Entity*)player, distance)) {
-				if (!strcmpi(sBoostType.c_str(), "ammo")) {
-					bool bGiveAmmo = false;
-					if (player->AmmoCount("Plasma") < player->MaxAmmoCount("Plasma") ) {
-						player->GiveAmmo("Plasma", 10, 0, player->MaxAmmoCount("Plasma"));
-						bGiveAmmo = true;
-					}
-					if (player->AmmoCount("Idryll") < player->MaxAmmoCount("Idryll")) {
-						player->GiveAmmo("Idryll", 10, 0, player->MaxAmmoCount("Idryll"));
-						bGiveAmmo = true;
-					}
-					if (player->AmmoCount("Federation") < player->MaxAmmoCount("Federation")) {
-						player->GiveAmmo("Federation", 10, 0, player->MaxAmmoCount("Federation"));
-						bGiveAmmo = true;
-					}
-					if (bGiveAmmo) {
-						player->Sound("sound/misc/mp_pickup2.wav", CHAN_BODY, 0.75, 64);
+			if (player->health <= 0 || !WithinDistance((Entity*)player, distance)) {
+				continue;
+			}
+
+			if (!strcmpi(sBoostType.c_str(), "ammo")) {
+				bool bGiveAmmo = false;
+				if (player->AmmoCount("Plasma") < player->MaxAmmoCount("Plasma") ) {
+					player->GiveAmmo("Plasma", 10, 0, player->MaxAmmoCount("Plasma"));
+					bGiveAmmo = true;
+				}
+				if (player->AmmoCount("Idryll") < player->MaxAmmoCount("Idryll")) {
+					player->GiveAmmo("Idryll", 10, 0, player->MaxAmmoCount("Idryll"));
+					bGiveAmmo = true;
+				}
+				if (player->AmmoCount("Federation") < player->MaxAmmoCount("Federation")) {
+					player->GiveAmmo("Federation", 10, 0, player->MaxAmmoCount("Federation"));
+					bGiveAmmo = true;
+				}
+				if (bGiveAmmo) {
+					player->Sound("sound/misc/mp_pickup2.wav", CHAN_BODY, 0.75, 64);
+				}
+			}
+			else if (!strcmpi(sBoostType.c_str(), "health")) {
+				float fHealthMax = player->max_health;
+				float fHealthToGive = 10.0f;
+				if (ev->NumArgs() > 2) {
+					fHealthToGive = amount;
+					if (ev->NumArgs() > 3) {
+						fHealthMax = maximum;
 					}
 				}
-				else if (!strcmpi(sBoostType.c_str(), "health")) {
-					float fHealthMax = player->max_health;
-					float fHealthToGive = 10.0f;
-					if (ev->NumArgs() > 2) {
-						fHealthToGive = amount;
-						if (ev->NumArgs() > 3) {
-							fHealthMax = maximum;
-						}
-					}
 
-					if ((fHealthToGive + player->health) > fHealthMax) {
-						fHealthToGive = (fHealthMax - player->health);
-					}
+				if ((fHealthToGive + player->health) > fHealthMax) {
+					fHealthToGive = (fHealthMax - player->health);
+				}
 
-					if (fHealthToGive) {
-						player->health = float(fHealthToGive + player->health);
-						player->Sound("sound/misc/mp_healthshard.wav", CHAN_BODY, 0.75, 64);
+				if (fHealthToGive) {
+					player->health = float(fHealthToGive + player->health);
+					player->Sound("sound/misc/mp_healthshard.wav", CHAN_BODY, 0.75, 64);
+				}
+			}
+			else {
+				float fArmorMax = 200.0f;
+				float fArmor	= 10.0f;
+				if (ev->NumArgs() > 2) {
+					fArmor = amount;
+					if (ev->NumArgs() > 3) {
+						fArmorMax = maximum;
 					}
 				}
-				else {
-					float fArmorMax = 200.0f;
-					float fArmor	= 10.0f;
-					if (ev->NumArgs() > 2) {
-						fArmor = amount;
-						if (ev->NumArgs() > 3) {
-							fArmorMax = maximum;
-						}
-					}
 
-					if ((player->GetArmorValue() + fArmor) > fArmorMax) {
-						fArmor = (fArmorMax - player->GetArmorValue());
-					}
+				if ((player->GetArmorValue() + fArmor) > fArmorMax) {
+					fArmor = (fArmorMax - player->GetArmorValue());
+				}
 
-					if (fArmor) {
-						Event *armorEvent;
-						armorEvent = new Event(EV_Sentient_GiveArmor);
-						armorEvent->AddString("BasicArmor");
-						armorEvent->AddFloat(fArmor);
-						player->ProcessEvent(armorEvent);
-						player->Sound("sound/misc/mp_armorshard.wav", CHAN_BODY, 0.75, 64);
-					}
+				if (fArmor) {
+					Event *armorEvent;
+					armorEvent = new Event(EV_Sentient_GiveArmor);
+					armorEvent->AddString("BasicArmor");
+					armorEvent->AddFloat(fArmor);
+					player->ProcessEvent(armorEvent);
+					player->Sound("sound/misc/mp_armorshard.wav", CHAN_BODY, 0.75, 64);
 				}
 			}
 		}
