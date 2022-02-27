@@ -44,6 +44,9 @@
 #include <qcommon/gameplaymanager.h>"
 //#include "powerups.h"
 
+//[b611] chrissstrahl - make avialable to use here
+extern Event EV_SetOriginEveryFrame;
+
 pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
 
 extern int iTIKIS;
@@ -2370,6 +2373,7 @@ void coop_playerThink( Player *player )
 			if (player->coopPlayer.ePlacable) {
 				player->coopPlayer.ePlacable->setOrigin(trace.endpos);
 				player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
+
 				//drop about 100 units - do stuff here if it could not be dropped
 				if (!player->coopPlayer.ePlacable->droptofloor(100)) {
 					//if object could not be placed, display it at the height of feet of player and change animation so it changes skin/texture
@@ -2388,11 +2392,13 @@ void coop_playerThink( Player *player )
 					if (player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
 						SpawnArgs      args;
 						Entity         *obj;
-						str			sModel = player->coopPlayer.ePlacable->model;
-						args.setArg("model", sModel.c_str());
-						//args.setArg("model", "models/char/alienLurker.tik");
-						args.setArg("classname", "actor");
-						args.setArg("anim", "idle");
+						args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
+						args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
+						args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
+						args.setArg("setmovetype", ""+player->coopPlayer.ePlacable->getMoveType());
+						args.setArg("targetname", player->coopPlayer.ePlacable->targetname.c_str());
+						args.setArg("setsize", "\""+player->coopPlayer.ePlacable->mins+"\" \""+player->coopPlayer.ePlacable->maxs+"\"");						
+						//args.setArg("anim", "idle");
 						obj = args.Spawn();
 						obj->setOrigin(player->coopPlayer.ePlacable->origin);
 						obj->setAngles(player->coopPlayer.ePlacable->angles);
