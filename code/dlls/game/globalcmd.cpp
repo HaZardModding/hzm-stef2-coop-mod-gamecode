@@ -1373,6 +1373,9 @@ Event EV_ScriptThread_hasItem
 	"entity string",
 	"checks if a player or actor has the specified item"
 );
+//getinidata
+//setinidata
+
 //end of hzm
 
 CLASS_DECLARATION( Interpreter, CThread, NULL )
