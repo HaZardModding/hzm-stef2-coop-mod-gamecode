@@ -84,6 +84,8 @@ extern Event EV_ScriptThread_ConfigstringRemoveCombatSounds;
 extern Event EV_ScriptThread_ConfigstringRemove;
 
 //[b611] chrissstrahl - added events support for all coop script stuff
+extern Event EV_ScriptThread_getIniData;
+extern Event EV_ScriptThread_setIniData;
 extern Event EV_ScriptThread_sendWidgetCommand;
 extern Event EV_ScriptThread_getStringFromStringWithLengt;
 extern Event EV_ScriptThread_getStringToUpper;
@@ -134,6 +136,8 @@ class CThread : public Interpreter
 		//[b611] chrissstrahl - added command to allow a widget with white-spaces like regular text contains
 		void sendWidgetCommand(Event *ev);
 		void hasItem(Event *ev);
+		void CThread::getIniData(Event *ev);
+		void CThread::setIniData(Event *ev);
 		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 		void configstringRemoveCombatSounds(Event *ev);
 		void configstringRemove(Event *ev);

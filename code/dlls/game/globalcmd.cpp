@@ -1373,8 +1373,22 @@ Event EV_ScriptThread_hasItem
 	"entity string",
 	"checks if a player or actor has the specified item"
 );
-//getinidata
-//setinidata
+Event EV_ScriptThread_getIniData
+(
+	"getIniData",
+	EV_SCRIPTONLY,
+	"@ssss",
+	"returndatastring filename keyname category",
+	"gets data from given inifile"
+);
+Event EV_ScriptThread_setIniData
+(
+	"setIniData",
+	EV_SCRIPTONLY,
+	"@fssss",
+	"returndbool filename keyname value category",
+	"sets data to given inifile"
+);
 
 //end of hzm
 
@@ -1526,6 +1540,8 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	//[b611] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
 	{ &EV_ScriptThread_sendWidgetCommand,			&CThread::sendWidgetCommand },
 	{ &EV_ScriptThread_hasItem,						&CThread::hasItem },
+	{ &EV_ScriptThread_getIniData,					&CThread::getIniData },
+	{ &EV_ScriptThread_setIniData,					&CThread::setIniData },
 	//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 	{ &EV_ScriptThread_ConfigstringRemove, &CThread::configstringRemove },
 	{ &EV_ScriptThread_ConfigstringRemoveCombatSounds, &CThread::configstringRemoveCombatSounds },
@@ -1563,6 +1579,82 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 
 	{ NULL, NULL }
 };
+
+//[b611] chrissstrahl - add command allow reading and writing to ini file
+//returns: string ini data
+//takes: string ini file, string ini category, key
+void CThread::getIniData(Event *ev)
+{
+	if (ev->NumArgs() < 3) {
+		ev->ReturnString("!Parameter-Error!");
+		return;
+	}
+	str sFilename;
+	str sKeyname;
+	str sCategoryname;
+	str sValue;
+	sFilename			= ev->GetString(1);
+	sKeyname			= ev->GetString(2);
+	sCategoryname		= ev->GetString(3);
+
+	//prevent certain ini files top be accsessed
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	sValue = coop_parserIniGet(sFilename, sKeyname, sCategoryname);
+
+	ev->ReturnString(sValue.c_str());
+}
+
+//takes: string ini file, string ini category, key, value and writes it to a ini
+void CThread::setIniData(Event *ev)
+{
+	if (ev->NumArgs() < 4) {
+		ev->ReturnString("!Parameter-Error!");
+		return;
+	}
+	bool bScuccsess;
+	str sFilename;
+	str sKeyname;
+	str sCategoryname;
+	str sValue;
+	sFilename		= ev->GetString(1);
+	sKeyname		= ev->GetString(2);
+	sCategoryname	= ev->GetString(3);
+	sValue			= ev->GetString(4);
+
+	//prevent certain ini files top be accsessed
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	//needs to be implemented
+	bScuccsess = coop_parserIniSet(sFilename, sKeyname, sValue, sCategoryname);
+
+	ev->ReturnFloat(float(bScuccsess));
+}
 
 //[b611] chrissstrahl - add command to check if player/actor has a specific item
 //sentity, string-weaponname
