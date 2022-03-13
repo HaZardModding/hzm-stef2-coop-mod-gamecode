@@ -17,7 +17,6 @@
 
 //CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
 
-
 #include "_pch_cpp.h"
 
 #include "coopAlias.hpp"
