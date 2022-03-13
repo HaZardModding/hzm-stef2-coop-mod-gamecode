@@ -535,7 +535,8 @@ class Event : public Class
       void              ReturnEntity( Entity *ent );
 
 		void					AddEntity( Entity *ent );
-		Entity				*GetEntity( int pos );
+		Entity				*GetEntity( int pos, bool allowNull);
+		Entity				*GetEntity( int pos);
 		
 		void					SetThread( CThread *thread );
 		CThread				*GetThread( void );
@@ -1133,21 +1134,25 @@ inline bool Event::GetBoolean
 
 #ifdef GAME_DLL
 
-inline Entity *Event::GetEntity
-	(
-	int pos
-	)
-
-	{
-	if ( !data || ( pos < 1 ) || ( data->NumObjects() < pos ) )
-		{
-		Error( "Index %d out of range.", pos );
-		return NULL;
+//[b611] chrissstrahl - allow to get a NULL ENTITY
+inline Entity *Event::GetEntity(int pos, bool allowNull)
+{
+	if ( !data || ( pos < 1 ) || ( data->NumObjects() < pos ) ){
+		if (!allowNull) {
+			Error("Index %d out of range.", pos);
 		}
-
-   return data->ObjectAt( pos ).GetEntity( *this );
+		return NULL;
 	}
-
+	return data->ObjectAt( pos ).GetEntity( *this );
+}
+inline Entity *Event::GetEntity(int pos)
+{
+	if ( !data || ( pos < 1 ) || ( data->NumObjects() < pos ) ){
+		Error("Index %d out of range.", pos);
+		return NULL;
+	}
+	return data->ObjectAt( pos ).GetEntity( *this );
+}
 #endif
 
 
