@@ -1389,6 +1389,14 @@ Event EV_ScriptThread_setIniData
 	"returndbool filename keyname value category",
 	"sets data to given inifile"
 );
+Event EV_ScriptThread_setCamera
+(
+	"setCamera",
+	EV_SCRIPTONLY,
+	"eeF",
+	"playerEntity cameraEntity floatTimetransition",
+	"sets player view to given camera"
+);
 
 //end of hzm
 
@@ -1538,6 +1546,7 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
 	//[b611] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
+	{ &EV_ScriptThread_setCamera,					&CThread::setCamera },
 	{ &EV_ScriptThread_sendWidgetCommand,			&CThread::sendWidgetCommand },
 	{ &EV_ScriptThread_hasItem,						&CThread::hasItem },
 	{ &EV_ScriptThread_getIniData,					&CThread::getIniData },
@@ -1580,6 +1589,47 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ NULL, NULL }
 };
 
+//[b611] chrissstrahl - make player view to specific camera - without being in cinematics
+//returns: void
+//takes: string ini file, string ini category, key
+void CThread::setCamera(Event* ev)
+{
+	Entity *player;
+	Entity *camera;
+	float switchTime = 0;
+
+	player = ev->GetEntity(1);
+	camera = ev->GetEntity(2,true);
+
+	if (!player || player->isSubclassOf(Player))
+		return;
+
+	Player* play = (Player*)player;
+
+	if (ev->NumArgs() > 2) {
+		switchTime = ev->GetFloat(3);
+	}
+
+	if (!camera) {
+		play->SetCamera(NULL, switchTime);
+
+		//clear current camera so it can be restored on savegame
+		if (g_gametype->integer == GT_SINGLE_PLAYER) {
+			game.cinematicCurrentCam = NULL;
+		}
+		return;
+	}
+	
+	if(!camera->isSubclassOf(Camera))
+		return;		
+
+	//set current camera so it can be restored on savegame
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		game.cinematicCurrentCam = camera;
+	}
+	play->SetCamera((Camera*)camera, switchTime);
+}
+	
 //[b611] chrissstrahl - add command allow reading and writing to ini file
 //returns: string ini data
 //takes: string ini file, string ini category, key

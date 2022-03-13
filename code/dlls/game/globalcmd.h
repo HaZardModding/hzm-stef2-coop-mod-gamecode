@@ -138,6 +138,7 @@ class CThread : public Interpreter
 		void hasItem(Event *ev);
 		void CThread::getIniData(Event *ev);
 		void CThread::setIniData(Event *ev);
+		void CThread::setCamera(Event* ev);
 		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 		void configstringRemoveCombatSounds(Event *ev);
 		void configstringRemove(Event *ev);
