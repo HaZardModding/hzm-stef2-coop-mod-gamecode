@@ -25,7 +25,7 @@ Vector		   currentVertex( 0.0f, 0.0f, 0.0f );
 Vector		   vertColor( 1.0f, 1.0f, 1.0f );
 float			   vertAlpha = 1.0f;
 float			   vertexIndex = 0.0f;
-float          linewidth = 1.0f;
+float          linewidth = 10.0f; //[b611] chrissstrahl - test - fix me back to 1.0
 unsigned short lineStippleFactor = 1;
 unsigned short linePattern = 0xffff;
 
@@ -313,6 +313,16 @@ void G_DebugBBox
       G_EndLine();
       }
    }
+
+//[b611] chrissstrahl - trying to crate letters - this is just a test
+static int Letters[4][8] =
+{
+	{ 7, 2, 6, 1, 4, 5, 0, 0 }, // A
+	{ 1, 6, 7, 3, 5, 2, 4, 0 }, // B
+	{ 1, 6, 7, 3, 0, 0, 0, 0 }, // C 
+
+	{ 6, 7, 2, 0, 0, 0, 0, 0 }, // b
+};
 
 //
 // LED style digits
