@@ -58,7 +58,7 @@ bool coop_parserReadFile( const str sFile , str &buffer )
 		stricmp( sFileExt.c_str() , ".vlp" ) != 0 &&//[b607] chrissstrahl - need this to get dialog length for actor.playdialog
 		stricmp( sFileExt.c_str() , ".inf" ) != 0 )
 	{
-		throw( va( "HZM-Phraser does not read '%s' files, only: ini, inf, txt, cfg, vlp, log" , sFileExt.c_str() ) );
+		throw( va( "HZM-Parser does not read '%s' files, only: ini, inf, txt, cfg, vlp, log" , sFileExt.c_str() ) );
 		return false;
 	}
 
@@ -471,7 +471,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 	if (	stricmp( sFileExt.c_str() , ".ini" ) != 0 &&
 			stricmp( sFileExt.c_str() , ".inf" ) != 0 )
 	{
-		throw( va( "HZM-Phraser does not write '%s' files, only: ini, inf" , sFileExt.c_str() ) );
+		throw( va( "HZM-Parser only writes files with extensions: ini or inf" , sFileExt.c_str() ) );
 		return false;
 	}
 
@@ -503,7 +503,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 
 	//make sure no file is open from last time
 	if ( iniFile ) {
-		throw( "HZM-Phraser a file was already open\n" );
+		throw( "HZM-Parser a file was already open\n" );
 		return false;
 	}
 
@@ -512,7 +512,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 	//make sure we can write file
 	if ( !iniFile ) {
 		//[b611] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
-		throw( va( "HZM-Phraser coud not open file to write: %s - Write-protection? Bad-Accsess-rights?\n" , sFile.c_str() ) );
+		throw( va( "HZM-Parser coud not open file to write: %s - Write-protection? Bad-Accsess-rights?\n" , sFile.c_str() ) );
 		//if ( coop_returnCvarInteger( "developer" ) > 0 ) {
 		//}
 		return false;
@@ -631,7 +631,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 	}
 	if (gi.FS_Write(sNewBuffer, sNewBuffer.length(), iniFile) == 0) {
 		//[b611] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
-		throw(va("HZM-Phraser coud not write data to file: %s - Write-protection? Bad-Accsess-rights?\n", sFile.c_str()));
+		throw(va("HZM-Parser coud not write data to file: %s - Write-protection? Bad-Accsess-rights?\n", sFile.c_str()));
 	}
 
 	//close file
