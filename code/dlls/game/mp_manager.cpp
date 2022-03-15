@@ -757,11 +757,13 @@ float MultiplayerManager::voteTime( void )
 {
 	return _voteTime;
 }
+
 //hzm gamefix chrissstrahl - used to show new players the current vote
 str MultiplayerManager::getVoteString( void )
 {
 	return _voteString;
 }
+
 //hzm gamefix chrissstrahl - used to show new players the current vote
 void MultiplayerManager::updateVotes( Player * player, bool bLeaving )
 {
@@ -853,7 +855,6 @@ bool MultiplayerManager::checkFlag( unsigned int flag )
 		return false;
 }
 
-
 bool MultiplayerManager::fullCollision( void )
 {
 	if ( !_inMultiplayerGame )
@@ -881,7 +882,6 @@ void MultiplayerManager::handleDynamicLights(Player *player)
 {
 	game.bForceDynLightUpdate = true;
 }
-
 
 void MultiplayerManager::addPlayer( Player *player )
 {
