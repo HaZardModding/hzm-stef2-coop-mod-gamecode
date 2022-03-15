@@ -818,6 +818,8 @@ void Level::Archive( Archiver &arc )
 	arc.ArchiveInteger( &currentInstanceNumber );
     //int            spawnflags;
 
+	arc.ArchiveInteger( &spawn_bot); //[b611] chrissstrahl - fixed this not working with savegames
+
 	arc.ArchiveInteger( &framenum );
 	arc.ArchiveInteger( &inttime );
 	arc.ArchiveFloat( &time );
