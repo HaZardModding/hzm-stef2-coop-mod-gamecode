@@ -1377,16 +1377,16 @@ Event EV_ScriptThread_getIniData
 (
 	"getIniData",
 	EV_SCRIPTONLY,
-	"@ssss",
-	"returndatastring filename keyname category",
-	"gets data from given inifile"
+	"@sssS",
+	"returndatastring category keyname filename",
+	"gets data from current map ini or given inifile"
 );
 Event EV_ScriptThread_setIniData
 (
 	"setIniData",
 	EV_SCRIPTONLY,
 	"@fsss",
-	"returndbool keyname value category",
+	"returndbool category keyname value",
 	"sets data to map-specific ini file"
 );
 Event EV_ScriptThread_setCamera
@@ -1585,9 +1585,29 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_isDigit, &CThread::isDigit } ,
 	{ &EV_ScriptThread_MissionFailed, &CThread::missionFailed } ,
 //end of hzm
-
 	{ NULL, NULL }
 };
+
+/*
+//[b611] chrissstrahl - sets status of named achivment for a player
+//returns: void
+//takes: player, achivmentname, value
+void CThread::setAchivment(Event* ev)
+{
+
+}
+//player unlocked a achivment
+void CThread::achivment(Event* ev)
+{
+
+}
+
+//check achivment for player
+void CThread::checkAchivment(Event* ev)
+{
+
+}
+*/
 
 //[b611] chrissstrahl - make player view to specific camera - without being in cinematics
 //returns: void
@@ -1601,7 +1621,7 @@ void CThread::setCamera(Event* ev)
 	player = ev->GetEntity(1);
 	camera = ev->GetEntity(2,true);
 
-	if (!player || player->isSubclassOf(Player))
+	if (!player || !player->isSubclassOf(Player))
 		return;
 
 	Player* play = (Player*)player;
@@ -1620,8 +1640,10 @@ void CThread::setCamera(Event* ev)
 		return;
 	}
 	
-	if(!camera->isSubclassOf(Camera))
-		return;		
+	if (!camera->isSubclassOf(Camera)) {
+		gi.Printf(va("setCamera::Entity $%s is of class %s needs to be Camera\n", camera->targetname.c_str(),camera->getClassname()));
+		return;
+	}
 
 	//set current camera so it can be restored on savegame
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
@@ -1632,10 +1654,10 @@ void CThread::setCamera(Event* ev)
 	
 //[b611] chrissstrahl - add command allow reading and writing to ini file
 //returns: string ini data
-//takes: string ini file, string ini category, key
+//takes: categoryname, keyname, filename
 void CThread::getIniData(Event *ev)
 {
-	if (ev->NumArgs() < 3) {
+	if (ev->NumArgs() < 2) {
 		ev->ReturnString("!Parameter-Error!");
 		return;
 	}
@@ -1643,9 +1665,15 @@ void CThread::getIniData(Event *ev)
 	str sKeyname;
 	str sCategoryname;
 	str sValue;
-	sFilename			= ev->GetString(1);
+	sCategoryname		= ev->GetString(1);
 	sKeyname			= ev->GetString(2);
-	sCategoryname		= ev->GetString(3);
+
+	if (ev->NumArgs() > 2) {
+		sFilename = ev->GetString(3);
+	}
+	else {
+		sFilename = va("ini/%s.ini",level.mapname.tolower());
+	}
 
 	//prevent certain ini files to be accsessed
 	//do not allow reading/writing specific files
@@ -1657,9 +1685,9 @@ void CThread::getIniData(Event *ev)
 	};
 	int arrSize = sizeof(forBiddenFiles) / sizeof(forBiddenFiles[0]);
 	for (int i = 0; i < arrSize; i++) {
-		if (coop_returnIntFind(forBiddenFiles[i], sFilename.c_str())) {
+		if (coop_returnIntFind(forBiddenFiles[i], sFilename.c_str()) != -1) {
 			ev->ReturnString("!Accsess-Error!");
-			G_ExitWithError(va("getIniData - Accsess Violation on writing file: %s", sFilename.c_str()));
+			G_ExitWithError(va("getIniData - Accsess Violation on reading file: %s", sFilename.c_str()));
 		}
 	}
 	
@@ -1667,7 +1695,7 @@ void CThread::getIniData(Event *ev)
 	ev->ReturnString(sValue.c_str());
 }
 
-//takes: string ini category, key, value and writes it to a ini
+//takes: categoryname, keyname, value
 void CThread::setIniData(Event *ev)
 {
 	if (ev->NumArgs() < 3) {
@@ -1675,17 +1703,18 @@ void CThread::setIniData(Event *ev)
 		return;
 	}
 	bool bScuccsess;
-	str sFilename	= va("ini/%s",level.mapname.tolower());
+	str sFilename	= va("ini/%s.ini",level.mapname.tolower());
 	str sKeyname;
 	str sCategoryname;
 	str sValue;
 	//sFilename		= ev->GetString(1);
-	sKeyname		= ev->GetString(1);
-	sCategoryname	= ev->GetString(2);
+	sCategoryname	= ev->GetString(1);
+	sKeyname		= ev->GetString(2);
 	sValue			= ev->GetString(3);
 
 	bScuccsess = coop_parserIniSet(sFilename, sKeyname, sValue, sCategoryname);
 	ev->ReturnFloat(float(bScuccsess));
+	gi.Printf(va("setIniData::%s at %s - %s\n", sFilename.c_str(),sCategoryname.c_str(), sKeyname.c_str()));
 }
 
 //[b611] chrissstrahl - add command to check if player/actor has a specific item
