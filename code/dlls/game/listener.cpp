@@ -2162,7 +2162,7 @@ void Event::Error( const char *fmt, ... )
 			}
 			//[b607] chrissstrahl - set errorevent key and value to coop_status.ini
 			str sError = va("%s(%d): '%s' :%s", filename, info.linenumber, getName(), text);
-			coop_parserIniSet("coop_status.ini", "errorevent", sError, "server");
+			coop_parserIniSet("ini/server.ini", "errorevent", sError, "server");
 
 			EVENT_DPrintf( "%s(%d): '%s' :\n%s\n", filename, info.linenumber, getName(), text );
 		}

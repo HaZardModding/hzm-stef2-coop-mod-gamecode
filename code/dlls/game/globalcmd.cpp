@@ -1385,9 +1385,9 @@ Event EV_ScriptThread_setIniData
 (
 	"setIniData",
 	EV_SCRIPTONLY,
-	"@fssss",
-	"returndbool filename keyname value category",
-	"sets data to given inifile"
+	"@fsss",
+	"returndbool keyname value category",
+	"sets data to map-specific ini file"
 );
 Event EV_ScriptThread_setCamera
 (
@@ -1647,62 +1647,44 @@ void CThread::getIniData(Event *ev)
 	sKeyname			= ev->GetString(2);
 	sCategoryname		= ev->GetString(3);
 
-	//prevent certain ini files top be accsessed
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	const char* forBiddenFiles[1] = {
+		"server.ini",
+		//"deathlist.ini",
+		//"maplist.ini",
+		//"vote_maplist.ini"
+	};
+	int arrSize = sizeof(forBiddenFiles) / sizeof(forBiddenFiles[0]);
+	for (int i = 0; i < arrSize; i++) {
+		if (coop_returnIntFind(forBiddenFiles[i], sFilename.c_str())) {
+			ev->ReturnString("!Accsess-Error!");
+			G_ExitWithError(va("getIniData - Accsess Violation on writing file: %s", sFilename.c_str()));
+		}
+	}
+	
 	sValue = coop_parserIniGet(sFilename, sKeyname, sCategoryname);
-
 	ev->ReturnString(sValue.c_str());
 }
 
-//takes: string ini file, string ini category, key, value and writes it to a ini
+//takes: string ini category, key, value and writes it to a ini
 void CThread::setIniData(Event *ev)
 {
-	if (ev->NumArgs() < 4) {
+	if (ev->NumArgs() < 3) {
 		ev->ReturnString("!Parameter-Error!");
 		return;
 	}
 	bool bScuccsess;
-	str sFilename;
+	str sFilename	= va("ini/%s",level.mapname.tolower());
 	str sKeyname;
 	str sCategoryname;
 	str sValue;
-	sFilename		= ev->GetString(1);
-	sKeyname		= ev->GetString(2);
-	sCategoryname	= ev->GetString(3);
-	sValue			= ev->GetString(4);
+	//sFilename		= ev->GetString(1);
+	sKeyname		= ev->GetString(1);
+	sCategoryname	= ev->GetString(2);
+	sValue			= ev->GetString(3);
 
-	//prevent certain ini files top be accsessed
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
-	//needs to be implemented
 	bScuccsess = coop_parserIniSet(sFilename, sKeyname, sValue, sCategoryname);
-
 	ev->ReturnFloat(float(bScuccsess));
 }
 

@@ -111,22 +111,22 @@ void coop_armoryEquipPlayer(Player *player)
 				if ( bGiveSecretWeapons && game.isStandardLevel )
 				{
 					//gi.Printf("HZM Coop Mod - Checking and restoring secret weapons\n");
-					if ( coop_returnBool( coop_phraserIniGet( "coop_status.ini" , "secretWeapon_CompressionRifle" , "server" ) ) )
+					if ( coop_returnBool( coop_phraserIniGet( "ini/server.ini" , "secretWeapon_CompressionRifle" , "server" ) ) )
 						multiplayerManager.givePlayerItem( player->entnum , "models/weapons/worldmodel-CompressionRifle.tik" );
-					if ( coop_returnBool( coop_phraserIniGet( "coop_status.ini" , "secretWeapon_IMOD" , "server" ) ) )
+					if ( coop_returnBool( coop_phraserIniGet( "ini/server.ini" , "secretWeapon_IMOD" , "server" ) ) )
 						multiplayerManager.givePlayerItem( player->entnum , "models/weapons/worldmodel-imod.tik" );
-					if ( coop_returnBool( coop_phraserIniGet( "coop_status.ini" , "secretWeapon_IdryllStaff" , "server" ) ) )
+					if ( coop_returnBool( coop_phraserIniGet( "ini/server.ini" , "secretWeapon_IdryllStaff" , "server" ) ) )
 						multiplayerManager.givePlayerItem( player->entnum , "models/weapons/worldmodel-drull-staff.tik" );
 					
 					//if it is the romulan secret mission give romulan hand textured rad, otherwise, give normal
 					if ( !Q_stricmpn( level.mapname,"m10l",4)  )
 					{
-						if ( coop_returnBool( coop_phraserIniGet( "coop_status.ini" , "secretWeapon_RomulanExperimental" , "server" ) ) )
+						if ( coop_returnBool( coop_phraserIniGet( "ini/server.ini" , "secretWeapon_RomulanExperimental" , "server" ) ) )
 							multiplayerManager.givePlayerItem( player->entnum , "models/weapons/worldmodel-rom-radgun-romhands.tik" );
 					}
 					else
 					{
-						if ( coop_returnBool( coop_phraserIniGet( "coop_status.ini" , "secretWeapon_RomulanExperimental" , "server" ) ) )
+						if ( coop_returnBool( coop_phraserIniGet( "ini/server.ini" , "secretWeapon_RomulanExperimental" , "server" ) ) )
 							multiplayerManager.givePlayerItem( player->entnum , "models/weapons/worldmodel-rom-radgun.tik" );
 					}
 				}

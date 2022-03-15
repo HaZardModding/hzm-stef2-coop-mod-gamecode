@@ -184,7 +184,7 @@ str coop_playerGetDataSegment( Player *player , short int iNumber )
 {
 	str sData;
 	str sSegment = "";
-	sData = coop_parserIniGet( "coop_status.ini" , player->coopPlayer.coopId , "client" );
+	sData = coop_parserIniGet( "ini/server.ini" , player->coopPlayer.coopId , "client" );
 	coop_trimM( sData , " \t\r\n" );
 
 	if ( !Q_stricmp( sData , "" ) )
@@ -318,7 +318,7 @@ void coop_playerRestore( Player *player )
 	if ( game.levelType != MAPTYPE_MISSION && game.levelType != MAPTYPE_CUSTOM )
 		return;
 	
-	str sData = coop_parserIniGet( "coop_status.ini" , player->coopPlayer.coopId , "client" );
+	str sData = coop_parserIniGet( "ini/server.ini" , player->coopPlayer.coopId , "client" );
 	if ( !Q_stricmp( sData, "") )
 	{
 		return;
@@ -472,7 +472,7 @@ bool coop_playerSetup(Player *player)
 				if ( !Q_stricmpn( cvar->string , "cid." , 4 ) ) {
 					player->coopPlayer.coopId = coop_trim( cvar->string , " \t\r\n;[]=" );
 					//check if player id is already saved on this server
-					str ss = coop_parserIniGet( "coop_status.ini" , player->coopPlayer.coopId , "client" );
+					str ss = coop_parserIniGet( "ini/server.ini" , player->coopPlayer.coopId , "client" );
 					if ( ss != "" ) {
 						coop_playerRestore( player );
 						bIdFound = true;
@@ -573,7 +573,7 @@ void coop_playerSaveNewPlayerId(Player *player)
 {
 	//hzm coop mod chrissstrahl - hosting player does not yet have a id
 	gi.Printf("======================\nCoop Mod: SAVING NEW PLAYER ID\n======================\n");
-	coop_parserIniSet("coop_status.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
+	coop_parserIniSet("ini/server.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
 	
 	//this need to be removed, this is just for debugging
 	//multiplayerManager.HUDPrintAllClients("COOPDEBUG: SAVING NEW PLAYER ID\n");
@@ -1660,7 +1660,7 @@ bool coop_playerSay( Player *player , str sayString)
 		player->coopPlayer.coopId = coop_trim( sayString.c_str() , " \t\r\n;[]=" );
 
 		//check if player id is already saved on this server
-		str ss = coop_parserIniGet( "coop_status.ini" , player->coopPlayer.coopId , "client" );
+		str ss = coop_parserIniGet( "ini/server.ini" , player->coopPlayer.coopId , "client" );
 		if ( ss == "" )
 		{
 			//[b610] chrissstrahl - put in a seperate func
@@ -2150,7 +2150,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 //inflictor is a actor
 	else if ( attacker->isSubclassOf( Actor ) ){
 		Actor *actor = (Actor*)attacker;
-		str sActorResolved = coop_parserIniGet("coop_mod/ini/deathlist.ini", actor->name.c_str(), "actorname");
+		str sActorResolved = coop_parserIniGet("ini/deathlist.ini", actor->name.c_str(), "actorname");
 		if ( !sActorResolved.length() ) {
 			printString += va(" # Unhandled actorname: %s\n", actor->name.c_str());
 		}

@@ -864,12 +864,12 @@ str coop_returnStringDeathmessagenameForEntity( Entity * entity )
 
 	//get all items into the list, if they match the primary critiria
 	if ( !Q_stricmpn( entityClass , "ScriptSlave" , 11 ) ) {
-		printString = coop_parserIniGet( "coop_mod/ini/deathlist.ini" , entity->targetname , "targetname" );
+		printString = coop_parserIniGet( "ini/deathlist.ini" , entity->targetname , "targetname" );
 	}else if ( !Q_stricmpn( entityClass , "Explosion" , 9 ) || !Q_stricmpn( entityClass , "Projectile" , 10 ) ) {
-		printString = coop_parserIniGet( "coop_mod/ini/deathlist.ini" , entity->model , "model" );
+		printString = coop_parserIniGet( "ini/deathlist.ini" , entity->model , "model" );
 	}
 	else if ( !Q_stricmpn( entityClass , "SlidingDoor" , 11 ) ) {
-		printString = coop_parserIniGet( "coop_mod/ini/deathlist.ini" , entity->getClassname() , "class" );
+		printString = coop_parserIniGet( "ini/deathlist.ini" , entity->getClassname() , "class" );
 	}
 
 	if ( printString == "" ) {
@@ -1890,7 +1890,7 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	{
 		type = MAPTYPE_CUSTOM;
 
-		if ( coop_parserIsItemInCategory( "coop_mod/ini/maplist.ini" , sLevelname , "coopincluded" ) ) {
+		if ( coop_parserIsItemInCategory( "ini/maplist.ini" , sLevelname , "coopincluded" ) ) {
 			return true;
 		}
 
@@ -1900,7 +1900,7 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	//check if it is a multiplayer map - it is faster if we can check the name prefix first - reduce file read
 	if ( strnicmp( sLevelname.c_str() , "dm_" , 3 ) == 0 || strnicmp( sLevelname.c_str() , "aah_" , 4 ) == 0  || strnicmp( sLevelname.c_str() , "ctf_" , 4 ) == 0 || strnicmp( sLevelname.c_str() , "hm_" , 3 ) == 0 ) {
 		//check if it is a standard multiplayer map
-		if ( coop_parserIsItemInCategory( "coop_mod/ini/maplist.ini" , sLevelname , "multiplayer" ) ) {
+		if ( coop_parserIsItemInCategory( "ini/maplist.ini" , sLevelname , "multiplayer" ) ) {
 			type = MAPTYPE_MULTIPLAYER;
 			return true;
 		}
@@ -1908,7 +1908,7 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	//check if it is a igm map - it is faster if we can check the name prefix first - reduce file read
 	if ( strnicmp( sLevelname.c_str() , "ent-deck" , 8 ) == 0 ) {
 		//check if it is a coop map - igm
-		if ( coop_parserIsItemInCategory( "coop_mod/ini/maplist.ini" , sLevelname , "singleplayerigm" ) ) {
+		if ( coop_parserIsItemInCategory( "ini/maplist.ini" , sLevelname , "singleplayerigm" ) ) {
 			type = MAPTYPE_IGM;
 			standard = true;
 			return true;
@@ -1918,7 +1918,7 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	//check if it is a igm map - it is faster if we can check the name prefix first - reduce file read
 	if ( strnicmp( sLevelname.c_str() , "m" , 1 ) == 0 && coop_returnIntFind( sLevelname , "-" ) != -1 || strnicmp( sLevelname.c_str() , "credits" , 7 ) == 0 ) {
 		
-		if ( coop_parserIsItemInCategory( "coop_mod/ini/maplist.ini" , sLevelname , "singleplayermission" ) ) {
+		if ( coop_parserIsItemInCategory( "ini/maplist.ini" , sLevelname , "singleplayermission" ) ) {
 			type = MAPTYPE_MISSION;
 			standard = true;
 			return true;
@@ -1926,13 +1926,13 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	}
 
 	//check if it is a coop map - secret or training maps
-	if ( coop_parserIsItemInCategory( "coop_mod/ini/maplist.ini" , sLevelname , "singleplayersecret" ) ) {
+	if ( coop_parserIsItemInCategory( "ini/maplist.ini" , sLevelname , "singleplayersecret" ) ) {
 		type = MAPTYPE_SECRET;
 		standard = true;
 		return true;
 	}
 	//check if it is a not supported sp map - check this at the very end, because it is the most unlikly
-	if ( coop_parserIsItemInCategory( "coop_mod/ini/maplist.ini" , sLevelname , "singleplayer" ) ) {
+	if ( coop_parserIsItemInCategory( "ini/maplist.ini" , sLevelname , "singleplayer" ) ) {
 		type = MAPTYPE_MULTIPLAYER;
 		standard = true;
 		return true;
