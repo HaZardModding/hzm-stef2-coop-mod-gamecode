@@ -1781,6 +1781,9 @@ void World::Archive( Archiver &arc )
 
 	arc.ArchiveBoolean( &world_dying );
 
+	//[b611] chrissstrahl - make sure this works with savegames
+	arc.ArchiveSafePointer( &skipthreadEntity );
+
 	arc.ArchiveString( &skipthread );
 	arc.ArchiveFloat( &farplane_distance );
 	arc.ArchiveVector( &farplane_color );
