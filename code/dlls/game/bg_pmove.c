@@ -2330,7 +2330,6 @@ void PM_UpdateViewAngles
    {
 	short	temp;
 	int	i;
-
 	if ( ps->pm_flags & PMF_FROZEN )
       {
       // no view changes at all
@@ -2468,12 +2467,11 @@ void PmoveSingle (pmove_t *pmove)
 	// update the viewangles
 	if (!pm->ps->in_vehicle )
 		{
-		PM_UpdateViewAngles( pm->ps, &pm->cmd );
-
-		AngleVectors( pm->ps->viewangles, pml.forward, pml.left, pml.up );
-	   VectorClear( tempVec );
-	   tempVec[ YAW ] = pm->ps->viewangles[ YAW ];
-		AngleVectors( tempVec, pml.flat_forward, pml.flat_left, pml.flat_up );
+			PM_UpdateViewAngles( pm->ps, &pm->cmd );
+			AngleVectors( pm->ps->viewangles, pml.forward, pml.left, pml.up );
+			VectorClear( tempVec );
+			tempVec[ YAW ] = pm->ps->viewangles[ YAW ];
+			AngleVectors( tempVec, pml.flat_forward, pml.flat_left, pml.flat_up );
 		}
 
 	if ( pm->ps->in_vehicle )
