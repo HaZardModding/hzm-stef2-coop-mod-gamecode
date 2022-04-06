@@ -24,7 +24,7 @@
 #define COOP_MAX_TIKI_LISTING 2200	//stock game has 2093 TIKIS
 #define COOP_MAX_SKA_LISTING 3600	//stock game has 3473 animations
 #define COOP_MAX_SPRITES_LISTING 250//guessed value
-#define COOP_BUILD 609 //current coop mod internal version
+#define COOP_BUILD 611 //current coop mod internal version
 #define MAPTYPE_MULTIPLAYER 0
 #define MAPTYPE_SECRET 1
 #define MAPTYPE_IGM 2
