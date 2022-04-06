@@ -342,10 +342,10 @@ int coop_vote_mapValidate(Player* player, const str &command, const str &arg, st
 		if (coop_returnCvarInteger("coop_votedisable") == 1) {
 			if (strnicmp(sMapRealName.c_str(), "coop_",5) != 0 && //maps starting with coop_
 				strnicmp(sMapRealName.c_str(), "prf_",4) != 0 && //maps starting with prf_
-				coop_parserIsItemInCategory("ini/maplist.ini", sMapRealName.c_str(),"singlePlayerMission") != true &&
-				coop_parserIsItemInCategory("ini/maplist.ini", sMapRealName.c_str(),"singlePlayerIgm") != true &&
-				coop_parserIsItemInCategory("ini/maplist.ini", sMapRealName.c_str(),"singlePlayerSecret") != true &&
-				coop_parserIsItemInCategory("ini/maplist.ini", sMapRealName.c_str(),"coopIncluded") != true
+				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"singlePlayerMission") != true &&
+				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"singlePlayerIgm") != true &&
+				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"singlePlayerSecret") != true &&
+				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"coopIncluded") != true
 			) {
 				if (coop_checkPlayerLanguageGerman(player)) {
 					multiplayerManager.HUDPrint(player->entnum, va("%s Ist kein Coop Level! Server erlaubt nur Coop Levels!\n", sMapRealName.c_str()));
@@ -774,16 +774,16 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 	ListenKnoten *currentCategories = NULL;
 	//delete pos
 	ListenKnoten *delCategories = NULL;
-	coop_parserGetItemsFromCategory("ini/vote_maplist.ini", startCategories, endCategories, "categories");
+	coop_parserGetItemsFromCategory("vote_maplist.ini", startCategories, endCategories, "categories");
 
 	if (!startCategories) {
 		if (coop_checkPlayerLanguageGerman(player)) {
-			player->hudPrint("FEHLER: ini/vote_maplist.ini sektion: categories, besch. oder fehlt.\n");
+			player->hudPrint("FEHLER: vote_maplist.ini sektion: categories, besch. oder fehlt.\n");
 		}
 		else {
-			player->hudPrint("ERROR: ini/vote_maplist.ini section: categories, is damaged or missing.\n");
+			player->hudPrint("ERROR: vote_maplist.ini section: categories, is damaged or missing.\n");
 		}
-		gi.Printf(va("MultiplayerManager::callVote (%s) ERROR: ini/vote_maplist.ini section: categories, is damaged or missing.\n", command.c_str()));
+		gi.Printf(va("MultiplayerManager::callVote (%s) ERROR: vote_maplist.ini section: categories, is damaged or missing.\n", command.c_str()));
 
 		//delete nodes again
 		currentCategories = startCategories;
@@ -811,18 +811,18 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 		ListenKnoten *current = NULL;
 		//delete pos
 		ListenKnoten *del = NULL;
-		coop_parserGetItemsFromCategory("ini/vote_maplist.ini", start, end, currentCategories->value.c_str());
+		coop_parserGetItemsFromCategory("vote_maplist.ini", start, end, currentCategories->value.c_str());
 
 
 		//abbort on error///////////////////////////////////////////////////////
 		if (!start) {
 			if (coop_checkPlayerLanguageGerman(player)) {
-				player->hudPrint(va("FEHLER: ini/vote_maplist.ini sektion: %s, kaputt oder fehlt.\n", currentCategories->value.c_str()));
+				player->hudPrint(va("FEHLER: vote_maplist.ini sektion: %s, kaputt oder fehlt.\n", currentCategories->value.c_str()));
 			}
 			else {
-				player->hudPrint(va("ERROR: ini/vote_maplist.ini section: %s, is damaged or missing.\n", currentCategories->value.c_str()));
+				player->hudPrint(va("ERROR: vote_maplist.ini section: %s, is damaged or missing.\n", currentCategories->value.c_str()));
 			}
-			gi.Printf(va("MultiplayerManager::callVote (%s) ERROR: ini/vote_maplist.ini section: %s, is damaged or missing.\n", command.c_str(), currentCategories->value.c_str()));
+			gi.Printf(va("MultiplayerManager::callVote (%s) ERROR: vote_maplist.ini section: %s, is damaged or missing.\n", command.c_str(), currentCategories->value.c_str()));
 
 			//delete nodes again
 			current = start;
@@ -989,12 +989,12 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 	//hzm coop mod chrissstrahl - current map not listed here - abort
 	if (stricmp(sMapToLoad.c_str(), "") == 0) {
 		if (coop_checkPlayerLanguageGerman(player)) {
-			player->hudPrint(va("%s ist nicht aufgelistet in: ini/vote_maplist.ini.\n", sMapRealName.c_str()));
+			player->hudPrint(va("%s ist nicht aufgelistet in: vote_maplist.ini.\n", sMapRealName.c_str()));
 		}
 		else {
-			player->hudPrint(va("%s is not listed in: ini/vote_maplist.ini.\n", sMapRealName.c_str()));
+			player->hudPrint(va("%s is not listed in: vote_maplist.ini.\n", sMapRealName.c_str()));
 		}
-		gi.Printf(va("%s is not listed in: ini/vote_maplist.ini.\n", sMapRealName.c_str()));
+		gi.Printf(va("%s is not listed in: vote_maplist.ini.\n", sMapRealName.c_str()));
 		return 1;
 	}
 
@@ -1197,7 +1197,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 	game.coop_lastmanstanding = (bool)atoi(sMultiplier.c_str());
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/server.ini", "lastmanstanding", (bool)iStatus, "server");
+	coop_parserIniSet("ini/serverData.ini", "lastmanstanding", (bool)iStatus, "server");
 
 	//hzm coop mod chrissstrahl - send updated data to player UI
 	Player *player = NULL;
@@ -1288,7 +1288,7 @@ bool coop_vote_respawntimeSet(const str _voteString)
 	game.coop_respawnTime = atoi(sMultiplier.c_str());
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/server.ini", "respawntime", (int)multiplayerManager.getRespawnTime(), "server");
+	coop_parserIniSet("ini/serverData.ini", "respawntime", (int)multiplayerManager.getRespawnTime(), "server");
 
 	coop_huds_callvoteOptionChangedUI("Respawn Time", sMultiplier.c_str(), "coopGpoRspwt");
 	return true;
@@ -1325,7 +1325,7 @@ bool coop_vote_airaccelerateSet(const str _voteString)
 	world->setPhysicsVar("airAccelerate", (float)iVal);
 
 	//save changes directly to ini
-	coop_parserIniSet("ini/server.ini", "airaccelerate", iVal , "server");
+	coop_parserIniSet("ini/serverData.ini", "airaccelerate", iVal , "server");
 
 	//update callvote ui
 	coop_huds_callvoteOptionChangedUI("airaccelerate", sMultiplier.c_str(), "coopGpoAa");
@@ -1367,7 +1367,7 @@ bool coop_vote_stasistimeSet(const str _voteString)
 		game.coop_stasisTime = 30;
 	}
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/server.ini", "stasistime", game.coop_stasisTime, "server");
+	coop_parserIniSet("ini/serverData.ini", "stasistime", game.coop_stasisTime, "server");
 
 	//update callvote ui
 	coop_huds_callvoteOptionChangedUI("Stasis Time", sMultiplier.c_str(), "coopGpoSt");
@@ -1409,7 +1409,7 @@ bool coop_vote_awardsSet(const str _voteString)
 	gameVars.SetVariable("awards", game.coop_awardsActive); //[b607] chrissstrahl - fixed wrong var being used
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/server.ini", "awards", sValue, "server");
+	coop_parserIniSet("ini/serverData.ini", "awards", sValue, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Awards", sValue.c_str(), "coopGpoAw");
@@ -1449,7 +1449,7 @@ bool coop_vote_friendlyfireSet(const str _voteString)
 	gameVars.SetVariable("friendlyFire", game.coop_friendlyFire);
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/server.ini", "friendlyFire", sMultiplier, "server");
+	coop_parserIniSet("ini/serverData.ini", "friendlyFire", sMultiplier, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Friendly Fire", sMultiplier.c_str(), "coopGpoFF");
@@ -1493,7 +1493,7 @@ bool coop_vote_maxspeedSet(const str _voteString)
 	gameVars.SetVariable("maxSpeed", game.coop_maxspeed);
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/server.ini", "maxSpeed", game.coop_maxspeed, "server");
+	coop_parserIniSet("ini/serverData.ini", "maxSpeed", game.coop_maxspeed, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Max Speed", speed.c_str(), "coopGpoMvSpd");
@@ -1530,7 +1530,7 @@ bool coop_vote_teamiconSet(const str _voteString)
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
 	icon = (bool)atoi(icon);
-	coop_parserIniSet("ini/server.ini", "teamIcon", icon.c_str(), "server");
+	coop_parserIniSet("ini/serverData.ini", "teamIcon", icon.c_str(), "server");
 
 	//hzm coop mod chrissstrahl - set global var
 	game.coop_teamIcon = (bool)atoi(icon);
@@ -1570,7 +1570,7 @@ bool coop_vote_deadbodiesSet(const str _voteString)
 
 	//save to ini
 	icon = atoi(icon);
-	coop_parserIniSet("ini/server.ini", "deadbodies", icon.c_str(), "server");
+	coop_parserIniSet("ini/serverData.ini", "deadbodies", icon.c_str(), "server");
 
 	//set to glkobal var
 	game.coop_deadBodiesPerArea = atoi(icon);

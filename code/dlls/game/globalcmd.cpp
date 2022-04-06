@@ -1678,7 +1678,7 @@ void CThread::getIniData(Event *ev)
 	//prevent certain ini files to be accsessed
 	//do not allow reading/writing specific files
 	const char* forBiddenFiles[1] = {
-		"server.ini",
+		"serverdata.ini",
 		//"deathlist.ini",
 		//"maplist.ini",
 		//"vote_maplist.ini"

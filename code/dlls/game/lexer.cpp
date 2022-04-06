@@ -528,7 +528,7 @@ void Lexer::ParseError( const char *error, ... )
 	if (!bErrorSourceSet) {
 		bErrorSourceSet = true;
 		str sError = va("%s(%i) : %s", program.s_file.c_str(), source_line, string);
-		coop_parserIniSet("ini/server.ini", "errorscript", sError, "server");
+		coop_parserIniSet("ini/serverData.ini", "errorscript", sError, "server");
 	}
 	throw "Error";
 }

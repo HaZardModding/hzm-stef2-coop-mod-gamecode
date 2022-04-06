@@ -425,11 +425,11 @@ void Interpreter::ThreadCall( const Interpreter *source, dfunction_t *newf, int 
 	}
 	else if ( sFunctioname == "globalcoop_server_itemunlockedset_dll" ) {
 		str sKey = va( "unlocked.%s" , coop_armoryReturnWeaponName( parameterString[0] ).c_str() );
-		coop_parserIniSet( "ini/server.ini" , sKey , "true" , "server" );
+		coop_parserIniSet( "ini/serverData.ini" , sKey , "true" , "server" );
 	}
 	else if ( sFunctioname == "globalcoop_server_itemlockedset_dll" ) {
 		str sKey = va( "unlocked.%s" , coop_armoryReturnWeaponName( parameterString[0] ).c_str() );
-		coop_parserIniSet( "ini/server.ini" , sKey , "false" , "server" );
+		coop_parserIniSet( "ini/serverData.ini" , sKey , "false" , "server" );
 	}
 }
 
