@@ -436,7 +436,7 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 {
 	//[b607] chrissstrahl - allow to adjust the coop reboot feature
 	bool bCoopNoReboot = false;
-	str sCoopRebootState = coop_parserIniGet("ini/server.ini", "rebootType", "server");
+	str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
 	if (Q_stricmpn(sCoopRebootState.c_str(),"killserver",10) && Q_stricmpn(sCoopRebootState.c_str(),"quit",4)) { 
 		return false;
 	}
@@ -497,12 +497,12 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 	//you know paranoya isn't real if it is real ;)
 	gi.Printf("REBOOT: SET MAPNAME %s\n", sMapToLoad.c_str());
 	if ( gi.FS_Exists( va( "maps/%s.bsp" , sMapToLoad.c_str() ) ) != -1 ){
-		coop_parserIniSet( "ini/server.ini" , "startmap" , sMapToLoad.c_str() , "server" );
+		coop_parserIniSet( "ini/serverData.ini" , "startmap" , sMapToLoad.c_str() , "server" );
 	}else{
-		coop_parserIniSet( "ini/server.ini" , "startmap" , level.mapname.c_str() , "server" );
+		coop_parserIniSet( "ini/serverData.ini" , "startmap" , level.mapname.c_str() , "server" );
 	}
 	//set marker that server rebooted
-	coop_parserIniSet( "ini/server.ini" , "rebooting" , "true" , "server" );
+	coop_parserIniSet( "ini/serverData.ini" , "rebooting" , "true" , "server" );
 
 	//save client data into coop_status.ini
 	coop_serverSaveAllClientData();
@@ -686,7 +686,7 @@ void coop_serverSaveClientDataWrite( Player *player )
 		return;
 
 	player->coopPlayer.coopStatus = sData;
-	coop_parserIniSet( "ini/server.ini" , player->coopPlayer.coopId , sData , "client" );
+	coop_parserIniSet( "ini/serverData.ini" , player->coopPlayer.coopId , sData , "client" );
 	//gi.Printf( va( "=============================\nSAVED DATA FOR CLIENT: %s\n=============================\n" , sData.c_str() ) );
 }
 
@@ -806,9 +806,9 @@ void coop_serverSaveGameVars( const str &name , const str &value )
 	
 	//make sure we use the corrected value if there is one
 	if ( iCorrected == -1 ){
-		coop_parserIniSet( "ini/server.ini" , name , value , "server" );
+		coop_parserIniSet( "ini/serverData.ini" , name , value , "server" );
 	}else{
-		coop_parserIniSet( "ini/server.ini" , name , iCorrected , "server" );
+		coop_parserIniSet( "ini/serverData.ini" , name , iCorrected , "server" );
 	}
 }
 void coop_serverRestoreGameVars()
@@ -821,47 +821,47 @@ void coop_serverRestoreGameVars()
 
 
 	if ( game.isStandardLevel ){
-		gameVars.SetVariable( "globalMissionEnterprise" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "globalMissionEnterprise" , "server" ) , 1 ) );//game.
-		gameVars.SetVariable( "globalTurboliftRide" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "globalTurboliftRide" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "globalKleeyaChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "globalKleeyaChoice" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "globalTelsiaChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "globalTelsiaChoice" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "globalNoneChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "globalNoneChoice" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "globalMissionEnterprise" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalMissionEnterprise" , "server" ) , 1 ) );//game.
+		gameVars.SetVariable( "globalTurboliftRide" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalTurboliftRide" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "globalKleeyaChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalKleeyaChoice" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "globalTelsiaChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalTelsiaChoice" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "globalNoneChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalNoneChoice" , "server" ) , 0 ) );//game.
 
-		gameVars.SetVariable( "attrexianWeaponFound" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "attrexianWeaponFound" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "secretWeapon_CompressionRifle" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "secretWeapon_CompressionRifle" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "secretWeapon_IMOD" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "secretWeapon_IMOD" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "secretWeapon_IdryllStaff" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "secretWeapon_IdryllStaff" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "secretWeapon_RomulanExperimental" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "secretWeapon_RomulanExperimental" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "attrexianWeaponFound" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "attrexianWeaponFound" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "secretWeapon_CompressionRifle" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "secretWeapon_CompressionRifle" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "secretWeapon_IMOD" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "secretWeapon_IMOD" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "secretWeapon_IdryllStaff" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "secretWeapon_IdryllStaff" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "secretWeapon_RomulanExperimental" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "secretWeapon_RomulanExperimental" , "server" ) , 0 ) );//game.
 
-		gameVars.SetVariable( "igmRoomsVisited" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "igmRoomsVisited" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "igmHolodeckSpawn" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "igmHolodeckSpawn" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "igmTurboliftSpawn" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "igmTurboliftSpawn" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "igmRoomsVisited" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "igmRoomsVisited" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "igmHolodeckSpawn" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "igmHolodeckSpawn" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "igmTurboliftSpawn" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "igmTurboliftSpawn" , "server" ) , 0 ) );//game.
 
-		gameVars.SetVariable( "statusM5L2CUnlocked" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/server.ini" , "statusM5L2CUnlocked" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "statusM5L2CUnlocked" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "statusM5L2CUnlocked" , "server" ) , 0 ) );//game.
 	}
 
 	//[b607] chrissstrahl - now this needed some work over
 	int iVal;
-	iVal = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "skill", "server")), 0, 3, COOP_DEFAULT_SKILL);
+	iVal = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "skill", "server")), 0, 3, COOP_DEFAULT_SKILL);
 	if ( skill->integer != iVal)gi.cvar_set( "skill" , va( "%d" , iVal) );
 
-	game.coop_friendlyFire = coop_returnFloatWithinOrDefault(atof(coop_parserIniGet("ini/server.ini", "friendlyfire", "server")),0 ,2, COOP_DEFAULT_FF);
+	game.coop_friendlyFire = coop_returnFloatWithinOrDefault(atof(coop_parserIniGet("ini/serverData.ini", "friendlyfire", "server")),0 ,2, COOP_DEFAULT_FF);
 	gameVars.SetVariable("friendlyFire", game.coop_friendlyFire);
 
-	game.coop_maxspeed = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "maxspeed", "server")), 200,1000 , COOP_DEFAULT_MAXSPEED);
+	game.coop_maxspeed = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "maxspeed", "server")), 200,1000 , COOP_DEFAULT_MAXSPEED);
 	world->setPhysicsVar("maxspeed", game.coop_maxspeed);
 
-	game.coop_respawnTime = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "respawntime", "server")),0 ,60,COOP_DEFAULT_RESPAWNTIME );
+	game.coop_respawnTime = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "respawntime", "server")),0 ,60,COOP_DEFAULT_RESPAWNTIME );
 	multiplayerManager.setRespawnTime( (float)game.coop_respawnTime );
 
-	iVal = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "airaccelerate", "server")), 0, 4, COOP_DEFAULT_AIRACCELERATE);
+	iVal = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "airaccelerate", "server")), 0, 4, COOP_DEFAULT_AIRACCELERATE);
 	world->setPhysicsVar("airAccelerate", iVal);
 
-	game.coop_awardsActive = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "awards", "server")), 0, 1, COOP_DEFAULT_AWARDS);
-	game.coop_teamIcon = (bool)coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "teamicon", "server")), 0,1 ,(int)COOP_DEFAULT_TEAMICON );
-	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "lastmanstanding", "server")), 0,1 ,(int)COOP_DEFAULT_LASTMANSTANDING );
-	game.coop_deadBodiesPerArea = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "deadbodies", "server")),0,25 , COOP_DEFAULT_DEADBODIES);
-	game.coop_stasisTime = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/server.ini", "stasistime", "server")),7,30 , COOP_DEFAULT_STASISTIME);
+	game.coop_awardsActive = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "awards", "server")), 0, 1, COOP_DEFAULT_AWARDS);
+	game.coop_teamIcon = (bool)coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "teamicon", "server")), 0,1 ,(int)COOP_DEFAULT_TEAMICON );
+	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "lastmanstanding", "server")), 0,1 ,(int)COOP_DEFAULT_LASTMANSTANDING );
+	game.coop_deadBodiesPerArea = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "deadbodies", "server")),0,25 , COOP_DEFAULT_DEADBODIES);
+	game.coop_stasisTime = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "stasistime", "server")),7,30 , COOP_DEFAULT_STASISTIME);
 }
 
 
@@ -920,7 +920,7 @@ void coop_serverResetClientData( Player *player )
 
 	player->coopPlayer.coopStatus = sData;
 
-	coop_parserIniSet( "ini/server.ini" , player->coopPlayer.coopId , sData , "client" );
+	coop_parserIniSet( "ini/serverData.ini" , player->coopPlayer.coopId , sData , "client" );
 }
 
 
@@ -1008,10 +1008,10 @@ void coop_serverCoop()
 	if ( game.levelType > MAPTYPE_MULTIPLAYER ) {
 		//[b607] chrissstrahl - THIS creates a error in str.h at inline const char *str::c_str( void ) const
 		//I was unable to resolve this issue, so I use a workaround
-		//bool bb = coop_returnBool(coop_phraserIniGet("ini/server.ini", "disableCoop", "server"));
+		//bool bb = coop_returnBool(coop_phraserIniGet("ini/serverData.ini", "disableCoop", "server"));
 		
 		
-		//str s = coop_phraserIniGet("ini/server.ini", "disableCoop", "server");
+		//str s = coop_phraserIniGet("ini/serverData.ini", "disableCoop", "server");
 		//bool b = coop_returnBool(s);
 		if (!false) { //b
 			game.coop_isActive = true;
@@ -1038,7 +1038,7 @@ void coop_serverCoop()
 
 	//hzm coop mod chrissstrahl - check if ssv_floodprotect should be enabled
 	if ( !game.coop_isActive ) {
-		int iSvFlood = atoi( coop_parserIniGet( "ini/server.ini" , "sv_floodprotect" , "server" ) );
+		int iSvFlood = atoi( coop_parserIniGet( "ini/serverData.ini" , "sv_floodprotect" , "server" ) );
 		if ( iSvFlood ) {
 			gi.SendConsoleCommand( "set sv_floodprotect 1\n" );
 		}
@@ -1053,7 +1053,7 @@ void coop_serverCoop()
 	game.coop_saveClientData = true;
 
 	//hzm coop mod chrissstrahl - dissable native spam protection, but remember its state
-	coop_parserIniSet( "ini/server.ini" , "sv_floodprotect" , va("%d",sv_floodprotect->integer) , "server" );
+	coop_parserIniSet( "ini/serverData.ini" , "sv_floodprotect" , va("%d",sv_floodprotect->integer) , "server" );
 	gi.SendConsoleCommand( "set sv_floodprotect 0\n" );
 
 	//hzm coop mod chrissstrahl - enable 3rd person aim
@@ -1184,12 +1184,12 @@ void coop_serverSetup( void )
 
 		//hzm coop mod chrissstrahl - load last coop map if there is any
 		bool bServerHasRebooted = false;
-		bServerHasRebooted = coop_parserIniGet( "ini/server.ini" , "rebooting" , "server" );
+		bServerHasRebooted = coop_parserIniGet( "ini/serverData.ini" , "rebooting" , "server" );
 
 		//hzm coop mod chrissstrahl - load the map that we are actually suppose to load
 		if ( bServerHasRebooted ){
-			coop_parserIniSet( "ini/server.ini" , "rebooting" , "false" , "server" );
-			str sStartMap = coop_parserIniGet( "ini/server.ini" , "startmap" , "server" );
+			coop_parserIniSet( "ini/serverData.ini" , "rebooting" , "false" , "server" );
+			str sStartMap = coop_parserIniGet( "ini/serverData.ini" , "startmap" , "server" );
 
 			if ( gi.FS_Exists( va( "maps/%s.bsp" , sStartMap.c_str() ) ) ){
 				if ( Q_stricmp( sMapToLoad , sStartMap) ){
@@ -1288,148 +1288,64 @@ void coop_serverManageAi( void )
 //================================================================
 str coop_serverModifiedFile( str standardPath )
 {
-	//hzm coop mod chrissstrahl - we need to fid out if we are dealing with script or any other file
-	int i;
+	bool loadFromCoopDir = false;
 	bool isScriptFile = false;
-	bool extensionStarted = false;
-	str bareFilename = "";
-	str filename = "";
 
-	//hzm coop mod chrissstrahl - try to read file extension
-	str fileExtension;
-	for ( i = 0; i < standardPath.length(); i++ )
-	{
-		if ( standardPath[i] == '/' ){
-			//subfolder detected, reset filename
-			filename = "";
-			bareFilename = "";
-		}
-		else
-		{
-			//get filename
-			filename += standardPath[i];
+	//[b611] Chrissstrahl - clean this up a bit - and while I am at it, fix issues
+	str sFileExt = coop_returnStringFileExtensionOnly(standardPath);
 
-			//check for fileextension
-			if ( standardPath[i] == '.' ){
-				extensionStarted = true;
-			}
-			//get extension
-			if ( extensionStarted ){
-				fileExtension += standardPath[i];
-			}
-			//get naked filename, without extension
-			else{
-				bareFilename += standardPath[i];
-			}
-		}
-	}
-
-	//hzm coop mod chrissstrahl - if there is no fileextension give us a error
-	if ( fileExtension.length() == standardPath.length() )
-	{
-		gi.Printf( "----------------------------\n" );
-		gi.Printf( "---- Coop Mod: ERROR! ----\n" );
-		gi.Printf( "File has no extension: %s" , standardPath.c_str() );
-		gi.Printf( "----------------------------\n" );
-		return standardPath;
-	}
-
-	//hzm coop mod chrissstrahl - we handle alternative script file extension, so we need to know
-	if ( !Q_stricmpn( fileExtension , ".scr",4) )
-	{
+	//we handle alternative script file extension, so we need to know
+	if (!Q_stricmpn(sFileExt, ".scr", 4)){
 		isScriptFile = true;
 	}
 
-	//hzm coop mod chrissstrahl - if standard level and we are in singleplayer do load default script or sound files first
-	if ( standardPath.length() < 4 || g_gametype->integer == GT_SINGLE_PLAYER && game.isStandardLevel == true ){
+	str fileInMapfolder = standardPath;
+	str fileInCoopfolder = va("coop_mod/%s",standardPath.c_str());
 
-		//hzm coop mod chrissstrahl - check if there is a file in base/maps/ (.scr or .snd)
-		if ( gi.FS_ReadFile( standardPath.c_str() , NULL , true ) != -1 ){
-			return standardPath;
+	bool fileInMapsExists = false;
+	bool fileInCoopExists = false;
+	bool fileInMapsExistsScript = false;
+	bool fileInCoopExistsScript = false;
+
+	//if it is a script file check if there is a .script file
+	if (isScriptFile) {
+		if (gi.FS_ReadFile(va("%sipt", fileInMapfolder.c_str()), NULL, true) != -1) {
+			fileInMapfolder = va("%sipt", fileInMapfolder.c_str());
+			fileInMapsExistsScript = true;
 		}
-		if ( isScriptFile ){
-			//hzm coop mod chrissstrahl - check if there is a file in base/maps/ (.script)
-			if ( gi.FS_ReadFile( va( "%sipt" ,standardPath.c_str()) , NULL , true ) != -1 ){
-				return va( "%sipt" , standardPath.c_str() );
-			}
-		}
-
-		//hzm coop mod chrissstrahl - coop version failed, return standard, but give a warning
-		if ( isScriptFile ){
-			gi.Printf( "---- Coop Mod: WARNING! ----\n" );
-			gi.Printf( "Could not find: %s\n" , standardPath.c_str() );
-			gi.Printf( "Trying to load coop version: %s\n" , va( "coop_mod/%s" , standardPath.c_str() ) );
-			gi.Printf( "----  ----\n" );
-			gi.Printf( "You should create a seperate file-version for Singleplayer in: %s\n" , standardPath.c_str() );
-			gi.Printf( "----------------------------\n" );
-		}
-
-		//hzm coop mod chrissstrahl - no file fond, now try the coop directory
-		str newPath = "coop_mod/";
-		newPath += standardPath;
-		if ( gi.FS_ReadFile( newPath.c_str() , NULL , true ) != -1 ){
-			return newPath;
-		}
-		//hzm coop mod chrissstrahl - if script file check for alternative file extension
-		if ( isScriptFile ){
-			//hzm coop mod chrissstrahl - check if there is a file in base/maps/ (.script)
-			if ( gi.FS_ReadFile( va( "%sipt" , newPath.c_str() ) , NULL , true ) != -1 ){
-				return va( "%sipt" , newPath.c_str() );
-			}
-		}
-		return standardPath;
-	}
-
-//MULTIPLAYER
-//MULTIPLAYER
-//MULTIPLAYER
-	
-	//hzm coop mod chrissstrahl - we are in multiplayer
-	//hzm coop mod chrissstrahl - we want allwaways first to check the coop folders
-
-	if ( Q_stricmpn( "coop_" , filename , 5 ) && game.isStandardLevel == false ){
-		gi.Printf( "---- Coop Mod: WARNING! ----\n" );
-		gi.Printf( "Coop maps must start with 'coop_' in their filename to be supported correctly\n" );
-		gi.Printf( "For Help please contact Chrissstrahl\n" );
-		gi.Printf( "----------------------------\n" );
-	}
-
-	//hzm coop mod chrissstrahl - try coop directory first
-	str newPath = "coop_mod/";
-	newPath += standardPath;
-	if ( gi.FS_ReadFile( newPath.c_str() , NULL , true ) != -1 ){
-		return newPath;
-	}
-	//hzm coop mod chrissstrahl - if no file found and it is a script file check for alternative file extension
-	if ( isScriptFile ){
-		//hzm coop mod chrissstrahl - check if there is a file in base/coop_mod/maps/ (.script)
-		if ( gi.FS_ReadFile( va( "%sipt" , newPath.c_str() ) , NULL , true ) != -1 ){
-			return va( "%sipt" , newPath.c_str() );
+		if (gi.FS_ReadFile(va("%sipt", fileInCoopfolder.c_str()), NULL, true) != -1) {
+			fileInCoopfolder = va("%sipt", fileInCoopfolder.c_str());
+			fileInCoopExistsScript = true;
 		}
 	}
 
-	if ( isScriptFile ){
-		//hzm coop mod chrissstrahl - coop version failed, return standard, but give a warning
-		gi.Printf( "---- Coop Mod: WARNING! ----\n" );
-		gi.Printf( "Could not find coop version: %s\n" , va( "coop_mod/%s" , standardPath.c_str() ) );
-		gi.Printf( "Trying to load: %s\n" , standardPath.c_str() );
-		gi.Printf( "----------------------------\n" );
+	if (gi.FS_ReadFile(fileInMapfolder.c_str(), NULL, true) != -1) {
+		fileInMapsExists = true;
+	}
+	//if we are in multiplayer or the script is not in "/maps/" check "coop_mod/maps/"
+	if (gi.FS_ReadFile(fileInCoopfolder.c_str(), NULL, true) != -1) {
+		fileInCoopExists = true;
 	}
 
-	//hzm coop mod chrissstrahl - no file found, check if there is a file in base/maps/ (.scr or .snd)
-	if ( gi.FS_ReadFile( standardPath.c_str() , NULL , true ) != -1 ){
-		return standardPath;
-	}
-	if ( isScriptFile ){
-		str sTemp;
-		//hzm coop mod chrissstrahl - check if there is a file in base/maps/ (.script)
-		sTemp = standardPath.c_str();
-		sTemp += "ipt";
-		 
-		if ( gi.FS_ReadFile( sTemp.c_str() , NULL , true ) != -1 ){
-			return sTemp;
+	//make sure we load scripts for Singleplayer from "/maps/" (if they exist) - in singleplayer
+	//make sure we load scripts for Coop from "coop_mod/maps/" (if they exist) - first in multiplayer
+	if (g_gametype->integer == GT_SINGLE_PLAYER){
+		if (fileInMapsExists || fileInMapsExistsScript){
+			return fileInMapfolder;
+		}
+		if (fileInCoopExists || fileInCoopExistsScript) {
+			return	fileInCoopfolder;
 		}
 	}
+	else {
+		if (fileInCoopExists || fileInCoopExistsScript) {
+			return	fileInCoopfolder;
+		}
+		if (fileInMapsExists || fileInMapsExistsScript) {
+			return fileInMapfolder;
+		}
+	}
+
 	return standardPath;
 }
 
@@ -1454,15 +1370,15 @@ bool coop_serverError( str sError, bool bFatal )
 	str sLevel = "";
 
 	//Make note into ini, disable reboot
-	coop_parserIniSet( "ini/server.ini" , "rebooting" , "false" , "server" );
-	coop_parserIniSet( "ini/server.ini" , "errorboot" , "true" , "server" );
-	coop_parserIniSet( "ini/server.ini" , "errorfatal" , coop_returnBoolWord( bFatal ) , "server" );
-	coop_parserIniSet( "ini/server.ini" , "errormap" , level.mapname , "server" );
-	coop_parserIniSet( "ini/server.ini" , "errortext" , sError , "server" );
+	coop_parserIniSet( "ini/serverData.ini" , "rebooting" , "false" , "server" );
+	coop_parserIniSet( "ini/serverData.ini" , "errorboot" , "true" , "server" );
+	coop_parserIniSet( "ini/serverData.ini" , "errorfatal" , coop_returnBoolWord( bFatal ) , "server" );
+	coop_parserIniSet( "ini/serverData.ini" , "errormap" , level.mapname , "server" );
+	coop_parserIniSet( "ini/serverData.ini" , "errortext" , sError , "server" );
 
 	//[b607] chrissstrahl - this prevents the server from rebooting if errorhalt=true in coop_status.ini
 	//only the commentary was added, the code was already in place
-	if ( coop_returnBool( coop_parserIniGet( "ini/server.ini" , "errorhalt" , "server" ) ) )
+	if ( coop_returnBool( coop_parserIniGet( "ini/serverData.ini" , "errorhalt" , "server" ) ) )
 		return true;
 
 	//print info to console/logfile
@@ -1493,7 +1409,7 @@ void coop_serverThink( void )
 		if ( game.coop_reboot && game.coop_restartServerEarliestAt < level.time ){ 
 			//[b607] chrissstrahl - allow to adjust the coop reboot feature
 			bool bCoopNoReboot = false;
-			str sCoopRebootState = coop_parserIniGet("ini/server.ini", "rebootType", "server");
+			str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
 			if (!Q_stricmpn(sCoopRebootState.c_str(), "killserver",10)) { //killserver
 				gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver.cfg\n");
 			}
