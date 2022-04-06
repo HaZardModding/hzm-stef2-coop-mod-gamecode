@@ -1328,6 +1328,15 @@ EV_DEFAULT ,
 "Sets the name of the model to use as backup if the client doesn't have this one"
 );
 
+//[b611] chrissstrahl - get player viewangle
+Event EV_Player_GetPlayerViewangle
+(
+	"getPlayerViewangle",
+	EV_DEFAULT,
+	"@v",
+	"viewangles",
+	"Returns the player current viewangles"
+);
 //[b607] chrissstrahl - get targeted Entity (entity player is aiming at)
 Event EV_Player_GetTargetedEntity
 (
@@ -1555,6 +1564,9 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 
+	//[b611] chrissstrahl - get player viewangle
+	{ &EV_Player_GetPlayerViewangle , &Player::getPlayerViewangle } ,
+
 	//[b607] chrissstrahl - return targeted entity of player
 	{ &EV_Player_GetTargetedEntity , &Player::getTargetedEntity },
 	//hzm gameupdate daggolin - new commands
@@ -1565,6 +1577,14 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 	{ NULL , NULL }
 };
+
+//[b611] chrissstrahl - get player viewangle
+void Player::getPlayerViewangle( Event* ev)
+{
+	Vector vAngle = Vector(0,0,0);
+	GetPlayerView(NULL, &vAngle);
+	ev->ReturnVector(vAngle);
+}
 
 //hzm gameupdate chrissstrahl - add new script functions
 void Player::setKillThread( Event* ev)

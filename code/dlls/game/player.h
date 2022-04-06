@@ -498,9 +498,12 @@ private:
 
 	// Conditional Functions
 	public:
+		//[b611] chrissstrahl - get player viewangle
+		void				getPlayerViewangle(Event* ev);
 		//[b607] chrissstrahl - return targeted entity of player
-		void			getTargetedEntity(Event *ev);
-
+		void				getTargetedEntity(Event *ev);
+		//[b607] chrissstrahl - just fucking give me the data, i don't care for your conditions
+		qboolean			checkthirdperson();
 		//hzm gamefix daggolin - new function to handle enviromental influences (like drowning)
 		void				gamefix_WorldEffects( void );
 		//hzm gameupdate chrissstrahl - add new function returning the last time the player was hurt
@@ -511,9 +514,6 @@ private:
 		void				getScriptVariablesCommand( Event *ev );
 		//hzm gameupdate chrissstrahl - allow dissableing weapon directly, used in coop mod
 		void				disableUseWeapon( bool bDiable );
-		//[b607] chrissstrahl - just fucking give me the data, i don't care for your conditions
-		qboolean			checkthirdperson();
-
 
 		qboolean			returntrue( Conditional &condition );
 		qboolean			checkturnleft( Conditional &condition );
