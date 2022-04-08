@@ -425,7 +425,7 @@ qboolean G_coopItem( const gentity_t *ent )
 	}
 
 	SpawnArgs      args;
-	Entity         *obj;
+	Entity         *obj = NULL;
 	Event *attach1 = NULL;
 	Event *attach2 = NULL;
 	Event *attach3 = NULL;
@@ -488,7 +488,9 @@ qboolean G_coopItem( const gentity_t *ent )
 		delete attach1;
 		delete attach2;
 		delete attach3;
-		obj->PostEvent(EV_Remove, 0.0f);
+		if (obj != NULL) {
+			obj->PostEvent(EV_Remove, 0.0f);
+		}
 		return qtrue;
 	}
 
