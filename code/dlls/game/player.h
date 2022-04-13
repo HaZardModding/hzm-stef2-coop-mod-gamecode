@@ -498,6 +498,9 @@ private:
 
 	// Conditional Functions
 	public:
+		//[b611] chrissstrahl - allow to run thread from player entity (sets currententity)
+		void				RunThread(Event* ev);
+		void				RunThread(const str& thread_name);
 		//[b611] chrissstrahl - get player viewangle
 		void				getPlayerViewangle(Event* ev);
 		//[b607] chrissstrahl - return targeted entity of player

@@ -1328,6 +1328,16 @@ EV_DEFAULT ,
 "Sets the name of the model to use as backup if the client doesn't have this one"
 );
 
+//[b611] chrissstrahl - allowes a player entity to start a thread
+Event EV_Player_RunThread
+(
+	"runthread",
+	EV_DEFAULT,
+	"s",
+	"threadname",
+	"Runs the specified thread. and sets this player as currententity"
+);
+
 //[b611] chrissstrahl - get player viewangle
 Event EV_Player_GetPlayerViewangle
 (
@@ -1564,6 +1574,9 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 
+
+	//[b611] chrissstrahl - runs thread from player entity
+	{ &EV_Player_RunThread,	&Player::RunThread },
 	//[b611] chrissstrahl - get player viewangle
 	{ &EV_Player_GetPlayerViewangle , &Player::getPlayerViewangle } ,
 
@@ -1577,6 +1590,22 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 	{ NULL , NULL }
 };
+
+//[b611] chrissstrahl - runs thread from player entity
+void Player::RunThread(Event* ev)
+{
+	str thread_name="";
+	thread_name = ev->GetString(1);
+	RunThread(thread_name);
+}
+
+void Player::RunThread(const str &thread_name)
+{
+	if (thread_name.length() <= 0)
+		return;
+
+	ExecuteThread(thread_name, true, this);
+}
 
 //[b611] chrissstrahl - get player viewangle
 void Player::getPlayerViewangle( Event* ev)
