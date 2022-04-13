@@ -42,8 +42,10 @@ consolecmd_t G_ConsoleCmds[] =
 {
 	//   command name       function             available in multiplayer?
 //	{ "login",				G_kickBots,				true }, //[b607] test
-	{ "widgettext",			G_widgettext,		true }, //[b611] chrissstrahl - add command allowing players to make use of widgettext command
-	{ "coopitem",			G_coopItem,		true }, //[b611] chrissstrahl - add command allowing players to make use of special coop inventory
+	{ "coopinput",			G_coopInput,			true }, //[b611] chrissstrahl - allowing players to send text to server
+	{ "coopthread",			G_coopThread,			true }, //[b611] chrissstrahl - allowing players to start a script thread
+	{ "widgettext",			G_widgettext,			true }, //[b611] chrissstrahl - allowing players to make use of widgettext command
+	{ "coopitem",			G_coopItem,				true }, //[b611] chrissstrahl - allowing players to make use of special coop inventory
 	{ "coopinstalled",		G_coopInstalled,		true },
 	{ "vtaunt",				G_VTaunt,				true },
 //	{ "vsay_team",			G_VTaunt,				true },
@@ -314,10 +316,99 @@ void G_Say( const gentity_t *ent, bool team, qboolean arg0 )
 }
 
 //===========================================================[b611]
+// Name:        G_coopInput
+// Class:       -
+//              
+// Description: allow player to start send text input to server
+//              
+// Parameters:  string-input-data
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_coopInput(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client)
+		return qfalse;
+
+	str		inputData;
+
+	// Get the thread name
+	if (!gi.argc())
+		return false;
+
+	inputData = gi.argv(1);
+
+	//Grab more data
+	int i;
+	for (i = 2; i < 32; i++){
+		str sGrabMe = gi.argv(i);
+		if (sGrabMe.length()) {
+			inputData = va("%s %s", inputData.c_str(), sGrabMe.c_str());
+		}
+	}
+
+	// Check to make sure player is allowed to run this thread
+	// Need to do this part
+	// Run the thread
+	if (!inputData.length())
+		return false;
+
+	Player* player = (Player*)ent->entity;
+
+	//limit of data that can be actually used
+	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
+		inputData = coop_substr(inputData.c_str(), 0, 259);
+	}
+
+	ent->entity->entityVars.SetVariable("coopInputData",inputData.c_str());
+	player->RunThread("playerInput");
+	return true;
+}
+
+//===========================================================[b611]
+// Name:        G_coopThread
+// Class:       -
+//              
+// Description: allow player to start a thread that ties back to him
+// always during singleplayer
+// always with prefix coopThread_ in threadname
+// only as admin in mp
+//              
+// Parameters:  string-threadname
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_coopThread(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client)
+		return qfalse;
+
+	str		threadName;
+
+	// Get the thread name
+	if (!gi.argc())
+		return false;
+
+	threadName = gi.argv(1);
+
+	// Check to make sure player is allowed to run this thread
+	// Need to do this part
+	// Run the thread - if set 
+	Player* player = (Player*)ent->entity;
+	if (!threadName.length() || g_gametype->integer != GT_SINGLE_PLAYER && coop_returnIntFind(threadName, "coopThread_") != 0 && player->coopPlayer.admin != true) {
+		return false;
+	}
+	player->RunThread(threadName.c_str());
+	return true;
+}
+
+//===========================================================[b611]
 // Name:        G_widgettext
 // Class:       -
 //              
-// Description: Add a new command, to allow player using this in multiplayer/server console
+// Description: allow player using this in multiplayer/server console
 //              
 // Parameters:  strings
 //              
