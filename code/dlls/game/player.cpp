@@ -14797,10 +14797,8 @@ void Player::removeHud( Event *ev )
 
 void Player::removeHud( const str &hudName )
 {
-	if ( _hudList.ObjectInList( hudName ) )
-	{
-		removeHudFromClient( hudName );
-
+	if ( _hudList.ObjectInList( hudName ) ){
+		removeHudFromClient(hudName);
 		_hudList.RemoveObject( hudName );
 	}
 }
