@@ -502,7 +502,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 		}
 
 		//check if player was constantly revived or if it stopped
-		if ( usedPlayer->coopPlayer.neutralized == true && equipment == false ){
+		if ( usedPlayer->coopPlayer.neutralized == true && !equipment ){ //[b611] chrissstrahl - fixed forbidden check practise
 			if ( ( usedPlayer->coopPlayer.lastTimeRevived + 0.1f ) > level.time ){
 				usedPlayer->coopPlayer.lastTimeRevived = level.time;
 				usedPlayer->coopPlayer.reviveCounter = 0;
@@ -521,7 +521,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 		if ( ( usedPlayer->coopPlayer.lastTimeUsedClassMsg + fMessageTime ) < level.time ){
 			usedPlayer->coopPlayer.lastTimeUsedClassMsg = level.time;
 
-			if ( usedPlayer->coopPlayer.neutralized == true && equipment == false ){
+			if ( usedPlayer->coopPlayer.neutralized == true && !equipment ){ //[b611] chrissstrahl - fixed forbidden check practise
 				if ( coop_checkPlayerLanguageGerman(usedPlayer) ){
 					usedPlayer->hudPrint( va( "^5COOP^8 - You are beeing revived by: %s \n" , usingPlayer->client->pers.netname ) );
 				}else{
@@ -611,7 +611,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 		if ( ( usingPlayer->coopPlayer.lastTimeUsedClassMsg + fMessageTime ) < level.time ){
 			usingPlayer->coopPlayer.lastTimeUsedClassMsg = level.time;
 
-			if ( usingPlayer->coopPlayer.neutralized == true && equipment == false ){
+			if ( usingPlayer->coopPlayer.neutralized == true && !equipment ){//[b611] chrissstrahl - fixed forbidden check practise
 				if ( coop_checkPlayerLanguageGerman((usedPlayer)) ){
 					usingPlayer->hudPrint( va( "^5COOP^8 - Wiederbeleben von: %s, bitte weitermachen!\n" , usedPlayer->client->pers.netname ) );
 				}else{
