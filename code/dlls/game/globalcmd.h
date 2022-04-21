@@ -136,9 +136,9 @@ class CThread : public Interpreter
 		//[b611] chrissstrahl - added command to allow a widget with white-spaces like regular text contains
 		void sendWidgetCommand(Event *ev);
 		void hasItem(Event *ev);
-		void CThread::getIniData(Event *ev);
-		void CThread::setIniData(Event *ev);
-		void CThread::setCamera(Event* ev);
+		void getIniData(Event *ev);
+		void setIniData(Event *ev);
+		void setCamera(Event* ev);
 		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 		void configstringRemoveCombatSounds(Event *ev);
 		void configstringRemove(Event *ev);
