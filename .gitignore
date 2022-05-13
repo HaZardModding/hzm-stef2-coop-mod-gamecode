@@ -10,7 +10,7 @@
 *.ncb
 *.ipch
 *.vs
-Browse.VC.db
+Browse.VC.*
 code/linux/debugi386
 code/linux/releasei386
 code/Executable/Debug
