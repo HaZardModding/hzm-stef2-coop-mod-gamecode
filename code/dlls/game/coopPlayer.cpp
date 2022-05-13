@@ -19,6 +19,11 @@
 
 #include "_pch_cpp.h"
 
+//[b611] chrissstrahl - gameupgrades
+#include "upgCircleMenu.hpp"
+
+//[b611] chrissstrahl - gamefixes
+
 #include "coopAlias.hpp"
 #include "coopParser.hpp"
 #include "coopModel.hpp"
@@ -33,6 +38,8 @@
 #include "coopObjectives.hpp"
 #include "coopHuds.hpp"
 #include "coopReturn.hpp"
+
+//[b611] chrissstrahl - HaZardModding Coop Mod - specific
 #include "level.h"
 #include "player.h"
 #include "weapon.h"
@@ -2799,7 +2806,3 @@ void clearDelayedServerCommands( int entNum )
 
 	pendingServerCommandList[entNum] = NULL;
 }
-
-
-
-

@@ -84,133 +84,132 @@ typedef struct pendingServerCommand_s
 	pendingServerCommand_s	*next;
 } pendingServerCommand;
 
-
 class CoopPlayer
 {
 public:
 	//hzm coop mod chrissstrahl - used to store chat message limit data
-	float	chatTimeLimit;
+	float	chatTimeLimit = 0.0f;
 	//hzm coop mod chrissstrahl - used to count how many tries the had to check player for coop mod
-	int		setupTries;
+	int		setupTries = 0;
 	//hzm coop mod chrissstrahl - used to send the exec command to player within a certain timeframe
-	float	installedCheckTime;
+	float	installedCheckTime = 0.0f;
 	//hzm coop mod chrissstrahl - used to determin which version the player has of the coop mod
-	int		installedVersion;
+	int		installedVersion = 0.0f;
 	//hzm coop mod chrissstrahl - used to determin if player has coop mod installed or not
-	int		installed;
+	int		installed = 0;
 	//hzm coop mod chrissstrahl - used to determin what class the player does have
-	str		className;
+	str		className = "";
 	//hzm coop mod chrissstrahl - used to store player Anonymous idendity! Don't want admins have to much power, seen it far to often to go wrong
-	str		coopId;
+	str		coopId = -1;
 	//hzm coop mod chrissstrahl - inventory and health status to compare if the ini file should be updated
-	str		coopStatus;
+	str		coopStatus = "";
 	//hzm coop mod chrissstrahl - used to determin if injured symbol is visbile on player
-	bool	injuredSymbolVisible;
+	bool	injuredSymbolVisible = false;
 	//hzm coop mod chrissstrahl - used to determin if player spawned or respawned
-	bool	respawned;
+	bool	respawned = false;
 	//hzm coop mod chrissstrahl - used to determin if player should respawn at where he is or at a predefinied spawn location
-	bool	respawnAtRespawnpoint;
+	bool	respawnAtRespawnpoint = false;
 	//hzm coop mod chrissstrahl - used to saveoff the viewangle when the player dies, to restore it when the player respawns at the same location he died
-	int		deathViewangleY;
+	int		deathViewangleY = 0;
 	//hzm coop mod chrissstrahl - used to saveoff the player his game language version
-	str		language;
+	str		language = "";
 	//hzm coop mod chrissstrahl - used to save if player setup is complete
-	bool	setupComplete;
+	bool	setupComplete = false;
 	//hzm coop mod chrissstrahl - used to store if a medic was notified to heal this now critically injured player
-	str		lastTargetedClassSend;
+	str		lastTargetedClassSend = "";
 
 	//hzm coop mod chrissstrahl - used to store previouse health status//float	previouseHealth;
 
 	//hzm coop mod chrissstrahl - used to signal the game that this player is currently neutralized
-	bool	neutralized;
+	bool	neutralized = false;
 
 	//hzm coop mod chrissstrahl - keep track of the objective blips from the radar - so that it will only be resend if nessary
 	bool	radarBlipActive[COOP_RADAR_MAX_BLIPS];
-	bool	radarSelectedActive;
-	bool	radarFirstResetDone; //[b607] chrissstrahl - used to reduce nettraffic on first spawn
+	bool	radarSelectedActive = false;
+	bool	radarFirstResetDone = false; //[b607] chrissstrahl - used to reduce nettraffic on first spawn
 	//bool	radarBlipSetInactive[COOP_RADAR_MAX_BLIPS];
 	Vector	radarBlipLastPosition[COOP_RADAR_MAX_BLIPS];
 
 	//hzm coop mod chrissstrahl - used to store last player mass value, needed to restore it after player has been revived
-	int		lastMass;
+	int		lastMass = 0;
 	//hzm coop mod chrissstrahl - used to count the revive process
-	int		reviveCounter;
+	int		reviveCounter = 0;
 
 	//hzm coop mod chrissstrahl - remember the EXACT location the player died
 	//player might be moved by physics or WHAT EVA , which will result in the
 	//player respawning inside a wall or in a bad spot
-	Vector	lastAliveLocation;
+	Vector	lastAliveLocation = Vector(0,0,0);
 	//hzm coop mod chrissstrahl - used to saveoff info when the player was last notified about spamming
-	float	lastTimeSpamInfo;
+	float	lastTimeSpamInfo = -999.0f;
 	//hzm coop mod chrissstrahl - used to determin when player spawned last
-	float	lastTimeSpawned;
+	float	lastTimeSpawned = -999.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last think time
-	float	lastTimeThink;
+	float	lastTimeThink = -999.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last radar update time
-	float	lastTimeRadarUpdated;
+	float	lastTimeRadarUpdated = 0.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last transmitted radar angle
-	int		lastRadarAngle;
+	int		lastRadarAngle = 0;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last class change time
-	float	lastTimeAppliedClass;
+	float	lastTimeAppliedClass = -999.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last class info update time
-	float	lastTimeUpdatedClassStat;
+	float	lastTimeUpdatedClassStat = -999.0f;
 	//hzm coop mod chrissstrahl - used to save when the player has recived the last time the mission objectives
-	float	lastTimeUpdatedObjectives;
+	float	lastTimeUpdatedObjectives = 0.0f;
 	//hzm coop mod chrissstrahl - used to save when the player was used the last time by another player
-	float	lastTimeUsedClassMsg;
+	float	lastTimeUsedClassMsg = 0.0f;
 	//hzm coop mod chrissstrahl - used to determin when player was injured last time
-	float	lastTimeInjured;
+	float	lastTimeInjured = -999.0f;
 	//hzm coop mod chrissstrahl - used to store the time of last class change
-	float	lastTimeChangedClass;
+	float	lastTimeChangedClass = -999.0f;
 	//hzm coop mod chrissstrahl - used to store gametime this player was neutralized at
-	float	lastTimeNeutralized;
+	float	lastTimeNeutralized = 0.0f;
 	//hzm coop mod chrissstrahl - used to store gametime this player was last time revived
-	float	lastTimeRevived;
+	float	lastTimeRevived = 0.0f;
 	//hzm coop mod chrissstrahl - used to store gametime this player was last time using other payer via use or tricorder
-	float	lastTimeUsing;
+	float	lastTimeUsing = 0.0f;
 	//hzm coop mod chrissstrahl - used to store gametime this player was last time modulating a puzzleobject
-	float	lastTimeModulatingPuzzle;
+	float	lastTimeModulatingPuzzle = 0.0f;
 	//hzm coop mod chrissstrahl - keeps track of last targeted entity num
 	//int		lastTargetedEntity; //[b607] removed, there is last_entityTargeted in player class
 	//hzm coop mod chrissstrahl - show targeted entity targetname and class dev command (!targeted)
-	bool	showTargetedEntity;
+	bool	showTargetedEntity = false;
 	//hzm coop mod chrissstrahl - keeps track of last targeted entity its class
-	str		lastTargetedEntityClass;
+	str		lastTargetedEntityClass = "";
 	//hzm coop mod chrissstrahl - keeps track of when the player last used !transport
-	float	lastTimeTransported;
+	float	lastTimeTransported = -999.0f;
 	//hzm coop mod chrissstrahl - remember when player pressed escape during this cinematic
-	float	lastTimeSkipCinematic;
+	float	lastTimeSkipCinematic = -999.0f;
 	//hzm coop mod chrissstrahl - remember when player caused the last time a message to the hud, prevent him from spamming, used for events like rejoining when dead in lms and so forth
-	float lastTimeHudMessage;
+	float lastTimeHudMessage = -999.0f;
 	//hzm coop mod chrissstrahl - keeps track of when the player entered the game
-	float	timeEntered;
+	float	timeEntered = -999.0f;
 	//hzm coop mod chrissstrahl - marks if player weapons should be unholstered after !transport
-	bool	transportUnholster;
+	bool	transportUnholster = false;
 	//hzm coop mod chrissstrahl - remember weapon that should be unholstered after !transport
-	str		transportUnholsterWeaponName;
+	str		transportUnholsterWeaponName = "";
 	//hzm coop mod chrissstrahl - remember if update menu has been shown or not
-	bool	updateHudDisplayed;
+	bool	updateHudDisplayed = false;
 	//hzm coop mod chrissstrahl - needed for additional vote options
-	bool startedVote;
+	bool startedVote = false;
 	//hzm coop mod chrissstrahl - needed for tricorder scanning/archetypes in mp
-	bool scanning;
+	bool scanning = false;
 	//hzm coop mod chrissstrahl - used to keep track of tricorder scan info hud status
-	bool scanHudActive;
+	bool scanHudActive = false;
 	//hzm coop mod chrissstrahl - used to store tricorder scan last data send time
-	float lastScanSend;
+	float lastScanSend = -999.0f;
 	//hzm coop mod chrissstrahl - used to store real time when player last died
-	int deathTime;
+	int deathTime = -999;
 	//hzm coop mod chrissstrahl - used to store data send 
-	str lastScanSendData;
+	str lastScanSendData = "";
 	//[b607] chrissstrahl - used to store last level.time this player died
-	float diedLast;
+	float diedLast = -999.0f;
 	//[b607] chrissstrahl - used to store last if a certain hud is active
-	bool clickFireHudActive;
+	bool clickFireHudActive = false;
 	//[b607] chrissstrahl - used to manage transmitting of scanning data to coop tricorder hud
-	str scanData1;
-	str scanData2;
+	str scanData1 = "";
+	str scanData2 = "";
 	//[b607] chrissstrahl - addad coop admin check var
-	bool admin;
+	bool admin = false;
 	//[b607] chrissstrahl - addad delayed equip routine to prevent issues we are having especially in singleplayer and on fast computers
 	bool armoryNeedstoBeEquiped = false;
 	//[b611] chrissstrahl - used to allow playing of objects - this will be the temp model used to visualize where a object will be placed
