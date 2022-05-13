@@ -664,15 +664,6 @@ NULL ,
 NULL ,
 "Show the score for the current deathmatch game"
 );
-//[b607] chrissstrahl - added optional callvote arguments to allow kicking players with spaces in their name
-Event EV_Player_CallVote
-(
-"callvote" ,
-EV_CONSOLE ,
-"sSS" ,
-"arg1 arg2 arg" ,
-"Player calls a vote"
-);
 Event EV_Player_Vote
 (
 "vote" ,
@@ -1328,6 +1319,59 @@ EV_DEFAULT ,
 "Sets the name of the model to use as backup if the client doesn't have this one"
 );
 
+
+//HaZardModding Coop Mod - new or modified events
+//HaZardModding Coop Mod - new or modified events
+//HaZardModding Coop Mod - new or modified events
+//[b607] chrissstrahl - added optional callvote arguments to allow kicking players with spaces in their name
+Event EV_Player_CallVote
+(
+	"callvote",
+	EV_CONSOLE,
+	"sSS",
+	"arg1 arg2 arg",
+	"Player calls a vote"
+);
+//[b611] chrissstrahl - Returns Int/Bool if player was pressing use or not
+Event EV_Player_checkUse
+(
+	"checkUse",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player was pressing use or not"
+);
+
+//[b611] chrissstrahl - Returns Int/Bool if player is in third person view or not
+Event EV_Player_checkThirdperson
+(
+	"checkThirdperson",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is in third person view"
+);
+
+//[b611] chrissstrahl - Returns Int/Bool if player is pressing fire button
+Event EV_Player_checkFire
+(
+	"checkFire",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing fire button"
+);
+
+//[b611] chrissstrahl - Returns Int/Bool if player is pressing alternative fire button
+Event EV_Player_checkFirealt
+(
+	"checkFirealt",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing alternatvive fire button"
+);
+
 //[b611] chrissstrahl - allowes a player entity to start a thread
 Event EV_Player_RunThread
 (
@@ -1375,7 +1419,18 @@ Event EV_Player_setKillThread
 	"kill_thread" ,
 	"Sets the thread to run ifd player gets killed."
 );
-//end of hzm
+//hzm gameupdate chrissstrahl - add new commands for script use
+Event EV_Player_circleMenu
+(
+	"circleMenu",
+	EV_SCRIPTONLY,
+	"f",
+	"integer-menutype",
+	"Shows Circle Menu to player, 1=Normal, 2=Dialog."
+);
+//HaZardModding Coop Mod END
+//HaZardModding Coop Mod END
+//HaZardModding Coop Mod END
 
 /*
 ==============================================================================
@@ -1575,21 +1630,69 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 
 
+	//HaZardModding Coop Mod
+	//HaZardModding Coop Mod
+	//HaZardModding Coop Mod
+	//[b611] chrissstrahl - starts circlemenu on player
+	{ &EV_Player_circleMenu,					&Player::circleMenuEvent },
+	//[b611] chrissstrahl - checks if player is using the use button
+	{ &EV_Player_checkUse,						&Player::checkUsePressing },
+	//[b611] chrissstrahl - checks if player is in third person
+	{ &EV_Player_checkThirdperson,				&Player::checkThirdperson },
+	//[b611] chrissstrahl - checks if player is pressing fire/alternative fire button
+	{ &EV_Player_checkFire,						&Player::checkFire },
+	{ &EV_Player_checkFirealt,					&Player::checkFirealt },
 	//[b611] chrissstrahl - runs thread from player entity
-	{ &EV_Player_RunThread,	&Player::RunThread },
+	{ &EV_Player_RunThread,						&Player::RunThread },
 	//[b611] chrissstrahl - get player viewangle
-	{ &EV_Player_GetPlayerViewangle , &Player::getPlayerViewangle } ,
-
+	{ &EV_Player_GetPlayerViewangle ,			&Player::getPlayerViewangle } ,
 	//[b607] chrissstrahl - return targeted entity of player
-	{ &EV_Player_GetTargetedEntity , &Player::getTargetedEntity },
+	{ &EV_Player_GetTargetedEntity ,			&Player::getTargetedEntity },
+
 	//hzm gameupdate daggolin - new commands
-	{ &EV_Player_GetScriptVariablesCommand , &Player::getScriptVariablesCommand } ,
+	{ &EV_Player_GetScriptVariablesCommand ,	&Player::getScriptVariablesCommand } ,
 	//hzm gameupdate chrissstrahl - add new commands for script use
-	{ &EV_Player_setKillThread , &Player::setKillThread } ,
-	//end of hzm
+	{ &EV_Player_setKillThread ,				&Player::setKillThread } ,
+	//HaZardModding Coop Mod END
+	//HaZardModding Coop Mod END
+	//HaZardModding Coop Mod END
 
 	{ NULL , NULL }
 };
+
+//[b611] chrissstrahl - checks if player is pressing fire button
+void Player::circleMenuEvent(Event* ev)
+{
+	if (health <= 0) { return; }
+	if (multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this,SPECTATOR_TYPE_ANY)) { return; }
+
+	int iMenuType = ev->GetInteger(1);
+	circleMenu(iMenuType);
+}
+
+//[b611] chrissstrahl - checks if player is pressing fire button
+void Player::checkFire(Event* ev)
+{
+	ev->ReturnInteger((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0);
+}
+
+//[b611] chrissstrahl - checks if player is pressing fire button
+void Player::checkFirealt(Event* ev)
+{
+	ev->ReturnInteger((last_ucmd.buttons & BUTTON_ATTACKRIGHT) != 0);
+}
+
+//[b611] chrissstrahl - checks if player is in third person
+void Player::checkThirdperson(Event *ev)
+{
+	ev->ReturnInteger(_isThirdPerson);
+}
+
+//[b611] chrissstrahl - checks if player is using the use button
+void Player::checkUsePressing(Event *ev)
+{
+	ev->ReturnInteger((last_ucmd.buttons & BUTTON_USE) != 0);	
+}
 
 //[b611] chrissstrahl - runs thread from player entity
 void Player::RunThread(Event* ev)
@@ -1651,8 +1754,6 @@ float Player::getLastDamageTime( void )
 	}
 }
 //end of hzm
-
-
 
 qboolean Player::checkturnleft( Conditional &condition )
 {
@@ -3314,129 +3415,35 @@ Player::Player()
 	actor_camera = NULL;
 	cool_camera = NULL;
 
+
+
+	//HaZardModding Coop Mod
+	//HaZardModding Coop Mod
+	//HaZardModding Coop Mod
 	//[b607] chrissstrahl - used to fix a gamebug (targeted name keeping)
 	last_entityTargeted = NULL;
+
 	//[b607] daggolin - set bot flag
 	if (level.spawn_bot) edict->svflags |= SVF_BOT;
 
-	Player *player = this;
 	//[b607] chrissstrahl - added message of the day
 	messageOfTheDaySend = false;
-	//[b607] chrissstrahl - used to fix problems we are having during equip on fast pc especially in sp
-	player->coopPlayer.armoryNeedstoBeEquiped = true;
-	//[b607] chrissstrahl - coop admin login
-	player->coopPlayer.admin = false;
-	//[b607] chrissstrahl - scan data for coop tricorder menu
-	player->coopPlayer.scanData1 = "";
-	player->coopPlayer.scanData2 = "";
-	//hzm coop mod chrissstrahl - remember the EXACT location the player died
-	//player might be moved by physics or WHAT EVA , which will result in the
-	//player respawning inside a wall or in a bad spot
-	player->coopPlayer.lastAliveLocation = Vector( 0.0f , 0.0f , 0.0f );
-	//hzm coop mod chrissstrahl - used to determin if player chats to much
-	player->coopPlayer.chatTimeLimit = 0.0f;
-	//hzm coop mod chrissstrahl - used to determin what class the player does have
-	player->coopPlayer.className = "";
-	//hzm coop mod chrissstrahl - used to count how many tries the had to check player for coop mod
-	player->coopPlayer.setupTries = 0;
-	//hzm coop mod chrissstrahl - used to send the exec command to player within a certain timeframe
-	player->coopPlayer.installedCheckTime = ( level.time + 0.25f );
-	//hzm coop mod chrissstrahl - used to determin which version of the coop mod the player has installed
-	player->coopPlayer.installedVersion = -1;
-	//hzm coop mod chrissstrahl - used to determin if a player has the coop mod installed
-	player->coopPlayer.installed = -1;
-	//hzm coop mod chrissstrahl - used to determin if injured symbol is visbile on player
-	player->coopPlayer.injuredSymbolVisible = false;
-	//hzm coop mod chrissstrahl - used to determin if player spawned or respawned
-	player->coopPlayer.respawned = false;
-	//hzm coop mod chrissstrahl - used to determin if player should respawn at where he is or at a predefinied spawn location
-	player->coopPlayer.respawnAtRespawnpoint = true;
-	//hzm coop mod chrissstrahl - used to saveoff the viewangle when the player dies, to restore it when the player respawns at the same location he died
-	player->coopPlayer.deathViewangleY = 0;
-	//hzm coop mod chrissstrahl - used to saveoff the viewangle when the player language
-	player->coopPlayer.language = "";
-	//hzm coop mod chrissstrahl - used to save if player setup is complete
-	player->coopPlayer.setupComplete = false;
-	//hzm coop mod chrissstrahl - used to signal the game that this player is currently neutralized
-	player->coopPlayer.neutralized = false;
-	//hzm coop mod chrissstrahl - used to count the revive process
-	player->coopPlayer.reviveCounter = 0;
-	//hzm coop mod chrissstrahl - used to store last player mass value, needed to restore it after player has been revived
-	player->coopPlayer.lastMass = -1;
-	//hzm coop mod chrissstrahl - used to store if a medic was notified to heal this now critically injured player
-	player->coopPlayer.lastTargetedClassSend = "";
-	//hzm coop mod chrissstrahl - used to saveoff the player his last transmitted radar angle
-	player->coopPlayer.lastRadarAngle = -999;
-	//hzm coop mod chrissstrahl - used to determin when player was injured last time
-	player->coopPlayer.lastTimeInjured = 0.0f;
-	//hzm coop mod chrissstrahl - used to saveoff the player his last think time
-	player->coopPlayer.lastTimeThink = -1.0f;
-	//hzm coop mod chrissstrahl - used to saveoff the player his last radar update time
-	player->coopPlayer.lastTimeRadarUpdated = 0.0f;
-	//hzm coop mod chrissstrahl - used to saveoff the player his last think time
-	player->coopPlayer.lastTimeAppliedClass = -1.0f;
-	//hzm coop mod chrissstrahl - used to saveoff the player his last class info update time
-	player->coopPlayer.lastTimeUpdatedClassStat = -1.0f;
-	//hzm coop mod chrissstrahl - used to save when the player has recived the last time the mission objectives
-	player->coopPlayer.lastTimeUpdatedObjectives = -1.0f;
-	//hzm coop mod chrissstrahl - used to determin when player spawned last
-	player->coopPlayer.lastTimeSpawned = -1.0f;
-	//hzm coop mod chrissstrahl - used to saveoff info when the player was last notified about spamming
-	player->coopPlayer.lastTimeSpamInfo = -1.0f;
-	//hzm coop mod chrissstrahl - used to save when the player was used the last time by another player
-	player->coopPlayer.lastTimeUsedClassMsg = -1.0f;
-	//hzm coop mod chrissstrahl - used to store gametime this player was neutralized at
-	player->coopPlayer.lastTimeNeutralized = -1.0f;
-	//hzm coop mod chrissstrahl - used to store gametime this player was last time revived
-	player->coopPlayer.lastTimeRevived = -1.0f;
-	//hzm coop mod chrissstrahl - used to store gametime this player was last time modulating a puzzleobject
-	player->coopPlayer.lastTimeUsing = -1.0f;
-	//hzm coop mod chrissstrahl - keeps track of when the player last used !transport
-	player->coopPlayer.lastTimeTransported = 0.0f;
-	//hzm coop mod chrissstrahl - used to store gametime this player was last time modulating a puzzleobject
-	player->coopPlayer.lastTimeModulatingPuzzle = 0.0f;
-	//hzm coop mod chrissstrahl - used to store the time of last class change
-	player->coopPlayer.lastTimeChangedClass = -1.0f;
-	//hzm coop mod chrissstrahl - remember when player pressed escape during this cinematic
-	player->coopPlayer.lastTimeSkipCinematic = 0.0f;
-	//hzm coop mod chrissstrahl - keeps track of last targeted entity num
-	//player->coopPlayer.lastTargetedEntity = -1;//[b607] removed, there is last_entityTargeted in player class
-	//hzm coop mod chrissstrahl - show targeted entity targetname and class dev command (!targeted)
-	player->coopPlayer.showTargetedEntity = false;
-	//hzm coop mod chrissstrahl - keeps trach of when the player entered the game
-	player->coopPlayer.timeEntered = level.time;
-	//hzm coop mod chrissstrahl - stores player identity
-	player->coopPlayer.coopId = "";
-	//hzm coop mod chrissstrahl - inventory and health status to compare if the ini file should be updated
-	player->coopPlayer.coopStatus = "";
-	//hzm coop mod chrissstrahl - needed for additional vote options
-	player->coopPlayer.startedVote = false;
-	//hzm coop mod chrissstrahl - marks if player weapons should be unholstered after !transport
-	player->coopPlayer.transportUnholster = false;
-	//hzm coop mod chrissstrahl - remember weapon that should be unholstered after !transport
-	player->coopPlayer.transportUnholsterWeaponName = "None";
-	//hzm coop mod chrissstrahl - remember if update menu has been shown or not
-	player->coopPlayer.updateHudDisplayed = false;
-	//hzm coop mod chrissstrahl - needed for tricorder scanning/archetypes in mp
-	player->coopPlayer.scanning = false;
-	//hzm coop mod chrissstrahl - used to store tricorder scan hud status
-	player->coopPlayer.scanHudActive = false;
-	//hzm coop mod chrissstrahl - used to store tricorder scan last data send time
-	player->coopPlayer.lastScanSend = 0;
+	//hzm gameupdate chrissstrahl - used to check if this player is suppose to take action in a branchdialog situation 
+	branchdialog_active = false;
+	//hzm coop mod chrissstrahl - used to set a individual killthread for each player
+	kill_thread = "";
+
 	//hzm coop mod chrissstrahl - used to store server time at wich the player died last
-	time_t result = time( NULL );
-	localtime( &result );
-	player->coopPlayer.deathTime = ( int )result;
-	//[b607] chrissstrahl - used to store last level.time this player died
-	player->coopPlayer.diedLast = 0.0f;
-	//[b607] chrissstrahl - used to store last if a certain hud is active 
-	player->coopPlayer.clickFireHudActive = false;
-	//hzm coop mod chrissstrahl - used to store last tricorder scan data
-	coopPlayer.lastScanSendData = "";
-	//end of hzm
+	time_t result = time(NULL);
+	localtime(&result);
+	coopPlayer.deathTime = (int)result;
+	//HaZardModding Coop Mod END
+	//HaZardModding Coop Mod END
+	//HaZardModding Coop Mod END
+
+
 
 	_started = false;
-
 
 	StopWatchingEntity();
 	playerCameraMode = PLAYER_CAMERA_MODE_NORMAL;
@@ -3595,14 +3602,11 @@ Player::Player()
 	_needToSendBranchDialog = false;
 	_branchDialogActor = NULL;
 
-	//hzm gameupdate chrissstrahl - used to check if this player is suppose to take action in a branchdialog situation 
-	branchdialog_active = false;
-	//hzm coop mod chrissstrahl - used to set a individual killthread for each player
-	kill_thread = "";
-
+	//HaZardModding Coop Mod - Run setup
+	//HaZardModding Coop Mod - Run setup
+	//HaZardModding Coop Mod - Run setup
 	//hzm coop mod chrissstrahl - make the coop mod setup this player
 	coop_playerSetup(this);
-	//end of hzm
 }
 
 Player::~Player()
@@ -5576,7 +5580,7 @@ void Player::ClientMove( usercmd_t *ucmd )
 
 	// Clear movement flags
 	client->ps.pm_flags &= ~( PMF_FLIGHT | PMF_FROZEN | PMF_NO_PREDICTION | PMF_NO_MOVE | PMF_HAVETARGET | PMF_NO_GRAVITY );
-
+	
 	// Modify speeds 
 
 	ApplyPowerupEffects( moveSpeed );
@@ -5793,9 +5797,9 @@ void Player::ClientThink( Event *ev )
 
 	moveresult = MOVERESULT_NONE;
 
-	if ( !vehicle || !vehicle->Drive( current_ucmd ) )
+	if (!vehicle || !vehicle->Drive(current_ucmd))
 	{
-		ClientMove( current_ucmd );
+		ClientMove(current_ucmd);
 	}
 
 	if ( vehicle )
@@ -5903,9 +5907,14 @@ void Player::ClientThink( Event *ev )
 	}
 
 	// Save cmd angles so that we can get delta angle movements next frame
-	client->cmd_angles[0] = SHORT2ANGLE( current_ucmd->angles[0] );
-	client->cmd_angles[1] = SHORT2ANGLE( current_ucmd->angles[1] );
-	client->cmd_angles[2] = SHORT2ANGLE( current_ucmd->angles[2] );
+	client->cmd_angles[0] = SHORT2ANGLE(current_ucmd->angles[0]);
+	client->cmd_angles[1] = SHORT2ANGLE(current_ucmd->angles[1]);
+	client->cmd_angles[2] = SHORT2ANGLE(current_ucmd->angles[2]);
+
+	//[b611] chrissstrahl - check if circle menu is active, if so react
+	this->circleMenuThink();
+	//hzm coop mod chrissstrahl - handle coop specific stuff in here
+	coop_playerThink(this);
 
 	if ( client->ps.pm_flags & PMF_CAMERA_VIEW )
 	{
@@ -5933,9 +5942,6 @@ void Player::ClientThink( Event *ev )
 
 	if ( multiplayerManager.inMultiplayer() )
 		multiplayerManager.playerInput( this , new_buttons );
-
-	//hzm coop mod chrissstrahl - handle coop specific stuff in here
-	coop_playerThink( this );
 
 	// Check for incoming melee attacks and set the incomingMeleeAttack flag
 	incomingMeleeAttack = false;
@@ -5967,66 +5973,66 @@ void Player::ClientThink( Event *ev )
 
 // This function returns the endpoint of where the crosshair is located on the
 // screen.  Regardless of whether we're in camera, first or 3rd person view.
-void Player::GetViewTrace( trace_t& trace , int contents , float maxDistance )
+void Player::GetViewTrace(trace_t& trace, int contents, float maxDistance)
 {
 	//	trace_t trace;
-	Vector f , r , u , p , s;
-	Vector pos , forward , endpoint , vorg , dir;
+	Vector f, r, u, p, s;
+	Vector pos, forward, endpoint, vorg, dir;
 	vec3_t viewAngles;
 
 
-	if ( client->ps.pm_flags & PMF_CAMERA_VIEW ) // 3rd person automatic camera
+	if (client->ps.pm_flags & PMF_CAMERA_VIEW) // 3rd person automatic camera
 	{ //[b607] chrissstrahl - no changes - CINEMATIC AND 3rd PERSON
 		vorg = client->ps.camera_origin;
-		VectorCopy( client->ps.camera_angles , viewAngles );
+		VectorCopy(client->ps.camera_angles, viewAngles);
 	}
-	else if ( !_isThirdPerson ) // First person
+	else if (!_isThirdPerson) // First person
 	{ //[b607] chrissstrahl - no changes - NOT in 3rd PERSON
 		vorg = origin;
 		vorg.z += client->ps.viewheight;
-		VectorCopy( GetVAngles() , viewAngles );
+		VectorCopy(GetVAngles(), viewAngles);
 	}
 	else // Third person
 	{ //[b607] chrissstrahl - no changes - 3rd PERSON
 		//vorg = current_ucmd->realviewangles;
-		VectorCopy( GetVAngles() , viewAngles );
+		VectorCopy(GetVAngles(), viewAngles);
 	}
 
 	vec3_t left;
 	//Adjust the view end point if we are leaning.
-	if ( client->ps.leanDelta != 0 )
+	if (client->ps.leanDelta != 0)
 	{
 		viewAngles[2] -= client->ps.leanDelta / 2.0f;
 
-		AngleVectors( viewAngles , NULL , left , NULL );
-		VectorMA( vorg , client->ps.leanDelta , left , vorg );
+		AngleVectors(viewAngles, NULL, left, NULL);
+		VectorMA(vorg, client->ps.leanDelta, left, vorg);
 	}
 
 	// Add the damage angles
-	VectorSubtract( viewAngles , client->ps.damage_angles , viewAngles );
+	VectorSubtract(viewAngles, client->ps.damage_angles, viewAngles);
 
-	AngleVectors( viewAngles , f , r , u );
+	AngleVectors(viewAngles, f, r, u);
 
-	float xmax , ymax , fov_x , fov_y , x;
+	float xmax, ymax, fov_x, fov_y, x;
 
 	fov_x = client->ps.fov;
-	x = 640.0f / ( float )tan( fov_x / 360.0 * M_PI );
-	fov_y = ( float )atan2( 480.0f , x );
+	x = 640.0f / (float)tan(fov_x / 360.0 * M_PI);
+	fov_y = (float)atan2(480.0f, x);
 	fov_y *= 360.0f / M_PI;
 
-	ymax = 4.0f * ( float )tan( fov_y * M_PI / 360.0 );
-	xmax = 4.0f * ( float )tan( fov_x * M_PI / 360.0 );
+	ymax = 4.0f * (float)tan(fov_y * M_PI / 360.0);
+	xmax = 4.0f * (float)tan(fov_x * M_PI / 360.0);
 
-	p.x = ( float )_crossHairXOffset * ( -xmax / 320.0f );
-	p.y = ( float )_crossHairYOffset * ( -ymax / 240.0f );
-	s = ( 4.0f * f ) + ( p.x * r ) + ( p.y * u );
+	p.x = (float)_crossHairXOffset * (-xmax / 320.0f);
+	p.y = (float)_crossHairYOffset * (-ymax / 240.0f);
+	s = (4.0f * f) + (p.x * r) + (p.y * u);
 	s.normalize();
-	endpoint = vorg + ( s * maxDistance );
+	endpoint = vorg + (s * maxDistance);
 
-	if ( !multiplayerManager.inMultiplayer() || multiplayerManager.fullCollision() )
-		trace = G_FullTrace( vorg , vec_zero , vec_zero , endpoint , this , contents , true , "Player::GetViewEndPoint" );
+	if (!multiplayerManager.inMultiplayer() || multiplayerManager.fullCollision())
+		trace = G_FullTrace(vorg, vec_zero, vec_zero, endpoint, this, contents, true, "Player::GetViewEndPoint");
 	else
-		trace = G_Trace( vorg , vec_zero , vec_zero , endpoint , this , contents , true , "Player::GetViewEndPoint" );
+		trace = G_Trace(vorg, vec_zero, vec_zero, endpoint, this, contents, true, "Player::GetViewEndPoint");
 
 	//endpoint = trace.endpos;
 
@@ -6034,6 +6040,7 @@ void Player::GetViewTrace( trace_t& trace , int contents , float maxDistance )
 
 	//return endpoint;
 }
+
 //-----------------------------------------------------
 //
 // Name:		CheckForTargetedEntity

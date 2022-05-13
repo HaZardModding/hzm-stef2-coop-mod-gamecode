@@ -28,6 +28,8 @@ class HoldableItem;
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
+//[b611] Chrissstrahl
+#include "upgCircleMenu.hpp"
 #include "coopPlayer.hpp"
 #include "coopServer.hpp"
 
@@ -170,7 +172,6 @@ inline void WeaponSetItem::Archive( Archiver &arc )
    ArchiveEnum( hand, weaponhand_t );
    }
 
-
 //------------------------- CLASS ------------------------------
 //
 // Name:          Player
@@ -182,6 +183,84 @@ inline void WeaponSetItem::Archive( Archiver &arc )
 //--------------------------------------------------------------
 class Player : public Sentient
 	{
+	//HaZardModding Coop Mod Added and Modified Stuff
+	//HaZardModding Coop Mod Added and Modified Stuff
+	//HaZardModding Coop Mod Added and Modified Stuff
+	public:
+		//hzm coop mod chrissstrahl - we want to access them anywhere
+		//modified - they used to be private
+		int					_objectiveNameIndex;
+		unsigned int		_objectiveStates;
+		unsigned int		_informationStates;
+		EntityPtr			_targetedEntity;
+		void				disableUseWeapon(bool bDiable);
+
+		//hzm coop mod chrissstrahl - used to set a individual killthread for each player
+		str					kill_thread;
+
+		//hzm gameupdate chrissstrahl - make sure we handle the branchdialog stuff right
+		bool				branchdialog_active;
+
+		//[b607] chrissstrahl - added for message of the day ststus check
+		bool				messageOfTheDaySend;
+
+		//[b611] chrissstrahl - switch widgets - send in one burst to player
+		void				switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
+		//[b611] chrissstrahl - return if player is pressing use or not
+		void				checkUsePressing(Event* ev);
+		//[b611] chrissstrahl - checks if player is pressing fire button
+		void				checkFire(Event* ev);
+		//[b611] chrissstrahl - checks if player is pressing fire button
+		void				checkFirealt(Event* ev);
+		//[b611] chrissstrahl - checks if player is in third person
+		void				checkThirdperson(Event* ev);
+		//[b611] chrissstrahl - start circlemenu for player
+		void				circleMenuEvent(Event* ev);
+
+		//[b611] chrissstrahl - allow to run thread from player entity (sets currententity)
+		void				RunThread(Event* ev);
+		void				RunThread(const str& thread_name);
+		//[b611] chrissstrahl - get player viewangle
+		void				getPlayerViewangle(Event* ev);
+		//[b607] chrissstrahl - return targeted entity of player
+		void				getTargetedEntity(Event* ev);
+		//[b607] chrissstrahl - just fucking give me the data, i don't care for your conditions
+		qboolean			checkthirdperson();
+		//hzm gamefix daggolin - new function to handle enviromental influences (like drowning)
+		void				gamefix_WorldEffects(void);
+		//hzm gameupdate chrissstrahl - add new function returning the last time the player was hurt
+		float				getLastDamageTime(void);
+		//hzm gameupdate chrissstrahl - add new scripting functions
+		void				setKillThread(Event* ev);
+		//hzm gameupdate daggolin - new commands
+		void				getScriptVariablesCommand(Event* ev);
+	
+	public:
+		//[b611] chrissstrahl - containerize
+		CoopPlayer			coopPlayer;
+		UpgCircleMenu		upgCircleMenu;
+
+		friend class		CoopPlayer;
+		friend class		UpgCircleMenu;
+
+	
+		//[b611] chrissstrahl - handle crircle menu
+		void				circleMenu(int iType);
+		bool				circleMenuIsActive(void);
+	private:
+		int					circleMenuDetermineDirection(void);
+		int					circleMenuCalculateDirection(int &up, int &down, int &left, int &right);
+		int					circleMenuCalculateDirectionFinal(void);
+		str					circleMenuGetWidgetName(int iDirection);
+		int					circleMenuGetOption(int iDirection);
+		void				circleMenuThink(void);
+
+	//HaZardModding Coop Mod END
+	//HaZardModding Coop Mod END
+	//HaZardModding Coop Mod END
+
+
+
 	public:
 		CLASS_PROTOTYPE( Player );
 		Player();
@@ -189,24 +268,10 @@ class Player : public Sentient
 
 		static Condition<Player> Conditions[];
 
-		//hzm coop mod chrissstrahl - use our own coop class as extension
-		CoopPlayer		coopPlayer;
-		//end of hzm
-
-		//hzm coop mod chrissstrahl - used to set a individual killthread for each player
-		str kill_thread;
-
-		//hzm gameupdate chrissstrahl - make sure we handle the branchdialog stuff right
-		bool			branchdialog_active;
-
-		//[b607] chrissstrahl - added message of the day
-		bool			messageOfTheDaySend;
-
 		char			lastTeam[ 16 ];
 		qboolean		mp_savingDemo;
 		float			userFov;
 	private:
-		friend class		CoopPlayer;
 		friend class		Camera;
 		friend class		Vehicle;
 		friend class		HorseVehicle;
@@ -435,20 +500,6 @@ class Player : public Sentient
 		int					_nextRegenTime;
 		float				_useEntityStartTimer;
 
-
-//hzm coop mod chrissstrahl - we want to access them anywhere
-//I know this is bad, but I don't know how to do it otherwise
-public:
-		int					_objectiveNameIndex;
-		unsigned int		_objectiveStates;
-		unsigned int		_informationStates;
-
-		EntityPtr			_targetedEntity;
-
-//hzm coop mod chrissstrahl - make private again
-//end of hzm
-private:
-
 		int					_dialogEntnum;
 		int					_dialogSoundIndex;
 		int					_dialogTextSoundIndex;
@@ -495,29 +546,9 @@ private:
 		Vector				_flagAttachAngles;
 
 		bool				_cameraCutThisFrame;
-
-	// Conditional Functions
+	
 	public:
-		//[b611] chrissstrahl - allow to run thread from player entity (sets currententity)
-		void				RunThread(Event* ev);
-		void				RunThread(const str& thread_name);
-		//[b611] chrissstrahl - get player viewangle
-		void				getPlayerViewangle(Event* ev);
-		//[b607] chrissstrahl - return targeted entity of player
-		void				getTargetedEntity(Event *ev);
-		//[b607] chrissstrahl - just fucking give me the data, i don't care for your conditions
-		qboolean			checkthirdperson();
-		//hzm gamefix daggolin - new function to handle enviromental influences (like drowning)
-		void				gamefix_WorldEffects( void );
-		//hzm gameupdate chrissstrahl - add new function returning the last time the player was hurt
-		float				getLastDamageTime( void );
-		//hzm gameupdate chrissstrahl - add new scripting functions
-		void				setKillThread( Event *ev );
-		//hzm gameupdate daggolin - new commands
-		void				getScriptVariablesCommand( Event *ev );
-		//hzm gameupdate chrissstrahl - allow dissableing weapon directly, used in coop mod
-		void				disableUseWeapon( bool bDiable );
-
+// Conditional Functions
 		qboolean			returntrue( Conditional &condition );
 		qboolean			checkturnleft( Conditional &condition );
 		qboolean			checkturnright( Conditional &condition );
