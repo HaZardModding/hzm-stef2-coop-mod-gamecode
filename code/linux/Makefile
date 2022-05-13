@@ -304,6 +304,8 @@ GOBJ =\
     $(B)/game/WeaponDualWield.o \
     $(B)/game/weaputils.o \
     $(B)/game/worldspawn.o \
+	$(B)/game/coopGamecmds.o \
+	$(B)/game/upgCircleMenu.o \
     $(B)/game/coopArmory.o \
     $(B)/game/coopCheck.o \
     $(B)/game/coopClass.o \
@@ -324,8 +326,6 @@ GOBJ =\
 	$(B)/game/coopActor.o \
 	$(B)/game/coopVote.o \
     $(B)/game/coopText.o 
-
-
 #    $(B)/game/coopAchievements.o \
 
 
@@ -494,7 +494,11 @@ $(B)/game/weapon.o : $(GDIR)/weapon.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/WeaponDualWield.o : $(GDIR)/WeaponDualWield.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/weaputils.o : $(GDIR)/weaputils.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/worldspawn.o : $(GDIR)/worldspawn.cpp; $(DO_GAME_SHLIB_CC)
-# $(B)/game/coopAchievements.o : $(GDIR)/$(GDIR)/coopAchievements.o; $(DO_GAME_SHLIB_CC) 
+# HaZardModding Upgrades
+$(B)/game/upgCircleMenu.o : $(GDIR)/upgCircleMenu.cpp; $(DO_GAME_SHLIB_CC)
+# HaZardModding Gamefixes
+# HaZardModding Coop Mod
+$(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopArmory.o : $(GDIR)/coopArmory.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopCheck.o : $(GDIR)/coopCheck.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopClass.o : $(GDIR)/coopClass.cpp; $(DO_GAME_SHLIB_CC)
@@ -515,6 +519,7 @@ $(B)/game/coopTrigger.o : $(GDIR)/coopTrigger.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopActor.o : $(GDIR)/coopActor.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopVote.o : $(GDIR)/coopVote.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopText.o : $(GDIR)/coopText.cpp; $(DO_GAME_SHLIB_CC)
+# $(B)/game/coopAchievements.o : $(GDIR)/$(GDIR)/coopAchievements.o; $(DO_GAME_SHLIB_CC)
 
 
 #############################################################################
