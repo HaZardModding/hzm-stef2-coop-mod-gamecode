@@ -1939,3 +1939,44 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	}
 	return false;
 }
+
+//[b611] chrissstrahl - frequently needed, couldn't find them in code but was sure they did exist
+//================================================================
+// Name:        coop_returnFloatNotNegative
+// Class:       -
+//              
+// Description:  returns given float and makes sure it is not negative
+//              
+// Parameters:  float
+//              
+// Returns:     float
+//              
+//================================================================
+float coop_returnFloatNotNegative(float fLt)
+{
+	if (fLt < 0) {
+		return (fLt * -2);
+	}
+	return fLt;
+}
+
+//[b611] chrissstrahl
+//================================================================
+// Name:        coop_returnIntegerNotNegative
+// Class:       -
+//              
+// Description:  returns given int and makes sure it is not negative
+//              
+// Parameters:  int
+//              
+// Returns:     int
+//              
+//================================================================
+int coop_returnIntegerNotNegative(int iNt)
+{
+	if (iNt < 0) {
+		return (iNt * -2);
+	}
+	return iNt;
+}
+

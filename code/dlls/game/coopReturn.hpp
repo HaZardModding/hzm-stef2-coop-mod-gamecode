@@ -73,5 +73,8 @@ float coop_getFloatScriptVariable( str s );
 str coop_getStringScriptVariable( str s );
 float coop_returnFloatFromString( str extrapolate );
 bool coop_returnLevelType( str sLevelname , bool &standard , int &type );
+//[b611] chrissstrahl - frequently needed, couldn't find them in code but was sure they did exist
+float coop_returnFloatNotNegative(float fLt);
+int coop_returnIntegerNotNegative(int iNt);
 #endif /* coopReturn.hpp */
 
