@@ -2405,7 +2405,7 @@ void PmoveSingle (pmove_t *pmove)
    vec3_t temp;
 
 	pm = pmove;
-
+	
 	// this counter lets us debug movement problems with a journal
 	// by setting a conditional breakpoint fot the previous frame
 	c_pmove++;
@@ -2484,14 +2484,14 @@ void PmoveSingle (pmove_t *pmove)
 		// not holding jump
 		pm->ps->pm_flags &= ~PMF_JUMP_HELD;
 	}
-
-	if ( pm->ps->pm_type == PM_DEAD )
-      {
+	
+	if (pm->ps->pm_type == PM_DEAD)
+	{
 		pm->cmd.forwardmove = 0;
 		pm->cmd.rightmove = 0;
 		pm->cmd.upmove = 0;
 		pm->cmd.lean = 0;
-	   }
+	}
 
 	if ( pm->ps->pm_type == PM_NOCLIP )
       {
