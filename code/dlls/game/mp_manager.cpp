@@ -998,7 +998,7 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 				if ( !level.mission_failed )
 				{
 					if ( !game.coop_isActive || ( player->coopPlayer.lastTimeSpawned + 2 ) < level.time ) {
-						if ( !Q_stricmp( player->coopPlayer.language , "Deu" ) ) {
+						if (player->getLanguage() == "Deu") {
 							centerPrint( player->entnum , va( "^3 %s ^8ist keine akzeptable Spielfigur..." , modelName ) , CENTERPRINT_IMPORTANCE_NORMAL );
 						}
 						else {
@@ -2635,34 +2635,6 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 		return;
 	}
 
-	//hzm coop mod chrissstrahl - this handels the coop specific say commands
-	if ( coop_playerSay( player , tempText ) )
-	{
-		return;
-	}
-
-	//hzm gameupdate chrissstrahl - this handels the new say commands during noncoop
-	if ( !Q_stricmpn( "!help" , tempText , 5 ) )
-	{
-		if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 )
-		{
-			player->hudPrint( "^5H^2a^5Z^2ard^5M^2odding ^5Coop ^2Mod ^8@ADVANCED SERVER\n" );
-			//player->hudPrint( "New vote commands: addbot, exec, kickbots, mp_gametype, skipcinematic, \n" );//[b607] updated
-		}
-		return;
-	}
-	//chrissstrahl -  [b607] - used to kick all bots
-	else if (!Q_stricmpn("!kickbots", tempText, 9)) {
-		player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
-		gclient_t	*cl;
-		for (int i = 0; i < maxclients->integer; i++) {
-			cl = game.clients + i;
-			if (!(g_entities[cl->ps.clientNum].svflags & SVF_BOT)) {
-				continue;
-			}
-			gi.SendConsoleCommand(va("kick %i\n", i));
-		}
-	}
 
 	if ( player )
 	{
@@ -2676,6 +2648,11 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 			return;
 		}
 		name = "$$ServerName$$";
+	}
+
+	//hzm coop mod chrissstrahl - this handels the coop specific say commands
+	if (coop_playerSay(player, tempText)) {
+		return;
 	}
 
 	realText = name;

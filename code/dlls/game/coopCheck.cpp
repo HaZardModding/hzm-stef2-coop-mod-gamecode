@@ -48,7 +48,7 @@
 //================================================================
 bool coop_checkPlayerLanguageGerman(Player *player)
 {
-	if (player && !Q_stricmp(player->coopPlayer.language, "Deu"))
+	if (player && player->getLanguage() == "Deu")
 	{
 		return true;
 	}

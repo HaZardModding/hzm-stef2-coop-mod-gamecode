@@ -622,7 +622,7 @@ void PuzzleObject::useEvent(Event* event)
 			if ( player->coopPlayer.className != "Medic" ){
 				if ( ( fLastMsgTime + 3 ) < level.time ){
 					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
-					if (player->coopPlayer.language == "Deu") {
+					if (player->getLanguage() == "Deu") {
 						player->hudPrint("Benutzen nur durch: ^5$$Medic$$^8!\n");
 					}else{
 						player->hudPrint("To use, you need to be: ^5$$Medic$$^8!\n");
@@ -636,7 +636,7 @@ void PuzzleObject::useEvent(Event* event)
 			if ( player->coopPlayer.className != "Technician" ){
 				if ( ( fLastMsgTime + 3 ) < level.time ){
 					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
-					if (player->coopPlayer.language == "Deu") {
+					if (player->getLanguage() == "Deu") {
 						player->hudPrint("Benutzen nur durch: ^5$$Technician$$^8!\n");
 					}else {
 						player->hudPrint("To use, you need to be: ^5$$Technician$$^8!\n");
@@ -649,7 +649,7 @@ void PuzzleObject::useEvent(Event* event)
 			if ( player->coopPlayer.className != "HeavyWeapons" ){
 				if ( ( fLastMsgTime + 3 ) < level.time ){
 					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
-					if (player->coopPlayer.language == "Deu") {
+					if (player->getLanguage() == "Deu") {
 						player->hudPrint("Benutzen nur durch: ^5$$HeavyWeapons$$^8!\n");
 					}
 					else {

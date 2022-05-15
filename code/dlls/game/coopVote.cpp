@@ -718,7 +718,7 @@ int coop_vote_addbotValidate(Player* player, const str &command, const str &arg,
 	}
 
 	if (coop_returnCvarInteger("sv_maxbots") >= iNumberOfBots) {
-		if (player->coopPlayer.language == "Deu") {
+		if (player->getLanguage() == "Deu") {
 			player->hudPrint(va("Server: Maximale Bots erreicht, sv_maxbots ist gesetzt auf %i\n", coop_returnCvarInteger("sv_maxbots")));
 		}
 		else {
@@ -1219,7 +1219,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 			}
 
 			//hzm coop mod chrissstrahl - inform players of change
-			if (!Q_stricmp(player->coopPlayer.language, "Deu")) {
+			if (player->getLanguage() == "Deu") {
 				multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: Last Man Standing gesetzet auf:^5 %d\n", iStatus));
 			}
 			else {
@@ -1229,7 +1229,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 			//hzm coop mod chrissstrahl - if activated print some messages
 			if (iStatus == 1){
 				if (game.levelType < MAPTYPE_MISSION){
-					if (!Q_stricmp(player->coopPlayer.language, "Deu")) {
+					if (player->getLanguage() == "Deu") {
 						multiplayerManager.HUDPrint(player->entnum, "^5INFO^8: Last Man Standing ist nur auf Missionskarten aktiviert!\n");
 					}
 					else {
@@ -1237,7 +1237,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 					}
 				}
 				else{
-					if (!Q_stricmp(player->coopPlayer.language, "Deu")) {
+					if (player->getLanguage() == "Deu") {
 						multiplayerManager.HUDPrint(player->entnum, "^3=!= ^8Wenn Sie ausgeschaltet werden bleiben Sie ausgeschaltet ^3=!=\n");
 					}
 					else {
