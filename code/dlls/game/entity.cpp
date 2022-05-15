@@ -1781,13 +1781,25 @@ Event EV_BoosterNearbyPlayer
 	"typeOfBoost bostRange ammount maximum",
 	"Gives a boost to players within range (ammo,health,armor)"
 );
+//hzm gameupdate chrissstrahl [b611] - check if actor/player has item
+Event EV_HasItem
+(
+	"hasItem",
+	EV_DEFAULT,
+	"@fs",
+	"float-true-false item-name",
+	"Checks if player or actor has named item"
+);
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
 		//[b611] chrissstrahl - add boster script entity event
-		{ &EV_BoosterNearbyPlayer ,			&Entity::boosterNearbyPlayer } ,
+		{ &EV_BoosterNearbyPlayer ,			&Entity::BoosterNearbyPlayer } ,
 		//hzm coop mod chrissstrahl - new event to set a idle animation, used for the new coop triggers
 		{ &EV_Idle ,						&Entity::SetIdleAnimation } ,
+		//hzm gameupdate chrissstrahl - new event to set a idle animation, used for the new coop triggers
+		{ &EV_HasItem,						&Entity::HasItemEvent },
+		//hzm gameupdate chrissstrahl - new event to set a idle animation, used for the new coop triggers
 		{ &EV_SetUserVar5,					&Entity::SetUserVar5 },
 		{ &EV_SetUserVar6,					&Entity::SetUserVar6 } ,
 		{ &EV_SetUserVar7,					&Entity::SetUserVar7 } ,
@@ -1992,11 +2004,46 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	};
 
 //--------------------------------------------------------------
+//
+// Name:			SetIdleAnimation
+// Class:			Entity
+//
+// Description:		Sets the idle animation on a entity with model
+//
+// Parameters:		Event *ev
+//
+// Returns:			None
+//
+//--------------------------------------------------------------
+void Entity::HasItemEvent(Event* ev)
+{
+	if (!isSubclassOf(Sentient)) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+
+	Sentient* Senti = (Sentient*)(Entity*)this;
+	str sName;
+	sName = ev->GetString(1);
+
+	if (strlen(sName) > 0) {
+		Item* item;
+			item = Senti->FindItem(sName);
+		if (item) {
+			ev->ReturnFloat(1.0f);
+			return;
+		}
+	}
+
+	ev->ReturnFloat(0.0f);
+}
+
+//--------------------------------------------------------------
 //[b611] chrissstrahl - gives specified boost to near by players
 //typeofboost,range,amount,maximum
 //ammo,armor,health
 //--------------------------------------------------------------
-void Entity::boosterNearbyPlayer(Event *ev)
+void Entity::BoosterNearbyPlayer(Event *ev)
 {
 	Player *player	= NULL;
 	Entity *eTemp	= NULL;

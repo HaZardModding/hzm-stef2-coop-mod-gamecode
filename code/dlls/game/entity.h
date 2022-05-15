@@ -453,7 +453,10 @@ class Entity : public Listener
 		int					waterlevel;
 		
 		//[b611] chrissstrahl - add boster script entity event
-		void				boosterNearbyPlayer( Event *ev );
+		void				BoosterNearbyPlayer( Event *ev );
+
+		//hzm gameupdate chrissstrahl [b611] - check if player/actor has item
+		void				HasItemEvent( Event *ev );
 
 		//hzm coop mod chrissstrahl - added	for the new coop triggers
 		void				SetIdleAnimation( Event *ev );
