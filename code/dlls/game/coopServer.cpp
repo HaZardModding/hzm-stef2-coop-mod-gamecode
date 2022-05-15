@@ -434,16 +434,25 @@ bool coop_serverManageReboot(str sMapToLoad)
 //================================================================
 bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrahl added player for printing info
 {
-	//[b607] chrissstrahl - allow to adjust the coop reboot feature
-	bool bCoopNoReboot = false;
-	str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
-	if (Q_stricmpn(sCoopRebootState.c_str(),"killserver",10) && Q_stricmpn(sCoopRebootState.c_str(),"quit",4)) { 
-		return false;
-	}
-
 	//while rebooting do not return false, as this might make the server change the map rather than quitting it
 	if ( game.coop_reboot ){
 		return true;
+	}
+
+	//don't reboot a listen server, don't reboot on level startup
+	if (dedicated->integer == 0 || level.time < 10) {
+		//added info message printed to executing player [b607]
+		if (player != NULL && dedicated->integer == 0) {
+			player->hudPrint("^5Info^8: Only dedicated Servers are meant to be rebooted.\n");
+		}
+		return false;
+	}
+
+	//[b607] chrissstrahl - allow to adjust the coop reboot feature
+	bool bCoopNoReboot = false;
+	str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
+	if (Q_stricmpn(sCoopRebootState.c_str(), "killserver", 10) && Q_stricmpn(sCoopRebootState.c_str(), "quit", 4)) {
+		return false;
 	}
 
 	//reset var if the map we are about to load is not starting with ent-deck or ent-training_weap (excluding ent-deck.bsp)
@@ -469,15 +478,6 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 		coop_serverSaveGameVars( "igmRoomsVisited" , "0" );
 		coop_serverSaveGameVars( "igmHolodeckSpawn" , "0" );
 		coop_serverSaveGameVars( "igmTurboliftSpawn" , "0" );	
-	}
-
-	//don't reboot a listen server, don't reboot on level startup
-	if ( dedicated->integer == 0 || level.time < 10 ){
-		//added info message printed to executing player [b607]
-		if (player != NULL && dedicated->integer == 0) {
-			player->hudPrint("^5Info^8: Only dedicated Servers are meant to be rebooted.\n");
-		}
-		return false;
 	}
 
 	//check for reboot conditions
