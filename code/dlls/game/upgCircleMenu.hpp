@@ -83,4 +83,7 @@ public:
 	str		dialogOption4Text = "";
 };
 
+
+//UpgCircleMenu::circleMenu();
+
 #endif /* !__UPGCIRCLEMENU_HPP__ */
