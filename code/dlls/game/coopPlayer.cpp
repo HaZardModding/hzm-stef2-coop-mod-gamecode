@@ -145,7 +145,7 @@ bool coop_playerCheckAdmin(Player *player)
 
 	//[b610] chrissstrahl - auto login if player is host
 	if (dedicated->integer == 0 && player->entnum == 0) {
-		player->coopPlayer.admin = false;
+		player->coopPlayer.admin = true;
 		player->hudPrint("^3You are now logged in (Host auto-!login).\n");
 		return true;
 	}
@@ -265,7 +265,7 @@ bool coop_playerSpawnLms( Player *player )
 		if ( !level.mission_failed && ( player->coopPlayer.lastTimeHudMessage + 3 ) < level.time ){
 			player->coopPlayer.lastTimeHudMessage = level.time;
 
-			if ( !Q_stricmp( player->coopPlayer.language , "Deu" ) ) {
+			if ( player->getLanguage() == "Deu" ) {
 				multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Aktiv^8 - ^1Sie sind momentan ausgeschaltet.\n" );
 			}
 			else {
@@ -442,10 +442,13 @@ bool coop_playerSetup(Player *player)
 	//[b610] chrissstrahl - add var in any case
 	player->entityVars.SetVariable("_playerIsBot", (float)(int)level.spawn_bot);
 
+	//[b611] chrissstrahl - what happned to this ? I readded this as I can't find it
+	player->coopPlayer.timeEntered = level.time;
+
 	//[b607] chrissstrahl - make sure we do not handle bots
 	if (ent->svflags & SVF_BOT) {
 		cvar_t *cvar = gi.cvar_get("local_language");
-		player->coopPlayer.language = cvar->string;
+		player->setLanguage(cvar->string);
 		coop_classSet(player, "HeavyWeapon");
 		player->coopPlayer.setupComplete = true;
 		return true;
@@ -462,10 +465,14 @@ bool coop_playerSetup(Player *player)
 
 		//hzm gameupdate chrissstrahl - make player language availabe for script usage
 		cvar_t *cvar = gi.cvar_get( "local_language" );
-		player->coopPlayer.language = "Eng";
-		if ( cvar != NULL && cvar->string == "Deu" ) {
-			player->coopPlayer.language = "Deu";
+
+		if ( cvar != NULL && cvar->string == "Deu") {
+			player->setLanguage("Deu");
 		}
+		else {
+			player->setLanguage("Eng");
+		}
+
 		DelayedServerCommand( player->entnum , "globalwidgetcommand DialogConsole rect 8 7 304 89" );
 		//chrissstrahl - disabled this might be reduandant [b607]
 		//DelayedServerCommand( player->entnum , "globalwidgetcommand dmTimer disable" );
@@ -519,7 +526,6 @@ bool coop_playerSetup(Player *player)
 		//this was moved to: level::update in level.cpp
 		return true;
 	}
-
 
 
 	//[b610] chrissstrahl - changed the order how things are executed
@@ -699,7 +705,7 @@ void coop_playerSetupNoncoop( Player *player)
 		//[b607] chrissstrahl - make sure we do not handle bots
 		gentity_t *ent = player->edict;
 		if (!(ent->svflags & SVF_BOT)) {
-			if ( !Q_stricmp( player->coopPlayer.language , "Deu" ) ) {
+			if ( player->getLanguage() == "Deu" ) {
 				DelayedServerCommand( player->entnum , "hudprint ^2Holen Sie sich den ^5HZM Coop Mod^2 fuer ein volles Erlebniss! ^5!help^8 eingeben fuer Befehle.\n" );
 			}
 			else {
@@ -972,6 +978,8 @@ bool coop_playerPlaceAtSpawn( Player *player )
 	}
 	return bSpawnedSucessfull;
 }
+
+//[b611] chrissstrahl - major restructure, moved commands to - coopGamecmds.cpp
 //================================================================
 // Name:        coop_playerSay
 // Class:       -
@@ -988,687 +996,36 @@ bool coop_playerSay( Player *player , str sayString)
 	if ( !player )
 		return false;
 
-	sayString = sayString.tolower();
 
-	str tempText;
-	//hzm coop mod chrissstrahl - this addes the coop specific commands, that have to be entred into chat
-	//hzm coop mod chrissstrahl - catch chat text that is suppose to be a coop command, starting with ! as very first letter
-	tempText = "!";
-
-	//COMMANDS STARTING WITH !
-	if ( sayString[0] == tempText && game.coop_isActive ){
-		//hum coop mod chrissstrahl - I'm sure there is a better way to shorten a string, but I've no clue about that at this time :)
-		if ( strlen( sayString ) > 20 )
-		{
-			str temp;
-			int i;
-			for ( i = 0; i < 20; i++ )
-			{
-				temp += sayString;
-			}
-			sayString = temp;
+	//[b611] chrissstrahl - Strip out any bad characters
+	int i;
+	for (i = 0; i < sayString.length(); i++){
+		if (sayString[i] == '%'){
+			sayString[i] = '.';
 		}
+	}
 
-		//hzm coop mod chrissstrahl - it appears that text message has the NewLine char attached to it at the end (index+1)
-		//hzm coop mod chrissstrahl - add printout for the say command, so that the player can type 
-		//hzm coop mod chrissstrahl - a command directly into chat, rather than into the game console
-		if ( !Q_stricmpn( "!help" , sayString , 5 ) )
-		{
-			if ( gi.GetNumFreeReliableServerCommands( player->entnum ) < 32 )
-				return true;
-
-			if ( coop_checkPlayerLanguageGerman(player) ){
-				player->hudPrint( "^5H^2a^5Z^2ard^5M^2odding ^5Coop ^2Mod ^8- Spieler Befehle\n" );
-				player->hudPrint( "^5==================================================\n" );
-				player->hudPrint( "^5!help^8        Zeigt alle Befehle in der Konsole an\n" );
-				player->hudPrint( "^5!block^8       Zielen Sie auf einen blockierenden Spieler\n" );
-				player->hudPrint( "^5!class^8       Zeigt Ihre Klasse an. Tippen Sie '^5!class Medic^8' zum wechseln\n" );
-				player->hudPrint( "^5!drop^8        Legt Ihre aktuelle Waffe ab. Zielen Sie auf einen Spieler zum vergeben\n" );
-				player->hudPrint( "^5!kill^8		 Tippen Sie dies zum Selbstmord\n" );
-				player->hudPrint( "^5!stuck^8      Tippen Sie dies wenn Sie feststecken, verschiebt Sie zum Spawnpunkt\n" );
-				player->hudPrint( "^5!skill^8      Zeigt Schwierigkeit an, tippen Sie '^5!skill 3^8' [$$VeryHard$$]. Optionen: 0 bis 3\n" );
-				player->hudPrint( "^5!transport^8		Transportiert Sie zum angegeben Spieler. Optionen: 0 bis 8\n" );
-				player->hudPrint( "^5!mapname^8      Zeigt Dateiname der aktuellen Karte an (*.bsp)\n" );
-				player->hudPrint( "^5!info^8		Zeigt Ihre Informationen an.\n" );
-				player->hudPrint( "^5!build^8		Zeigt aktuelle Build.\n" );
-				player->hudPrint( "^5!origin^8		Zeigt Ihren und Ziel origin an.\n" );
-
-				//player->hudPrint( "^5!heal^8		Heilt Sie ! (ENTWICKLER Befehl)\n" );
-				//chrissstrahl -  [b607]
-				player->hudPrint("^5!login^8		Zeigt die Coop Admin Login Schnittstelle an.\n");
-				player->hudPrint("^5!logout^8		Entzieht Ihnen Coop Admin Rechte.\n");
-				player->hudPrint("^5!noclip^8		Schaltet keine Kollision an/aus (ENTWICKLER Befehl) \n");
-				player->hudPrint("^5!reboot^8		Rebootet den Server sofort (ENTWICKLER Befehl) \n");
-				player->hudPrint("^5!levelend^8		Startet die level end Funktion (ENTWICKLER Befehl) \n");
-				player->hudPrint("^5!targeted^8		Zeigt die Entity Targetnamen bei wechsel (ENTWICKLER Befehl) \n");
-				player->hudPrint("^5!showspawn^8		Zeigt playerspawnspots (ENTWICKLER Befehl) \n");
-				player->hudPrint("^5!hidespawn^8		Versteckt playerspawnspots (ENTWICKLER Befehl) \n");
-				player->hudPrint("^5!testspawn^8		Zum Testen der playerspawnspots (ENTWICKLER Befehl) \n");
-				player->hudPrint("^5!kickbots^8		Kickt alle Bots (ENTWICKLER Befehl) \n");
-			}
-			else{
-				player->hudPrint( "^5H^2a^5Z^2ard^5M^2odding ^5Coop ^2Mod ^8- Avialable Player Commands\n" );
-				player->hudPrint( "^5==================================================\n" );
-				player->hudPrint( "^5!help^8        Prints all avialable commands to console\n" );
-				player->hudPrint( "^5!block^8       Type this and aim on a Player that is blocking the way\n" );
-				player->hudPrint( "^5!class^8       Prints current class. Type '^5!class Medic^8' to change class\n" );
-				player->hudPrint( "^5!drop^8        Drops your current Weapon, used to give Weapons to others\n" );
-				player->hudPrint( "^5!kill^8		 Type this to kill your self\n" );
-				player->hudPrint( "^5!stuck^8      Type this if stuck or lost, will take you back to spawn location\n" );
-				player->hudPrint( "^5!skill^8      Prints current skill, type '^5!skill 3^8' for Very Hard. Range: 0-3\n" );
-				player->hudPrint( "^5!transport^8		Transports you to given player. Range 0-8\n" );
-				player->hudPrint( "^5!mapname^8      Prints filename of the current map (*.bsp)\n" );
-				player->hudPrint( "^5!info^8		Prints (your) Informations.\n" );
-				player->hudPrint("^5!build^8		Displays current Build.\n");
-				player->hudPrint("^5!origin^8		Displays your and targeted origin.\n");
-				
-				//chrissstrahl -  [b607]
-				//player->hudPrint( "^5!heal^8		Heals you ! (development command) \n" );
-				player->hudPrint( "^5!login^8		Promts the Coop Admin Login Menu.\n");
-				player->hudPrint( "^5!logout^8		Revokes your Coop Admin Status.\n");
-				player->hudPrint("^5!noclip^8		Turns no clipping on/off (development command) \n");
-				player->hudPrint("^5!reboot^8		Reboots the Server right now (development command) \n");
-				player->hudPrint("^5!levelend^8		Runs the level end function now (development command) \n");
-				player->hudPrint("^5!targeted^8		Shows entity Targetname when changing (development command) \n");
-				player->hudPrint("^5!showspawn^8		Shows playerspawnspots (development command) \n");
-				player->hudPrint("^5!hidespawn^8		Hides playerspawnspots (development command) \n");
-				player->hudPrint("^5!testspawn^8		Used to test playerspawnspots (development command) \n");
-				player->hudPrint("^5!kickbots^8		Kicks all Bots (development command) \n");
-			}
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to kick all bots
-		else if (!Q_stricmpn("!kickbots", sayString, 9)) {
-			if (!coop_playerCheckAdmin(player)) {
-				multiplayerManager.callVote(player, "kick" ,"kickbots");
-				return true;
-			}
-			gclient_t	*cl;
-			for (int i = 0; i < maxclients->integer; i++) {
-				cl = game.clients + i;
-				if (!(g_entities[cl->ps.clientNum].svflags & SVF_BOT)) {
-					continue;
-				}
-				gi.SendConsoleCommand(va("kick %i\n", i));
-			}
-		}
-		//[b609] chrissstrahl - added !logout feature
-		else if (!Q_stricmpn("!logout", sayString, 7)) {
-			if (player->coopPlayer.admin) {
-				player->coopPlayer.admin = false;
-				player->hudPrint("^3You are now logged out.\n");
-				return true;
-			}
-		}
-		else if (!Q_stricmpn("!login", sayString, 6)) {
-			//[b609] chrissstrahl - added logout feature if admin uses login again
-			if (player->coopPlayer.admin) {
-				player->coopPlayer.admin = false;
-				player->hudPrint("^3You are now logged out.\n");
-				return true;
-			}
-
-			player->hudPrint("^5login started\n");
-			player->entityVars.SetVariable("uservar1", "mom_codepanel2");
-			player->entityVars.SetVariable("uservar2", "coop_login");
-			//player->setStringVar("uservar3","no coop mod thread (get latest coop mod to use this)");
-			ExecuteThread("mom_basic", true, (Entity *)player);
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to promt login menu
-		else if (!Q_stricmpn("!noclip", sayString, 6)) {
-			if (!coop_playerCheckAdmin(player)) {
-				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
-				return true;
-			}
-			player->hudPrint("^5noclip toggled\n");
-			extern Event EV_Player_DevNoClipCheat;
-			player->ProcessEvent(EV_Player_DevNoClipCheat);
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to test spawnpositions
-		else if (!Q_stricmpn("!testspawn", sayString, 9)) {
-			if(!coop_playerCheckAdmin(player)) {
-				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
-				return true;
-			}
-
-			ExecuteThread("globalCoop_level_testSpawn", true, (Entity *)player);
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to show spawnpositions
-		else if (!Q_stricmpn("!showspawn", sayString, 10)) {
-			if (!coop_playerCheckAdmin(player)) {
-				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
-				return true;
-			}
-
-			ExecuteThread("globalCoop_level_showSpawn", true, (Entity *)player);
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to hide spawnpositions
-		else if (!Q_stricmpn("!hidespawn", sayString, 10)) {
-			if (!coop_playerCheckAdmin(player)) {
-				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
-				return true;
-			}
-
-			ExecuteThread("globalCoop_level_hideSpawn", true, (Entity *)player);
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to reboot server
-		else if (!Q_stricmpn("!reboot", sayString, 6)){
-			if (!coop_playerCheckAdmin(player)) {
-				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
-				return true;
-			}
-			player->hudPrint("^5rebooting\n");
-			game.coop_rebootForced = true;
-			coop_serverManageReboot(level.mapname, player);
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to start the level end function 
-		else if (!Q_stricmpn("!endlevel", sayString, 9)){
-			if (!coop_playerCheckAdmin(player)) {
-				player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
-				return true;
-			}
-			player->hudPrint("^5ending level\n");
-			ExecuteThread("coop_endLevel", true, (Entity *)player);
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to show targetnames
-		else if (!Q_stricmpn("!targeted", sayString, 9)) {
-			//if (!coop_playerCheckAdmin(player)) {
-				//player->hudPrint("^3You need to !login as Coop Admin to use this command.\n");
-				//return true;
-			//}
-			if (player->coopPlayer.showTargetedEntity) {
-				player->coopPlayer.showTargetedEntity = false;
-				player->hudPrint("^5no longer showing targetnames\n");
-			}
-			else {
-				player->coopPlayer.showTargetedEntity = true;
-				player->hudPrint("^5showing targetnames\n");
-			}
-			return true;
-		}
-		//chrissstrahl -  [b607] - used to show own origin and targeted origin
-		else if (!Q_stricmpn("!origin", sayString, 7)) {
-			str sPrint = va("^3Your origin:^8 %i %i %i", (int)player->origin[1], (int)player->origin[1], (int)player->origin[2]);
-			if (player->_targetedEntity != NULL) {
-				sPrint += va(" - ^3Targeted origin:^8 %i %i %i\n", (int)player->_targetedEntity->origin[0], (int)player->_targetedEntity->origin[1], (int)player->_targetedEntity->origin[2]);
-			}
-			else {
-				sPrint += "\n";
-			}
-			player->hudPrint(sPrint.c_str());
-			return true;
-		}
-		else if ( !Q_stricmpn( "!build", sayString, 6 ) )
-		{
-#ifdef WIN32
-			str sys = "Windows";
-#else
-			str sys = "Linux";
-#endif
-			player->hudPrint(va("HZM Coop Mod [%i] [%s] - Compiled: %s %s\n", COOP_BUILD, sys.c_str(), __DATE__, __TIME__));
-		}
-		else if ( !Q_stricmpn( "!info" , sayString , 5 ) )
-		{
-			if ( gi.GetNumFreeReliableServerCommands( player->entnum ) < 32 )
-				return true;
-
-			str s;
-			player->hudPrint( "===Your Informations ===\n" );
-			if ( player->coopPlayer.installed == 1 ){
-				str temp = player->coopPlayer.installedVersion;
-				str coopVer = temp[0];
-				coopVer += '.';
-				coopVer += temp[1];
-				coopVer += temp[2];
-				player->hudPrint( va( "^5Coop Version^8: %s\n" , coopVer.c_str() ) );
-			}else{
-				player->hudPrint( "^5Coop Version^8: None detected\n" );
-			}
-			player->hudPrint( va("^5Coop class^8: %s\n", player->coopPlayer.className.c_str() ) );
-			player->hudPrint( va( "^5Entred this game at^8: %f\n" , player->client->pers.enterTime ) );
-			player->hudPrint( va( "^5Your game language is^8: %s\n" , player->coopPlayer.language.c_str() ) );
-			player->hudPrint( va( "^5Your Personal Id (only shown to you) is^8: %s\n" , player->coopPlayer.coopId.c_str() ) );
-			player->hudPrint( va( "^5Your Client/Coop number is^8: %d\n" , player->entnum ) );
-			player->hudPrint( "===SERVER Informations ===\n" );
-			player->hudPrint( va( "^5Current map:^8 %s\n" , level.mapname.c_str() ) );
-			
-			cvar_t *cvarTemp = gi.cvar_get( "local_language" );
-			if ( cvarTemp != NULL ) {
-				s = cvarTemp->string;
-				player->hudPrint( va( "^5Server Language:^8 %s\n" , s.c_str() ) );
-			}
-
-			if ( skill->integer == 0 )
-				s = " [$$Easy$$]";
-			else if ( skill->integer == 1 )
-				s = " [$$Normal$$]";
-			else if ( skill->integer == 2 )
-				s = " [$$Hard$$]";
-			else
-				s = " [$$VeryHard$$]";
-
-			player->hudPrint( va( "^5Dificulty:^8 %d %s\n" , skill->integer , s.c_str() ) );
-			player->hudPrint( va( "^5Friendly Fire Multiplier:^8 %f\n" , game.coop_friendlyFire ) );
-			//player->hudPrint( "^3For more, Mission Info type:^5 !status\n" );
-			//player->hudPrint( va( "^5Monsters killed^8: %i\n" , player->client->pers.enterTime ) );
-			//add more from heuristics! - chrissstrahl - //hzm unfinished, //hzm upgrademe
-			player->hudPrint( "==================\n" );
-			return true;
-		}
-		else if ( !Q_stricmpn( "!block" , sayString , 6 ) )
-		{
-			//deny request during cinematic and in spec
-			if ( sv_cinematic->integer || multiplayerManager.isPlayerSpectator( player ) ) {
-				return true;
-			}
-
-			//hzm coop mod chrissstrahl - allow to walk trugh a player that is currently blocking, this player needs to aim at the blocking player
-			Entity *target;
-			target = player->GetTargetedEntity();
-			if ( ( target ) && target->health > 0 && target->isSubclassOf( Player ) ){
-				Player * targetPlayer = ( Player* )target;
-				targetPlayer->setSolidType( SOLID_NOT );
-				targetPlayer->_makeSolidASAPTime = ( level.time + 7 );
-				targetPlayer->_makeSolidASAP = true;
-
-				if ( coop_checkPlayerLanguageGerman( player ) ){
-					player->hudPrint( "^5Coop^2: Spieler makiert!\n" );
-				}
-				else{
-					player->hudPrint( "^5Coop^2: Player marked!\n" );
-				}
-			}
-			return true;
-		}
-		else if ( !Q_stricmpn( "!class" , sayString , 6 ) )
-		{
-			str classSelected;
-			int sayStringLength = sayString.length();
-
-			if ( sayStringLength > 7 )//length 7 = index 0,1,2,3,4,5,6
-			{
-				//hzm coop mod chrissstrahl - remember current health/armor/ammo status
-				coop_serverSaveClientData( player );
-
-				if ( sayString[7] == 't' ){
-					classSelected = "Technician";
-				}
-				else if ( sayString[7] == 'm' ){
-					classSelected = "Medic";
-				}
-				else if ( sayString[7] == 'h' ){
-					classSelected = "HeavyWeapons";
-				}
-				if ( classSelected.length() ){
-					//hzm coop mod chrissstrahl - set new class on player
-					coop_classSet( player , classSelected );
-					coop_classApplayAttributes( player , true );
-					return true;
-				}
-
-				if ( gi.GetNumFreeReliableServerCommands( player->entnum ) < 32 )
-					return true;
-
-				if ( coop_checkPlayerLanguageGerman(player) ){
-					player->hudPrint( "^5Coop^2: ^3Invalideer Klassenname!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n" );
-				}
-				else{
-					player->hudPrint( "^5Coop^2: ^3Invalid class name!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n" );
-				}
-				
-				return true;
-			}
-			if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 )
-			{
-				if ( coop_checkPlayerLanguageGerman(player) ){
-					player->hudPrint( va( "^5Coop^2: Ihre aktuelle Klasse ist^5: %s\n" , player->coopPlayer.className.c_str() ) );
-				}
-				else{
-					player->hudPrint( va( "^5Coop^2: Your current class is^5: %s\n" , player->coopPlayer.className.c_str() ) );
-				}
-			}
-			return true;
-		}
-		else if ( !Q_stricmpn( "!drop" , sayString , 5 ) )
-		{
-			//deny request during cinematic and in spec
-			if ( sv_cinematic->integer || multiplayerManager.isPlayerSpectator( player ) ) {
-				return true;
-			}
-
-			//deny request during cinematic
-			if ( sv_cinematic->integer ) {
-				return true;
-			}
-
-		   int i;
-		   for (i = 0; i < MAX_ACTIVE_WEAPONS; i++)
-		   {
-		//hzm coop mod chrissstrahl - can't figure out hoe to convert.... :(
-		//hzm coop mod chrissstrahl - daggolin figured it out, here have a cookie :P
-			   Weapon *weap = player->getActiveWeaponList()[i];
-
-			   if ( weap )
-			   {
-					str weaponName = "None";
-					player->getActiveWeaponName( WEAPON_ANY, weaponName );
-
-				   //hzm coop mod chrissstrahl - check if the weapon can be dropped
-					if ( !Q_stricmpn( "None" , weaponName , 4 ) || !Q_stricmpn( "EnterpriseCannon" , weaponName , 4 ) || !Q_stricmpn( "Batleth" , weaponName , 4 ) || !Q_stricmpn( "Phaser" , weaponName , 6 ) || !Q_stricmpn( "Tricorder" , weaponName , 9 ) )
-				   {
-						if ( coop_checkPlayerLanguageGerman( player ) ){
-							player->hudPrint( "^5Coop^2: Diese Waffe kann nicht ablegt werden.\n" );
-						}else{
-							player->hudPrint( "^5Coop^2: Can't drop this particular Weapon.\n" );
-						}
-				   }
-				   else
-				   {
-					   weap->Drop();
-					   //hzm coop mod chrissstrahl - if dropped weapon still exist scale down to fit size as it was when the player held it
-					   if ( weap ){
-						   weap->setScale( 0.45 );
-
-						   Entity *target;
-						   target = player->GetTargetedEntity();
-						   if ( ( target ) && target->health > 0 && target->isSubclassOf( Player ) ){
-							   Player * targetPlayer = ( Player* )target;
-							   weap->origin = targetPlayer->origin;
-						   }else{
-								trace_t trace;
-								player->GetViewTrace( trace , MASK_PROJECTILE , 100.0f );
-								weap->origin =  trace.endpos;
-						   }
-					   }
-					   player->getActiveWeaponList()[i] = NULL;
-					   //hzm coop mod chrissstrahl - resets the empty hands of the player
-					   player->animate->ClearTorsoAnim();
-
-					   if (coop_checkPlayerLanguageGerman(player)) {
-						   player->hudPrint("^5Coop^2: Ihre Waffe wurde ablegt.\n");
-					   }
-					   else {
-						   player->hudPrint("^5Coop^2: Your Weapon was dropped.\n");
-					   }
-				   }
-			   }
-		   }
-		   return true;
-		}
-		else if ( !Q_stricmpn( "!stuck" , sayString , 6 ) )
-		{
-			//deny request during cinematic and in spec
-			if ( sv_cinematic->integer ) {
-				return true;
-			}
-
-			//hzm coop mod chrissstrahl - place player at respawn/spawn location
-			coop_playerTransportToSpawn(player);
-			
-			if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 )
-			{
-				if ( coop_checkPlayerLanguageGerman( player ) ){
-					player->hudPrint( "^5Coop^2: Sie wurden zum Spawnpunkt Teleportiert.\n" );
-				}
-				else{
-					player->hudPrint( "^5Coop^2: You have been teleported to your spawn location.\n" );
-				}
-			}
-			return true;
-		}
-		else if ( !Q_stricmpn( "!skill" , sayString , 6 ) )
-		{
-			//deny request during cinematic
-			if ( sv_cinematic->integer ) {
-				return true;
-			}
-
-			//hzm coop mod chrissstrahl - check skill or callvote on skill
-			if ( sayString.length() > 7 )
-			{
-				str command = "stufftext \"callvote skill ";
-				if ( sayString[7] == '0' )
-					command += "0";
-				else if ( sayString[7] == '1' )
-					command += "1";
-				else if ( sayString[7] == '2' )
-					command += "2";
-				else if ( sayString[7] == '3' )
-					command += "3";
-				else
-				{
-					if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 )
-					{
-						if ( coop_checkPlayerLanguageGerman(player) ){
-							player->hudPrint( "^5Coop^2: Illegale Angabe! Optionen: 0^8[$$Easy$$]^2, bis 3^8[$$Very Hard$$]\n" );
-						}
-						else{
-							player->hudPrint( "^5Coop^2: Invalide range! Range is: 0^8[$$Easy$$]^2, to 3^8[$$Very Hard$$]\n" );
-						}
-					}
-				}
-				//hzm coop mod chrissstrahl - callvote if valid skill has been requested
-				if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 )
-				{
-					command += "\n";
-					gi.SendServerCommand( player->entnum , command );
-				}
-			}
-			else
-			{
-				int currentSkill = (int)skill->value;
-				str printMe = "^5Coop^2: ";
-				if ( coop_checkPlayerLanguageGerman(player) ){
-					printMe += "Schwierigkeit bei: ";
-				}
-				else{
-					printMe += "current SKILL is: ";
-				}
-				printMe += currentSkill;
-
-				if ( currentSkill == 0 )
-					printMe += " [$$Easy$$]";
-				else if ( currentSkill == 1 )
-					printMe += " [$$Normal$$]";
-				else if ( currentSkill == 2 )
-					printMe += " [$$Hard$$]";
-				else
-					printMe += " [$$VeryHard$$]";
-				
-				printMe += "\n";
-				player->hudPrint( printMe );
-			}
-			return true;
-		}
-		//hzm coop mod chrissstrahl - this is using the standard kill command, this makes it easier for the players
-		else if ( !Q_stricmpn( "!kill" , sayString , 5 ) )
-		{
-			if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 )
-			{
-				gi.SendServerCommand( player->entnum , "stufftext \"kill\"\n");
-			}
-			return true;
-		}
-		//hzm coop mod chrissstrahl - cheat, used to allow simulation of healing/reviving 
-		/*
-		else if ( !Q_stricmpn( "!heal" , sayString , 5 ) )
-		{
-			player->coopPlayer.neutralized = false;
-			player->health = (player->max_health / 2);
-			player->disableUseWeapon( false );
-			player->coopPlayer.reviveCounter = 0;
-			if ( player->coopPlayer.lastMass > 0 ){
-				player->mass = player->coopPlayer.lastMass;
-			}
-			player->coopPlayer.reviveCounter = 0;
-			player->coopPlayer.lastTimeRevived = 0.0f;
-
-			if ( coop_checkPlayerLanguageGerman(player) ){
-				player->hudPrint( va( "^5Coop^2: ^3Sie benutzen einen ENTWICKLER Befehl\n" ) );
-			}
-			else{
-				player->hudPrint( va( "^5Coop^2: ^3You used a DEVELOPER command\n" ) );
-			}
-		}
-		*/
-		//hzm coop mod chrissstrahl - displays the current mapname
-		else if ( !Q_stricmpn( "!mapname" , sayString , 8 ) )
-		{
-			if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 )
-			{
-				if ( coop_checkPlayerLanguageGerman(player) ){
-					player->hudPrint( va( "Aktuelles Level ist:^5 %s\n" , level.mapname.c_str() ) );
-				}
-				else{
-					player->hudPrint( va( "Current Level is:^5 %s\n" , level.mapname.c_str() ) );
-				}
-			}
-			return true;
-		}
-		//hzm coop mod chrissstrahl - displays the current mapname
-		else if ( !Q_stricmpn( "!transport" , sayString , 8 ) )
-		{
-			//deny request during cinematic and in spec [b607] chrissstrahl - moved health check here
-			if ( sv_cinematic->integer || multiplayerManager.isPlayerSpectator( player ) || player->health <= 0 ) {
-				return true;
-			}
-			//denie beaming when to fast
-			if ( player->coopPlayer.lastTimeTransported + 3 > level.time ) {
-
-				//[b608] chrissstrahl - fixed typos
-				if (coop_checkPlayerLanguageGerman(player)) {
-					player->hudPrint("^5Coop:^8 Ihr mobiler ^3Heisenberg Kompensator rekalibriert^8 (2 sek) gerade, bitte warten!\n");
-				}
-				else{
-					player->hudPrint("^5Coop:^8 Your mobile ^3Heisenberg Compensator is recalibrating^8 (2 sec), please wait!\n");
-				}
-				return true;
-			}
-
-			int iPlayer = -1;
-			if ( strlen( sayString ) > 8 ){
-				str sId = coop_returnStringStartingFrom( sayString , 8 );
-
-				int i;
-				for ( i = 0; i < sId.length(); i++ ){
-					if ( isdigit( sId[i] ) ){
-						sId = sId[i];
-						iPlayer = atoi( sId.c_str() );
-					}
-				}
-			}
-			
-			bool bTransportFailed = false;
-
-			Player *targetPlayer = NULL;
-			if ( iPlayer >= 0 ){
-				if ( &g_entities[iPlayer] && g_entities[iPlayer].client && g_entities[iPlayer].inuse ){
-					targetPlayer = ( Player * )g_entities[iPlayer].entity;
-				}
-			}
-			if ( !targetPlayer ) {
-				if ( coop_returnPlayerQuantity( 2 ) > 1 ) {
-					targetPlayer = coop_returnPlayerClosestTo( player );
-				}
-				else
-				{
-					if ( coop_checkPlayerLanguageGerman( player ) ) {
-						player->hudPrint( "^5Coop^2: Kein Teammitglied als Transport Ziel gefunden.\n" );
-					}
-					else {
-						player->hudPrint( "^5Coop^2: No Teammember found, to serve as Transport target.\n" );
-					}
-
-					bTransportFailed = true;
-				}
-			}
-
-			//hzm coop mod chrissstrahl - fix transporting to spectator
-			//[b607] chrissstrahl - fix nullpointer if target player does not exist
-			//[b609] chrissstrahl - prevent beaming to dead player
-			if (!targetPlayer || multiplayerManager.isPlayerSpectator( targetPlayer ) || targetPlayer->health <= 0 ) {
-				bTransportFailed = true;
-			}
-
-			if (targetPlayer == player ){
-				if ( coop_checkPlayerLanguageGerman(player) ){
-					player->hudPrint( "^5Coop^2: Transport zu sich selbst nicht erlaubt.\n" );
-				}
-				else{
-					player->hudPrint( "^5Coop^2: Can't transport to your self.\n" );
-				}
-				bTransportFailed = true;
-			}
-
-			if ( bTransportFailed ){
-				return true;
-			}
-
-			//hzm coop mod chrissstrahl - make sure players do not get stuck inside each other
-			player->_makeSolidASAP = true;
-			//player->_makeSolidASAPSupposedToBeSolid = true;
-
-			//remember tarnsport time
-			player->coopPlayer.lastTimeTransported = level.time;
-
-			//holster weapon, prevent beam killing
-			weaponhand_t	hand = WEAPON_ANY;//get player weapon, we might want to utilize that further
-			player->getActiveWeaponName( hand , player->coopPlayer.transportUnholsterWeaponName );
-			player->coopPlayer.transportUnholster = true;
-			player->SafeHolster( true );
-			player->disableUseWeapon( true );
-
-			player->client->ps.pm_time = 100;
-			player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
-
-			player->client->ps.pm_time = 100;
-			player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
-
-			Event *newEvent2 = new Event( EV_DisplayEffect );
-			newEvent2->AddString( "TransportIn" );
-			newEvent2->AddString( "Multiplayer" );
-			player->PostEvent( newEvent2 , 0.0f );
-
-			player->origin = targetPlayer->origin;
-			player->SetViewAngles( targetPlayer->angles );
-
-			targetPlayer->_makeSolidASAP = true;
-			//targetPlayer->_makeSolidASAPSupposedToBeSolid = true;
-			return true;
-		}
-		else
-		{
-			if ( coop_checkPlayerLanguageGerman(player) ){
-				player->hudPrint( "^5Coop^2: Befehl nicht bekannt, nutzen Sie:^5 !help\n" );
-			}
-			else{
-				player->hudPrint( "^5Coop^2: Command not recognized, please use:^5 !help\n" );
-			}
-			return true;
-		}
-		//hzm coop mod chrissstrahl - used to give developer feedback that the code works thusfar
-		//tempText = "^2Used ^5Coop Mod^2 command:^5 ";
-		//tempText += sayString;
-		//tempText += "\n";
-		//player->hudPrint( tempText );
+	//[b611] gameupdate add ! as command start inside say strings
+	if (sayString[0] == '!') {
+		//send back to client and client console will decide it it wants to send it again
+		gi.SendServerCommand(player->entnum, va("stufftext \"%s \"\n", sayString.c_str()));
 		return true;
 	}
-	//EVERYTHING THAT IS NOT STARTING WITH ! AS A COMMAND
-	else if ( //(player->coopPlayer.timeEntered + 3) > level.time &&
-			Q_stricmpn( "cid." , sayString.c_str() , 4 ) == 0)//coop_checkCharsInsideString( sayString ,"\"/\[;:<>*+=|?,]%") == 0
-	{
-		player->coopPlayer.coopId = coop_trim( sayString.c_str() , " \t\r\n;[]=" );
+
+	sayString = sayString.tolower();
+
+	//detect if a class-command is issued
+	if (sayString[0] == '!' && Q_stricmpn("!class_", sayString, 7)) {
+		player->hudPrint("! or coop_playerSay->!class_\n");
+	}
+
+	//DETECT COOP-PLAYER-ID - detect the player id the player transmitts
+	if ( (player->coopPlayer.timeEntered + 10) < level.time && Q_stricmpn("cid.", sayString.c_str(), 4) == 0){
+		player->coopPlayer.coopId = coop_trim(sayString.c_str(), " \t\r\n;[]=");
 
 		//check if player id is already saved on this server
-		str ss = coop_parserIniGet( "ini/serverData.ini" , player->coopPlayer.coopId , "client" );
-		if ( ss == "" )
+		str ss = coop_parserIniGet("ini/serverData.ini", player->coopPlayer.coopId, "client");
+		if (ss == "")
 		{
 			//[b610] chrissstrahl - put in a seperate func
 			coop_playerSaveNewPlayerId(player);
@@ -1684,49 +1041,45 @@ bool coop_playerSay( Player *player , str sayString)
 		}
 		return true;
 	}
+
+	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
+	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
+	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
+	if (!Q_stricmpn("!class_", sayString, 7)) {
+		player->hudPrint("coop_playerSay->!class_\n");
+		return true;
+	}
 	//hzm coop mod chrissstrahl - detect player language
-	else if ( !Q_stricmpn( sayString.c_str() , "deu" , 3 ) || !Q_stricmpn( sayString.c_str() , "eng" , 3 ) ) {//CHEKME
-																							  //make sure player has now setup his language correctly
-		if ( !Q_stricmpn( sayString.c_str() , "deu" , 3 ) ) {
-			player->coopPlayer.language = "Deu";
+	if (!Q_stricmpn(sayString.c_str(), "deu", 3) || !Q_stricmpn(sayString.c_str(), "eng", 3)) {
+		//make sure player has now setup his language correctly
+		if (!Q_stricmpn(sayString.c_str(), "deu", 3)) {
+			player->setLanguage("Deu");
 		}
 		else {
-			player->coopPlayer.language = "Eng";
+			player->setLanguage("Eng");
 		}
 		return true;
 	}
-	//filter out config file automated command to restore player class
-	else if ( !Q_stricmpn( "!class_" , sayString , 7 ) ) {
-		return true;
-	}
-	else if ( player->coopPlayer.timeEntered < 0 || ( player->coopPlayer.timeEntered + 2 ) > level.time && sayString.c_str() == "score" )
-	{
-		//filter the stupid issue with the score out
-		return true;
-	}
-	else{
-	//hzm coop mod chrissstrahl - this is our sv_floodprotect replacement, since flood protect also blocks multiplayer specific commands which we are in need of to work
-		if ( player->coopPlayer.chatTimeLimit < level.time ){
-			player->coopPlayer.chatTimeLimit = level.time;
-		}
-		player->coopPlayer.chatTimeLimit++;
 
-		if ( player->coopPlayer.chatTimeLimit > (level.time + 3)){
+	//SPAM - FILTER - this is our sv_floodprotect replacement, since flood protect also blocks multiplayer specific commands which we are in need of to work
+	if (player->coopPlayer.chatTimeLimit < level.time) {
+		player->coopPlayer.chatTimeLimit = level.time;
+	}
+	player->coopPlayer.chatTimeLimit++;
+
+	if (player->coopPlayer.chatTimeLimit > (level.time + 3)) {
 		//display info that the player was spamming
-			if ( ( player->coopPlayer.lastTimeSpamInfo + 3.0f ) < level.time ){
-				player->coopPlayer.lastTimeSpamInfo = level.time;
-				if ( coop_checkPlayerLanguageGerman(player) ){
-					player->hudPrint( "Sie chatten zu schnell, Nachricht blockiert durch Spamschutz!\nNutzen Sie die Pfeil nach oben Taste in chat um Nachricht zu wiederholen.\n" );
-				}
-				else{
-					player->hudPrint( "You chat to fast, message blocked by Spamprotection!\nUse Arrow UP while in text message mode to repeat last message\n" );
-				}
+		if ((player->coopPlayer.lastTimeSpamInfo + 3.0f) < level.time) {
+			player->coopPlayer.lastTimeSpamInfo = level.time;
+			if (coop_checkPlayerLanguageGerman(player)) {
+				player->hudPrint("Sie chatten zu schnell, Nachricht blockiert durch Spamschutz!\nNutzen Sie die Pfeil nach oben Taste in chat um Nachricht zu wiederholen.\n");
 			}
-			return true;
+			else {
+				player->hudPrint("You chat to fast, message blocked by Spamprotection!\nUse Arrow UP while in text message mode to repeat last message\n");
+			}
 		}
+		return true;
 	}
-
-	//not a hzm coop mod command
 	return false;
 }
 
@@ -1774,7 +1127,7 @@ void coop_playerEnterArena(int entnum, float health)
 	if (multiplayerManager.getPlayersTeam(player) != NULL && multiplayerManager.getPlayersTeam(player)->getName() != "Blue") {
 		multiplayerManager.joinTeam(player, "Blue");
 		if ((player->coopPlayer.timeEntered + 2) < level.time && !multiplayerManager.isPlayerSpectator(player)) {
-			if (player->coopPlayer.language == "Deu") {
+			if (player->getLanguage() == "Deu") {
 				player->hudPrint("^5INFO:^2 Coop erlaubt nur blaues Team.\n");
 			}
 			else {
