@@ -60,16 +60,9 @@ void DoAttack::SetArgs( Event *ev )
 {
 	_anim = ev->GetString( 1 );
 	if (ev->NumArgs() > 1) {
-		//[b607] chrissstrahl - debugme fixme traceerror arround here the game crashes, lets fined out why
 		float fTurnspeed = ev->GetFloat(2);
 		if (fTurnspeed < 0) {
 			_turnspeed = 30;
-			gi.SendConsoleCommand(va("echo DoAttack::SetArgs -> _turnspeed -> %d\n", fTurnspeed));
-			gi.SendConsoleCommand(va("echo DoAttack::SetArgs -> _turnspeed -> %d\n", fTurnspeed));
-			gi.SendConsoleCommand(va("echo DoAttack::SetArgs -> _turnspeed -> %d\n", fTurnspeed));
-			gi.SendConsoleCommand(va("echo DoAttack::SetArgs -> _turnspeed -> %d\n", fTurnspeed));
-			gi.SendConsoleCommand(va("echo DoAttack::SetArgs -> _turnspeed -> %d\n", fTurnspeed));
-			gi.SendConsoleCommand(va("echo DoAttack::SetArgs -> _turnspeed -> %d\n", fTurnspeed));
 		}
 		else {
 			_turnspeed = fTurnspeed;
