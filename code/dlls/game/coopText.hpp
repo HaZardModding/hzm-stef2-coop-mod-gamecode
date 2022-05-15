@@ -27,6 +27,10 @@
 #define COOP_JOIN_SEPERATOR_SIZE 1			//size of join seperator (;) for console commands
 #define COOP_JOIN_MAX_SINGLE_COMMAND (((COOP_MAX_TRANSMITT_STRING / 2 ) - (COOP_TRANSMITT_STARTCMD / 2)) - 1)
 
+//[b611] chrissstrahl - text for variouse outputs
+#define COOP_TEXT_COOP_COMMAND_ONLY "^3This command is only usable during Coop.\n"
+#define COOP_TEXT_LOGIN_NEEDLOGINASADMIN "^3You need to !login as Coop Admin to use this command.\n"
+
 #include "_pch_cpp.h"
 
 bool coop_textReplace( str &sHeystack , const str &sDildo , const str &sNedle );
