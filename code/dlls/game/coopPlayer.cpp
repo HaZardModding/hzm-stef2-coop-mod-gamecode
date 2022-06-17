@@ -993,7 +993,7 @@ bool coop_playerPlaceAtSpawn( Player *player )
 //================================================================
 bool coop_playerSay( Player *player , str sayString)
 {
-	if ( !player )
+	if ( !player || g_gametype->integer == GT_SINGLE_PLAYER)
 		return false;
 
 
