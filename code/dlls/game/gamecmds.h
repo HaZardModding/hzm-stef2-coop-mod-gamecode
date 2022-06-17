@@ -18,26 +18,19 @@
 #define __GAMECMDS_H__
 
 #include "g_local.h"
+#include "coopGamecmds.hpp"
 
 extern "C" void      G_ClientCommand( gentity_t *ent );
 extern "C" qboolean  G_ConsoleCommand( void );
 
 void     G_InitConsoleCommands( void );
-
 qboolean G_ProcessClientCommand( gentity_t *ent );
 
-
-//hzm coop mod chrissstrahl - allwoing players to signal that they have the coop mod installed
-qboolean G_coopInstalled( const gentity_t *ent );
-//[b611] chrissstrahl - allowing players to make use of special coop inventory
-qboolean G_coopItem( const gentity_t *ent );
-//[b611] chrissstrahl - allowing players to make use of widgettext command
-qboolean G_widgettext(const gentity_t *ent);
-//[b611] chrissstrahl - allowing players to start thread that can be tied back
-qboolean G_coopThread(const gentity_t *ent);
-//[b611] chrissstrahl - allowing players to send text to server
-qboolean G_coopInput(const gentity_t* ent);
-
+qboolean G_LanguageEng( const gentity_t *ent );		//[b611] chrissstrahl - add language detection
+qboolean G_LanguageDeu( const gentity_t *ent );		//[b611] chrissstrahl - add language detection
+qboolean G_widgettext(const gentity_t* ent);		//[b611] chrissstrahl - allowing players to make use of widgettext command
+qboolean G_circleMenu(const gentity_t* ent);		//[b611] chrissstrahl - add and remember circle menu
+qboolean G_circleDialog(const gentity_t* ent);		//[b611] chrissstrahl - add and remember circle menu for dialog
 
 void     G_Say( const gentity_t *ent, bool team, qboolean arg0 );
 qboolean G_CameraCmd( const gentity_t *ent );

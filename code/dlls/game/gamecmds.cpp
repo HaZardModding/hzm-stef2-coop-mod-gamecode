@@ -41,12 +41,53 @@ typedef struct
 consolecmd_t G_ConsoleCmds[] =
 {
 	//   command name       function             available in multiplayer?
-//	{ "login",				G_kickBots,				true }, //[b607] test
-	{ "coopinput",			G_coopInput,			true }, //[b611] chrissstrahl - allowing players to send text to server
-	{ "coopthread",			G_coopThread,			true }, //[b611] chrissstrahl - allowing players to start a script thread
+
+//[b611] chrissstrahl - coop commands 
+//[b611] chrissstrahl - coop commands 
+//[b611] chrissstrahl - coop commands 
+	{ "coopthread",G_coopThread,			true }, //[b611] chrissstrahl - allowing players to start a script thread
+	{ "coopitem",G_coopItem,				true }, //[b611] chrissstrahl - allowing players to make use of special coop inventory
+	{ "coopinstalled",G_coopInstalled,		true },	//[b600] chrissstrahl - allow deetection if mod is installed
+	{ "coopinput",G_coopInput	,			true }, //[b611] chrissstrahl - allowing players to send text to server
+	{ "clientid",G_coopClientId	,			true }, //[b611] chrissstrahl - allowing players to send idendification string
+//[b611] chrissstrahl - ! text commands moved here from coop_playerSay in coopPlayer.cpp
+	{ "!thread",G_coopThread	,			true }, 
+	{ "!block",G_coopCom_block	,			true }, 
+	{ "!class",G_coopCom_class	,			true }, 
+	{ "!drop",G_coopCom_drop	,			true }, 
+	{ "!help",G_coopCom_help	,			true }, 
+	{ "!info",G_coopCom_info	,			true }, 
+	{ "!kickbots",G_coopCom_kickbots,		true }, 
+	{ "!kill",G_coopCom_kill	,			true }, 
+	{ "!login",G_coopCom_login	,			true }, 
+	{ "!logout",G_coopCom_logout	,		true }, 
+	{ "!mapname",G_coopCom_mapname	,		true }, 
+	{ "!origin",G_coopCom_origin	,		true }, 
+	{ "!skill",G_coopCom_skill	,			true }, 
+	{ "!stuck",G_coopCom_stuck	,			true }, 
+	{ "!transport",G_coopCom_transport,		true },
+	{ "!leader",G_coopCom_leader,			true },
+	{ "!reboot",G_coopCom_reboot	,		true }, 
+	{ "!levelend",G_coopCom_levelend	,	true }, 
+	{ "!targeted",G_coopCom_targeted	,	true }, 
+	{ "!targetnames",G_coopCom_targeted	,	true }, 
+	{ "!showspawn",G_coopCom_showspawn	,	true }, 
+	{ "!hidespawn",G_coopCom_hidespawn	,	true }, 
+	{ "!testspawn",G_coopCom_testspawn	,	true }, 
+	{ "!noclip",G_coopCom_noclip,			true }, 
+//Coop Commands End
+//Coop Commands End
+//Coop Commands End
+
+	//hzm gameupdate chrissstrahl - add features to game without coop dependency
+	{ "Eng",				G_LanguageEng,			true },	//[b611] chrissstrahl - select English Player Laguage
+	{ "Deu",				G_LanguageDeu,			true },	//[b611] chrissstrahl - select English German Laguage
+	{ "circle",				G_circleMenu,			true }, //[b611] chrissstrahl - show circle menu to player
+	{ "circledialog",		G_circleDialog,			true }, //[b611] chrissstrahl - show circle menu to player
 	{ "widgettext",			G_widgettext,			true }, //[b611] chrissstrahl - allowing players to make use of widgettext command
-	{ "coopitem",			G_coopItem,				true }, //[b611] chrissstrahl - allowing players to make use of special coop inventory
-	{ "coopinstalled",		G_coopInstalled,		true },
+	{ "dialogrunthread",	G_DialogRunThread,		true }, //[b608] chrissstrahl - allow this in multiplayer/coop - used to be false
+	//hzm gameupdate end
+
 	{ "vtaunt",				G_VTaunt,				true },
 //	{ "vsay_team",			G_VTaunt,				true },
 //	{ "vosay_team",			G_VTaunt,				true },
@@ -87,7 +128,6 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "purchaseSkill",		G_PurchaseSkillCmd,		false },
 	{ "swapItem",			G_SwapItemCmd,			false },
 	{ "dropItem",			G_DropItemCmd,			false },
-	{ "dialogrunthread",	G_DialogRunThread,		true }, //[b608] chrissstrahl - allow this in multiplayer/coop
 	{ NULL,					NULL,					NULL }
 };
 
@@ -105,7 +145,6 @@ void G_InitConsoleCommands( void )
 	gi.AddCommand( "noclip" );
 	gi.AddCommand( "kill" );
 	gi.AddCommand( "script" );
-	gi.AddCommand("login"); //[b607] test
 	
 	for( cmds = G_ConsoleCmds; cmds->command != NULL; cmds++ )
 	{
@@ -165,11 +204,11 @@ void G_ClientCommand( gentity_t *ent )
 	{
 		if ( ent && !G_ProcessClientCommand( ent ) )
 		{
+			const char* cmd;
+			cmd = gi.argv(0);
 			//[b609] hzm gameupdate chrissstrahl - remove leading / or \ or ^
 			//the slashes for ef1 users convinience and ^ for general convinience
 			//then sends this data back to client and client console decides what to do and sends it possibly back to server
-			const char *cmd;
-			cmd = gi.argv(0);
 			bool bFiltered = false;
 			while (*cmd == '^' || *cmd == '/' || *cmd == '\\') {
 				cmd++;
@@ -316,92 +355,43 @@ void G_Say( const gentity_t *ent, bool team, qboolean arg0 )
 }
 
 //===========================================================[b611]
-// Name:        G_coopInput
+// Name:        G_circleMenu
 // Class:       -
 //              
-// Description: allow player to start send text input to server
+// Description: show circle menu to player
 //              
-// Parameters:  string-input-data
+// Parameters:  
 //              
 // Returns:     qboolean
 //              
 //================================================================
-qboolean G_coopInput(const gentity_t* ent)
+qboolean G_circleMenu(const gentity_t* ent)
 {
 	if (!ent || !ent->inuse || !ent->client)
 		return qfalse;
 
-	str		inputData;
-
-	// Get the thread name
-	if (!gi.argc())
-		return false;
-
-	inputData = gi.argv(1);
-
-	//Grab more data
-	int i;
-	for (i = 2; i < 32; i++){
-		str sGrabMe = gi.argv(i);
-		if (sGrabMe.length()) {
-			inputData = va("%s %s", inputData.c_str(), sGrabMe.c_str());
-		}
-	}
-
-	// Check to make sure player is allowed to run this thread
-	// Need to do this part
-	// Run the thread
-	if (!inputData.length())
-		return false;
-
 	Player* player = (Player*)ent->entity;
-
-	//limit of data that can be actually used
-	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
-		inputData = coop_substr(inputData.c_str(), 0, 259);
-	}
-
-	ent->entity->entityVars.SetVariable("coopInputData",inputData.c_str());
-	player->RunThread("playerInput");
-	return true;
+	player->circleMenu(1);
 }
 
 //===========================================================[b611]
-// Name:        G_coopThread
+// Name:        G_circleDialog
 // Class:       -
 //              
-// Description: allow player to start a thread that ties back to him
-// always during singleplayer
-// always with prefix coopThread_ in threadname
-// only as admin in mp
+// Description: show circle dialog menu to player
 //              
-// Parameters:  string-threadname
+// Parameters:  
 //              
 // Returns:     qboolean
 //              
 //================================================================
-qboolean G_coopThread(const gentity_t* ent)
+qboolean G_circleDialog(const gentity_t* ent)
 {
 	if (!ent || !ent->inuse || !ent->client)
 		return qfalse;
 
-	str		threadName;
-
-	// Get the thread name
-	if (!gi.argc())
-		return false;
-
-	threadName = gi.argv(1);
-
-	// Check to make sure player is allowed to run this thread
-	// Need to do this part
-	// Run the thread - if set 
 	Player* player = (Player*)ent->entity;
-	if (!threadName.length() || g_gametype->integer != GT_SINGLE_PLAYER && coop_returnIntFind(threadName, "coopThread_") != 0 && player->coopPlayer.admin != true) {
-		return false;
-	}
-	player->RunThread(threadName.c_str());
-	return true;
+	player->circleMenu(2);
 }
 
 //===========================================================[b611]
@@ -446,167 +436,6 @@ qboolean G_widgettext(const gentity_t *ent)
 	const char *widgetText = sParameters.c_str();
 	return G_SetWidgetTextOfPlayer(ent, widgetName, widgetText);
 }
-
-
-
-//================================================================
-// Name:        G_coopInstalled
-// Class:       -
-//              
-// Description: Add a new command, used to detect coop mod client installation
-//              
-// Parameters:  int entNum
-//              
-// Returns:     qboolean
-//              
-//================================================================
-qboolean G_coopInstalled( const gentity_t *ent )
-{
-	if ( !ent || !ent->inuse || !ent->client )
-		return qfalse;
-
-	Player *player = ( Player * )ent->entity;
-	const char *coopVer = gi.argv(  1 );
-	if (strlen(coopVer)) { //[b611] Chrissstrahl - fixed bad check
-		player->coopPlayer.installedVersion = atoi( coopVer );
-	}
-	coop_playerSetupCoop( player );
-
-	return qtrue;
-}
-
-//================================================================
-// Name:        G_coopItem
-// Class:       -
-//              
-// Description: Add a new command, used to detect coop mod client installation
-//              
-// Parameters:  int entNum
-//              
-// Returns:     qboolean
-//              
-//================================================================
-qboolean G_coopItem( const gentity_t *ent )
-//[b611] chrissstrahl - add command allowing players to make use of special coop inventory
-//allowing to place objects like mines and turrets
-{
-	if ( !ent || !ent->inuse || !ent->client )
-		return qfalse;
-
-	Player *player = ( Player * )ent->entity;
-
-	//do not allow spawning if certain criteria are not meet
-	if ((player->getLastDamageTime() + 0.5f) > level.time &&
-		level.cinematic != qfalse &&
-		multiplayerManager.isPlayerSpectator(player) &&
-		player->health <= 0)
-	{
-		return qtrue;
-	}
-
-	str sModel;
-	str sClass;
-	bool bValid = false;
-	const char *coopItem = gi.argv(  1 );
-
-	//remove old placable right now
-	if (player->coopPlayer.ePlacable) {
-		player->coopPlayer.ePlacable->PostEvent(EV_Remove,0.0f);
-		player->coopPlayer.ePlacable = NULL;
-	}
-
-	SpawnArgs      args;
-	Entity         *obj = NULL;
-	Event *attach1 = NULL;
-	Event *attach2 = NULL;
-	Event *attach3 = NULL;
-
-	//placable explosive/mine
-	if (!Q_stricmpn("mine", coopItem, 4)) {
-		bValid = true;
-		args.setArg("classname", "script_model");
-		args.setArg("model", "models/item/alien_actor_explosive.tik");
-	}
-	//placable explosive/mine
-	else if (!Q_stricmpn("medic", coopItem, 5)) {
-		bValid = true;
-		args.setArg("classname", "script_model");
-		args.setArg("model", "models/item/mp_weapon-spawn.tik");
-		args.setArg("setmovetype", "stationary");
-		args.setArg("setsize", "\"-24 -24 0\" \"24 24 32\"");
-		args.setArg("targetname", "yyy");
-		args.setArg("notsolid", "1");
-		//args.setArg("statemap", "1212");
-
-		attach1 = new Event(EV_AttachModel);
-		attach1->AddString("item/ammo_large.tik");
-		attach1->AddString("none");
-		attach1->AddFloat(0.6f);
-		attach1->AddString("none");
-		attach1->AddInteger(0);
-		attach1->AddInteger(-1);
-		attach1->AddInteger(-0);
-		attach1->AddInteger(-1);
-		attach1->AddInteger(0);
-		attach1->AddVector(Vector(10, 10, 6));
-
-		attach2 = new Event(EV_AttachModel);
-		attach2->AddString("item/ammo_idryll_small.tik");
-		attach2->AddString("none");
-		attach2->AddFloat(0.6f);
-		attach2->AddString("none");
-		attach2->AddInteger(0);
-		attach2->AddInteger(-1);
-		attach2->AddInteger(-0);
-		attach2->AddInteger(-1);
-		attach2->AddInteger(0);
-		attach2->AddVector(Vector(-10, 10, 6));
-
-		attach3 = new Event(EV_AttachModel);
-		attach3->AddString("item/ammo_fed_small.tik");
-		attach3->AddString("none");
-		attach3->AddFloat(0.9f);
-		attach3->AddString("none");
-		attach3->AddInteger(0);
-		attach3->AddInteger(-1);
-		attach3->AddInteger(-0);
-		attach3->AddInteger(-1);
-		attach3->AddInteger(0);
-		attach3->AddVector(Vector(0, -10, 6));
-	}
-	//do not place 
-	if (!bValid) {
-		delete attach1;
-		delete attach2;
-		delete attach3;
-		if (obj != NULL) {
-			obj->PostEvent(EV_Remove, 0.0f);
-		}
-		return qtrue;
-	}
-
-	//now spawn object
-	obj = args.Spawn();
-
-	//attach stuff if wanted
-	if (attach1 != NULL) {
-		obj->PostEvent(attach1, 0.1f);
-	}
-	if (attach2 != NULL) {
-		obj->PostEvent(attach2, 0.1f);
-	}
-	if (attach3 != NULL) {
-		obj->PostEvent(attach3, 0.1f);
-	}
-
-	//Place object
-	player->coopPlayer.ePlacable = obj;	
-	player->coopPlayer.ePlacable->setOrigin(player->origin);
-	return qtrue;
-}
-
-
-
 
 qboolean G_CameraCmd( const gentity_t *ent )
 {
@@ -1723,4 +1552,53 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 	game.branchdialog_chosenPlayer = NULL; //[b608] chrissstrahl - used to store player that is valid to select the dialog
 
 	return G_ClientRunThreadCmd( ent );
+}
+
+//[b611] chrissstrahl - add language detection
+//--------------------------------------------------------------
+//
+// Name:			G_LanguageEng
+// Class:			None
+//
+// Description:		Detects the player class
+//
+// Parameters:		gentity_t -- the entity issuing the command.  This
+//							 is the player who issued the command.
+//
+// Returns:			qboolean -- true if the command was executed.	
+//
+//--------------------------------------------------------------
+qboolean G_LanguageEng(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+	player->setLanguage("Eng");
+	if ((player->client->pers.enterTime + 3) < level.time) {
+		player->hudPrint("Your Language was set to English\n");
+	}
+	return true;
+}
+
+
+//[b611] chrissstrahl - add language detection
+//--------------------------------------------------------------
+//
+// Name:			G_LanguageDeu
+// Class:			None
+//
+// Description:		Detects the player class
+//
+// Parameters:		gentity_t -- the entity issuing the command.  This
+//							 is the player who issued the command.
+//
+// Returns:			qboolean -- true if the command was executed.	
+//
+//--------------------------------------------------------------
+qboolean G_LanguageDeu(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+	player->setLanguage("Deu");
+	if ((player->client->pers.enterTime + 3) < level.time) {
+		player->hudPrint("Ihre Sprache wurde auf deutsch gesetzt\n");
+	}
+	return true;
 }

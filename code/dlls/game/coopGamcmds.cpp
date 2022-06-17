@@ -6,34 +6,49 @@
 
 
 //================================================================
-// Name:        G_coopCom_class
+// Name:        G_coopClientId
 // Class:       -
 //              
-// Description: handles player !class command
+// Description: Allow client to idendify them self
 //              
-// Parameters:  const gentity_t* ent
+// Parameters:  int entNum
 //              
 // Returns:     qboolean
 //              
 //================================================================
-qboolean G_coopCom_eng(const gentity_t* ent)
+qboolean G_coopClientId(const gentity_t* ent)
 {
+	if (!ent || !ent->inuse || !ent->client)
+		return qfalse;
+
 	Player* player = (Player*)ent->entity;
-
-	//coop only command
-	if (!game.coop_isActive) {
-		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
-		return true;
+	const char* cCClientId = (str)gi.argv(1);
+	str sClientId;
+	if (!strlen(cCClientId)) {
+		return qtrue;
 	}
 
-	const char* cmd;
-	int   n;
+	sClientId = va("%s", cCClientId);
 
-	//NO ARGUMENT GIVEN
-	n = gi.argc();
-	if (n == 1) {
+	if ((player->coopPlayer.timeEntered + 10) < level.time && Q_stricmpn("cid.", sClientId.c_str(), 4) == 0) {
 
+		//check if player id is already saved on this server
+		str ss = coop_parserIniGet("ini/serverData.ini", player->coopPlayer.coopId, "client");
+		if (ss.length() < 5) { //need to figure out correct number
+			//[b610] chrissstrahl - put in a seperate func
+			coop_playerSaveNewPlayerId(player);
+
+			//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
+			player->coopPlayer.deathTime = 0;
+			multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
+			multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
+		}
+		else {
+			player->coopPlayer.coopId = coop_trim(sClientId.c_str(), " \t\r\n;[]=");
+			coop_playerRestore(player);
+		}
 	}
+	return qtrue;
 }
 
 //================================================================

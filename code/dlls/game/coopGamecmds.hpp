@@ -7,6 +7,8 @@
 
 //hzm coop mod chrissstrahl - allwoing players to signal that they have the coop mod installed
 qboolean G_coopInstalled(const gentity_t* ent);
+//hzm coop mod chrissstrahl - allow client to send a idendification string
+qboolean G_coopClientId(const gentity_t* ent);
 //[b611] chrissstrahl - allowing players to make use of special coop inventory
 qboolean G_coopItem(const gentity_t* ent);
 //[b611] chrissstrahl - allowing players to start thread that can be tied back
