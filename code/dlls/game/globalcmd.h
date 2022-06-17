@@ -86,22 +86,17 @@ extern Event EV_ScriptThread_ConfigstringRemove;
 //[b611] chrissstrahl - added events support for all coop script stuff
 extern Event EV_ScriptThread_getIniData;
 extern Event EV_ScriptThread_setIniData;
-extern Event EV_ScriptThread_sendWidgetCommand;
 extern Event EV_ScriptThread_getStringFromStringWithLengt;
 extern Event EV_ScriptThread_getStringToUpper;
 extern Event EV_ScriptThread_getStringToLower;
 extern Event EV_ScriptThread_getIntStringLength;
 extern Event EV_ScriptThread_getIntStringFind;
-extern Event EV_ScriptThread_getStringPlayerName;
-extern Event EV_ScriptThread_getStringEntitySubclass;
-extern Event EV_ScriptThread_getIntPlayerSpectator;
 extern Event EV_ScriptThread_getVectorScriptVariable;
 extern Event EV_ScriptThread_getFloatScriptVariable;
 extern Event EV_ScriptThread_getStringScriptVariable;
 extern Event EV_ScriptThread_setVectorScriptVariable;
 extern Event EV_ScriptThread_setFloatScriptVariable;
 extern Event EV_ScriptThread_setStringScriptVariable;
-extern Event EV_ScriptThread_getStringPlayerLanguage;
 extern Event EV_ScriptThread_getIntPlayerScore;
 extern Event EV_ScriptThread_getIntPlayerDeaths;
 extern Event EV_ScriptThread_getIntPlayerKills;
@@ -133,12 +128,9 @@ class CThread : public Interpreter
 
 		CThread();
 
-		//[b611] chrissstrahl - added command to allow a widget with white-spaces like regular text contains
-		void sendWidgetCommand(Event *ev);
-		void hasItem(Event *ev);
+		//[b611] chrissstrahl - read and write mapspecific ini data - allowing levels to hold thair own database
 		void getIniData(Event *ev);
 		void setIniData(Event *ev);
-		void setCamera(Event* ev);
 		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 		void configstringRemoveCombatSounds(Event *ev);
 		void configstringRemove(Event *ev);
@@ -148,16 +140,12 @@ class CThread : public Interpreter
 		void getStringToLower( Event *ev );
 		void getIntStringLength( Event *ev );
 		void getIntStringFind( Event *ev );
-		void getStringPlayerName( Event *ev );
-		void getStringEntitySubclass( Event *ev );
-		void getIntPlayerSpectator( Event *ev );
 		void getVectorScriptVariable( Event *ev );
 		void getFloatScriptVariable( Event *ev );
 		void getStringScriptVariable( Event *ev );
 		void setVectorScriptVariable( Event *ev );
 		void setFloatScriptVariable( Event *ev );
 		void setStringScriptVariable( Event *ev );
-		void getStringPlayerLanguage( Event *ev);
 		void getIntPlayerScore( Event *ev );
 		void getIntPlayerDeaths( Event *ev );
 		void getIntPlayerKills( Event *ev );

@@ -1165,30 +1165,6 @@ Event EV_ScriptThread_getIntStringFind
 	"retunedFloat sourceString findString" ,
 	"Returns position at wich the given string was found otherwise, if not found return -1"
 );
-Event EV_ScriptThread_getStringPlayerName
-(
-	"getStringPlayerName" ,
-	EV_SCRIPTONLY ,
-	"@seS" ,
-	"retunedString entity string" ,
-	"Returns multiplayer name of given player-entity"
-);
-Event EV_ScriptThread_getStringEntitySubclass
-(
-	"getStringEntitySubclass" ,
-	EV_SCRIPTONLY ,
-	"@se" ,
-	"retunedString entity" ,
-	"Returns class of given entity"
-);
-Event EV_ScriptThread_getIntPlayerSpectator
-(
-	"getIntPlayerSpectator" ,
-	EV_SCRIPTONLY ,
-	"@fe" ,
-	"retunedFloat entity" ,
-	"Returns if given entity is spectator"
-);
 Event EV_ScriptThread_getVectorScriptVariable
 (
 	"getVectorScriptVariable" ,
@@ -1237,94 +1213,6 @@ Event EV_ScriptThread_setStringScriptVariable
 	"variablename string" ,
 	"Sets string on global script string variable located by given name"
 );
-Event EV_ScriptThread_getStringPlayerLanguage
-(
-	"getStringPlayerLanguage" ,
-	EV_SCRIPTONLY ,
-	"@se" ,
-	"returnString entity" ,
-	"Returns detected language of given player entity (empty if none, default is Eng)"
-);
-Event EV_ScriptThread_getIntPlayerScore
-(
-	"getIntPlayerScore" ,
-	EV_SCRIPTONLY ,
-	"@fe" ,
-	"returnInteger entity" ,
-	"Returns points/score of the given player entity"
-);
-Event EV_ScriptThread_getIntPlayerDeaths
-(
-	"getIntPlayerDeaths" ,
-	EV_SCRIPTONLY ,
-	"@fe" ,
-	"returnInteger entity" ,
-	"Returns number of deaths of the given player entity"
-);
-Event EV_ScriptThread_getIntPlayerKills
-(
-	"getIntPlayerKills" ,
-	EV_SCRIPTONLY ,
-	"@fe" ,
-	"returnInteger entity" ,
-	"Returns number of kills by the given player entity"
-);
-Event EV_ScriptThread_addPlayerIntScore
-(
-	"addPlayerIntScore" ,
-	EV_SCRIPTONLY ,
-	"ef" ,
-	"player integer" ,
-	"Adds given ammount of score to given player"
-);
-Event EV_ScriptThread_getIntPlayerLastDamaged
-(
-	"getIntPlayerLastDamaged" ,
-	EV_SCRIPTONLY ,
-	"@fe" ,
-	"returnFloat player" ,
-	"Returns time when given player was last time hit"
-);
-Event EV_ScriptThread_getStringPlayerTeam
-(
-	"getStringPlayerTeam" ,
-	EV_SCRIPTONLY ,
-	"@se" ,
-	"returnString player" ,
-	"Returns team color of given player"
-);
-Event EV_ScriptThread_getIntPlayerTeamScore
-(
-	"getIntPlayerTeamScore" ,
-	EV_SCRIPTONLY ,
-	"@fe" ,
-	"returnInteger player" ,
-	"Returns team score of given player"
-);
-Event EV_ScriptThread_getIntPlayerHasCoop
-(
-	"getIntPlayerHasCoop" ,
-	EV_SCRIPTONLY ,
-	"@fe" ,
-	"returnInteger player" ,
-	"Returns if given player has hzm coop mod installed"
-);
-Event EV_ScriptThread_isEntityInsideOfEntity
-(
-	"isEntityInsideOfEntity" ,
-	EV_SCRIPTONLY ,
-	"@fee" ,
-	"returnInteger entity entity" ,
-	"Returns if given entity boundingboxex are touching/inside-of each other"
-);
-Event EV_ScriptThread_solidAsap
-(
-	"solidAsap" ,
-	EV_SCRIPTONLY ,
-	"e" ,
-	"entity" ,
-	"Makes actors and players solid as soon as saftly possible"
-);
 Event EV_ScriptThread_getLevelParamaterValue
 (
 	"getLevelParamaterValue" ,
@@ -1357,22 +1245,6 @@ Event EV_ScriptThread_MissionFailed
 	"reason" ,
 	"Displays the mission failed screen on the client side"
 	);
-Event EV_ScriptThread_sendWidgetCommand
-(
-	"sendWidgetCommand",
-	EV_SCRIPTONLY,
-	"essS",
-	"entity string string string",
-	"send widgetcommand (for a menu or hud element) to player"
-);
-Event EV_ScriptThread_hasItem
-(
-	"hasItem",
-	EV_SCRIPTONLY,
-	"es",
-	"entity string",
-	"checks if a player or actor has the specified item"
-);
 Event EV_ScriptThread_getIniData
 (
 	"getIniData",
@@ -1389,15 +1261,6 @@ Event EV_ScriptThread_setIniData
 	"returndbool category keyname value",
 	"sets data to map-specific ini file"
 );
-Event EV_ScriptThread_setCamera
-(
-	"setCamera",
-	EV_SCRIPTONLY,
-	"eeF",
-	"playerEntity cameraEntity floatTimetransition",
-	"sets player view to given camera"
-);
-
 //end of hzm
 
 CLASS_DECLARATION( Interpreter, CThread, NULL )
@@ -1545,10 +1408,7 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_ConnectPathnodes,			&CThread::connectPathnodes },
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
-	//[b611] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
-	{ &EV_ScriptThread_setCamera,					&CThread::setCamera },
-	{ &EV_ScriptThread_sendWidgetCommand,			&CThread::sendWidgetCommand },
-	{ &EV_ScriptThread_hasItem,						&CThread::hasItem },
+	//[b611] chrissstral - allow read write to map specific ini files
 	{ &EV_ScriptThread_getIniData,					&CThread::getIniData },
 	{ &EV_ScriptThread_setIniData,					&CThread::setIniData },
 	//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
@@ -1560,26 +1420,12 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_getStringToUpper, &CThread::getStringToUpper } ,
 	{ &EV_ScriptThread_getIntStringLength, &CThread::getIntStringLength } ,
 	{ &EV_ScriptThread_getIntStringFind, &CThread::getIntStringFind } ,
-	{ &EV_ScriptThread_getStringPlayerName, &CThread::getStringPlayerName } ,
-	{ &EV_ScriptThread_getStringEntitySubclass, &CThread::getStringEntitySubclass } ,
-	{ &EV_ScriptThread_getIntPlayerSpectator, &CThread::getIntPlayerSpectator } ,
 	{ &EV_ScriptThread_getVectorScriptVariable, &CThread::getVectorScriptVariable } ,
 	{ &EV_ScriptThread_getFloatScriptVariable, &CThread::getFloatScriptVariable } ,
 	{ &EV_ScriptThread_getStringScriptVariable, &CThread::getStringScriptVariable } ,		
 	{ &EV_ScriptThread_setVectorScriptVariable, &CThread::setVectorScriptVariable } ,
 	{ &EV_ScriptThread_setFloatScriptVariable, &CThread::setFloatScriptVariable } ,
 	{ &EV_ScriptThread_setStringScriptVariable, &CThread::setStringScriptVariable } ,
-	{ &EV_ScriptThread_getStringPlayerLanguage, &CThread::getStringPlayerLanguage } ,
-	{ &EV_ScriptThread_getIntPlayerScore, &CThread::getIntPlayerScore } ,
-	{ &EV_ScriptThread_getIntPlayerDeaths, &CThread::getIntPlayerDeaths } ,	
-	{ &EV_ScriptThread_getIntPlayerKills, &CThread::getIntPlayerKills } ,
-	{ &EV_ScriptThread_addPlayerIntScore, &CThread::addPlayerIntScore } ,
-	{ &EV_ScriptThread_getIntPlayerLastDamaged, &CThread::getIntPlayerLastDamaged } ,
-	{ &EV_ScriptThread_getStringPlayerTeam, &CThread::getStringPlayerTeam } ,
-	{ &EV_ScriptThread_getIntPlayerTeamScore, &CThread::getIntPlayerTeamScore } ,
-	{ &EV_ScriptThread_getIntPlayerHasCoop, &CThread::getIntPlayerHasCoop } ,
-	{ &EV_ScriptThread_isEntityInsideOfEntity, &CThread::isEntityInsideOfEntity } ,
-	{ &EV_ScriptThread_solidAsap, &CThread::solidAsap } ,
 	{ &EV_ScriptThread_getLevelParamaterValue, &CThread::getLevelParamaterValue } ,
 	{ &EV_ScriptThread_getFloatFromString, &CThread::getFloatFromString } ,
 	{ &EV_ScriptThread_isDigit, &CThread::isDigit } ,
@@ -1608,49 +1454,6 @@ void CThread::checkAchivment(Event* ev)
 
 }
 */
-
-//[b611] chrissstrahl - make player view to specific camera - without being in cinematics
-//returns: void
-//takes: string ini file, string ini category, key
-void CThread::setCamera(Event* ev)
-{
-	Entity *player;
-	Entity *camera;
-	float switchTime = 0;
-
-	player = ev->GetEntity(1);
-	camera = ev->GetEntity(2,true);
-
-	if (!player || !player->isSubclassOf(Player))
-		return;
-
-	Player* play = (Player*)player;
-
-	if (ev->NumArgs() > 2) {
-		switchTime = ev->GetFloat(3);
-	}
-
-	if (!camera) {
-		play->SetCamera(NULL, switchTime);
-
-		//clear current camera so it can be restored on savegame
-		if (g_gametype->integer == GT_SINGLE_PLAYER) {
-			game.cinematicCurrentCam = NULL;
-		}
-		return;
-	}
-	
-	if (!camera->isSubclassOf(Camera)) {
-		gi.Printf(va("setCamera::Entity $%s is of class %s needs to be Camera\n", camera->targetname.c_str(),camera->getClassname()));
-		return;
-	}
-
-	//set current camera so it can be restored on savegame
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		game.cinematicCurrentCam = camera;
-	}
-	play->SetCamera((Camera*)camera, switchTime);
-}
 	
 //[b611] chrissstrahl - add command allow reading and writing to ini file
 //returns: string ini data
@@ -1715,69 +1518,6 @@ void CThread::setIniData(Event *ev)
 	bScuccsess = coop_parserIniSet(sFilename, sKeyname, sValue, sCategoryname);
 	ev->ReturnFloat(float(bScuccsess));
 	gi.Printf(va("setIniData::%s at %s - %s\n", sFilename.c_str(),sCategoryname.c_str(), sKeyname.c_str()));
-}
-
-//[b611] chrissstrahl - add command to check if player/actor has a specific item
-//sentity, string-weaponname
-void CThread::hasItem(Event *ev)
-{
-	Sentient *sEnt = (Sentient*)(Entity*)ev->GetEntity(1);
-	if (sEnt == NULL) {
-		ev->ReturnFloat(0.0f); 
-		return;
-	}
-
-	str sName;
-	sName = ev->GetString(2);
-
-	if (strlen(sName) > 0) {
-		Item * item;
-		item = sEnt->FindItem(sName);
-		if (item) {
-			ev->ReturnFloat(1.0f);
-			return;
-		}
-	}
-	ev->ReturnFloat(0.0f);
-}
-
-//[b611] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
-//widgetname,commandparameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter
-void CThread::sendWidgetCommand(Event *ev)
-{
-	//make sure we have at least the player-ent widgetname and a commandparameter
-	if (ev->NumArgs() < 3) {
-		return;
-	}
-	
-	Entity *ent = ev->GetEntity(1);		//player
-	str sData;
-	str sParameters = ev->GetString(2);	//widgetname
-	sParameters += " "; //spacer
-	sParameters += ev->GetString(3);	//widgetcommandparameter
-
-	
-	if(ev->NumArgs() > 3){
-		sParameters += " "; //spacer
-		str sTemp = ev->GetString(4);
-		
-		//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
-		if (coop_returnIntFind(sParameters, "labeltext") != -1) {
-			int i;
-			for (i = 0; i < strlen(sTemp); i++) {
-				if (sTemp[i] == '\n' || sTemp[i] == '#')
-					sTemp[i] = '~';
-				if (sTemp[i] == ' ')
-					sTemp[i] = '^';
-			}
-		}
-
-		sParameters += sTemp;
-	}
-	sData += "stufftext \"globalwidgetcommand ";
-	sData += sParameters;
-	sData += "\"\n";
-	gi.SendServerCommand(ent->edict - g_entities, sData.c_str());
 }
 
 //[b607] chrissstrahl - remove given string from configstrings
@@ -1856,90 +1596,6 @@ void CThread::getIntStringFind( Event *ev )
 	str sFind = ev->GetString( 2 );
 	ev->ReturnFloat( coop_returnIntFind( sSource , sFind ) );
 }
-void CThread::getStringPlayerName( Event *ev )
-{
-	Entity* e = ev->GetEntity( 1 );
-
-	if ( !e || !e->isSubclassOf(Player) ) {
-		ev->ReturnString( "" );
-		return;
-	}
-
-	//[b609] chrissstrahl - return also player name in singleplayer instead of crashing
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		cvar_t *cvar = gi.cvar_get("name");
-		ev->ReturnString(cvar ? cvar->string : "");
-		return;
-	}
-
-	str s;
-	Player* p = ( Player* )e;
-	s = multiplayerManager._playerData[p->entnum]._name;
-
-	//[b609] chrissstrahl - updated to allow replacing
-	// orientate on func SetCanBeFinishedBy for a neat solution with multiple arguments
-	str sReplace = "_";
-	if (ev->NumArgs() > 1) {
-		sReplace = ev->GetString(2);
-		str sPlayername = s;
-		int		i;
-		s = "";
-
-		for (i = 0; i < sPlayername.length(); i++) {
-			if (sPlayername[i] == ' ') {
-				s += sReplace;
-			}
-			else {
-				s += sPlayername[i];
-			}
-		}
-	}
-
-	ev->ReturnString( s.c_str() );
-}
-void CThread::getStringEntitySubclass( Event *ev )
-{
-	Entity* e = ev->GetEntity( 1 );
-
-	if ( !e ) {
-		ev->ReturnString( "" );
-		return;
-	}
-	ev->ReturnString( e->getClassname() );
-}
-void CThread::getIntPlayerSpectator( Event *ev )
-{
-	Entity* e = ev->GetEntity( 1 );
-
-	if ( !e || !e->isSubclassOf( Player ) ) {
-		ev->ReturnFloat( -1.0f );
-		return;
-	}
-	if ( g_gametype->integer == GT_SINGLE_PLAYER ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-	Player* p = ( Player* )e; 
-	ev->ReturnFloat( multiplayerManager._playerData[p->entnum]._spectator );
-}
-void CThread::getStringPlayerLanguage( Event *ev )
-{
-	Entity* e = ev->GetEntity( 1 );
-
-	if ( !e || !e->isSubclassOf( Player ) ) {
-		ev->ReturnString( "" );
-		return;
-	}
-	Player* p = ( Player* )e;
-
-	if ( p->coopPlayer.language.length() < 1 ) {
-		ev->ReturnString( "" );
-		return;
-	}
-	const char* lang = p->coopPlayer.language.c_str();
-
-	ev->ReturnString( lang );
-}
 void CThread::setVectorScriptVariable( Event *ev )
 {
 	const char* varname = ev->GetString( 1 );
@@ -1957,145 +1613,6 @@ void CThread::setStringScriptVariable( Event *ev )
 	const char* varname = ev->GetString( 1 );
 	const char* sSet = ev->GetString( 2 );
 	coop_setStringScriptVariableValue( varname , sSet );
-}
-void CThread::getIntPlayerScore( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-
-	if ( !entity || !entity->isSubclassOf(Player) ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-
-	Player  *player = ( Player* )entity;
-	ev->ReturnFloat( multiplayerManager.getPoints( player ) );
-}
-void CThread::getIntPlayerDeaths( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-
-	if ( !entity || !entity->isSubclassOf( Player ) ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-
-	Player  *player = ( Player* )entity;
-	ev->ReturnFloat( multiplayerManager.getDeaths( player ) );
-}
-void CThread::getIntPlayerKills( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-
-	if ( !entity || !entity->isSubclassOf( Player ) ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-
-	Player  *player = ( Player* )entity;
-	ev->ReturnFloat( multiplayerManager.getKills( player ) );
-}
-void CThread::addPlayerIntScore( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-	int iAdd = ev->GetInteger( 2 );
-
-	if ( iAdd == 0 || !entity || !entity->isSubclassOf( Player ) ) {
-		return;
-	}
-
-	Player  *player = ( Player* )entity;
-	multiplayerManager.addPoints( player->entnum , iAdd );
-	str s;
-	s = multiplayerManager._playerData[player->entnum]._name;
-	gi.Printf( "Info: Level-Script adding Points(%d) to Player[%d]: %s\n" , iAdd , player->entnum , s.c_str() );
-}
-void CThread::getIntPlayerLastDamaged( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-
-	if ( !entity || !entity->isSubclassOf( Player ) ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-
-	Player  *player = ( Player* )entity;
-	ev->ReturnFloat( player->getLastDamageTime() );
-}
-void CThread::getStringPlayerTeam( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-
-	if ( !entity || !entity->isSubclassOf( Player ) ) {
-		ev->ReturnString( "" );
-		return;
-	}
-
-	Player  *player = ( Player* )entity;
-	Team *team;
-	team = multiplayerManager.getPlayersTeam( player );
-	if ( team == NULL ){
-		ev->ReturnString( "None" );
-		return;
-	}
-	ev->ReturnString(  team->getName() );
-}
-void CThread::getIntPlayerTeamScore( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-
-	if ( !entity || !entity->isSubclassOf( Player ) ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-
-	Player  *player = ( Player* )entity;
-	Team *team;
-	team = multiplayerManager.getPlayersTeam( player );
-	if ( team == NULL ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-	ev->ReturnFloat(multiplayerManager.getTeamPoints( player ) );
-}
-void CThread::getIntPlayerHasCoop( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-
-	if ( !entity || !entity->isSubclassOf( Player ) ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-
-	Player  *player = ( Player* )entity;
-	//value is -1 while the mod is detecting, make sure we only return bool
-	int i = player->coopPlayer.installedVersion;
-	if( i < 0) {
-		i = 0;
-	}
-	ev->ReturnFloat( (float)i );
-}
-void CThread::isEntityInsideOfEntity( Event *ev )
-{
-	Entity *entity1 = ev->GetEntity( 1 );
-	Entity *entity2 = ev->GetEntity( 2 );
-
-	if ( !entity1 || !entity2 ) {
-		ev->ReturnFloat( 0.0f );
-		return;
-	}
-	ev->ReturnFloat( (float)(int)coop_checkIsEntityInBoundingBox( entity1 , entity2 ) );
-}
-void CThread::solidAsap( Event *ev )
-{
-	Entity *entity = ev->GetEntity( 1 );
-
-	if ( !entity ) {
-		return;
-	}
-	entity->_makeSolidASAP = true;
-	entity->_makeSolidASAPTime = 0.0f;
-	//entity->_makeSolidASAPSupposedToBeSolid = true;
-	
 }
 void CThread::getLevelParamaterValue( Event *ev )
 {
