@@ -76,11 +76,13 @@ void Player::circleMenu(int iType)
 		return;
 	}
 
+	upgCircleMenu.numOfSegments = 4;
+
 	upgCircleMenu.activatingTime = level.time;
 
 	if (upgCircleMenu.active <= 0) {
 		upgCircleMenu.viewAngle = getViewAngles();
-		upgCircleMenu.lastAngle = upgCircleMenu.viewAngle;
+		upgCircleMenu.lastViewangle = upgCircleMenu.viewAngle;
 
 		upgCircleMenu.active = iType;
 		if (upgCircleMenu.active == 1) {
@@ -98,228 +100,117 @@ void Player::circleMenu(int iType)
 
 //[b611] chrissstrahl
 //================================================================
-// Name:        circleMenuCalculateDirection();
-// Class:       -
-//              
-// Description:	
-//              
-// Parameters:  -
-//              
-// Returns:     -
-//              
-//================================================================
-int Player::circleMenuDetermineDirection()
-{
-	//0 + = down
-	//0 - = up
-	//1 - = left
-	//1 + right
-	//1 179+ to 0 to -179
-	Vector plAngle = Vector(0, 0, 0);
-	plAngle[0] = SHORT2ANGLE(current_ucmd->angles[0]);
-	plAngle[1] = SHORT2ANGLE(current_ucmd->angles[1]);
-
-	Vector vLast = upgCircleMenu.lastAngle;
-	upgCircleMenu.lastAngle = plAngle;
-
-	//gi.Printf(va("result %f %f %f\n", plAngle[0], plAngle[1], plAngle[2]));
-
-	//0=up,1=right,2=down,3=left
-	int iDirection = -1;
-	//up or down or equal
-	if (plAngle[0] != vLast[0]) {
-		//up
-		if (plAngle[0] < vLast[0]) {
-			//gi.Printf("up\n");
-			iDirection = 0;
-		}
-		//down
-		else {
-			//gi.Printf("down\n");
-			iDirection = 2;
-		}
-	}
-
-	//left or right or equal
-	if (plAngle[1] != vLast[1]) {
-		//right
-		if (plAngle[1] < vLast[1]) {
-			//gi.Printf("right\n");
-			iDirection = 1;
-		}
-		//left
-		else {
-			//gi.Printf("left\n");
-			iDirection = 3;
-		}
-	}
-
-	return iDirection;
-}
-
-//[b611] chrissstrahl
-//================================================================
-// Name:        circleMenuCalculateDirection();
-// Class:       -
-//              
-// Description:	
-//              
-// Parameters:  -
-//              
-// Returns:     -
-//              
-//================================================================
-int Player::circleMenuCalculateDirection(int& up, int& down, int& left, int& right)
-{
-	bool bUp = false, bLeft = false;
-	//check if player moved more up or down
-	if (up > down) {
-		bUp = true;
-	}
-	if (left > right) {
-		bLeft = true;
-	}
-
-	//0=up,1=right,2=down,3=left
-	int iDirection = -1;
-	if (bUp && bLeft) {
-		if (up > left) {
-			iDirection = 0; //up
-		}
-		else if (up < left) {
-			iDirection = 3; //left
-		}
-		else {
-			//equal
-		}
-	}
-	else if (!bUp && !bLeft) {
-		if (down > right) {
-			iDirection = 2; //up
-		}
-		else if (right < down) {
-			iDirection = 1; //right
-		}
-		else {
-			//equal
-		}
-	}
-	return iDirection;
-}
-
-//[b611] chrissstrahl
-//================================================================
-// Name:        circleMenuGetOption();
-// Class:       -
-//              
-// Description:	Returns the option number for each direction (up,left,down,right)
-//              
-// Parameters:  -
-//              
-// Returns:     Circle Menu Widgetname for given direction
-//              
-//================================================================
-int Player::circleMenuGetOption(int iDirection)
-{
-	//DIRECTION:	//0=up,1=right,2=down,3=left
-	//OPTION:		//1=up,2=left,3=down,4=right
-	int iOption = 0;
-	if (iDirection == 0) { iOption = 1; }
-	else if (iDirection == 1) { iOption = 2; }
-	else if (iDirection == 2) { iOption = 3; }
-	else if (iDirection == 3) { iOption = 4; }
-	return iDirection;
-}
-
-//[b611] chrissstrahl
-//================================================================
 // Name:        circleMenuGetWidgetName();
 // Class:       -
 //              
 // Description:	Calculates the desired move direction based on the last direction moves
 //              
-// Parameters:  -
+// Parameters:  int iSegment
 //              
 // Returns:     Circle Menu Widgetname for given direction
 //              
 //================================================================
-str Player::circleMenuGetWidgetName(int iDirection)
+str Player::circleMenuGetWidgetName(int iSegment)
 {
-	//0=up,1=right,2=down,3=left
-	str currentWidget = "";
-	if (iDirection == 0) { currentWidget = "coop_circleT"; }
-	else if (iDirection == 1) { currentWidget = "coop_circleR"; }
-	else if (iDirection == 2) { currentWidget = "coop_circleB"; }
-	else if (iDirection == 3) { currentWidget = "coop_circleL"; }
-	else {
-		gi.Printf(va("Player::circleMenuGetWidgetName(%i) - No widget name avialable for parameter 1\n", iDirection));
-		return "";
+	str currentWidget = "coop_circle";
+	int iSegments = upgCircleMenu.numOfSegments;
+	switch (iSegments)
+	{
+	case 4: //0=up,1=right,2=down,3=left
+		switch (iSegment) {
+		case 0:
+			currentWidget += "T";
+			break;
+		case 1:
+			currentWidget += "R";
+			break;
+		case 2:
+			currentWidget += "B";
+			break;
+		case 3:
+			currentWidget += "L";
+			break;
+		default:
+			gi.Printf(va("Player::circleMenuGetWidgetName(%i) %i - No widget name avialable for parameter 1\n", iSegment, iSegments));
+		}
+		break;
+	case 8: //0=Top,1=TopRight 2=right,3=BottomRight, 4=Bottom,5=BottomLeft, 6=Left,7=TopLeft
+		switch (iSegment) {
+		case 0:
+			currentWidget += "T";
+			break;
+		case 1:
+			currentWidget += "TR";
+			break;
+		case 2:
+			currentWidget += "R";
+			break;
+		case 3:
+			currentWidget += "BR";
+			break;
+		case 4:
+			currentWidget += "B";
+			break;
+		case 5:
+			currentWidget += "BL";
+			break;
+		case 6:
+			currentWidget += "L";
+			break;
+		case 7:
+			currentWidget += "TL";
+			break;
+		default:
+			gi.Printf(va("Player::circleMenuGetWidgetName(%i) %i - No widget name avialable for parameter 1\n", iSegment, iSegments));
+		}
+	default:
+		gi.Printf(va("Player::circleMenuGetWidgetName(%i) %i - No widget name avialable for parameter 1\n", iSegment, iSegments));
 	}
 	return currentWidget;
 }
 
 //[b611] chrissstrahl
 //================================================================
-// Name:        circleMenuCalculateDirectionFinal();
+// Name:        getSegmentNumForAngle();
 // Class:       -
 //              
-// Description:	Calculates the desired move direction based on the last direction moves
+// Description:	Get the Segment Number for given Angle
 //              
 // Parameters:  -
 //              
-// Returns:     Indiana-Jones
+// Returns:     -
 //              
 //================================================================
-int Player::circleMenuCalculateDirectionFinal()
+int Player::getSegmentNumForAngle(float fAngle)
 {
-	bool bUp = false;
-	bool bLeft = false;
-	int iDirection = -1;
+	float fNumSegments = 4;
+	float fSegmentDegreeSize = (360 / fNumSegments);
+	float fSegmentMaxEnd = (359 - (fSegmentDegreeSize / 2));
 
-	int iUpDown = upgCircleMenu.moveDown;
-	int iLeftRight = upgCircleMenu.moveRight;
+	//go step whise in reverse
+	float iStep;
+	float iHighestSegmentNum;
+	float fCurrentMax;
+	fCurrentMax = fSegmentMaxEnd;
+	iHighestSegmentNum = (fNumSegments - 1);
 
-	//grab most move dir up/down left/right
-	if (upgCircleMenu.moveUp > upgCircleMenu.moveDown) {
-		iUpDown = upgCircleMenu.moveUp;
-		bUp = true;
-	}
-	if (upgCircleMenu.moveLeft > upgCircleMenu.moveRight) {
-		iLeftRight = upgCircleMenu.moveLeft;
-		bLeft = true;
-	}
-
-	str currentWidget = "";
-
-	//movement did go up or down
-	//0=up,1=right,2=down,3=left
-	if (iUpDown > iLeftRight) {
-		if (bUp) {
-			iDirection = 0;
-			currentWidget = "coop_circleT";
+	for (iStep = iHighestSegmentNum; iStep >= 0; iStep--) {
+		//print("getSegmentNumForAngle: '"+fAngle+"'\n");
+		/*
+		if(fAngle != 0){
+			print("getSegmentNumForAngle: '"+fAngle+"'\n");
+			print("getSegmentNumForAngle: "+fCurrentMax+" vs "+(fCurrentMax - fSegmentDegreeSize)+"\n");
 		}
-		else {
-			iDirection = 2;
-			currentWidget = "coop_circleB";
+		*/
+		if (fCurrentMax > fAngle && fAngle > (fCurrentMax - (fSegmentDegreeSize))) {
+			return iStep;
 		}
+		fCurrentMax = AngleNormalize360(fCurrentMax - fSegmentDegreeSize);
 	}
-	//movement did go left or right
-	else {
-		if (bLeft) {
-			iDirection = 3;
-			currentWidget = "coop_circleL";
-		}
-		else {
-			iDirection = 1;
-			currentWidget = "coop_circleR";
-		}
+	if (fAngle > fCurrentMax && fAngle <= 359) {
+		return 0;
 	}
-
-	upgCircleMenu.moveUp = 0;
-	upgCircleMenu.moveDown = 0;
-	upgCircleMenu.moveLeft = 0;
-	upgCircleMenu.moveRight = 0;
-	return iDirection;
+	return -1;
 }
 
 //[b611] chrissstrahl
@@ -348,67 +239,98 @@ void Player::circleMenuThink()
 		return;
 	}
 
-	str currentWidget = "";
-	Vector plAngle = Vector(0, 0, 0);
-	plAngle[0] = SHORT2ANGLE(current_ucmd->angles[0]);
-	plAngle[1] = SHORT2ANGLE(current_ucmd->angles[1]);
+	//detect and record the mouse move directions
+	Vector vDifference = Vector(0, 0, 0);
+	Vector vViewangle = Vector(0, 0, 0);
+	GetPlayerView(NULL, &vViewangle);
 
-	int iDirection = circleMenuDetermineDirection();
+	//if all the same, we can abbort ?
+	if (vViewangle == upgCircleMenu.lastViewangle) { return; }
 
-	//no change
-	if (iDirection == -1) {
-		return;
-	}
+	//get difference - remember last viewangle
+	vDifference = (upgCircleMenu.lastViewangle - vViewangle);
+	upgCircleMenu.lastViewangle = vViewangle;
 
-	//0=up,1=right,2=down,3=left
-	if (iDirection == 0) {
-		//gi.Printf("up 0\n");
-		upgCircleMenu.moveUp++;
-	}
-	else if (iDirection == 2) {
-		//gi.Printf("down 2\n");
-		upgCircleMenu.moveDown++;
-	}
-	else if (iDirection == 3) {
-		//gi.Printf("left 3\n");
-		upgCircleMenu.moveLeft++;
-	}
-	else if (iDirection == 1) {
-		//gi.Printf("right 1\n");
-		upgCircleMenu.moveRight++;
-	}
+	upgCircleMenu.longtimeViewangle[0] += vDifference[0];
+	upgCircleMenu.longtimeViewangle[1] += vDifference[1];
 
-	//printout what option was selected - close menu
-	if ((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0) {
-		int iOption;
-		iDirection = circleMenuCalculateDirectionFinal();
-		iOption = circleMenuGetOption(iDirection);
-		gi.Printf("Circle Menu OPTION SELECTED: %i\n", iOption);
-		gi.SendServerCommand(entnum, "stufftext \"ui_removehud coop_circle\"\n");
-		upgCircleMenu.active = 0;
-		return;
-	}
+	//angle on 2d screen - circle menu
+	float fAngle;
 
-	//calculate direction on a time based cycle - proceed if the fire button is pressed
-	if ((upgCircleMenu.thinkTime + 0.1) > level.time) {
-		return;
-	}
+	if ((upgCircleMenu.thinkTime + 0.1) > level.time) { return; }
 	upgCircleMenu.thinkTime = level.time;
 
-	iDirection = circleMenuCalculateDirectionFinal();
-	currentWidget = circleMenuGetWidgetName(iDirection);
+	//here is where the magic happens
+	float radians = atan2(upgCircleMenu.longtimeViewangle[1], upgCircleMenu.longtimeViewangle[0]);
+	float degrees = RAD2DEG(radians);
+	fAngle = AngleNormalize360( degrees );
 
-	//reset viewangle
-//SetViewAngles(upgCircleMenu.viewAngle);
+	float fSegmentNum;
+	str sWidgetName;
+	fSegmentNum = getSegmentNumForAngle(fAngle);
+	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
 
-	gi.Printf(va("viewangle %f %f %f\n", upgCircleMenu.viewAngle[0], upgCircleMenu.viewAngle[1], upgCircleMenu.viewAngle[2]));
+	//reset
+	upgCircleMenu.longtimeViewangle = Vector(0,0,0);
 
-	if (currentWidget.length() && currentWidget != upgCircleMenu.lastWidget) {
-		switchWidgets(currentWidget, upgCircleMenu.lastWidget, "bgcolor 0.5 0.5 0.5 1", "bgcolor 0.5 0.5 0.5 0");
-		upgCircleMenu.lastWidget = currentWidget;
+	//make sure we only react if it seams like a legit move - this will need more love
+	if (vDifference.length() < 0.1 || fSegmentNum < 0) { return; }
+
+	if (sWidgetName != "" && sWidgetName != upgCircleMenu.lastWidget) {
+		str sCmd;
+		G_SendCommandToPlayer(this->edict,va("globalwidgetcommand %s shadercolor 0 0 0 1", sWidgetName.c_str()));
+		G_SendCommandToPlayer(this->edict,va("globalwidgetcommand %s shadercolor 1 1 1 1", upgCircleMenu.lastWidget.c_str()));
+//gi.Printf(va("Reset: %s\n",upgCircleMenu.lastWidget));
 	}
 
-	//--prevent player view moving with it
+//gi.Printf(va("Reset: %s\n", upgCircleMenu.lastWidget));
+	str sPrint = va("prev: %s curr: %s\n", upgCircleMenu.lastWidget.c_str(), sWidgetName.c_str());
+	//gi.Printf(va(": %s\n", sPrint));
+	upgCircleMenu.lastWidget = sWidgetName;
+
+	if (fAngle != 0) {
+		sPrint = va("%s - '%d'\n",fSegmentNum);
+		//print(": "+sPrint+" A:"+fAngle+"length:"+vectorlength(VDiff)+"\n");
+//gi.Printf(va(": %s\n", sPrint));
+	}
+
+	//gi.Printf(va("Angle: %d\n", fAngle));
+	gi.Printf(va("length: %f\n", vDifference.length()));
+
+	upgCircleMenu.lastSegment = fSegmentNum;
 }
 
+//[b611] chrissstrahl
+//================================================================
+// Name:        circleMenuSelect
+// Class:       -
+//              
+// Description:	Manages if the player has selected a item on the circle menu
+//              
+// Parameters:  -
+//              
+// Returns:     -
+//              
+//================================================================
+void Player::circleMenuSelect(int iOption)
+{
+	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONS) {
+		gi.Printf(va("circleMenuSelect: Given Option %i is out of Range\n", iOption));
+		return;
+	}
+
+	bool bIsScript = upgCircleMenu.optionIsScript[iOption];
+	str sThread		= upgCircleMenu.optionThreadOrCommand[iOption];
+	//str sText		= upgCircleMenu.optionText[iOption];
+	//str sImage		= upgCircleMenu.optionIcon[iOption];
+
+	gi.Printf(va("circleMenuSelect: %i selected\n", (iOption + 1)));
+	
+	if (bIsScript) {
+		RunThread(sThread);
+	}
+	else {
+		DelayedServerCommand(entnum,va("%s", sThread.c_str()));
+	}
+}
 
