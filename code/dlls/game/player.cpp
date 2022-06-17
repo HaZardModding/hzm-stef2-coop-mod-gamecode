@@ -1383,12 +1383,12 @@ Event EV_Player_RunThread
 );
 
 //[b611] chrissstrahl - get player viewangle
-Event EV_Player_GetPlayerViewangle
+Event EV_Player_GetViewangles
 (
-	"getPlayerViewangle",
+	"getViewangles",
 	EV_DEFAULT,
 	"@v",
-	"viewangles",
+	"vector-viewangle",
 	"Returns the player current viewangles"
 );
 //[b607] chrissstrahl - get targeted Entity (entity player is aiming at)
@@ -1400,26 +1400,29 @@ Event EV_Player_GetTargetedEntity
 	"targetedentity",
 	"Returns the entity the player is currently targeting"
 );
+//HaZardModding Coop Mod END
+//HaZardModding Coop Mod END
+//HaZardModding Coop Mod END
 
 //hzm gameupdate daggolin - new commands
 Event EV_Player_GetScriptVariablesCommand
 (
-"getScriptVariable" ,
-EV_CHEAT,
-NULL ,
-"type" ,
-"Lists all script-variables of the specified type"
+	"getScriptVariable",
+	EV_CHEAT,
+	NULL,
+	"type",
+	"Lists all script-variables of the specified type"
 );
 //hzm gameupdate chrissstrahl - add new commands for script use
 Event EV_Player_setKillThread
 (
-	"killthread" ,
-	EV_SCRIPTONLY ,
-	"s" ,
-	"kill_thread" ,
-	"Sets the thread to run ifd player gets killed."
+	"killthread",
+	EV_SCRIPTONLY,
+	"s",
+	"kill_thread",
+	"Sets the thread to run if player gets killed."
 );
-//hzm gameupdate chrissstrahl - add new commands for script use
+//hzm gameupdate chrissstrahl [b611] - add new commands for script use
 Event EV_Player_circleMenu
 (
 	"circleMenu",
@@ -1428,9 +1431,159 @@ Event EV_Player_circleMenu
 	"integer-menutype",
 	"Shows Circle Menu to player, 1=Normal, 2=Dialog."
 );
-//HaZardModding Coop Mod END
-//HaZardModding Coop Mod END
-//HaZardModding Coop Mod END
+//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+Event EV_Player_circleMenuDialogSet
+(
+	"circleMenuDialogSet",
+	EV_SCRIPTONLY,
+	"issS",
+	"optionnumber optiontext threadname imageORshader",
+	"Adds a dialog option for player to circle menu"
+);
+//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+Event EV_Player_circleMenuDialogClear
+(
+	"circleMenuDialogClear",
+	EV_SCRIPTONLY,
+	"",
+	"",
+	"Clears all circle menu dialog options from menu"
+);
+//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+Event EV_Player_circleMenuSet
+(
+	"circleMenuSet",
+	EV_SCRIPTONLY,
+	"issSI",
+	"optionnumber optiontext threadOrCommandName imageORshader isThread",
+	"Adds a dialog option for player to circle menu"
+);
+//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+Event EV_Player_circleMenuClear
+(
+	"circleMenuClear",
+	EV_SCRIPTONLY,
+	"F",
+	"float-dialognumber",
+	"Clears a dialog option if a number is given. otherwise it clears all options for player circle menu"
+);
+//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+Event EV_Player_getLanguage
+(
+	"getLanguage",
+	EV_SCRIPTONLY,
+	"@s",
+	"language-string",
+	"Gets language string from player."
+);
+//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+Event EV_Player_setCamera
+(
+	"setCamera",
+	EV_SCRIPTONLY,
+	"eF",
+	"camera switchtime",
+	"Sets view of this player to this camera"
+);
+//hzm gameupdate chrissstrahl [b611] - widgetcommand
+Event EV_Player_WidgetCommand
+(
+	"widgetCommamnd",
+	EV_SCRIPTONLY,
+	"ssS",
+	"string-widgetname string-command string-parameter",
+	"Allowes to set widget text using SPACE and NEWLINE in text"
+); 
+//hzm gameupdate chrissstrahl - get player name
+Event EV_Player_getName
+(
+	"getName",
+	EV_SCRIPTONLY,
+	"@sS",
+	"retunedString string-replace-space-with",
+	"Returns multiplayer name of given player-entity"
+);
+//hzm gameupdate chrissstrahl - get player name
+Event EV_Player_IsSpectator
+(
+	"isSpectator",
+	EV_SCRIPTONLY,
+	"@f",
+	"float-bool",
+	"Returns if player is spectator or not"
+);
+//hzm gameupdate chrissstrahl - gets score
+Event EV_Player_getScore
+(
+	"getScore",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns points/score of the player entity"
+);
+//hzm gameupdate chrissstrahl - gets deaths
+Event EV_Player_getDeaths
+(
+	"getDeaths",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns number of deaths of the player entity"
+);
+//hzm gameupdate chrissstrahl - get player kills
+Event EV_Player_getKills
+(
+	"getKills",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns number of kills by the player entity"
+);
+//hzm gameupdate chrissstrahl - adds to player score
+Event EV_Player_addScore
+(
+	"addScore",
+	EV_SCRIPTONLY,
+	"f",
+	"integer",
+	"Adds given ammount of score to player"
+);
+//hzm gameupdate chrissstrahl - get time player was last injured
+Event EV_Player_getLastDamaged
+(
+	"getLastDamaged",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Float",
+	"Returns time when player was last time hit"
+);
+//hzm gameupdate chrissstrahl - get name/color of players team
+Event EV_Player_getTeamName
+(
+	"getTeamName",
+	EV_SCRIPTONLY,
+	"@s",
+	"return-String",
+	"Returns team color/name of player"
+);
+//hzm gameupdate chrissstrahl - get score of players team
+Event EV_Player_getTeamScore
+(
+	"getTeamScore",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns team score of player"
+);
+//hzm gameupdate chrissstrahl - get coop version of player
+Event EV_Player_getCoopVersion
+(
+	"getCoopVersion",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns if player has hzm coop mod installed"
+);
 
 /*
 ==============================================================================
@@ -1630,11 +1783,39 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 
 
-	//HaZardModding Coop Mod
-	//HaZardModding Coop Mod
-	//HaZardModding Coop Mod
-	//[b611] chrissstrahl - starts circlemenu on player
+	//hzm gameupdate chrissstrahl [b611] circlemenu
+	{ &EV_Player_getLanguage,					&Player::getLanguageEvent },
+	//hzm gameupdate chrissstrahl [b611] circlemenu
 	{ &EV_Player_circleMenu,					&Player::circleMenuEvent },
+	{ &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent },
+	{ &EV_Player_circleMenuDialogClear,			&Player::circleMenuDialogClearEvent },
+	{ &EV_Player_circleMenuSet,					&Player::circleMenuSetEvent },
+	{ &EV_Player_circleMenuClear,				&Player::circleMenuClearEvent },
+	//hzm gameupdate daggolin - new commands
+	{ &EV_Player_GetScriptVariablesCommand ,	&Player::getScriptVariablesCommand } ,
+	//hzm gameupdate chrissstrahl - sets specific camera on player
+	{ &EV_Player_setCamera ,					&Player::setCameraEvent } ,
+	//hzm gameupdate chrissstrahl - add new commands for script use
+	{ &EV_Player_setKillThread ,				&Player::setKillThread },
+	//hzm gameupdate chrissstrahl - add new commands for script use
+	{ &EV_Player_getName ,						&Player::getNameEvent },
+	//hzm gameupdate chrissstrahl - add new commands for script use
+	{ &EV_Player_IsSpectator ,					&Player::isSpectator },
+	//hzm gameupdate chrissstrahl - add new commands for script use
+	{ &EV_Player_WidgetCommand ,				&Player::widgetCommandEvent },
+	//hzm gameupdate chrissstrahl - add new commands for script use
+	{ &EV_Player_getScore,						&Player::getScore },
+	{ &EV_Player_addScore,						&Player::addScore },
+	{ &EV_Player_getDeaths,						&Player::getDeaths },
+	{ &EV_Player_getKills,						&Player::getKills },
+	{ &EV_Player_getLastDamaged,				&Player::getLastDamaged },
+	{ &EV_Player_getTeamName,					&Player::getTeamName },
+	{ &EV_Player_getTeamScore,					&Player::getTeamScore },
+	{ &EV_Player_getCoopVersion,				&Player::getCoopVersion },
+
+	//HaZardModding Coop Mod
+	//HaZardModding Coop Mod
+	//HaZardModding Coop Mod
 	//[b611] chrissstrahl - checks if player is using the use button
 	{ &EV_Player_checkUse,						&Player::checkUsePressing },
 	//[b611] chrissstrahl - checks if player is in third person
@@ -1645,14 +1826,10 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b611] chrissstrahl - runs thread from player entity
 	{ &EV_Player_RunThread,						&Player::RunThread },
 	//[b611] chrissstrahl - get player viewangle
-	{ &EV_Player_GetPlayerViewangle ,			&Player::getPlayerViewangle } ,
+	{ &EV_Player_GetViewangles ,				&Player::getViewanglesEvent } ,
 	//[b607] chrissstrahl - return targeted entity of player
 	{ &EV_Player_GetTargetedEntity ,			&Player::getTargetedEntity },
-
-	//hzm gameupdate daggolin - new commands
-	{ &EV_Player_GetScriptVariablesCommand ,	&Player::getScriptVariablesCommand } ,
-	//hzm gameupdate chrissstrahl - add new commands for script use
-	{ &EV_Player_setKillThread ,				&Player::setKillThread } ,
+	
 	//HaZardModding Coop Mod END
 	//HaZardModding Coop Mod END
 	//HaZardModding Coop Mod END
@@ -1660,14 +1837,330 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ NULL , NULL }
 };
 
-//[b611] chrissstrahl - checks if player is pressing fire button
+void Player::getScore(Event* ev)
+{
+	ev->ReturnFloat(multiplayerManager.getPoints(this));
+}
+
+void Player::addScore(Event* ev)
+{
+	int iAdd = ev->GetInteger(1);
+
+	multiplayerManager.addPoints(entnum, iAdd);
+	str s;
+	s = multiplayerManager._playerData[entnum]._name;
+	gi.Printf("Info: Level-Script adding Points(%d) to Player[%d]: %s\n", iAdd, entnum, s.c_str());
+}
+
+void Player::getDeaths(Event* ev)
+{
+	ev->ReturnFloat(multiplayerManager.getDeaths(this));
+}
+void Player::getKills(Event* ev)
+{
+	ev->ReturnFloat(multiplayerManager.getKills(this));
+}
+void Player::getLastDamaged(Event* ev)
+{
+	ev->ReturnFloat(getLastDamageTime());
+}
+void Player::getTeamName(Event* ev)
+{
+	Team* team;
+	team = multiplayerManager.getPlayersTeam(this);
+	if (team == NULL) {
+		ev->ReturnString("None");
+		return;
+	}
+	ev->ReturnString(team->getName());
+}
+void Player::getTeamScore(Event* ev)
+{
+	Team* team;
+	team = multiplayerManager.getPlayersTeam(this);
+	if (team == NULL) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+	ev->ReturnFloat(multiplayerManager.getTeamPoints(this));
+}
+void Player::getCoopVersion(Event* ev)
+{
+	//value is -1 while the mod is detecting, make sure we only return bool
+	int i = coopPlayer.installedVersion;
+	if (i < 0) {
+		i = 0;
+	}
+	ev->ReturnFloat((float)i);
+}
+
+void Player::isSpectator(Event* ev)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+	ev->ReturnFloat((int)multiplayerManager.isPlayerSpectator(this));
+}
+
+//hzm gameupdate chrissstrahl - get player name
+void Player::getNameEvent(Event* ev)
+{
+	//[b609] chrissstrahl - return also player name in singleplayer instead of crashing
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		cvar_t* cvar = gi.cvar_get("name");
+		ev->ReturnString(cvar ? cvar->string : "");
+		return;
+	}
+
+	str s;
+	s = multiplayerManager._playerData[entnum]._name;
+
+	//[b609] chrissstrahl - updated to allow replacing of SPACE
+	// orientate on func SetCanBeFinishedBy for a neat solution with multiple arguments
+	str sReplace = "_";
+	if (ev->NumArgs() > 0) {
+		sReplace = ev->GetString(1);
+		str sPlayername = s;
+		int		i;
+		s = "";
+
+		for (i = 0; i < sPlayername.length(); i++) {
+			if (sPlayername[i] == ' ') {
+				s += sReplace;
+			}
+			else {
+				s += sPlayername[i];
+			}
+		}
+	}
+	ev->ReturnString(s.c_str());
+}
+
+//[b611] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
+//widgetname,commandparameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter
+void Player::widgetCommandEvent(Event* ev)
+{
+	//make sure we have at least widgetname and a commandparameter
+	if (ev->NumArgs() < 2) {
+		return;
+	}
+
+	str sData;
+	str sParameters = ev->GetString(1);	//widgetname
+	sParameters += " "; //spacer
+	sParameters += ev->GetString(2);	//widgetcommandparameter
+
+	if (ev->NumArgs() > 2) {
+		sParameters += " "; //spacer
+		str sTemp = ev->GetString(3);
+
+		//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
+		if (!Q_stricmp(sParameters.c_str(), "labeltext")) {
+			int i;
+			for (i = 0; i < strlen(sTemp); i++) {
+				if (sTemp[i] == '\n' || sTemp[i] == '#')
+					sTemp[i] = '~';
+				if (sTemp[i] == ' ')
+					sTemp[i] = '^';
+			}
+		}
+
+		sParameters += sTemp;
+	}
+	sData += "stufftext \"globalwidgetcommand ";
+	sData += sParameters;
+	sData += "\"\n";
+	gi.SendServerCommand(edict - g_entities, sData.c_str());
+}
+
+//hzm gameupdate chrissstrahl [b611]  - sets specific camera on player
+void Player::setCameraEvent(Event* ev)
+{
+	Entity* camera;
+	float switchTime = 0;
+
+	camera = ev->GetEntity(1, true);
+	if (ev->NumArgs() > 1) {
+		switchTime = ev->GetFloat(2);
+	}
+
+	//reset camera
+	if (!camera){
+		SetCamera(NULL, switchTime);
+		//clear current camera so it can be restored on savegame
+		if (g_gametype->integer == GT_SINGLE_PLAYER) {
+			game.cinematicCurrentCam = NULL;
+		}
+		return;
+	}
+
+	if (!camera->isSubclassOf(Camera)) {
+		gi.Printf(va("setCamera::Entity $%s is of class %s needs to be Camera\n", camera->targetname.c_str(), camera->getClassname()));
+		return;
+	}
+	
+	//set current camera so it can be restored on savegame
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		game.cinematicCurrentCam = camera;
+	}
+	SetCamera((Camera*)camera, switchTime);
+}
+
+//hzm gameupdate chrissstrahl [b611]  - returns player language string
+void Player::getLanguageEvent(Event* ev)
+{
+	ev->ReturnString( this->getLanguage() );
+}
+
+//hzm gameupdate chrissstrahl [b611]  - returns player language string
+str Player::getLanguage()
+{
+	return language;
+}
+
+//hzm gameupdate chrissstrahl [b611]  - sets player language string
+void Player::setLanguage(str sLang)
+{
+	if (sLang.length() < 1 || sLang.length() > 3) {
+		language = "Eng";
+		gi.Printf(va("setLanguage(%s) - Bad string size for client %s\n",sLang.c_str(),entnum));
+		return;
+	}
+	if (sLang != "Eng" && sLang != "Deu") {
+		language = "Eng";
+		gi.Printf(va("setLanguage(%s) - Unknown Lagugae for client %s\n", sLang.c_str(), entnum));
+		return;
+	}
+	if (sLang != "Deu") {
+		language = "Eng";
+		return;
+	}
+	language = sLang;
+}
+
+//hzm gameupdate chrissstrahl [b611]  - starts circle menu
 void Player::circleMenuEvent(Event* ev)
 {
-	if (health <= 0) { return; }
-	if (multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this,SPECTATOR_TYPE_ANY)) { return; }
+	if (health <= 0 || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this,SPECTATOR_TYPE_ANY)) { return; }
 
 	int iMenuType = ev->GetInteger(1);
 	circleMenu(iMenuType);
+}
+
+//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+void Player::circleMenuDialogSetEvent(Event* ev)
+{
+	int iOption		= ev->GetInteger(1);
+	str sText		= ev->GetString(2);
+	str sThread		= ev->GetString(3);
+	str sImage		= "";
+	if (ev->NumArgs() > 3) {
+		sImage = ev->GetString(4);
+	}
+	circleMenuDialogSet(iOption,sText,sThread,sImage);
+}
+
+//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+void Player::circleMenuDialogSet(int iOption, str sText,str sThread,str sImage)
+{
+	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONSDIALOG) {
+		gi.Printf(va("circleMenuDialogSet: Given Option %i is out of Range\n"));
+		return;
+	}
+	upgCircleMenu.optionDialogThread[iOption] = sThread;
+	upgCircleMenu.optionDialogText[iOption] = sText;
+	upgCircleMenu.optionDialogIcon[iOption] = sImage;
+//SEND VIA WIDGETCOMMAND ?
+//SEND VIA WIDGETCOMMAND ?
+//SEND VIA WIDGETCOMMAND ?
+//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
+//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
+//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
+}
+
+//hzm gameupdate chrissstrahl [b611]  - clears dialog options from circle menu
+void Player::circleMenuDialogClearEvent(Event* ev)
+{
+	circleMenuDialogClear();
+}
+
+//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu for player
+void Player::circleMenuDialogClear()
+{
+	int i;
+	for (int i = 0; i < CIRCLEMENU_MAX_OPTIONSDIALOG;i++) {
+		upgCircleMenu.optionDialogThread[i] = "";
+		upgCircleMenu.optionDialogText[i] = "";
+		upgCircleMenu.optionDialogIcon[i] = "";
+		circleMenuDialogSet(i,"","","");
+	}
+}
+
+//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu for player
+void Player::circleMenuSetEvent(Event* ev)
+{
+	int iOption		= ev->GetInteger(1);
+	str sText		= ev->GetString(2);
+	str sThread		= ev->GetString(3);
+	str sImage		= "";
+	bool bIsThread = false;
+	if (ev->NumArgs() > 3) {
+		sImage = ev->GetString(4);
+	}
+	if (ev->NumArgs() > 4) {
+		bIsThread = (bool)(int)ev->GetInteger(5);
+	}
+	circleMenuSet(iOption, sText, sThread, sImage, bIsThread);
+}
+
+//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread)
+{
+	//correct offset
+	iOption = (iOption - 1);
+
+	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONS) {
+		gi.Printf(va("circleMenuSet: Given Option %i is out of Range\n", iOption));
+		return;
+	}
+
+	upgCircleMenu.optionThreadOrCommand[iOption] = sThread;
+	upgCircleMenu.optionText[iOption] = sText;
+	upgCircleMenu.optionIcon[iOption] = sImage;
+	upgCircleMenu.optionIsScript[iOption] = bThread;
+
+	str sWidgetName = circleMenuGetWidgetName(iOption);
+
+	//send commands to menu
+	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
+	DelayedServerCommand(entnum, va("globalwidgetcommand %s label %s", sWidgetName.c_str(), sText.c_str()));
+	
+
+	//SEND VIA WIDGETCOMMAND ?
+	//SEND VIA WIDGETCOMMAND ?
+	//SEND VIA WIDGETCOMMAND ?
+	//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
+	//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
+	//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
+}
+
+//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+void Player::circleMenuClearEvent(Event* ev)
+{
+	circleMenuClear();
+}
+
+//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+void Player::circleMenuClear()
+{
+	int i;
+	for (int i = 0; i < CIRCLEMENU_MAX_OPTIONS; i++) {
+		upgCircleMenu.optionThreadOrCommand[i] = "";
+		upgCircleMenu.optionText[i] = "";
+		upgCircleMenu.optionIcon[i] = "";
+		upgCircleMenu.optionIsScript[i] = false;
+	}
 }
 
 //[b611] chrissstrahl - checks if player is pressing fire button
@@ -1711,7 +2204,7 @@ void Player::RunThread(const str &thread_name)
 }
 
 //[b611] chrissstrahl - get player viewangle
-void Player::getPlayerViewangle( Event* ev)
+void Player::getViewanglesEvent( Event* ev)
 {
 	Vector vAngle = Vector(0,0,0);
 	GetPlayerView(NULL, &vAngle);
@@ -5912,7 +6405,7 @@ void Player::ClientThink( Event *ev )
 	client->cmd_angles[2] = SHORT2ANGLE(current_ucmd->angles[2]);
 
 	//[b611] chrissstrahl - check if circle menu is active, if so react
-	this->circleMenuThink();
+	circleMenuThink();
 	//hzm coop mod chrissstrahl - handle coop specific stuff in here
 	coop_playerThink(this);
 

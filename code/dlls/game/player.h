@@ -91,7 +91,7 @@ enum painDirection_t
    PAIN_REAR
    };
 
-typedef enum
+typedef enum TargetTypes //[b611] chrissstrahl - testing if this works
 {
 	NONE,
 	FRIEND, 
@@ -183,29 +183,77 @@ inline void WeaponSetItem::Archive( Archiver &arc )
 //--------------------------------------------------------------
 class Player : public Sentient
 	{
-	//HaZardModding Coop Mod Added and Modified Stuff
-	//HaZardModding Coop Mod Added and Modified Stuff
-	//HaZardModding Coop Mod Added and Modified Stuff
 	public:
-		//hzm coop mod chrissstrahl - we want to access them anywhere
-		//modified - they used to be private
+		//hzm gamefix daggolin - new function to handle enviromental influences (like drowning)
+		void				gamefix_WorldEffects(void);
+		//hzm gameupdate chrissstrahl - we want to access them anywhere (they used to be private)
 		int					_objectiveNameIndex;
 		unsigned int		_objectiveStates;
 		unsigned int		_informationStates;
 		EntityPtr			_targetedEntity;
 		void				disableUseWeapon(bool bDiable);
-
-		//hzm coop mod chrissstrahl - used to set a individual killthread for each player
+		//hzm gameupdate chrissstrahl - used to set a individual killthread for each player
 		str					kill_thread;
-
+	private:
+		//hzm gameupdate chrissstrahl - used to manage player his game language
+		str					language;
+	public:
+		//hzm gameupdate chrissstrahl - 
+		void				getScore(Event* ev);
+		void				addScore(Event* ev);
+		void				getDeaths(Event* ev);
+		void				getKills(Event* ev);
+		void				getLastDamaged(Event* ev);
+		void				getTeamName(Event* ev);
+		void				getTeamScore(Event* ev);
+		void				getCoopVersion(Event* ev);
+		//hzm gameupdate chrissstrahl - player language related
+		str					getLanguage(void);
+		void				setLanguage(str sLang);
+		void				getLanguageEvent(Event *ev);
+		//hzm gameupdate chrissstrahl - check if player is spectator
+		void				isSpectator(Event* ev);
+		//hzm gameupdate chrissstrahl - get player name
+		void				getNameEvent(Event* ev);
+		//hzm gameupdate chrissstrhal [b611] - allow to set widgettext with SPACE and NEWLINE
+		void				widgetCommandEvent(Event* ev);
+		//hzm gameupdate chrissstrahl - sets specific camera for this player
+		void				setCameraEvent(Event *ev);
 		//hzm gameupdate chrissstrahl - make sure we handle the branchdialog stuff right
 		bool				branchdialog_active;
-
-		//[b607] chrissstrahl - added for message of the day ststus check
-		bool				messageOfTheDaySend;
-
-		//[b611] chrissstrahl - switch widgets - send in one burst to player
+		//hzm gameupdate chrissstrahl [b611] - switch widgets - send in one burst to player
 		void				switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
+		//hzm gameupdate chrissstrahl - add new function returning the last time the player was hurt
+		float				getLastDamageTime(void);
+		//hzm gameupdate chrissstrahl - add new scripting functions
+		void				setKillThread(Event* ev);
+		//hzm gameupdate daggolin - new commands
+		void				getScriptVariablesCommand(Event* ev);
+		//hzm gameupdate chrissstrahl - added for message of the day ststus check
+		bool				messageOfTheDaySend;
+		//hzm gameupdate chrissstrahl [b611] - circlemenu stuff
+		UpgCircleMenu		upgCircleMenu;
+		friend class		UpgCircleMenu;
+		void				circleMenu(int iType);
+		bool				circleMenuIsActive(void);
+	private:
+		str					circleMenuGetWidgetName(int iDirection);
+		int					getSegmentNumForAngle(float fAngle);
+		void				circleMenuThink(void);
+		void				circleMenuSelect(int iSelection);
+		void				circleMenuSet(int iOption, str sText, str sThread, str sImage,bool bIsThread);
+		void				circleMenuClear();
+		void				circleMenuDialogSet(int iOption, str sText, str sThread, str sImage);
+		void				circleMenuDialogClear();
+		void				circleMenuSetEvent(Event* ev);
+		void				circleMenuClearEvent(Event* ev);
+		void				circleMenuDialogSetEvent(Event* ev);
+		void				circleMenuDialogClearEvent(Event* ev);
+
+		//HaZardModding Coop Mod Added and Modified Stuff
+		//HaZardModding Coop Mod Added and Modified Stuff
+		//HaZardModding Coop Mod Added and Modified Stuff
+	public:
 		//[b611] chrissstrahl - return if player is pressing use or not
 		void				checkUsePressing(Event* ev);
 		//[b611] chrissstrahl - checks if player is pressing fire button
@@ -221,43 +269,19 @@ class Player : public Sentient
 		void				RunThread(Event* ev);
 		void				RunThread(const str& thread_name);
 		//[b611] chrissstrahl - get player viewangle
-		void				getPlayerViewangle(Event* ev);
+		void				getViewanglesEvent(Event* ev);
 		//[b607] chrissstrahl - return targeted entity of player
 		void				getTargetedEntity(Event* ev);
 		//[b607] chrissstrahl - just fucking give me the data, i don't care for your conditions
 		qboolean			checkthirdperson();
-		//hzm gamefix daggolin - new function to handle enviromental influences (like drowning)
-		void				gamefix_WorldEffects(void);
-		//hzm gameupdate chrissstrahl - add new function returning the last time the player was hurt
-		float				getLastDamageTime(void);
-		//hzm gameupdate chrissstrahl - add new scripting functions
-		void				setKillThread(Event* ev);
-		//hzm gameupdate daggolin - new commands
-		void				getScriptVariablesCommand(Event* ev);
-	
-	public:
+
 		//[b611] chrissstrahl - containerize
 		CoopPlayer			coopPlayer;
-		UpgCircleMenu		upgCircleMenu;
-
 		friend class		CoopPlayer;
-		friend class		UpgCircleMenu;
-
-	
-		//[b611] chrissstrahl - handle crircle menu
-		void				circleMenu(int iType);
-		bool				circleMenuIsActive(void);
 	private:
-		int					circleMenuDetermineDirection(void);
-		int					circleMenuCalculateDirection(int &up, int &down, int &left, int &right);
-		int					circleMenuCalculateDirectionFinal(void);
-		str					circleMenuGetWidgetName(int iDirection);
-		int					circleMenuGetOption(int iDirection);
-		void				circleMenuThink(void);
-
-	//HaZardModding Coop Mod END
-	//HaZardModding Coop Mod END
-	//HaZardModding Coop Mod END
+		//HaZardModding Coop Mod END
+		//HaZardModding Coop Mod END
+		//HaZardModding Coop Mod END
 
 
 
@@ -1718,6 +1742,10 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveBool( &_cameraCutThisFrame );
 
 
+	//hzm gameupdate chrissstrahl [b611] - store player langauge
+	arc.ArchiveString(&language);
+
+
 	//[b611] chrissstrahl - fix variables not being properly saved and loaded
 	// This is either a loadgame or a restart
 	if (LoadingSavegame) {}
@@ -1784,7 +1812,6 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.className);			//Not quite Clean implemented, so also accsessed in singleplayer
-	arc.ArchiveString(&coopPlayer.language);
 	arc.ArchiveString(&coopPlayer.coopId);
 	arc.ArchiveString(&coopPlayer.coopStatus);
 	}
