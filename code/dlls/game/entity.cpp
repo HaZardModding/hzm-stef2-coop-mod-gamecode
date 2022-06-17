@@ -1790,6 +1790,33 @@ Event EV_HasItem
 	"float-true-false item-name",
 	"Checks if player or actor has named item"
 );
+//hzm gameupdate chrissstrahl [b611] - check if actor/player has item
+Event EV_GetSubclassNameEvent
+(
+	"getSubclassName",
+	EV_SCRIPTONLY,
+	"@s",
+	"retunedString",
+	"Returns class name of entity"
+);
+//hzm gameupdate chrissstrahl - check if entity is inside other entity
+Event EV_Entity_IsEntityInsideOfEntity
+(
+	"isEntityInsideOfEntity",
+	EV_SCRIPTONLY,
+	"@fe",
+	"returnInteger entity",
+	"Returns if given entity boundingboxex are touching/inside-of each other"
+);
+//hzm gameupdate chrissstrahl [b611] - marks entity to become solid asap
+Event EV_Entity_MakeSolidAsap
+(
+	"makeSolidAsap",
+	EV_SCRIPTONLY,
+	"",
+	"",
+	"Makes actors and players solid as soon as saftly possible"
+);
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
@@ -1797,8 +1824,14 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 		{ &EV_BoosterNearbyPlayer ,			&Entity::BoosterNearbyPlayer } ,
 		//hzm coop mod chrissstrahl - new event to set a idle animation, used for the new coop triggers
 		{ &EV_Idle ,						&Entity::SetIdleAnimation } ,
-		//hzm gameupdate chrissstrahl - new event to set a idle animation, used for the new coop triggers
+		//hzm gameupdate chrissstrahl - cheecks if player/actor has named item
 		{ &EV_HasItem,						&Entity::HasItemEvent },
+		//hzm gameupdate chrissstrahl - returns calssname of entity
+		{ &EV_GetSubclassNameEvent,			&Entity::GetSubclassName },
+		//hzm gameupdate chrissstrahl - checks if entity is inside of entity
+		{ &EV_Entity_IsEntityInsideOfEntity,&Entity::IsEntityInsideOfEntity },
+		//hzm gameupdate chrissstrahl -	sets vars to make entity solid as soon as poccible
+		{ &EV_Entity_MakeSolidAsap,			&Entity::MakeSolidAsap },
 		//hzm gameupdate chrissstrahl - new event to set a idle animation, used for the new coop triggers
 		{ &EV_SetUserVar5,					&Entity::SetUserVar5 },
 		{ &EV_SetUserVar6,					&Entity::SetUserVar6 } ,
@@ -2005,14 +2038,73 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 
 //--------------------------------------------------------------
 //
-// Name:			SetIdleAnimation
+// Name:			isEntityInsideOfEntity
 // Class:			Entity
 //
-// Description:		Sets the idle animation on a entity with model
+// Description:		Checks if entity is inside another
+//
+// Parameters:		Event *ev
+//
+// Returns:			float true/false
+//
+//--------------------------------------------------------------
+void Entity::IsEntityInsideOfEntity(Event* ev)
+{
+	Entity* entity1 = ev->GetEntity(1);
+
+	if (!entity1) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+	ev->ReturnFloat((float)(int)coop_checkIsEntityInBoundingBox(this,entity1));
+}
+
+//--------------------------------------------------------------
+//
+// Name:			MakeSolidAsap
+// Class:			Entity
+//
+// Description:		Marks entity to become solid asap
 //
 // Parameters:		Event *ev
 //
 // Returns:			None
+//
+//--------------------------------------------------------------
+void Entity::MakeSolidAsap(Event* ev)
+{
+	_makeSolidASAP = true;
+	_makeSolidASAPTime = 0.0f;
+	//entity->_makeSolidASAPSupposedToBeSolid = true;
+}
+
+//--------------------------------------------------------------
+//
+// Name:			GetSubclassName
+// Class:			Entity
+//
+// Description:		Returns Classname
+//
+// Parameters:		Event *ev
+//
+// Returns:			string classname
+//
+//--------------------------------------------------------------
+void Entity::GetSubclassName(Event* ev)
+{
+	ev->ReturnString(getClassname());
+}
+
+//--------------------------------------------------------------
+//
+// Name:			HasItemEvent
+// Class:			Entity
+//
+// Description:		Checks if Player/Actor has named item
+//
+// Parameters:		Event *ev
+//
+// Returns:			float true/false
 //
 //--------------------------------------------------------------
 void Entity::HasItemEvent(Event* ev)
