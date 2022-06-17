@@ -494,11 +494,8 @@ $(B)/game/weapon.o : $(GDIR)/weapon.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/WeaponDualWield.o : $(GDIR)/WeaponDualWield.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/weaputils.o : $(GDIR)/weaputils.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/worldspawn.o : $(GDIR)/worldspawn.cpp; $(DO_GAME_SHLIB_CC)
-# HaZardModding Upgrades
-$(B)/game/upgCircleMenu.o : $(GDIR)/upgCircleMenu.cpp; $(DO_GAME_SHLIB_CC)
-# HaZardModding Gamefixes
-# HaZardModding Coop Mod
 $(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/upgCircleMenu.o : $(GDIR)/upgCircleMenu.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopArmory.o : $(GDIR)/coopArmory.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopCheck.o : $(GDIR)/coopCheck.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopClass.o : $(GDIR)/coopClass.cpp; $(DO_GAME_SHLIB_CC)
