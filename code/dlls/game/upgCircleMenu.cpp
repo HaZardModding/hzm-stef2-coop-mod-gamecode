@@ -85,15 +85,10 @@ void Player::circleMenu(int iType)
 		upgCircleMenu.lastViewangle = upgCircleMenu.viewAngle;
 
 		upgCircleMenu.active = iType;
-		if (upgCircleMenu.active == 1) {
-			gi.SendServerCommand(entnum, "stufftext \"ui_addhud coop_circle\"\n");
-		}
-		else if (upgCircleMenu.active == 2) {
-			gi.SendServerCommand(entnum, "stufftext \"ui_addhud coop_circle\"\n");
-		}
+		circleMenuHud(true);
 	}
 	else {
-		gi.SendServerCommand(entnum, "stufftext \"ui_removehud coop_circle\"\n");
+		circleMenuHud(false);
 		upgCircleMenu.active = 0;
 	}
 }
@@ -114,6 +109,12 @@ str Player::circleMenuGetWidgetName(int iSegment)
 {
 	str currentWidget = "coop_circle";
 	int iSegments = upgCircleMenu.numOfSegments;
+
+	//if circlemenu is of type dialog
+	if (upgCircleMenu.active == 2) {
+		currentWidget = "coop_circleD";
+	}
+
 	switch (iSegments)
 	{
 	case 4: //0=up,1=right,2=down,3=left
@@ -135,6 +136,7 @@ str Player::circleMenuGetWidgetName(int iSegment)
 		}
 		break;
 	case 8: //0=Top,1=TopRight 2=right,3=BottomRight, 4=Bottom,5=BottomLeft, 6=Left,7=TopLeft
+		currentWidget = "coop_circle8";
 		switch (iSegment) {
 		case 0:
 			currentWidget += "T";
@@ -235,8 +237,19 @@ void Player::circleMenuThink()
 
 	//detect which movedirection the player did move towards
 	//on menu show exec reset
-	if (upgCircleMenu.active <= 0 || upgCircleMenu.thinkTime > level.time) {
+	if (upgCircleMenu.active <= 0 || upgCircleMenu.thinkTime > level.time || health <= 0) {
 		return;
+	}
+	//make sure it can not be abused by spec
+	if (multiplayerManager.inMultiplayer() && (!multiplayerManager.isFightingAllowed() || multiplayerManager.isPlayerSpectator(this)))
+	{
+		return;
+	}
+
+	//player is clicking fire
+	if (last_ucmd.buttons & BUTTON_ATTACKLEFT) {
+		circleMenuSelect(upgCircleMenu.lastSegment);
+		upgCircleMenu.active = 0;
 	}
 
 	//detect and record the mouse move directions
@@ -290,7 +303,6 @@ void Player::circleMenuThink()
 
 	if (fAngle != 0) {
 		sPrint = va("%s - '%d'\n",fSegmentNum);
-		//print(": "+sPrint+" A:"+fAngle+"length:"+vectorlength(VDiff)+"\n");
 //gi.Printf(va(": %s\n", sPrint));
 	}
 
@@ -332,5 +344,40 @@ void Player::circleMenuSelect(int iOption)
 	else {
 		DelayedServerCommand(entnum,va("%s", sThread.c_str()));
 	}
+	circleMenuHud(false);
 }
 
+//[b611] chrissstrahl
+//================================================================
+// Name:        circleMenuHud
+// Class:       -
+//              
+// Description:	Hides/Shows related circle menu
+//              
+// Parameters:  Bool Show
+//              
+// Returns:     -
+//              
+//================================================================
+void Player::circleMenuHud(bool show)
+{
+	str sMenu;
+	str sCommand = "ui_removehud";
+
+	if (show == true) { sCommand = "ui_addhud"; }
+
+	switch (upgCircleMenu.active)
+	{
+	case 3:
+		sMenu = "coop_circle8";
+		break;
+	case 2:
+		sMenu = "coop_circleD";
+		break;
+	default:
+		sMenu = "coop_circle";
+		break;
+	}
+
+	gi.SendServerCommand(entnum, va("stufftext \"%s %s\"\n", sCommand.c_str(), sMenu.c_str()));
+}

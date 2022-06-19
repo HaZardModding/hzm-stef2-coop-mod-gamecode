@@ -245,11 +245,11 @@ class Player : public Sentient
 		void				circleMenuClear();
 		void				circleMenuDialogSet(int iOption, str sText, str sThread, str sImage);
 		void				circleMenuDialogClear();
+		void				circleMenuHud(bool show);
 		void				circleMenuSetEvent(Event* ev);
 		void				circleMenuClearEvent(Event* ev);
 		void				circleMenuDialogSetEvent(Event* ev);
 		void				circleMenuDialogClearEvent(Event* ev);
-
 		//HaZardModding Coop Mod Added and Modified Stuff
 		//HaZardModding Coop Mod Added and Modified Stuff
 		//HaZardModding Coop Mod Added and Modified Stuff
