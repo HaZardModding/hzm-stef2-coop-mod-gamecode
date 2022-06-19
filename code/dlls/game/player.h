@@ -91,13 +91,13 @@ enum painDirection_t
    PAIN_REAR
    };
 
-typedef enum TargetTypes //[b611] chrissstrahl - testing if this works
+typedef enum TargetTypes
 {
 	NONE,
 	FRIEND, 
 	ENEMY,
 	OJBECT
-} TargetTypes;
+} TargetTypes; //[b611] chrissstrahl - testing if this fixes error messages
 
 enum PlayerCameraModes
 {
