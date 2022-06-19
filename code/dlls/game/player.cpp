@@ -1784,8 +1784,6 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 
 	//hzm gameupdate chrissstrahl [b611] circlemenu
-	{ &EV_Player_getLanguage,					&Player::getLanguageEvent },
-	//hzm gameupdate chrissstrahl [b611] circlemenu
 	{ &EV_Player_circleMenu,					&Player::circleMenuEvent },
 	{ &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent },
 	{ &EV_Player_circleMenuDialogClear,			&Player::circleMenuDialogClearEvent },
@@ -1797,6 +1795,8 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_setCamera ,					&Player::setCameraEvent } ,
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_setKillThread ,				&Player::setKillThread },
+	//hzm gameupdate chrissstrahl - add new commands for script use
+	{ &EV_Player_getLanguage,					&Player::getLanguageEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getName ,						&Player::getNameEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use
@@ -2134,8 +2134,7 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 
 	//send commands to menu
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
-	DelayedServerCommand(entnum, va("globalwidgetcommand %s label %s", sWidgetName.c_str(), sText.c_str()));
-	
+	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s",sWidgetName.c_str(), sText.c_str()));
 
 	//SEND VIA WIDGETCOMMAND ?
 	//SEND VIA WIDGETCOMMAND ?
