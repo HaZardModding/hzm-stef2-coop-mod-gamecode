@@ -2068,15 +2068,21 @@ void Player::circleMenuDialogSet(int iOption, str sText,str sThread,str sImage)
 		gi.Printf(va("circleMenuDialogSet: Given Option %i is out of Range\n"));
 		return;
 	}
+	if (upgCircleMenu.active <= 0) {
+		gi.Printf(va("%s.circleMenuDialogSet() - Can only be used while menu active.\n", targetname.c_str()));
+	}
 	upgCircleMenu.optionDialogThread[iOption] = sThread;
 	upgCircleMenu.optionDialogText[iOption] = sText;
 	upgCircleMenu.optionDialogIcon[iOption] = sImage;
-//SEND VIA WIDGETCOMMAND ?
-//SEND VIA WIDGETCOMMAND ?
-//SEND VIA WIDGETCOMMAND ?
-//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
-//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
-//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
+
+	if (!sImage.length()) { sImage = "weapons/empty"; }
+	if (!sText.length()) { sText = "^"; }
+
+	str sWidgetName = circleMenuGetWidgetName(iOption);
+
+	//send commands to menu
+	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
+	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 }
 
 //hzm gameupdate chrissstrahl [b611]  - clears dialog options from circle menu
@@ -2088,11 +2094,12 @@ void Player::circleMenuDialogClearEvent(Event* ev)
 //hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu for player
 void Player::circleMenuDialogClear()
 {
+	if (upgCircleMenu.active <= 0) {
+		gi.Printf(va("%s.circleMenuDialogClear() - Can only be used while menu active.\n", targetname.c_str()));
+	}
+
 	int i;
 	for (int i = 0; i < CIRCLEMENU_MAX_OPTIONSDIALOG;i++) {
-		upgCircleMenu.optionDialogThread[i] = "";
-		upgCircleMenu.optionDialogText[i] = "";
-		upgCircleMenu.optionDialogIcon[i] = "";
 		circleMenuDialogSet(i,"","","");
 	}
 }
@@ -2124,6 +2131,12 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 		gi.Printf(va("circleMenuSet: Given Option %i is out of Range\n", iOption));
 		return;
 	}
+	if (upgCircleMenu.active <= 0) {
+		gi.Printf(va("%s.circleMenuSet() - Can only be used while menu active.\n", targetname.c_str()));
+	}
+
+	if (!sImage.length()) { sImage = "weapons/empty"; }
+	if (!sText.length()) { sText = "^"; }
 
 	upgCircleMenu.optionThreadOrCommand[iOption] = sThread;
 	upgCircleMenu.optionText[iOption] = sText;
@@ -2135,13 +2148,6 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 	//send commands to menu
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s",sWidgetName.c_str(), sText.c_str()));
-
-	//SEND VIA WIDGETCOMMAND ?
-	//SEND VIA WIDGETCOMMAND ?
-	//SEND VIA WIDGETCOMMAND ?
-	//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
-	//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
-	//NEEDS A LIST (ENUM) OF EACH WIDGETNAME AND ITS OPTION NUMMBER
 }
 
 //hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
@@ -2150,15 +2156,16 @@ void Player::circleMenuClearEvent(Event* ev)
 	circleMenuClear();
 }
 
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+//hzm gameupdate chrissstrahl [b611]  - clears dialog option from circle menu
 void Player::circleMenuClear()
 {
+	if (upgCircleMenu.active <= 0) {
+		gi.Printf(va("%s.circleMenuClear() - Can only be used while menu active.\n", targetname.c_str()));
+	}
+
 	int i;
 	for (int i = 0; i < CIRCLEMENU_MAX_OPTIONS; i++) {
-		upgCircleMenu.optionThreadOrCommand[i] = "";
-		upgCircleMenu.optionText[i] = "";
-		upgCircleMenu.optionIcon[i] = "";
-		upgCircleMenu.optionIsScript[i] = false;
+		circleMenuSet(i, "", "", "",false);
 	}
 }
 

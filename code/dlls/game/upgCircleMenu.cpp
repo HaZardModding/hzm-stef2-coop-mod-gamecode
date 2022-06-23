@@ -198,12 +198,6 @@ int Player::getSegmentNumForAngle(float fAngle)
 
 	for (iStep = iHighestSegmentNum; iStep >= 0; iStep--) {
 		//print("getSegmentNumForAngle: '"+fAngle+"'\n");
-		/*
-		if(fAngle != 0){
-			print("getSegmentNumForAngle: '"+fAngle+"'\n");
-			print("getSegmentNumForAngle: "+fCurrentMax+" vs "+(fCurrentMax - fSegmentDegreeSize)+"\n");
-		}
-		*/
 		if (fCurrentMax > fAngle && fAngle > (fCurrentMax - (fSegmentDegreeSize))) {
 			return iStep;
 		}
@@ -241,8 +235,7 @@ void Player::circleMenuThink()
 		return;
 	}
 	//make sure it can not be abused by spec
-	if (multiplayerManager.inMultiplayer() && (!multiplayerManager.isFightingAllowed() || multiplayerManager.isPlayerSpectator(this)))
-	{
+	if (multiplayerManager.inMultiplayer() && (!multiplayerManager.isFightingAllowed() || multiplayerManager.isPlayerSpectator(this))){
 		return;
 	}
 
@@ -293,22 +286,19 @@ void Player::circleMenuThink()
 		str sCmd;
 		G_SendCommandToPlayer(this->edict,va("globalwidgetcommand %s shadercolor 0 0 0 1", sWidgetName.c_str()));
 		G_SendCommandToPlayer(this->edict,va("globalwidgetcommand %s shadercolor 1 1 1 1", upgCircleMenu.lastWidget.c_str()));
-//gi.Printf(va("Reset: %s\n",upgCircleMenu.lastWidget));
 	}
 
-//gi.Printf(va("Reset: %s\n", upgCircleMenu.lastWidget));
+	//gi.Printf(va("Reset: %s\n", upgCircleMenu.lastWidget));
 	str sPrint = va("prev: %s curr: %s\n", upgCircleMenu.lastWidget.c_str(), sWidgetName.c_str());
-	//gi.Printf(va(": %s\n", sPrint));
 	upgCircleMenu.lastWidget = sWidgetName;
 
-	if (fAngle != 0) {
+	/*if (fAngle != 0) {
 		sPrint = va("%s - '%d'\n",fSegmentNum);
-//gi.Printf(va(": %s\n", sPrint));
+		gi.Printf(va(": %s\n", sPrint));
 	}
-
-	//gi.Printf(va("Angle: %d\n", fAngle));
+	gi.Printf(va("Angle: %d\n", fAngle));
 	gi.Printf(va("length: %f\n", vDifference.length()));
-
+	*/
 	upgCircleMenu.lastSegment = fSegmentNum;
 }
 
@@ -333,8 +323,6 @@ void Player::circleMenuSelect(int iOption)
 
 	bool bIsScript = upgCircleMenu.optionIsScript[iOption];
 	str sThread		= upgCircleMenu.optionThreadOrCommand[iOption];
-	//str sText		= upgCircleMenu.optionText[iOption];
-	//str sImage		= upgCircleMenu.optionIcon[iOption];
 
 	gi.Printf(va("circleMenuSelect: %i selected\n", (iOption + 1)));
 	
