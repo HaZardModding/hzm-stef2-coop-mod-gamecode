@@ -5872,6 +5872,9 @@ void Entity::AttachModelEvent
 			obj->bind_info->detach_at_death = 0;
 		}
 
+		//"models/item/mp_weapon-spawn.tik" - DEV NOTES, REMOVE
+		gi.Printf("AttachModelEvent, no bone, tried to bind\n");
+
 		obj->addOrigin(vOriginNew);
 		obj->bind(this);
 		return;
