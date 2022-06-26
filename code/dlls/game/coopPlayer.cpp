@@ -1748,21 +1748,58 @@ void coop_playerThink( Player *player )
 					event->AddString("location_valid");
 					player->coopPlayer.ePlacable->ProcessEvent(event);
 
-					if (player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
+					//wait after the placable is shown to player before the click counts at placing it
+					if (player->upgCircleMenu.thinkTime + (0.45) < level.time &&  player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
+						//perevent weapon firing
+						Event* StopFireEvent;
+						StopFireEvent = new Event(EV_Sentient_StopFire);
+						StopFireEvent->AddString("dualhand");
+						player->ProcessEvent(StopFireEvent);
+						
 						SpawnArgs      args;
 						Entity         *obj;
 						//args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
-						args.setArg("model","models/item/coop_ammoStation.tik");
+
+						bool classSpecificStation = false;
+						if("models/item/mp_weapon-spawn.tik" == player->coopPlayer.ePlacable->model) {
+							classSpecificStation = true;
+							if (player->coopPlayer.className == "HeavyWeapons" || g_gametype->integer == GT_SINGLE_PLAYER) { //Make it work in singleplayer for testing
+								args.setArg("model", "models/item/coop_ammoStation.tik");
+							}
+							else if (player->coopPlayer.className == "Medic") {
+								args.setArg("model", "models/item/coop_mediStation.tik");
+							}
+							else {
+								args.setArg("model", "models/item/coop_techStation.tik");
+							}
+						}else{
+							args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
+						}
+
+
+						
 						args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
 						args.setArg("setmovetype", ""+player->coopPlayer.ePlacable->getMoveType());
 						args.setArg("targetname", player->coopPlayer.ePlacable->targetname.c_str());
-						args.setArg("setsize", "\""+player->coopPlayer.ePlacable->mins+"\" \""+player->coopPlayer.ePlacable->maxs+"\"");						
 						args.setArg("notsolid","1");
 						//args.setArg("anim", "idle");
 						obj = args.Spawn();
 						obj->setOrigin(player->coopPlayer.ePlacable->origin);
 						obj->setAngles(player->coopPlayer.ePlacable->angles);
-						
+						obj->setSize(player->coopPlayer.ePlacable->mins, player->coopPlayer.ePlacable->maxs);
+
+						//handle class specific stations
+						if (classSpecificStation) {
+							//remove any previouse class specific placed objects
+							if (player->coopPlayer.eClassPlacable) {
+								Event* RemoveMe;
+								RemoveMe = new Event(EV_Remove);
+								player->coopPlayer.eClassPlacable->ProcessEvent(RemoveMe);
+							}
+							//remember the class specific placed object
+							player->coopPlayer.eClassPlacable = obj;
+						}
+
 						player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
 						player->coopPlayer.ePlacable = NULL;
 						player->_makeSolidASAP = true;
