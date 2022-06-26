@@ -1182,11 +1182,13 @@ qboolean G_coopItem(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//do not allow spawning if certain criteria are not meet
-	if ((player->getLastDamageTime() + 0.5f) > level.time &&
-		level.cinematic != qfalse &&
-		multiplayerManager.isPlayerSpectator(player) &&
+	if ((player->getLastDamageTime() + 0.5f) > level.time ||
+		level.cinematic != qfalse ||
+		multiplayerManager.isPlayerSpectator(player) ||
 		player->health <= 0)
 	{
+		player->hudPrint("coopitem - critaria for spawning are not meet\n");
+		gi.Printf("coopitem - critaria for spawning are not meet\n");
 		return qtrue;
 	}
 
@@ -1203,9 +1205,6 @@ qboolean G_coopItem(const gentity_t* ent)
 
 	SpawnArgs      args;
 	Entity* obj = NULL;
-	Event* attach1 = NULL;
-	Event* attach2 = NULL;
-	Event* attach3 = NULL;
 
 	//placable explosive/mine
 	if (!Q_stricmpn("mine", coopItem, 4)) {
@@ -1218,76 +1217,49 @@ qboolean G_coopItem(const gentity_t* ent)
 		bValid = true;
 		args.setArg("classname", "script_model");
 		args.setArg("model", "models/item/mp_weapon-spawn.tik");
-		args.setArg("setmovetype", "stationary");
+		//args.setArg("setmovetype", "stationary");
 		args.setArg("setsize", "\"-24 -24 0\" \"24 24 32\"");
 		args.setArg("targetname", "yyy");
-		args.setArg("notsolid", "1");
-		//args.setArg("statemap", "1212");
+		args.setArg("notsolid","1");
 
-		attach1 = new Event(EV_AttachModel);
-		attach1->AddString("item/ammo_large.tik");
-		attach1->AddString("none");
-		attach1->AddFloat(0.6f);
-		attach1->AddString("none");
-		attach1->AddInteger(0);
-		attach1->AddInteger(-1);
-		attach1->AddInteger(-0);
-		attach1->AddInteger(-1);
-		attach1->AddInteger(0);
-		attach1->AddVector(Vector(10, 10, 6));
-
-		attach2 = new Event(EV_AttachModel);
-		attach2->AddString("item/ammo_idryll_small.tik");
-		attach2->AddString("none");
-		attach2->AddFloat(0.6f);
-		attach2->AddString("none");
-		attach2->AddInteger(0);
-		attach2->AddInteger(-1);
-		attach2->AddInteger(-0);
-		attach2->AddInteger(-1);
-		attach2->AddInteger(0);
-		attach2->AddVector(Vector(-10, 10, 6));
-
-		attach3 = new Event(EV_AttachModel);
-		attach3->AddString("item/ammo_fed_small.tik");
-		attach3->AddString("none");
-		attach3->AddFloat(0.9f);
-		attach3->AddString("none");
-		attach3->AddInteger(0);
-		attach3->AddInteger(-1);
-		attach3->AddInteger(-0);
-		attach3->AddInteger(-1);
-		attach3->AddInteger(0);
-		attach3->AddVector(Vector(0, -10, 6));
+//add ghost, model which attaches, and see if players without mod see it:
+		//"models/item/mp_weapon-spawn.tik"
+		//"item/ammo_large.tik"
+		//"item/ammo_idryll_small.tik"
 	}
+	else {
+		player->hudPrint("coopitem - No Item-Type specified.\n");
+		gi.Printf("coopitem - No Item-Type specified.\n");
+		return qtrue;
+	}
+
 	//do not place 
 	if (!bValid) {
-		delete attach1;
-		delete attach2;
-		delete attach3;
 		if (obj != NULL) {
 			obj->PostEvent(EV_Remove, 0.0f);
 		}
+		player->hudPrint("coopitem - object not placed\n");
+		gi.Printf("coopitem - object not placed\n");
 		return qtrue;
 	}
 
 	//now spawn object
 	obj = args.Spawn();
 
-	//attach stuff if wanted
-	if (attach1 != NULL) {
-		obj->PostEvent(attach1, 0.1f);
-	}
-	if (attach2 != NULL) {
-		obj->PostEvent(attach2, 0.1f);
-	}
-	if (attach3 != NULL) {
-		obj->PostEvent(attach3, 0.1f);
-	}
-
 	//Place object
 	player->coopPlayer.ePlacable = obj;
 	player->coopPlayer.ePlacable->setOrigin(player->origin);
+
+	if (obj == NULL) {
+		player->hudPrint("coopitem - error\n");
+		gi.Printf("coopitem - error\n");
+	}
+	else {
+		player->hudPrint("coopitem - spawned\n");
+		gi.Printf("coopitem - spawned\n");
+	}
+
+
 	return qtrue;
 }
 
