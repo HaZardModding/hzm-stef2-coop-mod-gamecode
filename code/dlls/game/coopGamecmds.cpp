@@ -1217,9 +1217,7 @@ qboolean G_coopItem(const gentity_t* ent)
 		bValid = true;
 		args.setArg("classname", "script_model");
 		args.setArg("model", "models/item/mp_weapon-spawn.tik");
-		//args.setArg("setmovetype", "stationary");
-		args.setArg("setsize", "\"-24 -24 0\" \"24 24 32\"");
-		args.setArg("targetname", "yyy");
+		args.setArg("setmovetype", "stationary");
 		args.setArg("notsolid","1");
 
 //add ghost, model which attaches, and see if players without mod see it:
@@ -1249,17 +1247,12 @@ qboolean G_coopItem(const gentity_t* ent)
 	//Place object
 	player->coopPlayer.ePlacable = obj;
 	player->coopPlayer.ePlacable->setOrigin(player->origin);
+	player->coopPlayer.ePlacable->setSize(Vector(-24, -24, 0), Vector(24, 24, 48));
 
 	if (obj == NULL) {
 		player->hudPrint("coopitem - error\n");
 		gi.Printf("coopitem - error\n");
 	}
-	else {
-		player->hudPrint("coopitem - spawned\n");
-		gi.Printf("coopitem - spawned\n");
-	}
-
-
 	return qtrue;
 }
 
