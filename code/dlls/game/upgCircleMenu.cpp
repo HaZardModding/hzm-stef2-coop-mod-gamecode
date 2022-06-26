@@ -86,10 +86,16 @@ void Player::circleMenu(int iType)
 
 		upgCircleMenu.active = iType;
 		circleMenuHud(true);
+
+		disableInventory();
+		disableUseWeapon(true);
 	}
 	else {
 		circleMenuHud(false);
 		upgCircleMenu.active = 0;
+
+		enableInventory();
+		disableUseWeapon(false);
 	}
 }
 
@@ -351,6 +357,8 @@ void Player::circleMenuHud(bool show)
 {
 	str sMenu;
 	str sCommand = "ui_removehud";
+
+	upgCircleMenu.lastWidget = "";
 
 	if (show == true) { sCommand = "ui_addhud"; }
 
