@@ -1751,18 +1751,22 @@ void coop_playerThink( Player *player )
 					if (player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
 						SpawnArgs      args;
 						Entity         *obj;
-						args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
-						args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
+						//args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
+						args.setArg("model","models/item/coop_ammoStation.tik");
 						args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
 						args.setArg("setmovetype", ""+player->coopPlayer.ePlacable->getMoveType());
 						args.setArg("targetname", player->coopPlayer.ePlacable->targetname.c_str());
 						args.setArg("setsize", "\""+player->coopPlayer.ePlacable->mins+"\" \""+player->coopPlayer.ePlacable->maxs+"\"");						
+						args.setArg("notsolid","1");
 						//args.setArg("anim", "idle");
 						obj = args.Spawn();
 						obj->setOrigin(player->coopPlayer.ePlacable->origin);
 						obj->setAngles(player->coopPlayer.ePlacable->angles);
+						
 						player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
 						player->coopPlayer.ePlacable = NULL;
+						player->_makeSolidASAP = true;
+						player->_makeSolidASAPTime = 0.0f;
 					}
 				}
 			}
