@@ -76,6 +76,11 @@ void Player::circleMenu(int iType)
 		return;
 	}
 
+	Event* StopFireEvent;
+	StopFireEvent = new Event(EV_Sentient_StopFire);
+	StopFireEvent->AddString("dualhand");
+	this->ProcessEvent(StopFireEvent);
+
 	upgCircleMenu.numOfSegments = 4;
 
 	upgCircleMenu.activatingTime = level.time;
@@ -247,8 +252,9 @@ void Player::circleMenuThink()
 
 	//player is clicking fire
 	if (last_ucmd.buttons & BUTTON_ATTACKLEFT) {
+		upgCircleMenu.thinkTime = level.time;
 		circleMenuSelect(upgCircleMenu.lastSegment);
-		upgCircleMenu.active = 0;
+		return;
 	}
 
 	//detect and record the mouse move directions
@@ -295,7 +301,7 @@ void Player::circleMenuThink()
 	}
 
 	//gi.Printf(va("Reset: %s\n", upgCircleMenu.lastWidget));
-	str sPrint = va("prev: %s curr: %s\n", upgCircleMenu.lastWidget.c_str(), sWidgetName.c_str());
+	//str sPrint = va("prev: %s curr: %s\n", upgCircleMenu.lastWidget.c_str(), sWidgetName.c_str());
 	upgCircleMenu.lastWidget = sWidgetName;
 
 	/*if (fAngle != 0) {
@@ -330,7 +336,7 @@ void Player::circleMenuSelect(int iOption)
 	bool bIsScript = upgCircleMenu.optionIsScript[iOption];
 	str sThread		= upgCircleMenu.optionThreadOrCommand[iOption];
 
-	gi.Printf(va("circleMenuSelect: %i selected\n", (iOption + 1)));
+//gi.Printf(va("circleMenuSelect: %i selected\n", (iOption + 1)));
 	
 	if (bIsScript) {
 		RunThread(sThread);
@@ -338,7 +344,7 @@ void Player::circleMenuSelect(int iOption)
 	else {
 		DelayedServerCommand(entnum,va("%s", sThread.c_str()));
 	}
-	circleMenuHud(false);
+	circleMenu(upgCircleMenu.active);
 }
 
 //[b611] chrissstrahl
