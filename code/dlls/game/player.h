@@ -1814,6 +1814,9 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveString(&coopPlayer.className);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.coopId);
 	arc.ArchiveString(&coopPlayer.coopStatus);
+	//[b611] chrissstrahl - added for the new features - which are also used in singleplayer
+	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);
+	arc.ArchiveSafePointer(&coopPlayer.ePlacable);
 	}
 
 inline Camera *Player::CurrentCamera()
