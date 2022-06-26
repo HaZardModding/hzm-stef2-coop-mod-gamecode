@@ -1941,18 +1941,6 @@ void Weapon::SetAmmoInClip( Event * ev )
 // to also call UseAmmo here for loopfire weapons
 void Weapon::Shoot( Event *ev )
 {
-	//[b611] chrissstrahl - do not fire weapon if
-	// - player intents to place a object or has placed a object moments ago
-	// - player has a active circle-menu
-	//
-	// The problem here is that the client still has the fire animation, so weapons need to be deactivated properly
-	if (this->owner->isSubclassOf(Player)) {
-		Player *player = (Player *)(Entity *)this->owner;
-		if (player->coopPlayer.ePlacable || player->circleMenuIsActive() ) {
-			return;
-		}
-	}
-
 	Vector      pos, forward, right, up, delta;
 	firemode_t  mode = FIRE_MODE1;
 	firemode_t  realmode = FIRE_MODE1;
