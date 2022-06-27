@@ -58,7 +58,7 @@ public:
 	//hzm coop mod chrissstrahl - used to determin what class the player does have
 	str		className = "";
 	//hzm coop mod chrissstrahl - used to store player Anonymous idendity! Don't want admins have to much power, seen it far to often to go wrong
-	str		coopId = -1;
+	str		coopId = "";
 	//hzm coop mod chrissstrahl - inventory and health status to compare if the ini file should be updated
 	str		coopStatus = "";
 	//hzm coop mod chrissstrahl - used to determin if injured symbol is visbile on player
@@ -188,6 +188,8 @@ void coop_manageIntervalTransmit( Player* player , str sData , float fInterval ,
 void coop_playerRestore( Player *player );
 bool coop_playerSetup( gentity_t *ent );
 bool coop_playerSetup( Player *player );
+void coop_playerSetupHost(Player* player); //[b611] chrissstrahl - handle hosting player directly
+void coop_playerGenerateNewPlayerId(Player *player);
 void coop_playerSaveNewPlayerId(Player *player);
 void coop_playerSetupNoncoop( Player *player );
 void coop_playerSetupCoop( Player *player );

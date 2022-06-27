@@ -454,97 +454,43 @@ bool coop_playerSetup(Player *player)
 		return true;
 	}
 
-	//hzm coop mod chrissstrahl - manage dialog headhudtext widget
-	// - show in singleplayer
-	// - show in solomatch
-	// - show if player is host
+	//[b611] chrissstrahl - manage host
 	if (	g_gametype->integer == GT_SINGLE_PLAYER || 
 			g_gametype->integer == GT_BOT_SINGLE_PLAYER ||
 			dedicated->integer == 0 && player->entnum == 0 )
 	{
-
-		//hzm gameupdate chrissstrahl - make player language availabe for script usage
-		cvar_t *cvar = gi.cvar_get( "local_language" );
-
-		if ( cvar != NULL && cvar->string == "Deu") {
-			player->setLanguage("Deu");
-		}
-		else {
-			player->setLanguage("Eng");
-		}
-
-		DelayedServerCommand( player->entnum , "globalwidgetcommand DialogConsole rect 8 7 304 89" );
-		//chrissstrahl - disabled this might be reduandant [b607]
-		//DelayedServerCommand( player->entnum , "globalwidgetcommand dmTimer disable" );
-
-		if ( g_gametype->integer == GT_MULTIPLAYER ) {
-			//hzm coop mod chrissstrahl - get/set coop player id
-			bool bIdFound = false;
-			cvar = NULL;
-			cvar = gi.cvar_get( "coop_pId" );
-			if ( cvar != NULL ) {
-				if ( !Q_stricmpn( cvar->string , "cid." , 4 ) ) {
-					player->coopPlayer.coopId = coop_trim( cvar->string , " \t\r\n;[]=" );
-					//check if player id is already saved on this server
-					str ss = coop_parserIniGet( "ini/serverData.ini" , player->coopPlayer.coopId , "client" );
-					if ( ss != "" ) {
-						coop_playerRestore( player );
-						bIdFound = true;
-					}
-				}
-			}
-			//hzm coop mod chrissstrahl - hosting player does not yet have a id
-			if ( !bIdFound ) {
-				//[b610] chrissstrahl - put in a seperate func
-				coop_playerSaveNewPlayerId(player);
-
-				//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
-				player->coopPlayer.deathTime = 0;
-				multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
-				multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
-			}
-		}
+		//[b611] chrissstrahl - handle hosting player directly
+		coop_playerSetupHost(player);
 	}
+	//[b611] chrissstrtahl - manage all other players
 	else {
-		//hzm coop mod chrissstrahl - manage dialog headhudtext widget
-		// - hide on dedicated servers, because it does not work right
-		DelayedServerCommand( player->entnum , "globalwidgetcommand DialogConsole rect 100000 0 0 0" );
+		DelayedServerCommand(player->entnum, "vstr local_language;vstr coop_pId");
+		
+		//chrissstrahl - overwrite GameTypeName in scoreboard [b607]
+		if (game.coop_isActive) {
+			//[b608] chrissstrahl - only execute this if the server is running a coop map - used to be in detect.cfg which is also executed on regular mp
+			DelayedServerCommand(player->entnum, "vstr coop_class");
+
+			//[b611]m chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right
+			DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 100000 0 0 0");
+		}
 	}
+
+	//[b611] chrissstrahl - applays to all players
+	DelayedServerCommand(player->entnum, "vstr coop_verInfo");
 
 	//hzm coop mod chrissstrahl - disable radar hud selected symbol
 	player->coopPlayer.radarSelectedActive = false;
 	//[b607] chrissstrahl - this is used to reduce nettraffic on first spawn - needs to be false on start
 	player->coopPlayer.radarFirstResetDone = false;
 
-	//hzm coop mod chrissstrahl - exit on solomatch
-	if ( g_gametype->integer == GT_BOT_SINGLE_PLAYER ) {
+	//hzm coop mod chrissstrahl - exit here on singleplayer/solomatch
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER ) {
 		return true;
 	}
 
-	//hzm coop mod chrissstrahl - handle during singleplayer
-	if ( g_gametype->integer == GT_SINGLE_PLAYER ) {
-		//this was moved to: level::update in level.cpp
-		return true;
-	}
-
-
-	//[b610] chrissstrahl - changed the order how things are executed
-	//This data needs to be extracted from all players
-	// 1. get player language
-	// 2. get player id
-	// 3. Co
-	// - if player is NOT host, the host will be read via cvar
-	if ( dedicated->integer != 0 || player->entnum != 0 ) {
-		DelayedServerCommand( player->entnum , "vstr local_language;vstr coop_pId" );
-	}
-	DelayedServerCommand(player->entnum, "vstr coop_verInfo");
-
-	//chrissstrahl - overwrite GameTypeName in scoreboard [b607]
 	if (game.coop_isActive) {
-		//[b608] chrissstrahl - only execute this if the server is running a coop map - used to be in detect.cfg which is also executed on regular mp
-		DelayedServerCommand(player->entnum, "vstr coop_class");
-
-		//DelayedServerCommand(player->entnum, va("set mp_gametypename ^5H^8a^5Z^8ard^5M^8odding ^5Coop ^8Mod %i",COOP_BUILD));
+		//[b611] chrissstrahl - set for all players - SCOREBOARD
 		DelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
 	}
 
@@ -572,10 +518,99 @@ bool coop_playerSetup(Player *player)
 }
 
 //================================================================
+// Name:        coop_playerSetupHost
+// Class:       -
+//              
+// Description: Handle Hosting Player different, because server has direct accsess to all cvars
+//              
+// Parameters:  gentity_t *ent
+//              
+// Returns:     void
+//              
+//================================================================
+void coop_playerSetupHost(Player* player)
+{
+	//hzm gameupdate chrissstrahl - get language from cvar
+	cvar_t* cvar = gi.cvar_get("local_language");
+	if (cvar != NULL && cvar->string == "Deu") {
+		player->setLanguage("Deu");
+	}
+	else {
+		player->setLanguage("Eng");
+	}
+
+	//[b611] chrissstrahl - get class from cvar
+	cvar = NULL;
+	cvar = gi.cvar_get("coop_class");
+	if (cvar != NULL && cvar->string != "") {
+		coop_classSet(player, cvar->string);
+	}
+	else {
+		coop_classSet(player, "Technician");
+	}
+
+	if (g_gametype->integer == GT_MULTIPLAYER) {
+		//hzm coop mod chrissstrahl - get/set coop player id
+		bool bIdFound = false;
+		cvar = NULL;
+		cvar = gi.cvar_get("coop_pId");
+		if (cvar != NULL && cvar->string != "") {
+			if (!Q_stricmpn(cvar->string, "cid.", 4)) {
+				player->coopPlayer.coopId = coop_trim(cvar->string, " \t\r\n;[]=");
+				//check if player id is already saved on this server
+				str ss = coop_parserIniGet("ini/serverData.ini", player->coopPlayer.coopId, "client");
+				if (ss != "") {
+					coop_playerRestore(player);
+					bIdFound = true;
+				}
+			}
+		}
+		//hzm coop mod chrissstrahl - hosting player does not yet have a id
+		if (!bIdFound) {
+			//[b610] chrissstrahl - put in a seperate func
+			coop_playerSaveNewPlayerId(player);
+		}
+	}
+
+	if(g_gametype->integer == GT_SINGLE_PLAYER) {
+		//restore dialog head hud position
+		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
+	}
+	else if (game.coop_isActive) {
+		//[b611]m chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right
+		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 100000 0 0 0");	
+	}
+}
+
+//================================================================
+// Name:        coop_playerGenerateNewPlayerId
+// Class:       -
+//              
+// Description: Generates a uniqe playerid for this client for idendification
+//              
+// Parameters:  gentity_t *ent
+//              
+// Returns:     void
+//              
+//================================================================
+void coop_playerGenerateNewPlayerId(Player* player)
+{
+	gi.Printf("======================\nSENDING NEW ID TO PLAYER\n======================\n");
+	//that should create a pretty uniqe player id
+	time_t curTime;
+	time(&curTime);
+	str sPlayerId = va("cid.%d.%d.%f", (int)curTime, player->entnum, (level.time + player->origin.length()));
+	//add current client number to make sure we add a absolute uniqe player id
+	//even if two players join at the same instance
+	player->coopPlayer.coopId = sPlayerId.c_str();
+	DelayedServerCommand(player->entnum, va("seta coop_pId %s", sPlayerId.c_str()));
+}
+
+//================================================================
 // Name:        coop_playerSaveNewPlayerId
 // Class:       -
 //              
-// Description: Setup the player for coop, execute clientside cfg, set entity vars on player for script use
+// Description: Saves a new playerid for this client in the server ini file for idendification
 //              
 // Parameters:  gentity_t *ent
 //              
@@ -584,13 +619,26 @@ bool coop_playerSetup(Player *player)
 //================================================================
 void coop_playerSaveNewPlayerId(Player *player)
 {
-	//hzm coop mod chrissstrahl - hosting player does not yet have a id
-	gi.Printf("======================\nCoop Mod: SAVING NEW PLAYER ID\n======================\n");
+	gi.Printf("======================\nSAVING NEW PLAYER ID\n======================\n");
+
+	//if player has no id send from his config, generate one
+	if (!player->coopPlayer.coopId.length()) {
+		coop_playerGenerateNewPlayerId(player);
+	}
+
+	//this need to be removed, this is just for debugging
+	if (multiplayerManager.inMultiplayer()) {
+		multiplayerManager.HUDPrintAllClients("COOPDEBUG: SAVING NEW PLAYER ID\n");
+		gi.Printf(va("COOPDEBUG %s, %s, %i\n", player->client->pers.netname, player->coopPlayer.coopId, player->entnum));
+	}
+
+	//write id of player to server ini
 	coop_parserIniSet("ini/serverData.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
 	
-	//this need to be removed, this is just for debugging
-	//multiplayerManager.HUDPrintAllClients("COOPDEBUG: SAVING NEW PLAYER ID\n");
-	//gi.Printf(va("COOPDEBUG %s, %s, %i\n", player->client->pers.netname, player->coopPlayer.coopId, player->entnum));
+	//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
+	player->coopPlayer.deathTime = 0;
+	multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
+	multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
 }
 
 //================================================================
@@ -1020,35 +1068,22 @@ bool coop_playerSay( Player *player , str sayString)
 	}
 
 	//DETECT COOP-PLAYER-ID - detect the player id the player transmitts
-	if ( (player->coopPlayer.timeEntered + 10) < level.time && Q_stricmpn("cid.", sayString.c_str(), 4) == 0){
+	if (Q_stricmpn("cid.", sayString.c_str(), 4) == 0){
 		player->coopPlayer.coopId = coop_trim(sayString.c_str(), " \t\r\n;[]=");
 
-		//check if player id is already saved on this server
-		str ss = coop_parserIniGet("ini/serverData.ini", player->coopPlayer.coopId, "client");
-		if (ss == "")
-		{
-			//[b610] chrissstrahl - put in a seperate func
-			coop_playerSaveNewPlayerId(player);
-
-			//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
-			player->coopPlayer.deathTime = 0;
-			multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
-			multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
-		}
-		else
-		{
-			coop_playerRestore(player);
+		if((player->coopPlayer.timeEntered + 10) < level.time){
+			//check if player id is already saved on this server
+			str ss = coop_parserIniGet("ini/serverData.ini", player->coopPlayer.coopId, "client");
+			if (ss == ""){
+				coop_playerSaveNewPlayerId(player);
+			}
+			else{
+				coop_playerRestore(player);
+			}
 		}
 		return true;
 	}
 
-	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
-	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
-	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
-	if (!Q_stricmpn("!class_", sayString, 7)) {
-		player->hudPrint("coop_playerSay->!class_\n");
-		return true;
-	}
 	//hzm coop mod chrissstrahl - detect player language
 	if (!Q_stricmpn(sayString.c_str(), "deu", 3) || !Q_stricmpn(sayString.c_str(), "eng", 3)) {
 		//make sure player has now setup his language correctly
@@ -1775,8 +1810,6 @@ void coop_playerThink( Player *player )
 						}else{
 							args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
 						}
-
-
 						
 						args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
 						args.setArg("setmovetype", ""+player->coopPlayer.ePlacable->getMoveType());
@@ -1882,28 +1915,9 @@ void coop_playerThink( Player *player )
 		//display update notification menu if needed
 		coop_hudsUpdateNotification( player );
 
-		if ( !Q_stricmp( player->coopPlayer.coopId , "") && level.time > (player->coopPlayer.timeEntered + 5) )
-		{
-			//that should create a pretty uniqe player id
-			time_t curTime;
-			time( &curTime );
-			str sPlayerId = va( "cid.%d.%d.%f" , ( int )curTime , player->entnum, (level.time + player->origin.length() ) );
-			//add current client number to make sure we add a absolute uniqe player id
-			//even if two players join at the same instance
-			player->coopPlayer.coopId += sPlayerId.c_str();
-			DelayedServerCommand( player->entnum , va( "seta coop_pId %s" , sPlayerId.c_str() ) );
-
-			gi.Printf( "======================\nSENDING NEW PLAYER ID\n======================\n" );
-
-			//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
-			player->coopPlayer.deathTime = 0;
-			multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
-			multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
-
-			//needs only to be send to players that played the coop mod in singleplayer on a custom map before, so only send to players with coop mod
-			if ( player->coopPlayer.installed ) {
-				DelayedServerCommand( player->entnum , va( "bind TAB +objectives_score" , sPlayerId.c_str() ) );
-			}
+		//needs only to be send to players that played the coop mod in singleplayer on a custom map before, so only send to players with coop mod
+		if ( player->coopPlayer.installed ) {
+			DelayedServerCommand( player->entnum ,"bind TAB +objectives_score");
 		}
 
 		if ( player->health < 0.0f || sv_cinematic->integer != 0 || multiplayerManager.isPlayerSpectator( player ) ) {
