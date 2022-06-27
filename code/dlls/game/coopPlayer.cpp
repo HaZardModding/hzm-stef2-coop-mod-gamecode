@@ -1084,6 +1084,13 @@ bool coop_playerSay( Player *player , str sayString)
 		return true;
 	}
 
+	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
+	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
+	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
+	if (!Q_stricmpn("!class_", sayString, 7)) {
+		player->hudPrint("coop_playerSay->!class_\n");
+		return true;
+	}
 	//hzm coop mod chrissstrahl - detect player language
 	if (!Q_stricmpn(sayString.c_str(), "deu", 3) || !Q_stricmpn(sayString.c_str(), "eng", 3)) {
 		//make sure player has now setup his language correctly
