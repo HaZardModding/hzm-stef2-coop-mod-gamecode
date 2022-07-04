@@ -30,19 +30,9 @@ qboolean G_coopClientId(const gentity_t* ent)
 		return qtrue;
 	}
 
-	sClientId = coop_trim(cCClientId, " \t\r\n;[]=");
-
-	if ((player->coopPlayer.timeEntered + 10) > level.time)
-	{
-		//check if player id is already saved on this server
-		str ss = coop_parserIniGet("ini/serverData.ini", sClientId.c_str(), "client");
-		if (!ss.length()) {
-			coop_playerSaveNewPlayerId(player);
-		}
-		else {
-			player->coopPlayer.coopId = sClientId.c_str();
-			coop_playerRestore(player);
-		}
+	if ((player->coopPlayer.timeEntered + 10) > level.time) {
+		sClientId = coop_trim(cCClientId, " \t\r\n;[]=");
+		coop_checkPlayerCoopIdExistInIni(player, sClientId);
 	}
 	return qtrue;
 }
@@ -160,7 +150,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 		if (Q_stricmpn("t", classSelected.c_str(), 1) != 0) {
 			if (gi.GetNumFreeReliableServerCommands(player->entnum) >= 32) {
 				if (coop_checkPlayerLanguageGerman(player)) {
-					player->hudPrint("^5Coop^2: ^3Invalideer Klassenname!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
+					player->hudPrint("^5Coop^2: ^3Invalider Klassenname!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
 				}
 				else {
 					player->hudPrint("^5Coop^2: ^3Invalid class name!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
