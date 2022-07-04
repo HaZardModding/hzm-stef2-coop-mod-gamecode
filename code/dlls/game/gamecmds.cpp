@@ -49,7 +49,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "coopitem",G_coopItem,				true }, //[b611] chrissstrahl - allowing players to make use of special coop inventory
 	{ "coopinstalled",G_coopInstalled,		true },	//[b600] chrissstrahl - allow deetection if mod is installed
 	{ "coopinput",G_coopInput	,			true }, //[b611] chrissstrahl - allowing players to send text to server
-	{ "clientid",G_coopClientId	,			true }, //[b611] chrissstrahl - allowing players to send idendification string
+	{ "coopcid",G_coopClientId	,			true }, //[b611] chrissstrahl - allowing players to send idendification string
 //[b611] chrissstrahl - ! text commands moved here from coop_playerSay in coopPlayer.cpp
 	{ "!thread",G_coopThread	,			true }, 
 	{ "!block",G_coopCom_block	,			true }, 
@@ -719,6 +719,12 @@ qboolean G_TauntCmd( const gentity_t *ent )
 	if ( ent->entity && ent->entity->isSubclassOf( Player ) )
 	{
 		Player *player = (Player *)ent->entity;
+
+		//[b611] chrissstrahl - set a cooldown time for taunt
+		if (player->coopPlayer.tauntCooldownTime > (level.time + 6)) {
+			return true;
+		}
+		player->coopPlayer.tauntCooldownTime += (level.time + 3);
 
 		if ( multiplayerManager.inMultiplayer() && !multiplayerManager.isPlayerSpectator( player ) )
 		{

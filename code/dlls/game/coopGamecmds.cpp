@@ -18,33 +18,29 @@
 //================================================================
 qboolean G_coopClientId(const gentity_t* ent)
 {
-	if (!ent || !ent->inuse || !ent->client)
+	if (!ent || !ent->inuse || !ent->client || g_gametype->integer == GT_SINGLE_PLAYER)
 		return qfalse;
 
 	Player* player = (Player*)ent->entity;
+	
 	const char* cCClientId = (str)gi.argv(1);
+
 	str sClientId;
 	if (!strlen(cCClientId)) {
 		return qtrue;
 	}
 
-	sClientId = va("%s", cCClientId);
+	sClientId = coop_trim(cCClientId, " \t\r\n;[]=");
 
-	if ((player->coopPlayer.timeEntered + 10) < level.time && Q_stricmpn("cid.", sClientId.c_str(), 4) == 0) {
-
+	if ((player->coopPlayer.timeEntered + 10) > level.time)
+	{
 		//check if player id is already saved on this server
-		str ss = coop_parserIniGet("ini/serverData.ini", player->coopPlayer.coopId, "client");
-		if (ss.length() < 5) { //need to figure out correct number
-			//[b610] chrissstrahl - put in a seperate func
+		str ss = coop_parserIniGet("ini/serverData.ini", sClientId.c_str(), "client");
+		if (!ss.length()) {
 			coop_playerSaveNewPlayerId(player);
-
-			//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
-			player->coopPlayer.deathTime = 0;
-			multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
-			multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
 		}
 		else {
-			player->coopPlayer.coopId = coop_trim(sClientId.c_str(), " \t\r\n;[]=");
+			player->coopPlayer.coopId = sClientId.c_str();
 			coop_playerRestore(player);
 		}
 	}
@@ -76,6 +72,12 @@ qboolean G_coopCom_block(const gentity_t* ent)
 	if (sv_cinematic->integer || multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
+
+	//[b611] chrissstrahl - set a cooldown time for !block
+	if (player->coopPlayer.cmdBlockCooldownTime > (level.time + 9)) {
+		return true;
+	}
+	player->coopPlayer.cmdBlockCooldownTime += (level.time + 3);
 	
 	//hzm coop mod chrissstrahl - allow to walk trugh a player that is currently blocking, this player needs to aim at the blocking player
 	Entity* target;
@@ -144,30 +146,28 @@ qboolean G_coopCom_class(const gentity_t* ent)
 	//hzm coop mod chrissstrahl - remember current health/armor/ammo status
 	coop_serverSaveClientData(player);
 
-	cmd = gi.argv(1);
+	//grab intended class
+	str classSelected = gi.argv(1);
+	classSelected = classSelected.tolower();
 	
-	str classSelected;
-	switch (cmd[0])
-	{
-	case 'h':
+	if (Q_stricmpn("h", classSelected.c_str(), 1) == 0) {
 		classSelected = "HeavyWeapons";
-		break;
-	case 'm':
+	}
+	else if (Q_stricmpn("m", classSelected.c_str(), 1) == 0) {
 		classSelected = "Medic";
-		break;
-	case 't':
-		classSelected = "Technician";
-		break;
-	default:
-		if (gi.GetNumFreeReliableServerCommands(player->entnum) >= 32) {
-			if (coop_checkPlayerLanguageGerman(player)) {
-				player->hudPrint("^5Coop^2: ^3Invalideer Klassenname!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
-			}
-			else {
-				player->hudPrint("^5Coop^2: ^3Invalid class name!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
+	}
+	else {
+		if (Q_stricmpn("t", classSelected.c_str(), 1) != 0) {
+			if (gi.GetNumFreeReliableServerCommands(player->entnum) >= 32) {
+				if (coop_checkPlayerLanguageGerman(player)) {
+					player->hudPrint("^5Coop^2: ^3Invalideer Klassenname!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
+				}
+				else {
+					player->hudPrint("^5Coop^2: ^3Invalid class name!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
+				}
 			}
 		}
-		return true;
+		classSelected = "Technician";
 	}
 
 	//hzm coop mod chrissstrahl - set new class on player
@@ -355,7 +355,6 @@ qboolean G_coopCom_help(const gentity_t* ent)
 	}
 	return true;
 }
-
 
 //================================================================
 // Name:        G_coopCom_leader
