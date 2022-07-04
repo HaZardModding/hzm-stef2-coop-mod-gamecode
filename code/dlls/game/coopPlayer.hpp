@@ -45,10 +45,10 @@ typedef struct pendingServerCommand_s
 class CoopPlayer
 {
 public:
+	//hzm coop mod chrissstrahl - used to count how many tries happened to check player for coop mod
+	int		setupTries = 0;
 	//hzm coop mod chrissstrahl - used to store chat message limit data
 	float	chatTimeLimit = 0.0f;
-	//hzm coop mod chrissstrahl - used to count how many tries the had to check player for coop mod
-	int		setupTries = 0;
 	//hzm coop mod chrissstrahl - used to send the exec command to player within a certain timeframe
 	float	installedCheckTime = 0.0f;
 	//hzm coop mod chrissstrahl - used to determin which version the player has of the coop mod
@@ -172,6 +172,14 @@ public:
 	EntityPtr ePlacable = NULL;
 	//[b611] chrissstrahl - used to keep track of the class ability of a player to place a class specific station
 	EntityPtr eClassPlacable = NULL;
+	//[b611] chrissstrahl - used for coopID detection setup timeout in coopPlayerThink()
+	int setupTriesCid = 0;
+	//[b611] chrissstrahl - used to check if player has a coopid, within a certain timeframe
+	float setupTriesCidCheckTime = 0.0f;
+	//[b611] chrissstrahl - cooldown for taunts
+	float tauntCooldownTime = 0.0f;
+	//[b611] chrissstrahl - cooldown for !block
+	float cmdBlockCooldownTime = 0.0f;
 };
 
 
@@ -188,8 +196,11 @@ void coop_manageIntervalTransmit( Player* player , str sData , float fInterval ,
 void coop_playerRestore( Player *player );
 bool coop_playerSetup( gentity_t *ent );
 bool coop_playerSetup( Player *player );
-void coop_playerSetupHost(Player* player); //[b611] chrissstrahl - handle hosting player directly
-void coop_playerGenerateNewPlayerId(Player *player);
+
+void coop_playerGenerateNewPlayerId(Player *player);	//[b611] chrissstrahl - creating a new player id
+bool coop_playerMakeSolidASAPThink(Player* player);		//[b611] chrissstrahl - making player solid as soon as possible 
+void coop_playerPlaceableThink(Player* player);			//[b611] chrissstrahl - does thinking for placeable item
+
 void coop_playerSaveNewPlayerId(Player *player);
 void coop_playerSetupNoncoop( Player *player );
 void coop_playerSetupCoop( Player *player );

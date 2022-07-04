@@ -52,6 +52,7 @@
 
 //[b611] chrissstrahl - make avialable to use here
 extern Event EV_SetOriginEveryFrame;
+extern Event EV_World_AutoFailure;
 
 pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
 
@@ -418,8 +419,6 @@ bool coop_playerSetup( gentity_t *ent )
 
 	inline bool coop_playerSetup( Player *player );
 }
-
-extern Event EV_World_AutoFailure;
 bool coop_playerSetup(Player *player)
 {
 	if (!player)
@@ -435,6 +434,7 @@ bool coop_playerSetup(Player *player)
 	if (!ent) {
 		return false;
 	}
+
 	//[b607] daggolin - Restore bot state on player object
 	if (level.spawn_bot) {
 		ent->svflags |= SVF_BOT;
@@ -454,43 +454,33 @@ bool coop_playerSetup(Player *player)
 		return true;
 	}
 
-	//[b611] chrissstrahl - manage host
-	if (	g_gametype->integer == GT_SINGLE_PLAYER || 
-			g_gametype->integer == GT_BOT_SINGLE_PLAYER ||
-			dedicated->integer == 0 && player->entnum == 0 )
-	{
-		//[b611] chrissstrahl - handle hosting player directly
-		coop_playerSetupHost(player);
+	//hzm coop mod chrissstrahl - exit here on singleplayer / solomatch
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		//restore dialog head hud position
+		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
+		gi.Printf("coop_playerSetup 4 single/botmatch\n");
+		return true;
 	}
-	//[b611] chrissstrtahl - manage all other players
-	else {
-		DelayedServerCommand(player->entnum, "vstr local_language;vstr coop_pId");
-		
-		//chrissstrahl - overwrite GameTypeName in scoreboard [b607]
-		if (game.coop_isActive) {
-			//[b608] chrissstrahl - only execute this if the server is running a coop map - used to be in detect.cfg which is also executed on regular mp
-			DelayedServerCommand(player->entnum, "vstr coop_class");
-
-			//[b611]m chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right
-			DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 100000 0 0 0");
-		}
-	}
-
-	//[b611] chrissstrahl - applays to all players
-	DelayedServerCommand(player->entnum, "vstr coop_verInfo");
 
 	//hzm coop mod chrissstrahl - disable radar hud selected symbol
 	player->coopPlayer.radarSelectedActive = false;
 	//[b607] chrissstrahl - this is used to reduce nettraffic on first spawn - needs to be false on start
 	player->coopPlayer.radarFirstResetDone = false;
+	
+	//[b611] chrissstrahl - get player langauge/clientid/clientCoopVersiomn
+	DelayedServerCommand(player->entnum, "vstr local_language");
+	DelayedServerCommand(player->entnum, "vstr coop_pId");
+	DelayedServerCommand(player->entnum, "vstr coop_verInfo");
 
-	//hzm coop mod chrissstrahl - exit here on singleplayer/solomatch
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER ) {
-		return true;
-	}
-
+	//Do this only during a active coop game
 	if (game.coop_isActive) {
-		//[b611] chrissstrahl - set for all players - SCOREBOARD
+		//[b611] chrissstrahl - get player class
+		DelayedServerCommand(player->entnum, "vstr coop_class");
+
+		//[b611] chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right (flickering)
+		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect -10000 0 0 0");
+
+		//[b611] chrissstrahl - set for all players - SCOREBOARD Gametype Name
 		DelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
 	}
 
@@ -503,8 +493,8 @@ bool coop_playerSetup(Player *player)
 	player->entityVars.SetVariable( "globalCoop_timeEntered" , level.time );
 
 	//hzm coop mod chrissstrahl - run level script threads, used for scriptmod and noscript script
-	coop_serverRunScriptThread( va( "globalCoop_teammate_follow" ) );
-	coop_serverRunScriptThread( va( "coop_newPlayerEntered" ) ); //noscript?
+	coop_serverRunScriptThread( "globalCoop_teammate_follow" );
+	coop_serverRunScriptThread( "coop_newPlayerEntered" ); //noscript?
 
 	//hzm coop mod chrissstrahl - place player at spawnpoint
 	coop_playerPlaceAtSpawn( player );
@@ -512,74 +502,9 @@ bool coop_playerSetup(Player *player)
 	//hzm coop mod chrissstrahl - enable ai again, if it was disabled, as there is now a player on the server again
 	coop_serverManageAi();
 
-	//[b607] chrissstrahl - add this player to the coomunicator menu
+	//[b607] chrissstrahl - add this player to the communicator menu
 	coop_playerCommunicator(player,1);
 	return true;
-}
-
-//================================================================
-// Name:        coop_playerSetupHost
-// Class:       -
-//              
-// Description: Handle Hosting Player different, because server has direct accsess to all cvars
-//              
-// Parameters:  gentity_t *ent
-//              
-// Returns:     void
-//              
-//================================================================
-void coop_playerSetupHost(Player* player)
-{
-	//hzm gameupdate chrissstrahl - get language from cvar
-	cvar_t* cvar = gi.cvar_get("local_language");
-	if (cvar != NULL && cvar->string == "Deu") {
-		player->setLanguage("Deu");
-	}
-	else {
-		player->setLanguage("Eng");
-	}
-
-	//[b611] chrissstrahl - get class from cvar
-	cvar = NULL;
-	cvar = gi.cvar_get("coop_class");
-	if (cvar != NULL && cvar->string != "") {
-		coop_classSet(player, cvar->string);
-	}
-	else {
-		coop_classSet(player, "Technician");
-	}
-
-	if (g_gametype->integer == GT_MULTIPLAYER) {
-		//hzm coop mod chrissstrahl - get/set coop player id
-		bool bIdFound = false;
-		cvar = NULL;
-		cvar = gi.cvar_get("coop_pId");
-		if (cvar != NULL && cvar->string != "") {
-			if (!Q_stricmpn(cvar->string, "cid.", 4)) {
-				player->coopPlayer.coopId = coop_trim(cvar->string, " \t\r\n;[]=");
-				//check if player id is already saved on this server
-				str ss = coop_parserIniGet("ini/serverData.ini", player->coopPlayer.coopId, "client");
-				if (ss != "") {
-					coop_playerRestore(player);
-					bIdFound = true;
-				}
-			}
-		}
-		//hzm coop mod chrissstrahl - hosting player does not yet have a id
-		if (!bIdFound) {
-			//[b610] chrissstrahl - put in a seperate func
-			coop_playerSaveNewPlayerId(player);
-		}
-	}
-
-	if(g_gametype->integer == GT_SINGLE_PLAYER) {
-		//restore dialog head hud position
-		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
-	}
-	else if (game.coop_isActive) {
-		//[b611]m chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right
-		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 100000 0 0 0");	
-	}
 }
 
 //================================================================
@@ -595,15 +520,16 @@ void coop_playerSetupHost(Player* player)
 //================================================================
 void coop_playerGenerateNewPlayerId(Player* player)
 {
-	gi.Printf("======================\nSENDING NEW ID TO PLAYER\n======================\n");
+gi.Printf("\n======================\nSENDING NEW ID TO PLAYER\n======================\n");
 	//that should create a pretty uniqe player id
 	time_t curTime;
 	time(&curTime);
-	str sPlayerId = va("cid.%d.%d.%f", (int)curTime, player->entnum, (level.time + player->origin.length()));
+	str sPlayerId = va("coopcid %d%d", (int)curTime, player->entnum);
 	//add current client number to make sure we add a absolute uniqe player id
 	//even if two players join at the same instance
 	player->coopPlayer.coopId = sPlayerId.c_str();
-	DelayedServerCommand(player->entnum, va("seta coop_pId %s", sPlayerId.c_str()));
+	//make sure the cvar is created and saved with seta first before using set - set used because it accepts commands with space
+	DelayedServerCommand(player->entnum, va("seta coop_pId 0;set coop_pId %s", sPlayerId.c_str()));
 }
 
 //================================================================
@@ -619,26 +545,22 @@ void coop_playerGenerateNewPlayerId(Player* player)
 //================================================================
 void coop_playerSaveNewPlayerId(Player *player)
 {
-	gi.Printf("======================\nSAVING NEW PLAYER ID\n======================\n");
+gi.Printf("\n======================\nSAVING NEW PLAYER ID\n======================\n");
 
 	//if player has no id send from his config, generate one
 	if (!player->coopPlayer.coopId.length()) {
 		coop_playerGenerateNewPlayerId(player);
 	}
 
-	//this need to be removed, this is just for debugging
-	if (multiplayerManager.inMultiplayer()) {
-		multiplayerManager.HUDPrintAllClients("COOPDEBUG: SAVING NEW PLAYER ID\n");
-		gi.Printf(va("COOPDEBUG %s, %s, %i\n", player->client->pers.netname, player->coopPlayer.coopId, player->entnum));
-	}
-
 	//write id of player to server ini
 	coop_parserIniSet("ini/serverData.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
 	
 	//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
-	player->coopPlayer.deathTime = 0;
-	multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
-	multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
+	if (multiplayerManager.inMultiplayer()) {
+		player->coopPlayer.deathTime = 0;
+		multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
+		multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
+	}
 }
 
 //================================================================
@@ -1052,45 +974,21 @@ bool coop_playerSay( Player *player , str sayString)
 			sayString[i] = '.';
 		}
 	}
+	sayString = sayString.tolower();
 
 	//[b611] gameupdate add ! as command start inside say strings
 	if (sayString[0] == '!') {
-		//send back to client and client console will decide it it wants to send it again
+		//send back to client and client console will decide if it wants to send it again without say infront of it
 		gi.SendServerCommand(player->entnum, va("stufftext \"%s \"\n", sayString.c_str()));
 		return true;
 	}
 
-	sayString = sayString.tolower();
-
-	//detect if a class-command is issued
-	if (sayString[0] == '!' && Q_stricmpn("!class_", sayString, 7)) {
-		player->hudPrint("! or coop_playerSay->!class_\n");
-	}
-
-	//DETECT COOP-PLAYER-ID - detect the player id the player transmitts
-	if (Q_stricmpn("cid.", sayString.c_str(), 4) == 0){
-		player->coopPlayer.coopId = coop_trim(sayString.c_str(), " \t\r\n;[]=");
-
-		if((player->coopPlayer.timeEntered + 10) < level.time){
-			//check if player id is already saved on this server
-			str ss = coop_parserIniGet("ini/serverData.ini", player->coopPlayer.coopId, "client");
-			if (ss == ""){
-				coop_playerSaveNewPlayerId(player);
-			}
-			else{
-				coop_playerRestore(player);
-			}
-		}
+	//[b611] chrissstrahl - clientid backwardscompatibility - create new id
+	if (!Q_stricmpn(sayString.c_str(), "cid.", 4)) {
+		coop_playerSaveNewPlayerId(player);
 		return true;
 	}
 
-	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
-	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
-	//DEPRECATED 	//CLASS_ SELECTION - FILTER - filter out config file automated command to restore player class
-	if (!Q_stricmpn("!class_", sayString, 7)) {
-		player->hudPrint("coop_playerSay->!class_\n");
-		return true;
-	}
 	//hzm coop mod chrissstrahl - detect player language
 	if (!Q_stricmpn(sayString.c_str(), "deu", 3) || !Q_stricmpn(sayString.c_str(), "eng", 3)) {
 		//make sure player has now setup his language correctly
@@ -1713,6 +1611,162 @@ void coop_playerSpectator( Player *player )
 }
 
 //================================================================
+// Name:        coop_playerMakeSolidASAP
+// Class:       -
+//              
+// Description: Makes player solid as soon as possible - not stuck in actor or other player
+//              
+// Parameters:  Player *player
+//              
+// Returns:     BOOL
+//              
+//================================================================
+bool coop_playerMakeSolidASAPThink(Player* player)
+{
+	//check if inside a actor or a player
+	if ( player->_makeSolidASAP ) {
+		if ( coop_checkInsidePlayerOrActor( ( Entity* )player ) || level.cinematic ) {
+			player->setSolidType( SOLID_NOT );
+			player->_makeSolidASAP = true;
+			return false;
+		}
+		else{
+			if ( g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager._playerData[player->entnum]._spectator ) {
+				player->setSolidType( SOLID_BBOX );
+				return true;
+			}
+			player->_makeSolidASAP = false;
+		}
+	}
+}
+
+//================================================================
+// Name:        coop_playerPlaceableThink
+// Class:       -
+//              
+// Description: Handles the placable object each - called from playerthink
+//              
+// Parameters:  Player *player
+//              
+// Returns:     VOID
+//              
+//================================================================
+void coop_playerPlaceableThink(Player* player)
+{
+	if (!player->coopPlayer.ePlacable) {
+		return;
+	}
+
+	//abbort in certain conditions are meet
+	if (	(player->getLastDamageTime() + 0.5f) > level.time	||
+			multiplayerManager.isPlayerSpectator(player)		||
+			player->client->ps.jumped							||
+			level.cinematic == qtrue							||
+			player->health <= 0	) 
+	{
+		player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
+		player->coopPlayer.ePlacable = NULL;
+		return;
+	}
+
+	Vector vPlayer, vPlayerAngle, end_pos;
+	trace_t trace;
+	vec3_t fwd;
+	AngleVectors(player->client->ps.viewangles, fwd, NULL, NULL);
+	Vector forward = fwd;
+	//end_pos = (fwd * 100.0f) + start;
+
+	//trace = G_Trace(start, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
+	vPlayer = player->client->ps.origin;
+	float fBboxHeight = player->maxs[2];
+	fBboxHeight = (fBboxHeight - (fBboxHeight / 100 * 20));
+	vPlayer[2] += fBboxHeight; //set z height to 80% of bbox size
+	end_pos = (forward * 100.0f + vPlayer);
+	trace = G_Trace(vPlayer, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
+	//player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+	trace.endpos[2] = vPlayer[2];
+	vPlayerAngle[1] = player->client->ps.viewangles[1];
+	if (player->coopPlayer.ePlacable) {
+		player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+		player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
+
+		//drop about 100 units - do stuff here if it could not be dropped
+		if (!player->coopPlayer.ePlacable->droptofloor(100)) {
+			//if object could not be placed, display it at the height of feet of player and change animation so it changes skin/texture
+			trace.endpos[2] = player->client->ps.origin[2];
+			player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+			player->coopPlayer.ePlacable->animate->RandomAnimate("location_invalid");
+			//gi.Printf("ePlacable - can't be placed here\n");
+		}
+		else {
+			extern Event EV_Object_SetAnim;
+			Event* event;
+			event = new Event(EV_Object_SetAnim);
+			event->AddString("location_valid");
+			player->coopPlayer.ePlacable->ProcessEvent(event);
+
+			//wait after the placable is shown to player before the click counts at placing it
+			if (player->upgCircleMenu.thinkTime + (0.45) < level.time && player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
+				//perevent weapon firing
+				Event* StopFireEvent;
+				StopFireEvent = new Event(EV_Sentient_StopFire);
+				StopFireEvent->AddString("dualhand");
+				player->ProcessEvent(StopFireEvent);
+
+				SpawnArgs      args;
+				Entity* obj;
+				//args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
+
+				bool classSpecificStation = false;
+				if ("models/item/mp_weapon-spawn.tik" == player->coopPlayer.ePlacable->model) {
+					classSpecificStation = true;
+					if (player->coopPlayer.className == "HeavyWeapons" || g_gametype->integer == GT_SINGLE_PLAYER) { //Make it work in singleplayer for testing
+						args.setArg("model", "models/item/coop_ammoStation.tik");
+					}
+					else if (player->coopPlayer.className == "Medic") {
+						args.setArg("model", "models/item/coop_mediStation.tik");
+					}
+					else {
+						args.setArg("model", "models/item/coop_techStation.tik");
+					}
+				}
+				else {
+					args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
+				}
+
+				args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
+				args.setArg("setmovetype", "" + player->coopPlayer.ePlacable->getMoveType());
+				args.setArg("targetname", player->coopPlayer.ePlacable->targetname.c_str());
+				args.setArg("notsolid", "1");
+				//args.setArg("anim", "idle");
+				obj = args.Spawn();
+				obj->setOrigin(player->coopPlayer.ePlacable->origin);
+				obj->setAngles(player->coopPlayer.ePlacable->angles);
+				obj->setSize(player->coopPlayer.ePlacable->mins, player->coopPlayer.ePlacable->maxs);
+
+				//handle class specific stations
+				if (classSpecificStation) {
+					//remove any previouse class specific placed objects
+					if (player->coopPlayer.eClassPlacable) {
+						Event* RemoveMe;
+						RemoveMe = new Event(EV_Remove);
+						player->coopPlayer.eClassPlacable->ProcessEvent(RemoveMe);
+					}
+					//remember the class specific placed object
+					player->coopPlayer.eClassPlacable = obj;
+				}
+
+				player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
+				player->coopPlayer.ePlacable = NULL;
+
+				player->_makeSolidASAP = true;
+				player->_makeSolidASAPTime = 0.0f;
+			}
+		}
+	}
+}
+
+//================================================================
 // Name:        coop_playerClientThink
 // Class:       -
 //              
@@ -1730,129 +1784,9 @@ void coop_playerThink( Player *player )
 		return;
 	}
 	coop_checkDoesPlayerHaveCoopMod( player );
-
-	//check if inside a actor or a player
-	if ( player->_makeSolidASAP ) {
-		if ( coop_checkInsidePlayerOrActor( ( Entity* )player ) || level.cinematic ) {
-			player->setSolidType( SOLID_NOT );
-			player->_makeSolidASAP = true;
-		}
-		else{
-			if ( g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager._playerData[player->entnum]._spectator ) {
-				player->setSolidType( SOLID_BBOX );
-			}
-			player->_makeSolidASAP = false;
-		}
-	}
-
-	//[b611] chrissstrahl - update the Origin and Angle of players placable object
-	if (player->coopPlayer.ePlacable) {
-		//if player is jumping abbort
-		if (	!player->client->ps.jumped &&
-				(player->getLastDamageTime() + 0.5f) < level.time &&
-				level.cinematic == qfalse &&
-				!multiplayerManager.isPlayerSpectator(player) &&
-				player->health > 0)
-		{
-			Vector vPlayer, vPlayerAngle, end_pos;
-			trace_t trace;
-			vec3_t fwd;
-			AngleVectors(player->client->ps.viewangles, fwd, NULL, NULL);
-			Vector forward = fwd;
-			//end_pos = (fwd * 100.0f) + start;
-
-			//trace = G_Trace(start, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
-			vPlayer = player->client->ps.origin;
-			float fBboxHeight = player->maxs[2];
-			fBboxHeight = (fBboxHeight - (fBboxHeight / 100 * 20));
-			vPlayer[2] += fBboxHeight; //set z height to 80% of bbox size
-			end_pos = (forward * 100.0f + vPlayer);
-			trace = G_Trace(vPlayer, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
-			//player->coopPlayer.ePlacable->setOrigin(trace.endpos);
-			trace.endpos[2] = vPlayer[2];
-			vPlayerAngle[1] = player->client->ps.viewangles[1];
-			if (player->coopPlayer.ePlacable) {
-				player->coopPlayer.ePlacable->setOrigin(trace.endpos);
-				player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
-
-				//drop about 100 units - do stuff here if it could not be dropped
-				if (!player->coopPlayer.ePlacable->droptofloor(100)) {
-					//if object could not be placed, display it at the height of feet of player and change animation so it changes skin/texture
-					trace.endpos[2] = player->client->ps.origin[2];
-					player->coopPlayer.ePlacable->setOrigin(trace.endpos);
-					player->coopPlayer.ePlacable->animate->RandomAnimate("location_invalid");
-					//gi.Printf("ePlacable - can't be placed here\n");
-				}
-				else {
-					extern Event EV_Object_SetAnim;
-					Event *event;
-					event = new Event(EV_Object_SetAnim);
-					event->AddString("location_valid");
-					player->coopPlayer.ePlacable->ProcessEvent(event);
-
-					//wait after the placable is shown to player before the click counts at placing it
-					if (player->upgCircleMenu.thinkTime + (0.45) < level.time &&  player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
-						//perevent weapon firing
-						Event* StopFireEvent;
-						StopFireEvent = new Event(EV_Sentient_StopFire);
-						StopFireEvent->AddString("dualhand");
-						player->ProcessEvent(StopFireEvent);
-						
-						SpawnArgs      args;
-						Entity         *obj;
-						//args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
-
-						bool classSpecificStation = false;
-						if("models/item/mp_weapon-spawn.tik" == player->coopPlayer.ePlacable->model) {
-							classSpecificStation = true;
-							if (player->coopPlayer.className == "HeavyWeapons" || g_gametype->integer == GT_SINGLE_PLAYER) { //Make it work in singleplayer for testing
-								args.setArg("model", "models/item/coop_ammoStation.tik");
-							}
-							else if (player->coopPlayer.className == "Medic") {
-								args.setArg("model", "models/item/coop_mediStation.tik");
-							}
-							else {
-								args.setArg("model", "models/item/coop_techStation.tik");
-							}
-						}else{
-							args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
-						}
-						
-						args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
-						args.setArg("setmovetype", ""+player->coopPlayer.ePlacable->getMoveType());
-						args.setArg("targetname", player->coopPlayer.ePlacable->targetname.c_str());
-						args.setArg("notsolid","1");
-						//args.setArg("anim", "idle");
-						obj = args.Spawn();
-						obj->setOrigin(player->coopPlayer.ePlacable->origin);
-						obj->setAngles(player->coopPlayer.ePlacable->angles);
-						obj->setSize(player->coopPlayer.ePlacable->mins, player->coopPlayer.ePlacable->maxs);
-
-						//handle class specific stations
-						if (classSpecificStation) {
-							//remove any previouse class specific placed objects
-							if (player->coopPlayer.eClassPlacable) {
-								Event* RemoveMe;
-								RemoveMe = new Event(EV_Remove);
-								player->coopPlayer.eClassPlacable->ProcessEvent(RemoveMe);
-							}
-							//remember the class specific placed object
-							player->coopPlayer.eClassPlacable = obj;
-						}
-
-						player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
-						player->coopPlayer.ePlacable = NULL;
-						player->_makeSolidASAP = true;
-						player->_makeSolidASAPTime = 0.0f;
-					}
-				}
-			}
-		}
-		else {
-			player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
-			player->coopPlayer.ePlacable = NULL;
-		}
-	}
+	coop_checkDoesPlayerHaveCoopId( player );
+	coop_playerMakeSolidASAPThink( player );
+	coop_playerPlaceableThink(player);	
 
 	//[608] chrissstrahl - moved up here
 	//hzm coop mod chrissstrahl - update objectives every secound in sp
