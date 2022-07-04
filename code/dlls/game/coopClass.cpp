@@ -238,9 +238,17 @@ void coop_classSet( Player *player , str classToSet )
 			player->coopPlayer.lastTimeChangedClass = level.time;
 		}
 
-		if ( Q_stricmp( currentClass.c_str(), "Medic") && Q_stricmp(currentClass, "HeavyWeapons")) {
+		//[b611] chrissstrahl - make sure the right class is set
+		if (Q_stricmpn("h", currentClass.c_str(), 1) == 0) {
+			currentClass = "HeavyWeapons";
+		}
+		else if (Q_stricmpn("m", currentClass.c_str(), 1) == 0) {
+			currentClass = "Medic";
+		}
+		else {
 			currentClass = "Technician";
 		}
+
 		player->coopPlayer.className = currentClass;
 //managed via cfg
 //DelayedServerCommand(player->entnum, va("seta coop_class 0;set coop_class !class %s", currentClass.c_str()));
