@@ -1026,7 +1026,13 @@ void coop_serverCoop()
 	}
 
 	//hzm coop mod chrissstrahl - print out some info to the console
-	gi.Printf( va( "==== HaZardModding Coop Mod gamex86.dll -%i-====\n" , COOP_BUILD ) );
+	#ifdef __linux__
+		str sLibrarayName = "ef2gamei386.so";
+	#else
+		str sLibrarayName = "gamex86.dll";
+	#endif
+
+	gi.Printf( va( "==== HaZardModding Coop Mod %s -%i-====\n" , sLibrarayName.c_str(), COOP_BUILD) );
 	if ( game.isCoopIncludedLevel  ) {
 		gi.Printf( va( "==== %s is included in this coop build! ====\n" , currentMapName.c_str() ) );
 	}
