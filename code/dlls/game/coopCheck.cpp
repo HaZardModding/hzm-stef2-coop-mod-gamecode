@@ -285,6 +285,39 @@ void coop_checkDoesPlayerHaveCoopId(Player* player)
 }
 
 //================================================================
+// Name:        coop_checkPlayerCoopIdExistInIni
+// Class:       -
+//              
+// Description:  checks if the given clientid does exist in server ini, if not it will create one
+//				will return clientid or empty string
+//              
+// Parameters:  Player *player
+//              
+// Returns:     string
+//              
+//================================================================
+str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId)
+{
+	//client has none - create one
+	if (!sClientId.length()) {
+		player->coopPlayer.coopId = sClientId;
+		coop_playerSaveNewPlayerId(player);
+		return sClientId;
+	}
+
+	//client id does not exist on this server
+	str ss = coop_parserIniGet("ini/serverData.ini", sClientId.c_str(), "client");
+	if (!ss.length()) {
+		coop_playerSaveNewPlayerId(player);
+	}
+	else {
+		player->coopPlayer.coopId = sClientId.c_str();
+		coop_playerRestore(player);
+	}
+	return sClientId;
+}
+
+//================================================================
 // Name:        coop_checkStringInUservarsOf
 // Class:       -
 //              
