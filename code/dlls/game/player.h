@@ -241,7 +241,7 @@ class Player : public Sentient
 		int					getSegmentNumForAngle(float fAngle);
 		void				circleMenuThink(void);
 		void				circleMenuSelect(int iSelection);
-		void				circleMenuSet(int iOption, str sText, str sThread, str sImage,bool bIsThread);
+		void				circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType);
 		void				circleMenuClear();
 		void				circleMenuDialogSet(int iOption, str sText, str sThread, str sImage);
 		void				circleMenuDialogClear();

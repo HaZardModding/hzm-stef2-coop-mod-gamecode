@@ -1454,9 +1454,9 @@ Event EV_Player_circleMenuSet
 (
 	"circleMenuSet",
 	EV_SCRIPTONLY,
-	"issSI",
-	"optionnumber optiontext threadOrCommandName imageORshader isThread",
-	"Adds a dialog option for player to circle menu"
+	"issSIIIS",
+	"optionnumber optiontext threadOrCommandName imageORshader isThread iAmmount iCost sCostType",
+	"Adds a option for player from circle menu"
 );
 //hzm gameupdate chrissstrahl [b611] - add new commands for script use
 Event EV_Player_circleMenuClear
@@ -1465,7 +1465,7 @@ Event EV_Player_circleMenuClear
 	EV_SCRIPTONLY,
 	"F",
 	"float-dialognumber",
-	"Clears a dialog option if a number is given. otherwise it clears all options for player circle menu"
+	"Clears a option if a number is given. otherwise it clears all options for player circle menu"
 );
 //hzm gameupdate chrissstrahl [b611] - add new commands for script use
 Event EV_Player_getLanguage
@@ -2112,17 +2112,28 @@ void Player::circleMenuSetEvent(Event* ev)
 	str sThread		= ev->GetString(3);
 	str sImage		= "";
 	bool bIsThread = false;
+	int iAmmount = 999999;
+	int iCost = 0;
+	str sCostType = "";
 	if (ev->NumArgs() > 3) {
 		sImage = ev->GetString(4);
 	}
 	if (ev->NumArgs() > 4) {
-		bIsThread = (bool)(int)ev->GetInteger(5);
+		bIsThread = (bool)ev->GetInteger(5);
 	}
-	circleMenuSet(iOption, sText, sThread, sImage, bIsThread);
+	if (ev->NumArgs() > 5) {
+		iAmmount = ev->GetInteger(6);
+	}
+	if (ev->NumArgs() > 7) {
+		iCost = ev->GetInteger(7);
+		sCostType = ev->GetInteger(8);
+	}
+
+	circleMenuSet(iOption, sText, sThread, sImage, bIsThread, iAmmount, iCost, sCostType);
 }
 
 //hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
-void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread)
+void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread,int iAmmount,int iCost,str sCostType)
 {
 	//correct offset
 	iOption = (iOption - 1);
@@ -2137,11 +2148,15 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 
 	if (!sImage.length()) { sImage = "weapons/empty"; }
 	if (!sText.length()) { sText = "^"; }
+	if (iAmmount == -1) { iAmmount = 999999; }
 
 	upgCircleMenu.optionThreadOrCommand[iOption] = sThread;
 	upgCircleMenu.optionText[iOption] = sText;
 	upgCircleMenu.optionIcon[iOption] = sImage;
 	upgCircleMenu.optionIsScript[iOption] = bThread;
+	upgCircleMenu.optionAmmount[iOption] = iAmmount;
+	upgCircleMenu.optionCost[iOption] = iCost;
+	upgCircleMenu.optionCostType[iOption] = sCostType;
 
 	str sWidgetName = circleMenuGetWidgetName(iOption);
 
@@ -2165,7 +2180,7 @@ void Player::circleMenuClear()
 
 	int i;
 	for (int i = 0; i < CIRCLEMENU_MAX_OPTIONS; i++) {
-		circleMenuSet(i, "", "", "",false);
+		circleMenuSet(i, "", "", "",false,999999,0,"");
 	}
 }
 

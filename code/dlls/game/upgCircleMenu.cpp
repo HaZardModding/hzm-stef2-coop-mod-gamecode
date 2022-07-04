@@ -329,12 +329,18 @@ void Player::circleMenuThink()
 void Player::circleMenuSelect(int iOption)
 {
 	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONS) {
-		gi.Printf(va("circleMenuSelect: Given Option %i is out of Range\n", iOption));
+		gi.Printf(va("circleMenuSelect: Given Option %d is out of Range for Client[%d]\n", iOption,entnum));
 		return;
 	}
 
 	bool bIsScript = upgCircleMenu.optionIsScript[iOption];
 	str sThread		= upgCircleMenu.optionThreadOrCommand[iOption];
+
+	//make sure player has items
+	if (upgCircleMenu.optionAmmount[iOption] < 1) {
+		gi.Printf(va("circleMenuSelect: Given Option %d ammount < 1 for Client[%d]\n", iOption, entnum));
+		return;
+	}
 
 //gi.Printf(va("circleMenuSelect: %i selected\n", (iOption + 1)));
 	
@@ -344,6 +350,7 @@ void Player::circleMenuSelect(int iOption)
 	else {
 		DelayedServerCommand(entnum,va("%s", sThread.c_str()));
 	}
+	//Close Menu
 	circleMenu(upgCircleMenu.active);
 }
 
