@@ -144,8 +144,14 @@ bool coop_playerCheckAdmin(Player *player)
 		return true;
 	}
 
+#ifdef WIN32
+	bool bWindows = true;
+#else
+	bool bWindows = false;
+#endif
+
 	//[b610] chrissstrahl - auto login if player is host
-	if (dedicated->integer == 0 && player->entnum == 0) {
+	if (dedicated->integer == 0 && player->entnum == 0 && bWindows) {
 		player->coopPlayer.admin = true;
 		player->hudPrint("^3You are now logged in (Host auto-!login).\n");
 		return true;
@@ -407,6 +413,7 @@ void coop_playerRestore( Player *player )
 // Description: Setup the player for coop, execute clientside cfg, set entity vars on player for script use
 //              
 // Parameters:  gentity_t *ent
+// Parameters:  Player *player
 //              
 // Returns:     bool
 //              
@@ -416,10 +423,9 @@ bool coop_playerSetup( gentity_t *ent )
 	if ( !ent )
 		return false;
 	Player *player = multiplayerManager.getPlayer( ent - g_entities );
-
-	inline bool coop_playerSetup( Player *player );
+	return coop_playerSetup( player );
 }
-bool coop_playerSetup(Player *player)
+bool coop_playerSetup(Player* player)
 {
 	if (!player)
 		return false;
@@ -430,7 +436,7 @@ bool coop_playerSetup(Player *player)
 	}
 
 	//[b607] chrissstrahl - check if this player is a bot
-	gentity_t *ent = player->edict;
+	gentity_t* ent = player->edict;
 	if (!ent) {
 		return false;
 	}
@@ -447,10 +453,12 @@ bool coop_playerSetup(Player *player)
 
 	//[b607] chrissstrahl - make sure we do not handle bots
 	if (ent->svflags & SVF_BOT) {
-		cvar_t *cvar = gi.cvar_get("local_language");
-		player->setLanguage(cvar->string);
-		coop_classSet(player, "HeavyWeapon");
+		cvar_t* cvar = gi.cvar_get("local_language");
+		str sCvar = (cvar ? cvar->string : "Eng");
+		player->setLanguage(sCvar);
+
 		player->coopPlayer.setupComplete = true;
+		coop_classSet(player, "HeavyWeapon");
 		return true;
 	}
 
@@ -458,16 +466,69 @@ bool coop_playerSetup(Player *player)
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
 		//restore dialog head hud position
 		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
-		gi.Printf("coop_playerSetup 4 single/botmatch\n");
 		return true;
+	}
+
+#ifdef WIN32
+	bool bWindows = true;
+#else
+	bool bWindows = false;
+#endif
+
+	if (dedicated->integer == 0 && player->entnum == 0 && bWindows) {
+		coop_playerSetupHost(player);
+	}
+	else {
+		coop_playerSetupClient(player);
 	}
 
 	//hzm coop mod chrissstrahl - disable radar hud selected symbol
 	player->coopPlayer.radarSelectedActive = false;
 	//[b607] chrissstrahl - this is used to reduce nettraffic on first spawn - needs to be false on start
 	player->coopPlayer.radarFirstResetDone = false;
-	
-	//[b611] chrissstrahl - get player langauge/clientid/clientCoopVersiomn
+
+	//hzm coop mod chrissstrahl - mark as not respawned
+	//hzm coop mod chrissstrahl - mark to respawn next time where player died
+	player->coopPlayer.deathViewangleY = 0;
+	//player->coopPlayer.respawnAtRespawnpoint = true;
+
+	//hzm coop mod chrissstrahl - record time when player entred, store in player entity
+	player->entityVars.SetVariable("globalCoop_timeEntered", level.time);
+
+	if(game.coop_isActive){
+		//hzm coop mod chrissstrahl - run level script threads, used for scriptmod and noscript script
+		coop_serverRunScriptThread("globalCoop_teammate_follow");
+		coop_serverRunScriptThread("coop_newPlayerEntered"); //noscript?
+
+		//[b607] chrissstrahl - add this player to the communicator menu
+		coop_playerCommunicator(player, 1);
+
+		//[b611] chrissstrahl - set for all players - SCOREBOARD Gametype Name
+		DelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
+	}
+
+	//hzm coop mod chrissstrahl - place player at spawnpoint
+	coop_playerPlaceAtSpawn( player );
+
+	//hzm coop mod chrissstrahl - enable ai again, if it was disabled, as there is now a player on the server again
+	coop_serverManageAi();
+
+	return true;
+}
+//================================================================
+// Name:        coop_playerSetupClient
+// Class:       -
+//              
+// Description: Does Setup for client player
+//              
+// Parameters:  Player *player
+//              
+// Returns:     void
+//              
+//================================================================
+void coop_playerSetupClient(Player* player)
+{
+	//[b611] chrissstrahl - get player langauge/clientid/clientCoopVersion
 	DelayedServerCommand(player->entnum, "vstr local_language");
 	DelayedServerCommand(player->entnum, "vstr coop_pId");
 	DelayedServerCommand(player->entnum, "vstr coop_verInfo");
@@ -479,32 +540,51 @@ bool coop_playerSetup(Player *player)
 
 		//[b611] chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right (flickering)
 		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect -10000 0 0 0");
+	}
+}
 
-		//[b611] chrissstrahl - set for all players - SCOREBOARD Gametype Name
-		DelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
+
+//================================================================
+// Name:        coop_playerSetupHost
+// Class:       -
+//              
+// Description: Does Setup for host player
+//              
+// Parameters:  Player *player
+//              
+// Returns:     void
+//              
+//================================================================
+void coop_playerSetupHost(Player* player)
+{
+	cvar_t* cvar = gi.cvar_get("local_language");
+	str sCvar = (cvar ? cvar->string : "Eng");
+	player->setLanguage(sCvar);
+
+	cvar = gi.cvar_get("coop_verInfo");
+	sCvar = (cvar ? cvar->string : va("%d", COOP_BUILD));
+	coop_manipulateStringTrim(sCvar, "coopinstalled "); //remove command prefix
+	player->coopPlayer.installedVersion = atoi(sCvar.c_str());
+	player->coopPlayer.installed = true;
+
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER ){
+		player->coopPlayer.setupComplete = true;
+		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
+		return;
 	}
 
-	//hzm coop mod chrissstrahl - mark as not respawned
-	//hzm coop mod chrissstrahl - mark to respawn next time where player died
-	player->coopPlayer.deathViewangleY = 0;
-	//player->coopPlayer.respawnAtRespawnpoint = true;
+	bool bGenerateNewId = false;
+	cvar = gi.cvar_get("coop_pId");
+	sCvar = (cvar ? cvar->string : "");
+	player->coopPlayer.coopId = coop_checkPlayerCoopIdExistInIni(player, sCvar);
+	coop_playerRestore(player);
 
-	//hzm coop mod chrissstrahl - record time when player entred, store in player entity
-	player->entityVars.SetVariable( "globalCoop_timeEntered" , level.time );
-
-	//hzm coop mod chrissstrahl - run level script threads, used for scriptmod and noscript script
-	coop_serverRunScriptThread( "globalCoop_teammate_follow" );
-	coop_serverRunScriptThread( "coop_newPlayerEntered" ); //noscript?
-
-	//hzm coop mod chrissstrahl - place player at spawnpoint
-	coop_playerPlaceAtSpawn( player );
-
-	//hzm coop mod chrissstrahl - enable ai again, if it was disabled, as there is now a player on the server again
-	coop_serverManageAi();
-
-	//[b607] chrissstrahl - add this player to the communicator menu
-	coop_playerCommunicator(player,1);
-	return true;
+	if (game.coop_isActive) {
+		cvar = gi.cvar_get("coop_class");
+		sCvar = (cvar ? cvar->string : "");
+		coop_manipulateStringTrim(sCvar, "!class "); //remove command prefix
+		coop_classSet(player, sCvar);
+	}
 }
 
 //================================================================
@@ -513,7 +593,7 @@ bool coop_playerSetup(Player *player)
 //              
 // Description: Generates a uniqe playerid for this client for idendification
 //              
-// Parameters:  gentity_t *ent
+// Parameters:  Player *player
 //              
 // Returns:     void
 //              
@@ -538,7 +618,7 @@ gi.Printf("\n======================\nSENDING NEW ID TO PLAYER\n=================
 //              
 // Description: Saves a new playerid for this client in the server ini file for idendification
 //              
-// Parameters:  gentity_t *ent
+// Parameters:  Player *player
 //              
 // Returns:     void
 //              
@@ -1783,8 +1863,6 @@ void coop_playerThink( Player *player )
 	if ( !player ){
 		return;
 	}
-	coop_checkDoesPlayerHaveCoopMod( player );
-	coop_checkDoesPlayerHaveCoopId( player );
 	coop_playerMakeSolidASAPThink( player );
 	coop_playerPlaceableThink(player);	
 
@@ -1797,6 +1875,10 @@ void coop_playerThink( Player *player )
 		}
 		return;
 	}
+
+	//[b611] chrissstrahl - put the code in dedicated functions
+	coop_checkDoesPlayerHaveCoopMod(player);
+	coop_checkDoesPlayerHaveCoopId(player);
 
 	//[b607] chrissstrahl - moved here to prevent players staying solid in regular Multimatch
 	//hzm coop mod chrissstrahl - exit here if this is not coop

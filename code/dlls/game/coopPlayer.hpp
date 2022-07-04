@@ -52,7 +52,7 @@ public:
 	//hzm coop mod chrissstrahl - used to send the exec command to player within a certain timeframe
 	float	installedCheckTime = 0.0f;
 	//hzm coop mod chrissstrahl - used to determin which version the player has of the coop mod
-	int		installedVersion = 0.0f;
+	int		installedVersion = 0;
 	//hzm coop mod chrissstrahl - used to determin if player has coop mod installed or not
 	int		installed = 0;
 	//hzm coop mod chrissstrahl - used to determin what class the player does have
@@ -200,6 +200,8 @@ bool coop_playerSetup( Player *player );
 void coop_playerGenerateNewPlayerId(Player *player);	//[b611] chrissstrahl - creating a new player id
 bool coop_playerMakeSolidASAPThink(Player* player);		//[b611] chrissstrahl - making player solid as soon as possible 
 void coop_playerPlaceableThink(Player* player);			//[b611] chrissstrahl - does thinking for placeable item
+void coop_playerSetupHost(Player* player);				//[b611] chrissstrahl - does setup for host player (only on listen win server/singleplayer)
+void coop_playerSetupClient(Player* player);			//[b611] chrissstrahl - does setup for non-host player (client)
 
 void coop_playerSaveNewPlayerId(Player *player);
 void coop_playerSetupNoncoop( Player *player );
