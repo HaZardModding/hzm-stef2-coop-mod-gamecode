@@ -220,27 +220,67 @@ bool coop_checkEntityInsideDoor( Entity *entity1 )
 //              
 //================================================================
 void coop_checkDoesPlayerHaveCoopMod( Player *player )
-//hzm coop mod chrissstrahl - execute client cfg until the command has been send from player to server or timelimit is hit
-//hzm coop mod chrissstrahl - if player has no coop this starts the no coop setup
 {
-	if ( player->coopPlayer.installed < 0 ) {
-		if ( g_gametype->integer == GT_SINGLE_PLAYER ){
-			player->coopPlayer.installed = 1;
-			coop_playerSetupCoop( player );
-			return;
-		}
+	//if player has coop or if there was a sufficent ammount of time passed
+	if (player->coopPlayer.installed != 0 || player->coopPlayer.setupTries == 12) {
+		return;
+	}
 
-		if ( player->coopPlayer.installedCheckTime < level.time ){
-			player->coopPlayer.installedCheckTime = ( level.time + 0.5f );
-			if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 ){
+	//if in singleplayer, player does ofcourse have the coop mod
+	if ( g_gametype->integer == GT_SINGLE_PLAYER ){
+		player->coopPlayer.installed = 1;
+		coop_playerSetupCoop( player );
+		return;
+	}
+	//in multiplayer do the checking procedure
+	else {
+		//have some time delay and also make sure the player is even able to process any commands
+		if (player->coopPlayer.installedCheckTime < level.time) {
+			player->coopPlayer.installedCheckTime = (level.time + 0.25f);
+			if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
 				player->coopPlayer.setupTries++;
 			}
-
-			//give it up and declare player a noncooper
-			if ( player->coopPlayer.setupTries > 10 ){
-				coop_playerSetupNoncoop( player );
-			}
 		}
+	}
+
+	//player does not have coop mod - give up at this point
+	if (player->coopPlayer.setupTries == 11) {
+		coop_playerSetupNoncoop(player);
+		player->coopPlayer.setupTries++;
+		return;
+	}
+}
+
+//================================================================
+// Name:        coop_checkDoesPlayerHaveCoopId
+// Class:       -
+//              
+// Description:  checks if the given player does have a coop mod id
+//              
+// Parameters:  Player *player
+//              
+// Returns:     void
+//              
+//================================================================
+void coop_checkDoesPlayerHaveCoopId(Player* player)
+{
+	//if player has coop or if there was a sufficent ammount of time passed
+	if (player->coopPlayer.coopId.length() || player->coopPlayer.setupTriesCid == 12) {
+		return;
+	}
+
+	//have some time delay and also make sure the player is even able to process any commands
+	if (player->coopPlayer.setupTriesCidCheckTime < level.time) {
+		player->coopPlayer.setupTriesCidCheckTime = (level.time + 0.25f);
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
+			player->coopPlayer.setupTriesCid++;
+		}
+	}
+	//player does not have coop mod - give up at this point
+	if (player->coopPlayer.setupTriesCid == 11) {
+		coop_playerSaveNewPlayerId(player);
+		player->coopPlayer.setupTriesCid++;
+		return;
 	}
 }
 
