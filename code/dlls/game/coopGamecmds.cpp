@@ -22,7 +22,7 @@ qboolean G_coopClientId(const gentity_t* ent)
 		return qfalse;
 
 	Player* player = (Player*)ent->entity;
-	
+
 	const char* cCClientId = (str)gi.argv(1);
 
 	str sClientId;
