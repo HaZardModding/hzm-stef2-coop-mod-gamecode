@@ -161,7 +161,6 @@ void coop_hudsAddCoop( Player *player , str hudName )
 	}
 }
 
-
 //================================================================
 // Name:        coop_hudsRemove
 // Class:       -
