@@ -601,15 +601,16 @@ void coop_playerSetupHost(Player* player)
 void coop_playerGenerateNewPlayerId(Player* player)
 {
 gi.Printf("\n======================\nSENDING NEW ID TO PLAYER\n======================\n");
+gi.Printf("\n");
 	//that should create a pretty uniqe player id
 	time_t curTime;
 	time(&curTime);
-	str sPlayerId = va("coopcid %d%d", (int)curTime, player->entnum);
+	str sPlayerId = va("%d%d", (int)curTime, player->entnum);
 	//add current client number to make sure we add a absolute uniqe player id
 	//even if two players join at the same instance
 	player->coopPlayer.coopId = sPlayerId.c_str();
 	//make sure the cvar is created and saved with seta first before using set - set used because it accepts commands with space
-	DelayedServerCommand(player->entnum, va("seta coop_pId 0;set coop_pId %s", sPlayerId.c_str()));
+	DelayedServerCommand(player->entnum, va("seta coop_pId 0;set coop_pId coopcid %s", sPlayerId.c_str()));
 }
 
 //================================================================
