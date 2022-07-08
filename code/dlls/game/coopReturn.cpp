@@ -1451,7 +1451,7 @@ Player* coop_returnPlayerClosestTo( Entity *eMe )
 		}
 	}
 
-	//return a plyer based on pereference
+	//return a player based on pereference
 	if ( closestNoSpecAliveNotOrigin )	return closestNoSpecAliveNotOrigin;
 	if ( closestNoSpecNotOrigin )		return closestNoSpecNotOrigin;
 	if ( closestNotOrigin )				return closestNotOrigin;
