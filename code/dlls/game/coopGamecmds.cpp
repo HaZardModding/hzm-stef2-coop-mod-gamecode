@@ -31,7 +31,7 @@ qboolean G_coopClientId(const gentity_t* ent)
 	}
 
 	if ((player->coopPlayer.timeEntered + 10) > level.time) {
-		sClientId = coop_trim(cCClientId, " \t\r\n;[]=");
+		sClientId = coop_returnStringTrim(cCClientId, " \t\r\n;[]=");
 		coop_checkPlayerCoopIdExistInIni(player, sClientId);
 	}
 	return qtrue;
@@ -1078,7 +1078,7 @@ qboolean G_coopInput(const gentity_t* ent)
 
 	//limit of data that can be actually used
 	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
-		inputData = coop_substr(inputData.c_str(), 0, 259);
+		inputData = coop_returnStringFromWithLength(inputData.c_str(), 0, 259);
 	}
 
 	ent->entity->entityVars.SetVariable("coopInputData", inputData.c_str());
