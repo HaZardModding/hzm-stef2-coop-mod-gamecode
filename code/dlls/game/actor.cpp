@@ -7424,7 +7424,7 @@ void Actor::Killed( Event *ev )
 		}
 
 	//if the actor is a teammate, update the teammates killed #.
-	//We dont who the attacker is. 
+	//We dont know who the attacker is. 
 	if ( actortype == IS_TEAMMATE )
 	{
 	//hzm gameupdate chrissstrahl - handle this correctly in multiplayer, fixed 27.06.2015
