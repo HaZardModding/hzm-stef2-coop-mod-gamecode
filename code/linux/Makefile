@@ -304,13 +304,14 @@ GOBJ =\
     $(B)/game/WeaponDualWield.o \
     $(B)/game/weaputils.o \
     $(B)/game/worldspawn.o \
-	$(B)/game/coopGamecmds.o \
 	$(B)/game/upgCircleMenu.o \
     $(B)/game/coopArmory.o \
+    $(B)/game/coopChallenges.o \
     $(B)/game/coopCheck.o \
     $(B)/game/coopClass.o \
     $(B)/game/coopDialog.o \
     $(B)/game/coopEvents.o \
+	$(B)/game/coopGamecmds.o \
     $(B)/game/coopHuds.o \
     $(B)/game/coopModel.o \
     $(B)/game/coopObjectives.o \
@@ -497,6 +498,7 @@ $(B)/game/worldspawn.o : $(GDIR)/worldspawn.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgCircleMenu.o : $(GDIR)/upgCircleMenu.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopArmory.o : $(GDIR)/coopArmory.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/coopChallenges.o : $(GDIR)/coopChallenges.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopCheck.o : $(GDIR)/coopCheck.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopClass.o : $(GDIR)/coopClass.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopDialog.o : $(GDIR)/coopDialog.cpp; $(DO_GAME_SHLIB_CC)
