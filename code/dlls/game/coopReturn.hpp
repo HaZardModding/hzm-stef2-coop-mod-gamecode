@@ -24,6 +24,8 @@
 Entity*	coop_returnEntity( const str &name );
 str coop_returnBoolWord( int iValue );
 str coop_returnBoolWord( bool bValue );
+int coop_returnIntWithinOrDefault(const str& sVal, const int& iMin, const int& iMax, const int& iDefault); //[b611] chrissstrahl - have it also accept strings
+float coop_returnFloatWithinOrDefault(const str& sVal, const float& fMin, const float& fMax, const float& fDefault); //[b611] chrissstrahl - have it also accept strings
 float coop_returnFloatOrDefaultFromString( str sSource , float fDefault );
 int coop_returnIntOrDefaultFromString( str sSource , int iDefault );
 int coop_returnIntWithinOrDefault(const int &iCur, const int &iMin, const int &iMax, const int &iDefault);	//[b607] chrissstrahl -  looks like we need something like that
