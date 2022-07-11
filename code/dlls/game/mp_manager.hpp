@@ -15,12 +15,12 @@
 // DESCRIPTION:
 //
 
+#ifndef __MP_MANAGER_HPP__
+#define __MP_MANAGER_HPP__
+
 // Forward declaration
 class Player;
 //class DM_Team ;
-
-#ifndef __MP_MANAGER_HPP__
-#define __MP_MANAGER_HPP__
 
 // Typedefs
 typedef SafePtr<Player> PlayerPtr;
