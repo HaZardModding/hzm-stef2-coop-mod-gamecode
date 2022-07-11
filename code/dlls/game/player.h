@@ -29,6 +29,7 @@ class HoldableItem;
 #define __PLAYER_H__
 
 //[b611] Chrissstrahl
+#include "coopChallanges.hpp"
 #include "upgCircleMenu.hpp"
 #include "coopPlayer.hpp"
 #include "coopServer.hpp"
