@@ -576,6 +576,7 @@ void coop_playerSetupHost(Player* player)
 	bool bGenerateNewId = false;
 	cvar = gi.cvar_get("coop_pId");
 	sCvar = (cvar ? cvar->string : "");
+	coop_manipulateStringTrim(sCvar,"coopcid ");
 	player->coopPlayer.coopId = coop_checkPlayerCoopIdExistInIni(player, sCvar);
 	coop_playerRestore(player);
 
@@ -600,12 +601,12 @@ void coop_playerSetupHost(Player* player)
 //================================================================
 void coop_playerGenerateNewPlayerId(Player* player)
 {
-gi.Printf("\n======================\nSENDING NEW ID TO PLAYER\n======================\n");
-gi.Printf("\n");
 	//that should create a pretty uniqe player id
 	time_t curTime;
 	time(&curTime);
 	str sPlayerId = va("%d%d", (int)curTime, player->entnum);
+	gi.Printf("\n======================\nSENDING NEW ID TO PLAYER\n======================\n");
+	gi.Printf(va("%s\n", sPlayerId.c_str()));
 	//add current client number to make sure we add a absolute uniqe player id
 	//even if two players join at the same instance
 	player->coopPlayer.coopId = sPlayerId.c_str();
