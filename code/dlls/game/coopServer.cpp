@@ -337,7 +337,9 @@ bool coop_serverCheckEndMatch(void) //added [b607]
 	//load new map after before we reach 2'000'000 on the same map, have some buffer time to make sure no other setting will delay that over the magical 2
 	if (multiplayerManager.getTime() > 172800.0f) {//259200 3days  //172800 2days //1500000.0f  //1999000.0f
 		multiplayerManager.centerPrintAllClients("^5Coop:^8 The Server needs to reboot now!\n", CENTERPRINT_IMPORTANCE_CRITICAL);
-		gi.Printf("HZM Coop Mod: The Server needs to reboot now! (%f)\n", multiplayerManager.getTime());
+
+		//[b611] chrissstrahl - using now dedicated function
+		coop_serverWarningBadSetting(va("HZM Coop Mod: The Server needs to reboot now! (%f)\n", multiplayerManager.getTime()));
 
 		//[b608] chrissstrahl - fix loading a map from mp_maplist - same map is loaded now
 		gi.cvar_set("nextmap", level.mapname.c_str());
@@ -840,28 +842,44 @@ void coop_serverRestoreGameVars()
 		gameVars.SetVariable( "statusM5L2CUnlocked" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "statusM5L2CUnlocked" , "server" ) , 0 ) );//game.
 	}
 
-	//[b607] chrissstrahl - now this needed some work over
+	//[b611] chrissstrah - fixed a few checks that where done to sloppy and did not work right
+	str sValue;
 	int iVal;
-	iVal = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "skill", "server")), 0, 3, COOP_DEFAULT_SKILL);
-	if ( skill->integer != iVal)gi.cvar_set( "skill" , va( "%d" , iVal) );
 
-	game.coop_friendlyFire = coop_returnFloatWithinOrDefault(atof(coop_parserIniGet("ini/serverData.ini", "friendlyfire", "server")),0 ,2, COOP_DEFAULT_FF);
+	//SKILL
+	iVal = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "skill", "server"), 0, 3, COOP_DEFAULT_SKILL);
+	if (skill->integer != iVal) { gi.cvar_set("skill", va("%d", iVal)); }
+
+	//FRIENDLY FIRE
+	game.coop_friendlyFire = coop_returnFloatWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "friendlyfire", "server"),0 ,2, COOP_DEFAULT_FF);
 	gameVars.SetVariable("friendlyFire", game.coop_friendlyFire);
 
-	game.coop_maxspeed = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "maxspeed", "server")), 200,1000 , COOP_DEFAULT_MAXSPEED);
+	//MAXSPEED
+	game.coop_maxspeed = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "maxspeed", "server"), 200,1000 , COOP_DEFAULT_MAXSPEED);
 	world->setPhysicsVar("maxspeed", game.coop_maxspeed);
 
-	game.coop_respawnTime = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "respawntime", "server")),0 ,60,COOP_DEFAULT_RESPAWNTIME );
+	//RESPAWN TIME
+	game.coop_respawnTime = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "respawntime", "server"),0 ,60,COOP_DEFAULT_RESPAWNTIME );
 	multiplayerManager.setRespawnTime( (float)game.coop_respawnTime );
 
-	iVal = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "airaccelerate", "server")), 0, 4, COOP_DEFAULT_AIRACCELERATE);
+	//AIR ACCELERATE
+	iVal = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "airaccelerate", "server"), 0, 4, COOP_DEFAULT_AIRACCELERATE);
 	world->setPhysicsVar("airAccelerate", iVal);
 
-	game.coop_awardsActive = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "awards", "server")), 0, 1, COOP_DEFAULT_AWARDS);
-	game.coop_teamIcon = (bool)coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "teamicon", "server")), 0,1 ,(int)COOP_DEFAULT_TEAMICON );
-	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "lastmanstanding", "server")), 0,1 ,(int)COOP_DEFAULT_LASTMANSTANDING );
-	game.coop_deadBodiesPerArea = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "deadbodies", "server")),0,25 , COOP_DEFAULT_DEADBODIES);
-	game.coop_stasisTime = coop_returnIntWithinOrDefault(atoi(coop_parserIniGet("ini/serverData.ini", "stasistime", "server")),7,30 , COOP_DEFAULT_STASISTIME);
+	//AWARDS
+	game.coop_awardsActive = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "awards", "server"), 0, 1, COOP_DEFAULT_AWARDS);
+	
+	//TEAMICON
+	game.coop_teamIcon = (bool)coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "teamicon", "server"), 0,1 ,(int)COOP_DEFAULT_TEAMICON );
+	
+	//LMS - LAST MAN STANDING
+	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "lastmanstanding", "server"), 0,1 ,(int)COOP_DEFAULT_LASTMANSTANDING );
+	
+	//DEAD BODIES STAYING
+	game.coop_deadBodiesPerArea = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "deadbodies", "server"),0,25 , COOP_DEFAULT_DEADBODIES);
+	
+	//STASIS TIME
+	game.coop_stasisTime = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "stasistime", "server"),7,30 , COOP_DEFAULT_STASISTIME);
 }
 
 
@@ -1137,32 +1155,18 @@ void coop_serverSetup( void )
 
 		//hzm coop mod chrissstrahl - check if the file exists, server would go into a map loading loop otherwise
 		if ( !gi.FS_Exists( "coop_mod/cfg/server/setup.cfg" ) ){
-			gi.Printf( "^1===========================================================\n" );
-			gi.Printf( "^1===========================================================\n" );
-			gi.Printf( "--- SETUP ERROR ----\n" );
-			gi.Printf( "coop_mod/cfg/server/setup.cfg $$NotFoundOnServer$$ !!!\n" );
-			gi.Printf( "Could not configure server for Coop Mod!\n" );
-			gi.Printf( "Please report this error to HaZardModding\n" );
-			gi.Printf( "--------------------\n" );
-			gi.Printf( "^1===========================================================\n" );
-			gi.Printf( "^1===========================================================\n" );
+			//[b611] chrissstrahl - made warnings more compact
+			coop_serverWarningBadSetting("SETUP ERROR");
+			coop_serverWarningBadSetting("coop_mod/cfg/server/setup.cfg $$NotFoundOnServer$$ !!!\nCould not configure server for Coop Mod!");
 			gi.SendConsoleCommand( "killserver\n" );
 			return;
 		}
 
 		SetupExecuted++;
 		if ( SetupExecuted > COOP_MAX_SETUP_TRIES ){
-			gi.Printf( "^1===========================================================\n" );
-			gi.Printf( "^1===========================================================\n" );
-			gi.Printf( "--------------------\n" );
-			gi.Printf( "--- SETUP ERROR ----\n" );
-			gi.Printf( "Server was stuck in a loop executing setup.cfg\n" );
-			gi.Printf( "Could not configure server for Coop Mod!\n" );
-			gi.Printf( "Please report this error to HaZardModding\n" );
-			gi.Printf( "--------------------\n" );
-			gi.Printf( "--------------------\n" );
-			gi.Printf( "^1===========================================================\n" );
-			gi.Printf( "^1===========================================================\n" );
+			//[b611] chrissstrahl - made warnings more compact
+			coop_serverWarningBadSetting("SETUP ERROR");
+			coop_serverWarningBadSetting("Server was stuck in a loop executing setup.cfg\nCould not configure server for Coop Mod!");
 			gi.SendConsoleCommand( "killserver\n" );
 			return;
 		}
@@ -1176,16 +1180,22 @@ void coop_serverSetup( void )
 	if ( coop_returnCvarInteger( "sv_pure" ) == 1 )//allow all clients, even if the basefolder contents missmatch with server
 	{
 		gi.cvar_set("sv_pure", "0");
-		gi.Printf( "COOP BAD Setting: sv_pure 1 changing to 0\n" );
+		coop_serverWarningBadSetting( "COOP BAD Setting: sv_pure 1 changing to 0" );
+		correctingTheseSettingsRequiresMapload = true;
+	}
+	
+	//[b611] chrissstrahl - make sure at least 4 players are able to play from the get go (this is in Coop)
+	if ( coop_returnCvarInteger( "sv_maxclients" ) < 2 )
+	{
+		gi.SendConsoleCommand("set sv_maxclients 4\n"); //can't set this cvar directly or game crashes
+		coop_serverWarningBadSetting("BAD SETTING");
+		coop_serverWarningBadSetting("sv_maxclients is < 2\nPLEASE START SERVER WITH sv_maxclients SET BEWTEEN 2 AND 8");
 		correctingTheseSettingsRequiresMapload = true;
 	}
 
 	if ( correctingTheseSettingsRequiresMapload == true )
 	{
-		gi.Printf( "=============================================\n" );
-		gi.Printf( "coop_serverSetup() requested a map reload\n" );
-		gi.Printf( "=============================================\n" );
-
+		coop_serverWarningBadSetting("coop_serverSetup() requested a map reload");
 		str sMapToLoad = level.mapname.tolower();
 
 		//hzm coop mod chrissstrahl - load last coop map if there is any
@@ -1410,45 +1420,45 @@ bool coop_serverError( str sError, bool bFatal )
 //================================================================
 void coop_serverThink( void )
 {
-	if ( game.coop_isActive ){
-		//hzm coop mod chrissstrahl - quit server if requested
-		if ( game.coop_reboot && game.coop_restartServerEarliestAt < level.time ){ 
-			//[b607] chrissstrahl - allow to adjust the coop reboot feature
-			bool bCoopNoReboot = false;
-			str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
-			if (!Q_stricmpn(sCoopRebootState.c_str(), "killserver",10)) { //killserver
-				gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver.cfg\n");
-			}
-			else if(!Q_stricmpn(sCoopRebootState.c_str(), "quit",4)){
-				gi.SendConsoleCommand("quit\n");
-			}
-			else{
-				return;
-			}
-			//chrissstrahl - we need to clear the variable now
-			//because with kill server the game vars stay intact
-			game.coop_reboot = false;
+	if (!game.coop_isActive) { return; }
 
-			//static float fTimeDetected = level.time + 0.045f;
-			//if ( fTimeDetected < level.time ){
-			//gi.SendConsoleCommand( "quit\n" ); //disabled [b607]
+	//hzm coop mod chrissstrahl - quit server if requested
+	if ( game.coop_reboot && game.coop_restartServerEarliestAt < level.time ){ 
+		//[b607] chrissstrahl - allow to adjust the coop reboot feature
+		bool bCoopNoReboot = false;
+		str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
+		if (!Q_stricmpn(sCoopRebootState.c_str(), "killserver",10)) { //killserver
+			gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver.cfg\n");
+		}
+		else if(!Q_stricmpn(sCoopRebootState.c_str(), "quit",4)){
+			gi.SendConsoleCommand("quit\n");
+		}
+		else{
 			return;
-			//}
 		}
+		//chrissstrahl - we need to clear the variable now
+		//because with kill server the game vars stay intact
+		game.coop_reboot = false;
 
-		//chrissstrahl - handle g_showevents, disable after some time [b607]
-		if (game.coop_showEventsTime != 0) {
-			game.coop_showEventsTime++;
-			if (game.coop_showEventsTime == 3) {
-				game.coop_showEventsTime=301; //do not allow activation again until server has been completley(quit) restarted
-				gi.cvar_set("g_showevents","0");
-				gi.Printf("HZM COOP MOD - Disabled g_showevents again.\n");
-			}
-		}
-
-		//hzm coop mod chrissstrahl - this will manage the objective marker
-		coop_objectivesMarkerUpdate();
+		//static float fTimeDetected = level.time + 0.045f;
+		//if ( fTimeDetected < level.time ){
+		//gi.SendConsoleCommand( "quit\n" ); //disabled [b607]
+		return;
+		//}
 	}
+
+	//chrissstrahl - handle g_showevents, disable after some time [b607]
+	if (game.coop_showEventsTime != 0) {
+		game.coop_showEventsTime++;
+		if (game.coop_showEventsTime == 3) {
+			game.coop_showEventsTime=301; //do not allow activation again until server has been completley(quit) restarted
+			gi.cvar_set("g_showevents","0");
+			gi.Printf("HZM COOP MOD - Disabled g_showevents again.\n");
+		}
+	}
+
+	//hzm coop mod chrissstrahl - this will manage the objective marker
+	coop_objectivesMarkerUpdate();
 }
 
 //[b610] chrissstrahl - executed from Level::CleanUp
@@ -1460,7 +1470,7 @@ void coop_serverThink( void )
 //              
 // Parameters:  void
 //              
-// Returns:     bool
+// Returns:     void
 //              
 //================================================================
 void coop_serverCleanup(void)
@@ -1468,4 +1478,23 @@ void coop_serverCleanup(void)
 	game.coop_author = "";
 	game.coop_story = "";
 	game.coop_story_deu = "";
+}
+
+//[b611] chrissstrahl - bad setting Warning
+//================================================================
+// Name:        coop_serverWarningBadSetting
+// Class:       -
+//              
+// Description: Cleans up vars and other stuff once the level is cleaned up
+//              
+// Parameters:  string Message
+//              
+// Returns:     void
+//              
+//================================================================
+void coop_serverWarningBadSetting(str sWarning)
+{
+	gi.Printf("\n====================================\n");
+	gi.Printf(va("%s\n", sWarning.c_str()));
+	gi.Printf("====================================\n\n");
 }
