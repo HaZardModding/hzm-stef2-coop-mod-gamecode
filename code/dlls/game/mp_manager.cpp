@@ -26,7 +26,7 @@
 
 #include "coopVote.hpp" //[b607] chrissstrahl - moved coop vote stuff to seperate file
 #include "coopChallanges.hpp" //[b611] chrissstrahl
-CoopChallanges coopChallanges;
+CoopChallanges coopChallenges;
 
 
 MultiplayerManager multiplayerManager;
@@ -264,7 +264,7 @@ void MultiplayerManager::update( float frameTime )
 	}
 
 	//[b611] chrissstrahl - update coop challanges
-	coopChallanges.update(frameTime);
+	coopChallenges.update(frameTime);
 
 	// Start the game if not started already
 
