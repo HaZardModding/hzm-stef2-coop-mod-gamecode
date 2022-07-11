@@ -4669,7 +4669,6 @@ void TriggerCoopPlayerAmmo::Activate( Event *ev )
 	int iPlayer;
 	Player* currentPlayer;
 	Vector vector;
-	float fVectorLength;
 
 	ScriptVariable *entityVar1 = entityVars.GetVariable( "uservar1" );
 	ScriptVariable *entityVar2 = entityVars.GetVariable( "uservar2" );
@@ -4798,7 +4797,6 @@ void TriggerCoopPlayerItem::Activate( Event *ev )
 	int iPlayer;
 	Player* currentPlayer;
 	Vector vector;
-	float fVectorLength;
 
 	str sLastValid = "";
 
@@ -5050,8 +5048,7 @@ void TriggerCoopPlayerMessage::Activate( Event *ev )
 		int iPlayer;
 		Player* currentPlayer;
 		Vector vector;
-		float fVectorLength;
-
+	
 		for ( iPlayer = 0; iPlayer < maxclients->integer; iPlayer++ )
 		{
 			currentPlayer = multiplayerManager.getPlayer( iPlayer );
@@ -5059,8 +5056,7 @@ void TriggerCoopPlayerMessage::Activate( Event *ev )
 			if ( !currentPlayer )
 				continue;
 
-			vector = ( currentPlayer->origin - origin );
-			fVectorLength = vector.length();
+			float fVectorLength = Distance(currentPlayer->origin, origin); //[b611] chrissstrahl - changed how the distance is calculated
 
 			if ( fVectorLength <= fMaxDist && fVectorLength >= fMinDist )
 			{
@@ -5077,10 +5073,7 @@ void TriggerCoopPlayerMessage::Activate( Event *ev )
 		Player* player;
 		player = ( Player* )( Entity * )activator;
 		
-
-		Vector vector = ( player->origin - origin );
-		float fVectorLength = vector.length();
-
+		float fVectorLength = Distance(player->origin, origin); //[b611] chrissstrahl - changed how the dicstance is calculated
 
 		if ( fVectorLength <= fMaxDist && fVectorLength >= fMinDist )
 		{
