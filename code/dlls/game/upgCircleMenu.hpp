@@ -27,7 +27,6 @@
 
 #include "_pch_cpp.h"
 #include "player.h"
-#include "upgCircleMenu.hpp"
 
 #define CIRCLEMENU_STARTNUM 0
 #define CIRCLEMENU_MAX_OPTIONS 4
