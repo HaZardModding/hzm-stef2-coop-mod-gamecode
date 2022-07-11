@@ -30,8 +30,7 @@ extern Event EV_Player_UseItem;
 extern Event EV_UseAnim_SetAnim;
 
 class CoopChallenges;
-//CoopChallenges coopChallenges; //This did not work, I had to use extern
-extern CoopChallenges coopChallenges;
+//CoopChallenges coopChallenges; //This did not work, I had to use declare it external
 
 class CoopChallenges : public Class
 {
