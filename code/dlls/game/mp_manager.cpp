@@ -25,8 +25,8 @@
 #include "program.h"
 
 #include "coopVote.hpp" //[b607] chrissstrahl - moved coop vote stuff to seperate file
-#include "coopChallanges.hpp" //[b611] chrissstrahl
-CoopChallanges coopChallenges;
+#include "coopChallenges.hpp" //[b611] chrissstrahl
+CoopChallenges coopChallenges;
 
 
 MultiplayerManager multiplayerManager;
