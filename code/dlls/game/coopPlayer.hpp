@@ -180,6 +180,8 @@ public:
 	float tauntCooldownTime = 0.0f;
 	//[b611] chrissstrahl - cooldown for !block
 	float cmdBlockCooldownTime = 0.0f;
+	//[b611] chrissstrahl - collision
+	float callange_LastCollisionTime = 0.0f;
 };
 
 
