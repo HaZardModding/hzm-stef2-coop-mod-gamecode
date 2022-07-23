@@ -21,6 +21,8 @@
 #include "RageAI.h"
 #include "player.h"
 
+#include "mp_manager.hpp" //[b611] chrissstrahl
+
 void Strategos::DoArchive( Archiver &arc , Actor *actor )
 {
 	Archive( arc );
@@ -182,13 +184,13 @@ void DefaultStrategos::_EvaluatePackages()
 	}
 }
 
-
 void DefaultStrategos::_EvaluateWorld()
 {
 	_CheckForInTheWay();
 	_CheckForInConeOfFire();   
 }
 
+//[b611] chrissstrahl - now checks for each player
 void DefaultStrategos::_CheckForInConeOfFire()
 {
 	Vector dir;
@@ -228,6 +230,9 @@ void DefaultStrategos::_CheckForInConeOfFire()
 				
 				player = (Player*)teammate;
 				check = player->GetVAngles();
+
+				//[b611] debug - test
+				gi.Printf(va("\n_CheckForInConeOfFire - eamMateList.ObjectAt( %d ) %s\n", player->client->pers.netname, i));
             }
 			else
             {
@@ -257,23 +262,20 @@ void DefaultStrategos::_CheckForInConeOfFire()
 	
 	act->SetActorFlag( ACTOR_FLAG_IN_CONE_OF_FIRE , false );
 	act->SetActorFlag( ACTOR_FLAG_IN_PLAYER_CONE_OF_FIRE , false );
-	
 }
 
-void DefaultStrategos::_CheckForInTheWay()
+//[b611] chrissstrahl - seperated from parent func so it can be called for each player
+void DefaultStrategos::_CheckForInTheWay(Player* player)
 {
-	Player *player;   
+	if (!player)
+		return;
+
 	Vector playerToSelf;
 	Vector playerVelocity;
 	Vector dir;
 	Vector check;
 	float relativeYaw;
 	float dist;
-	
-	player = GetPlayer( 0 );
-	
-	if (!player)
-		return;
 	
 	playerToSelf = act->origin - player->origin;
 	dist = playerToSelf.length();
@@ -292,25 +294,45 @@ void DefaultStrategos::_CheckForInTheWay()
 	
 	if ( DotProduct( playerVelocity , playerToSelf ) <= 0 )
 		return;
-	
-	if ( act->EntityHasFireType( player, FT_BULLET ) || act->EntityHasFireType( player, FT_PROJECTILE ) )
+
+	if (act->EntityHasFireType(player, FT_BULLET) || act->EntityHasFireType(player, FT_PROJECTILE))
 	{
 		_checkYawMin = -30.0f;
-		_checkYawMax =  30.0f;
-		
+		_checkYawMax = 30.0f;
+
 		check = player->GetVAngles();
 		dir = playerToSelf.toAngles();
-		
-		relativeYaw = AngleNormalize180( AngleNormalize180(check[YAW]) - AngleNormalize180(dir[YAW]) );
-		
-		if ( (relativeYaw <= _checkYawMax) && (relativeYaw >= _checkYawMin ) )
+
+		relativeYaw = AngleNormalize180(AngleNormalize180(check[YAW]) - AngleNormalize180(dir[YAW]));
+
+		if ((relativeYaw <= _checkYawMax) && (relativeYaw >= _checkYawMin))
 		{
-			act->AddStateFlag( STATE_FLAG_TOUCHED_BY_PLAYER );
-			act->AddStateFlag( STATE_FLAG_IN_THE_WAY );
+			act->AddStateFlag(STATE_FLAG_TOUCHED_BY_PLAYER);
+			act->AddStateFlag(STATE_FLAG_IN_THE_WAY);
 		}
-		
 	}
-	
+}
+
+//[b611] chrissstrahl - now checks for each player
+void DefaultStrategos::_CheckForInTheWay() 
+{
+	//[b611] chrissstrahl
+	int i;
+	Entity* entity;
+
+	//for (i = 0; i < maxentities->integer; i++) { //check only players in the beginning - deactivate actor checks
+	for (i = 0; i < maxclients->integer; i++) {
+		entity = g_entities[i].entity;
+
+		if (!entity ||
+			entity->health <= 0 ||
+			entity->deadflag ||
+			multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator((Player*)entity))
+		{
+			continue;
+		}
+		_CheckForInTheWay((Player*)entity);
+	}	
 }
 
 float DefaultStrategos::GetCheckYawMax()
