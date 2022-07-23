@@ -48,6 +48,7 @@
 //================================================================
 void coop_classCheckApplay( Player *player )
 {
+	//[b611] chrissstrahl - chaning class disabled feature is located in: G_coopCom_class
 	if ( player->coopPlayer.lastTimeChangedClass != player->coopPlayer.lastTimeAppliedClass ){
 		coop_classApplayAttributes( player , false );
 		player->coopPlayer.lastTimeAppliedClass = player->coopPlayer.lastTimeChangedClass;
