@@ -32,6 +32,9 @@
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
 
+#include "coopChallenges.hpp" //[b611] chrissstrahl
+extern CoopChallenges coopChallenges;
+
 #include "decals.h"
 
 Event EV_Sentient_BeginAttack
@@ -2442,21 +2445,21 @@ void Sentient::ArmorDamage( float damage, Entity *inflictor, Entity *attacker, c
 	
 	// Handle statis damage
 	
-	if ( meansofdeath == MOD_STASIS )
+	if (meansofdeath == MOD_STASIS)
 	{
 
-		if ( damage > 0.0f )
+		if (damage > 0.0f)
 		{
 			//Stupid last minute hack to make sure we can't stasis people who will break
-			if ( this->isSubclassOf(Actor) )
-				{
-				Actor *me;
+			if (this->isSubclassOf(Actor))
+			{
+				Actor* me;
 				me = (Actor*)this;
-				if ( me->GetActorFlag(ACTOR_FLAG_CANNOT_FREEZE ) )
-					{
+				if (me->GetActorFlag(ACTOR_FLAG_CANNOT_FREEZE))
+				{
 					return;
-					}
 				}
+			}
 
 			//[b607] chrissstrahl - make sure the stasis weapon is really good in coop
 			if (g_gametype->integer == GT_MULTIPLAYER && game.coop_isActive) {
@@ -2464,13 +2467,13 @@ void Sentient::ArmorDamage( float damage, Entity *inflictor, Entity *attacker, c
 				damage = game.coop_stasisTime;
 			}
 			startStasis();
-			PostEvent( EV_StopStasis, damage );
+			PostEvent(EV_StopStasis, damage);
 		}
-		
+
 		return;
 	}
-	
-	if ( meansofdeath != MOD_LIFEDRAIN )
+
+	if ( meansofdeath != MOD_LIFEDRAIN && coopChallenges.haloShieldRelayDamage(this, damage)) //[b611] chrissstrahl - should damage be relayed to health or not
 	{
 		if ( damage < 0 )
 		{
