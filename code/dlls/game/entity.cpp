@@ -1806,7 +1806,7 @@ Event EV_Entity_IsEntityInsideOfEntity
 	EV_SCRIPTONLY,
 	"@fe",
 	"returnInteger entity",
-	"Returns if given entity boundingboxex are touching/inside-of each other"
+	"Returns if given entity bounding-box is touching/inside-of each other"
 );
 //hzm gameupdate chrissstrahl [b611] - marks entity to become solid asap
 Event EV_Entity_MakeSolidAsap
