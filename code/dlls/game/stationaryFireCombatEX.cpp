@@ -584,8 +584,33 @@ void StationaryFireCombatEX::updateEnemy()
 		currentEnemy = _self->enemyManager->GetCurrentEnemy();
 		if ( !currentEnemy )
 			{
-			Player* player;
-			player = GetPlayer( 0 );
+			Player* player = NULL;
+			//player = GetPlayer( 0 ); //[b611] chrissstrahl
+
+
+			//[b611] chrissstrahl - get a valid visible player
+			//NO offset from ground/origin because we don't know if it is a inverted turret
+			int i;
+			Entity* entity;
+
+			for (i = 0; i < maxclients->integer; i++) {
+				entity = g_entities[i].entity;
+
+				if (!entity ||
+					entity->health <= 0 ||
+					entity->deadflag ||
+					multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator((Player*)entity))
+				{
+					continue;
+				}
+
+				if (_self->sensoryPerception->CanSeeEntity(_self->origin, entity, false, true)) {
+					gi.Printf("\nSnipeEnemy::updateEnemy()\nValid Player found, yay!\n");
+					player = (Player*)entity;
+					break;
+				}
+			}
+			//[b611] end
 
 			if ( player && GetSelf()->enemyManager->Hates(player) && _forceAttack )
 				{
