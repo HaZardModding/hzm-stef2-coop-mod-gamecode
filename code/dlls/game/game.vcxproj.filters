@@ -607,6 +607,9 @@
     <ClCompile Include="coopGamecmds.cpp">
       <Filter>Source Files\HaZardModding\Coop</Filter>
     </ClCompile>
+    <ClCompile Include="coopChallenges.cpp">
+      <Filter>Source Files\HaZardModding\Coop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1225,6 +1228,9 @@
       <Filter>Source Files\HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
     <ClInclude Include="coopGamecmds.hpp">
+      <Filter>Source Files\HaZardModding\Coop\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="coopChallenges.hpp">
       <Filter>Source Files\HaZardModding\Coop\Header</Filter>
     </ClInclude>
   </ItemGroup>

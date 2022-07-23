@@ -611,6 +611,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release CDROM|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release CDROM|Win32'">_pch_cpp.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="coopChallenges.cpp" />
     <ClCompile Include="changePosture.cpp" />
     <ClCompile Include="characterstate.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -1458,6 +1459,7 @@
     <ClInclude Include="bspline.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="CameraPath.h" />
+    <ClInclude Include="coopChallenges.hpp" />
     <ClInclude Include="changePosture.hpp" />
     <ClInclude Include="characterstate.h" />
     <ClInclude Include="chars.h" />
