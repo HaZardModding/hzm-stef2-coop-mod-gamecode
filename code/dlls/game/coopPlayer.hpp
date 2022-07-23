@@ -182,6 +182,8 @@ public:
 	float cmdBlockCooldownTime = 0.0f;
 	//[b611] chrissstrahl - collision
 	float callange_LastCollisionTime = 0.0f;
+	//[b611] chrissstrahl - disable ability to change class
+	bool classChangingDisabled = false;
 };
 
 
