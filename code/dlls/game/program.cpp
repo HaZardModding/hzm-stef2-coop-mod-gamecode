@@ -1165,9 +1165,11 @@ def_t *Program::getDefForVarname( const char *varname )
 {
 	def_t	*def;
 
-	for( def = program.def_head.next; def; def = def->next )
+	for (def = program.def_head.next; def; def = def->next)
 	{
-		if ( !strcmp(def->name, varname) ) return def;
+		if (!strcmp(def->name, varname)) {
+			return def;
+		}
 	}
 
 	return NULL;
