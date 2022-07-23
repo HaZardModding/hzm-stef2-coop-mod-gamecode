@@ -41,6 +41,7 @@ public:
 	void		updateCollision(float frameTime);
 	void		updateStayClose(float frameTime);
 	void		updateHalo(float frameTime);
+	bool		haloShieldRelayDamage(Sentient* sentient, float fDamage);
 };
 
 #endif

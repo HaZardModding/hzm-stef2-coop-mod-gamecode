@@ -159,6 +159,8 @@ void CoopChallenges::updateCollision(float frameTime)
 
 void CoopChallenges::updateStayClose(float frameTime)
 {
+	//needs only to be updated once every sec or every 2 secs
+
 	Player* player;
 	Entity* entityOther;
 
@@ -169,7 +171,7 @@ void CoopChallenges::updateStayClose(float frameTime)
 		return;
 	}
 
-	//check if this player is colliding with any other player
+	//check if this player is close to any other player
 	int i;
 	//for (i = 0; i < maxentities->integer; i++) { //check only players in the beginning - deactivate actor checks
 	for (i = 0; i < maxclients->integer; i++) { //check only players in the beginning - deactivate actor checks
@@ -199,6 +201,25 @@ void CoopChallenges::updateStayClose(float frameTime)
 		int iDamage = 5;
 		player->Damage(world, world, iDamage, player->centroid, player->centroid, player->centroid, (int)iDamage, 0, MOD_NONE);
 	}
+}
+
+//[b611] chrissstrahl - if player has shield take from shield until depleted, discard any left over damage
+bool CoopChallenges::haloShieldRelayDamage(Sentient *sentient,float fDamage)
+{	
+	bool bRelayDamage = true;
+	float fArmor = sentient->GetArmorValue();
+	float fVal = fArmor;
+	if (game.coop_isActive /* && haloThingActive */ && fArmor > 0) {
+		if (fArmor > 0) {
+			bRelayDamage = false;
+		}
+		fArmor -= fDamage;
+		if (fArmor < 0) { fArmor = 0; }
+		sentient->SetMyArmorAmount(fArmor);
+	}
+//gi.Printf(va("haloShieldRelayDamage: D:%f -> A:%f -> RLY:%d\n",fDamage, fVal, (int)bRelayDamage));
+	//relay damage to health ?
+	return bRelayDamage;
 }
 
 void CoopChallenges::updateHalo(float frameTime)
