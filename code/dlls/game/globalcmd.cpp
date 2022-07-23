@@ -1186,7 +1186,7 @@ Event EV_ScriptThread_getStringScriptVariable
 	"getStringScriptVariable" ,
 	EV_SCRIPTONLY ,
 	"@ss" ,
-	"retunString string" ,
+	"retunedString string" ,
 	"Returns level script code (string) variable by given name"
 );
 Event EV_ScriptThread_setVectorScriptVariable
