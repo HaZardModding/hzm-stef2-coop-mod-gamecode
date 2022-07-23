@@ -79,17 +79,17 @@ qboolean G_coopCom_block(const gentity_t* ent)
 		targetPlayer->_makeSolidASAP = true;
 
 		if (coop_checkPlayerLanguageGerman(player)) {
-			player->hudPrint("^5Coop^2: Spieler makiert!\n");
+			player->hudPrint(COOP_TEXT_BLOCK_MARKED_PLAYER_DEU);
 		}
 		else {
-			player->hudPrint("^5Coop^2: Player marked!\n");
+			player->hudPrint(COOP_TEXT_BLOCK_MARKED_PLAYER_ENG);
 		}
 	}else{
 		if (coop_checkPlayerLanguageGerman(player)) {
-			player->hudPrint("^5Coop^2: Kein valides Ziel gefunden!\n");
+			player->hudPrint(COOP_TEXT_BLOCK_MARKED_PLAYER_NOTFOUND_DEU);
 		}
 		else {
-			player->hudPrint("^5Coop^2: No valid target found!\n");
+			player->hudPrint(COOP_TEXT_BLOCK_MARKED_PLAYER_NOTFOUND_ENG);
 		}
 	}
 	return true;
@@ -102,17 +102,27 @@ qboolean G_coopCom_block(const gentity_t* ent)
 // Description: handles player !class command
 //              
 // Parameters:  const gentity_t* ent
+qboolean G_coopCom_class(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
 //              
 // Returns:     qboolean
 //              
 //================================================================
-qboolean G_coopCom_class(const gentity_t* ent)
-{
-	Player* player = (Player*)ent->entity;
 
 	//coop only command
 	if (!game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+		return true;
+	}
+
+	//[b611] chrissstrahl - if chaning classes is disabled for this player, abbort
+	if (player->coopPlayer.classChangingDisabled) {
+		if (coop_checkPlayerLanguageGerman(player)) {
+			player->hudPrint(COOP_TEXT_CLASS_CANT_CHANGE_ANYMORE_DEU);
+		}else{
+			player->hudPrint(COOP_TEXT_CLASS_CANT_CHANGE_ANYMORE_ENG);
+		}
 		return true;
 	}
 
@@ -124,10 +134,10 @@ qboolean G_coopCom_class(const gentity_t* ent)
 	if (n == 1){
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32){
 			if (coop_checkPlayerLanguageGerman(player)) {
-				player->hudPrint(va("^5Coop^2: Ihre aktuelle Klasse ist^5: %s\n", player->coopPlayer.className.c_str()));
+				player->hudPrint(va("%s %s\n", COOP_TEXT_CLASS_YOUR_CLASS_IS_DEU, player->coopPlayer.className.c_str()));
 			}
 			else {
-				player->hudPrint(va("^5Coop^2: Your current class is^5: %s\n", player->coopPlayer.className.c_str()));
+				player->hudPrint(va("%s %s\n", COOP_TEXT_CLASS_YOUR_CLASS_IS_ENG, player->coopPlayer.className.c_str()));
 			}
 		}
 		return true;
@@ -150,10 +160,10 @@ qboolean G_coopCom_class(const gentity_t* ent)
 		if (Q_stricmpn("t", classSelected.c_str(), 1) != 0) {
 			if (gi.GetNumFreeReliableServerCommands(player->entnum) >= 32) {
 				if (coop_checkPlayerLanguageGerman(player)) {
-					player->hudPrint("^5Coop^2: ^3Invalider Klassenname!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
+					player->hudPrint(COOP_TEXT_CLASS_INVALID_CLASSNAME_DEU);
 				}
 				else {
-					player->hudPrint("^5Coop^2: ^3Invalid class name!^2 Valid: [^5t^2]Technician [^5m^2]Medic [^5h^2]HeavyWeapons\n");
+					player->hudPrint(COOP_TEXT_CLASS_INVALID_CLASSNAME_ENG);
 				}
 			}
 		}
@@ -213,10 +223,10 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 			if (!Q_stricmpn("None", weaponName, 4) || !Q_stricmpn("EnterpriseCannon", weaponName, 4) || !Q_stricmpn("Batleth", weaponName, 4) || !Q_stricmpn("Phaser", weaponName, 6) || !Q_stricmpn("Tricorder", weaponName, 9))
 			{
 				if (coop_checkPlayerLanguageGerman(player)) {
-					player->hudPrint("^5Coop^2: Diese Waffe kann nicht ablegt werden.\n");
+					player->hudPrint(COOP_TEXT_WEAPON_CANT_DROP_DEU);
 				}
 				else {
-					player->hudPrint("^5Coop^2: Can't drop this particular Weapon.\n");
+					player->hudPrint(COOP_TEXT_WEAPON_CANT_DROP_ENG);
 				}
 			}
 			else
@@ -243,10 +253,10 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 				player->animate->ClearTorsoAnim();
 
 				if (coop_checkPlayerLanguageGerman(player)) {
-					player->hudPrint("^5Coop^2: Ihre Waffe wurde ablegt.\n");
+					player->hudPrint(COOP_TEXT_WEAPON_WAS_DROPPED_DEU);
 				}
 				else {
-					player->hudPrint("^5Coop^2: Your Weapon was dropped.\n");
+					player->hudPrint(COOP_TEXT_WEAPON_WAS_DROPPED_ENG);
 				}
 			}
 		}
@@ -305,8 +315,8 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!kickbots^8 - Kickt alle Bots\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!leader^8 - Erzwingt Teamleader Abstimmung - Parameter: Client Nummer\"\n");
 
-		player->hudPrint("^2Befehlsliste wurde in Konsole ausgegeben!\n");
-		player->hudPrint("^2Tippen Sie ein einzelnes '!' Symbol ein und drücken Sie dann Tabulator\n");
+		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_PRINTED_DEU);
+		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_ENTER_TAB_DEU);
 	}
 	else {
 		if (player->coopPlayer.admin) {
@@ -340,8 +350,8 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!kickbots^8 - Kicks all Bots\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!leader^8 - Forces a Teamleader Vote - Parameter: Client Number.\"\n");
 
-		player->hudPrint("^2Command list printed to Console!\n");
-		player->hudPrint("^2Enter a single '!' Mark and then press Tabulator to cycle commands.\n");
+		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_PRINTED_ENG);
+		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_ENTER_TAB_DEU);
 	}
 	return true;
 }
@@ -382,7 +392,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		return true;
 
 	str s;
-	player->hudPrint("===Your Informations ===\n");
+	player->hudPrint(COOP_TEXT_HELP_YOUR_INFO_ENG);
 	if (player->coopPlayer.installed == 1) {
 		str temp = player->coopPlayer.installedVersion;
 		str coopVer = temp[0];
@@ -1159,6 +1169,8 @@ qboolean G_coopInstalled(const gentity_t* ent)
 // Parameters:  int entNum
 //              
 // Returns:     qboolean
+// 
+// Think:		coop_playerPlaceableThink
 //              
 //================================================================
 qboolean G_coopItem(const gentity_t* ent)
