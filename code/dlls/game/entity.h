@@ -452,6 +452,17 @@ class Entity : public Listener
 		int					watertype;
 		int					waterlevel;
 		
+		//hzm gameupdate - new function to handle the bubbles (for drowning players)
+		void			BubbleThink(void);
+
+		//[b606] chrisstrahl - added support for 6 more uservars
+		void				SetUserVar5(Event* ev);
+		void				SetUserVar6(Event* ev);
+		void				SetUserVar7(Event* ev);
+		void				SetUserVar8(Event* ev);
+		void				SetUserVar9(Event* ev);
+		void				SetUserVar10(Event* ev);
+
 		//[b611] chrissstrahl - add boster script entity event
 		void				BoosterNearbyPlayer( Event *ev );
 		//hzm gameupdate chrissstrahl - check if entity is inside other entity
@@ -845,14 +856,6 @@ class Entity : public Listener
 		void				SetUserVar2( Event *ev );
 		void				SetUserVar3( Event *ev );
 		void				SetUserVar4( Event *ev );
-		
-		//[b606] chrisstrahl - added support for 6 more uservars
-		void				SetUserVar5( Event *ev );
-		void				SetUserVar6( Event *ev );
-		void				SetUserVar7( Event *ev );
-		void				SetUserVar8( Event *ev );
-		void				SetUserVar9( Event *ev );
-		void				SetUserVar10( Event *ev );
 
 		void				isWithinDistanceOf( Event *ev );
 
@@ -928,9 +931,6 @@ class Entity : public Listener
 
 		void			setNetworkDetail( Event *ev );
 		bool			isNetworkDetail( void );
-
-		//hzm gameupdate - new function to handle the bubbles (for drowning players)
-		void			BubbleThink( void );
 	};
 
 inline bool Entity::hasUseData()
