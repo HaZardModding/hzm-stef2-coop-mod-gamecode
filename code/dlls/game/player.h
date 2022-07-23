@@ -254,6 +254,17 @@ class Player : public Sentient
 		//HaZardModding Coop Mod Added and Modified Stuff
 		//HaZardModding Coop Mod Added and Modified Stuff
 		//HaZardModding Coop Mod Added and Modified Stuff
+	private:
+		//[b611] chrissstrahl - get coop class name
+		void				getCoopClass(Event* ev);
+		//[b611] chrissstrahl - check if coop class is technician
+		void				isCoopClassTechnician(Event* ev);
+		//[b611] chrissstrahl - check if coop class is Medic
+		void				isCoopClassMedic(Event* ev);
+		//[b611] chrissstrahl - check if coop class is Medic
+		void				isCoopClassHeavyWeapons(Event* ev);
+		//[b611] chrissstrahl - prevent/allow player from switching class - script command
+		void				setClassLocked(Event* ev);
 	public:
 		//[b611] chrissstrahl - return if player is pressing use or not
 		void				checkUsePressing(Event* ev);

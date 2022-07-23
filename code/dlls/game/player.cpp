@@ -1488,7 +1488,7 @@ Event EV_Player_setCamera
 //hzm gameupdate chrissstrahl [b611] - widgetcommand
 Event EV_Player_WidgetCommand
 (
-	"widgetCommamnd",
+	"widgetCommand",
 	EV_SCRIPTONLY,
 	"ssS",
 	"string-widgetname string-command string-parameter",
@@ -1582,7 +1582,53 @@ Event EV_Player_getCoopVersion
 	EV_SCRIPTONLY,
 	"@f",
 	"return-Integer",
-	"Returns if player has hzm coop mod installed"
+	"Returns player coop mod installed version"
+);
+//[b611] chrissstrahl - locks player to his currently selected coop class
+Event EV_Player_SetClassLocked
+(
+	"setClassLocked",
+	EV_SCRIPTONLY,
+	"f",
+	"bool-yes-or-no",
+	"Locks/Unlocks player to his current Coop class"
+);
+//[b611] chrissstrahl - get coop class name
+Event EV_Player_GetCoopClass
+(
+	"getCoopClass",
+	EV_SCRIPTONLY,
+	"@s",
+	"string-classname",
+	"returns Player Coop class name"
+);
+//[b611] chrissstrahl - check if coop class is Technician
+Event EV_Player_IsTechnichian
+(
+	"isCoopClassTechnician",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player Coop class is Technician"
+);
+//[b611] chrissstrahl - check if coop class is Medic
+Event EV_Player_IsMedic
+(
+	"isCoopClassMedic",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player Coop class is Medic"
+);
+
+//[b611] chrissstrahl - check if coop class is HeavyWeapons
+Event EV_Player_IsHeavyWeapons
+(
+	"isCoopClassHeavyWeapons",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player Coop class is HeavyWeapons"
 );
 
 /*
@@ -1829,6 +1875,16 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_GetViewangles ,				&Player::getViewanglesEvent } ,
 	//[b607] chrissstrahl - return targeted entity of player
 	{ &EV_Player_GetTargetedEntity ,			&Player::getTargetedEntity },
+	//[b611] chrissstrahl - allowing/preventing player from switching class
+	{ &EV_Player_SetClassLocked ,				&Player::setClassLocked },
+	//[b611] chrissstrahl - get coop class name
+	{ &EV_Player_GetCoopClass ,						&Player::getCoopClass },
+	//[b611] chrissstrahl - check if coop class is technician
+	{ &EV_Player_IsTechnichian ,				&Player::isCoopClassTechnician },
+	//[b611] chrissstrahl - check if coop class is Medic
+	{ &EV_Player_IsMedic ,						&Player::isCoopClassMedic },
+	//[b611] chrissstrahl - check if coop class is HeavyWeapons
+	{ &EV_Player_IsHeavyWeapons ,				&Player::isCoopClassHeavyWeapons },
 	
 	//HaZardModding Coop Mod END
 	//HaZardModding Coop Mod END
@@ -1836,6 +1892,48 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 	{ NULL , NULL }
 };
+
+//[b611] chrissstrahl - get coop class name
+void Player::getCoopClass(Event* ev)
+{
+	ev->ReturnString(this->coopPlayer.className);
+}
+
+//[b611] chrissstrahl - check if coop class is technician
+void Player::isCoopClassTechnician(Event* ev)
+{
+	if (this->coopPlayer.className == "Technician") {
+		ev->ReturnFloat(1.0f);
+		return;
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+//[b611] chrissstrahl - check if coop class is Medic
+void Player::isCoopClassMedic(Event* ev)
+{
+	if (this->coopPlayer.className == "Medic") {
+		ev->ReturnFloat(1.0f);
+		return;
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+//[b611] chrissstrahl - check if coop class is HeavyWeapons
+void Player::isCoopClassHeavyWeapons(Event* ev)
+{
+	if (this->coopPlayer.className == "HeavyWeapons") {
+		ev->ReturnFloat(1.0f);
+		return;
+	}
+	ev->ReturnFloat(0.0f);
+}
+
+//[b611] chrissstrahl - set coop class restriction - allowing/preventing player from switching class
+void Player::setClassLocked(Event* ev)
+{
+	coopPlayer.classChangingDisabled = (bool)ev->GetInteger(1);
+}
 
 void Player::getScore(Event* ev)
 {
@@ -1956,7 +2054,7 @@ void Player::widgetCommandEvent(Event* ev)
 		str sTemp = ev->GetString(3);
 
 		//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
-		if (!Q_stricmp(sParameters.c_str(), "labeltext")) {
+		if (coop_returnIntFind(sParameters.c_str(), "labeltext") != -1) {
 			int i;
 			for (i = 0; i < strlen(sTemp); i++) {
 				if (sTemp[i] == '\n' || sTemp[i] == '#')
@@ -11773,17 +11871,27 @@ void Player::ReceivedItem( Item * item )
 	}
 	else if ( item->getAmount() > 1 )
 	{
-		if ( item->getName() == "health" )  // I know this is horrible :(
-			setItemText( item->getIcon() , va( "$$PickedUp$$ %d $$Item-%s$$\n" , ( int )item->getAmount() , item->getName().c_str() ) );
-		//gi.centerprintf ( edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$PickedUp$$ %d %s\n", (int)item->getAmount(), item->getName() );
-		else
-			setItemText( item->getIcon() , va( "$$PickedUp$$ %d $$Item-%s$$s\n" , ( int )item->getAmount() , item->getName().c_str() ) );
-		//gi.centerprintf ( edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$PickedUp$$ %d %ss\n", (int)item->getAmount(), item->getName() );
+		////gi.centerprintf ( edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$PickedUp$$ %d %s\n", (int)item->getAmount(), item->getName() );
+
+		if (item->getName() == "health") {  // I know this is horrible :(
+			setItemText(item->getIcon(), va("$$PickedUp$$ %d $$Item-%s$$\n", (int)item->getAmount(), item->getName().c_str()));
+		}
+		else { //[b611] chrissstrahl - fixed this up to work properly
+			str sItemName = item->getName();
+			str sItemLocString = va("$$Item-%s$$", sItemName.c_str());
+			if (sItemName == "BasicArmor") {
+				sItemLocString = "$$Item-Armor$$";
+			}
+			if (sItemName == "Plasma" || sItemName == "Fed" || sItemName == "Idryll") {
+				sItemLocString = va("$$Ammo-%s$$", sItemName.c_str());
+			}
+			//gi.Printf(va("\nRecivedItem::%s\n\n", item->getName().c_str()));
+			setItemText(item->getIcon(), va("$$PickedUp$$ %d %s\n", (int)item->getAmount(), sItemLocString.c_str()));
+		}
 	}
 	else
 	{
 		setItemText( item->getIcon() , va( "$$PickedUpThe$$ $$Item-%s$$\n" , item->getName().c_str() ) );
-		//gi.centerprintf ( edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$PickedUpThe$$ %s\n", item->getName() );
 	}
 
 	fullname = str( "playeritem_" ) + item->getName();
