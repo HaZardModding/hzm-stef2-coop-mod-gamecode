@@ -487,18 +487,41 @@ void SnipeEnemy::updateEnemy()
 	// target, and set that to be the current enemy
 	
 	Entity *currentEnemy = _self->enemyManager->GetCurrentEnemy();
-	if ( !currentEnemy )
-		{
+	if (!currentEnemy)
+	{
 		_self->enemyManager->FindHighestHateEnemy();
 		currentEnemy = _self->enemyManager->GetCurrentEnemy();
-		if ( !currentEnemy )
-			{
-			Player* player;
-			player = GetPlayer( 0 );
-			}
-			
-		}
+		if (!currentEnemy)
+		{
+			//Player* player;
+			//player = GetPlayer( 0 ); //[b611] chrissstrahl- looks like this was never finished
 
+			//[b611] chrissstrahl - get a valid visible player
+			//set offset from ground/origin about 70, should be vision height
+			int i;
+			Vector pos = _self->origin;
+			pos[2] += 70;
+			Entity* entity;
+
+			for (i = 0; i < maxclients->integer; i++) {
+				entity = g_entities[i].entity;
+
+				if (!entity ||
+					entity->health <= 0 ||
+					entity->deadflag ||
+					multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator((Player*)entity))
+				{
+					continue;
+				}
+
+				if (_self->sensoryPerception->CanSeeEntity(pos, entity, false, true)) {
+					//gi.Printf("\nSnipeEnemy::updateEnemy()\nValid Player found, yay!\n");
+					_currentEnemy = entity;
+					break;
+				}
+			}
+		}
+	}
 	_currentEnemy = currentEnemy;
 }
 

@@ -605,7 +605,7 @@ void StationaryFireCombatEX::updateEnemy()
 				}
 
 				if (_self->sensoryPerception->CanSeeEntity(_self->origin, entity, false, true)) {
-					gi.Printf("\nSnipeEnemy::updateEnemy()\nValid Player found, yay!\n");
+					//gi.Printf("\nStationaryFireCombatEX::updateEnemy()\nValid Player found, yay!\n");
 					player = (Player*)entity;
 					break;
 				}
