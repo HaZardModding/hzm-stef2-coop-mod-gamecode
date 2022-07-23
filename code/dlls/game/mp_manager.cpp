@@ -1004,11 +1004,11 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 				if ( !level.mission_failed )
 				{
 					if ( !game.coop_isActive || ( player->coopPlayer.lastTimeSpawned + 2 ) < level.time ) {
-						if (player->getLanguage() == "Deu") {
-							centerPrint( player->entnum , va( "^3 %s ^8ist keine akzeptable Spielfigur..." , modelName ) , CENTERPRINT_IMPORTANCE_NORMAL );
+						if (coop_checkPlayerLanguageGerman(player)) {
+							centerPrint( player->entnum , va( "^3 %s %s" , modelName, COOP_TEXT_PLAYER_MODEL_NOT_ALLOWED_DEU) , CENTERPRINT_IMPORTANCE_NORMAL );
 						}
 						else {
-							centerPrint( player->entnum , va( "^3 %s ^8is not an acceptable Player-Skin to use..." , modelName ) , CENTERPRINT_IMPORTANCE_NORMAL );
+							centerPrint( player->entnum , va( "^3 %s %s" , modelName, COOP_TEXT_PLAYER_MODEL_NOT_ALLOWED_ENG) , CENTERPRINT_IMPORTANCE_NORMAL );
 						}
 					}
 				}
