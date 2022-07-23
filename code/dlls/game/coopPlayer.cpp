@@ -272,7 +272,7 @@ bool coop_playerSpawnLms( Player *player )
 		if ( !level.mission_failed && ( player->coopPlayer.lastTimeHudMessage + 3 ) < level.time ){
 			player->coopPlayer.lastTimeHudMessage = level.time;
 
-			if ( player->getLanguage() == "Deu" ) {
+			if (coop_checkPlayerLanguageGerman(player)) {
 				multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Aktiv^8 - ^1Sie sind momentan ausgeschaltet.\n" );
 			}
 			else {
@@ -757,7 +757,7 @@ void coop_playerSetupNoncoop( Player *player)
 		//[b607] chrissstrahl - make sure we do not handle bots
 		gentity_t *ent = player->edict;
 		if (!(ent->svflags & SVF_BOT)) {
-			if ( player->getLanguage() == "Deu" ) {
+			if ( coop_checkPlayerLanguageGerman(player) ) {
 				DelayedServerCommand( player->entnum , "hudprint ^2Holen Sie sich den ^5HZM Coop Mod^2 fuer ein volles Erlebniss! ^5!help^8 eingeben fuer Befehle.\n" );
 			}
 			else {
@@ -1149,7 +1149,7 @@ void coop_playerEnterArena(int entnum, float health)
 	if (multiplayerManager.getPlayersTeam(player) != NULL && multiplayerManager.getPlayersTeam(player)->getName() != "Blue") {
 		multiplayerManager.joinTeam(player, "Blue");
 		if ((player->coopPlayer.timeEntered + 2) < level.time && !multiplayerManager.isPlayerSpectator(player)) {
-			if (player->getLanguage() == "Deu") {
+			if (coop_checkPlayerLanguageGerman(player)) {
 				player->hudPrint("^5INFO:^2 Coop erlaubt nur blaues Team.\n");
 			}
 			else {
@@ -1162,12 +1162,6 @@ void coop_playerEnterArena(int entnum, float health)
 	//reset the radar hud
 	//[b607] chrissstrahl - make sure not to reset twiche
 	coop_radarReset( player );
-
-	//NOTE: this might create a crash, DISSABLED
-	//hzm coop mod chrissstrahl - not sure if this makes any sence here
-	//Add the player to the teammates list 
-	//Probably should be a better way to do this.
-	//TeamMateList.AddObject( player );
 
 	//hzm coop mod chrissstrahl - used to store if a medic was notified to heal this now critically injured player
 	player->coopPlayer.lastTargetedClassSend = "";
@@ -1715,9 +1709,9 @@ bool coop_playerMakeSolidASAPThink(Player* player)
 		else{
 			if ( g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager._playerData[player->entnum]._spectator ) {
 				player->setSolidType( SOLID_BBOX );
-				return true;
 			}
 			player->_makeSolidASAP = false;
+			return true;//[b611] chrissstrahl - moved
 		}
 	}
 }
@@ -1751,9 +1745,11 @@ void coop_playerPlaceableThink(Player* player)
 		return;
 	}
 
-	Vector vPlayer, vPlayerAngle, end_pos;
-	trace_t trace;
-	vec3_t fwd;
+	SpawnArgs		args;
+	Entity*			obj;
+	Vector			vPlayer, vPlayerAngle, end_pos;
+	trace_t			trace;
+	vec3_t			fwd;
 	AngleVectors(player->client->ps.viewangles, fwd, NULL, NULL);
 	Vector forward = fwd;
 	//end_pos = (fwd * 100.0f) + start;
@@ -1795,8 +1791,6 @@ void coop_playerPlaceableThink(Player* player)
 				StopFireEvent->AddString("dualhand");
 				player->ProcessEvent(StopFireEvent);
 
-				SpawnArgs      args;
-				Entity* obj;
 				//args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
 
 				bool classSpecificStation = false;
@@ -1825,7 +1819,6 @@ void coop_playerPlaceableThink(Player* player)
 				obj->setOrigin(player->coopPlayer.ePlacable->origin);
 				obj->setAngles(player->coopPlayer.ePlacable->angles);
 				obj->setSize(player->coopPlayer.ePlacable->mins, player->coopPlayer.ePlacable->maxs);
-
 				//handle class specific stations
 				if (classSpecificStation) {
 					//remove any previouse class specific placed objects
@@ -1835,7 +1828,16 @@ void coop_playerPlaceableThink(Player* player)
 						player->coopPlayer.eClassPlacable->ProcessEvent(RemoveMe);
 					}
 					//remember the class specific placed object
-					player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
 				}
 
 				player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
