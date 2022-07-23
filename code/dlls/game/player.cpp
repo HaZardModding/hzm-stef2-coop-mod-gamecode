@@ -1631,6 +1631,23 @@ Event EV_Player_IsHeavyWeapons
 	"Check if Player Coop class is HeavyWeapons"
 );
 
+//[b611] chrissstrahl - checks player has ger/eng langauge
+Event EV_Player_HasLanguageGerman
+(
+	"hasLanguageGerman",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player has English Language of the game"
+);
+Event EV_Player_HasLanguageEnglish
+(
+	"hasLanguageEnglish",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player has English Language of the game"
+);
 /*
 ==============================================================================
 
@@ -1885,6 +1902,10 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_IsMedic ,						&Player::isCoopClassMedic },
 	//[b611] chrissstrahl - check if coop class is HeavyWeapons
 	{ &EV_Player_IsHeavyWeapons ,				&Player::isCoopClassHeavyWeapons },
+	//[b611] chrissstrahl - checks player has ger/eng langauge
+	{ &EV_Player_HasLanguageGerman ,				&Player::hasLanguageGerman },
+	{ &EV_Player_HasLanguageEnglish ,				&Player::hasLanguageEnglish },
+	
 	
 	//HaZardModding Coop Mod END
 	//HaZardModding Coop Mod END
@@ -2103,6 +2124,26 @@ void Player::setCameraEvent(Event* ev)
 		game.cinematicCurrentCam = camera;
 	}
 	SetCamera((Camera*)camera, switchTime);
+}
+
+//hzm gameupdate chrissstrahl [b611]  - returns if player has german language of game
+void Player::hasLanguageGerman(Event* ev)
+{
+	bool bLangMatch = false;
+	if (this->getLanguage() == "Deu") {
+		bLangMatch = true;
+	}
+	ev->ReturnFloat( (float)bLangMatch );
+}
+
+//hzm gameupdate chrissstrahl [b611]  - returns if player has german language of game
+void Player::hasLanguageEnglish(Event* ev)
+{
+	bool bLangMatch = false;
+	if (this->getLanguage() == "Eng") {
+		bLangMatch = true;
+	}
+	ev->ReturnFloat((float)bLangMatch);
 }
 
 //hzm gameupdate chrissstrahl [b611]  - returns player language string

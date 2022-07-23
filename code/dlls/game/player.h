@@ -212,6 +212,9 @@ class Player : public Sentient
 		str					getLanguage(void);
 		void				setLanguage(str sLang);
 		void				getLanguageEvent(Event *ev);
+		//hzm gameupdate chrissstrahl [b611]  - returns if player has german language of game
+		void				hasLanguageGerman(Event* ev);
+		void				hasLanguageEnglish(Event* ev);
 		//hzm gameupdate chrissstrahl - check if player is spectator
 		void				isSpectator(Event* ev);
 		//hzm gameupdate chrissstrahl - get player name
