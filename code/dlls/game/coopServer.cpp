@@ -1021,28 +1021,6 @@ void coop_serverCoop()
 	//hzm coop mod chrissstrahl - let the level scripts know that this server has the coop mod
 	levelVars.SetVariable("isCoopServer", 1.0f);
 
-	//dectect if coop mod should be active
-	//[b607] chrissstrahl - added check if coop mod shoudl be disabled
-	if ( game.levelType > MAPTYPE_MULTIPLAYER ) {
-		//[b607] chrissstrahl - THIS creates a error in str.h at inline const char *str::c_str( void ) const
-		//I was unable to resolve this issue, so I use a workaround
-		//bool bb = coop_returnBool(coop_phraserIniGet("ini/serverData.ini", "disableCoop", "server"));
-		
-		
-		//str s = coop_phraserIniGet("ini/serverData.ini", "disableCoop", "server");
-		//bool b = coop_returnBool(s);
-		if (!false) { //b
-			game.coop_isActive = true;
-			//[b607] chrissstrahl - let the level scripts know that this is coop
-			levelVars.SetVariable("isCoopActive", 1.0f);
-		}
-		else {
-			//[b607] chrissstrahl - let the level scripts know that this is not coop
-			levelVars.SetVariable("isCoopActive", 0.0f);
-			gi.Printf(va("HZM Coop Mod is disabled. Set disableCoop=false in coop_status.ini.\n"));
-		}
-	}
-
 	//hzm coop mod chrissstrahl - print out some info to the console
 	#ifdef __linux__
 		str sLibrarayName = "ef2gamei386.so";
@@ -1058,6 +1036,14 @@ void coop_serverCoop()
 	//hzm coop mod chrissstrahl - NO MORE - Gallifrey Falls No More
 	if ( g_gametype->integer != GT_MULTIPLAYER ) {
 		return;
+	}
+
+	//[b611] chrissstrahl - dectect if coop mod should be active
+	if (game.levelType > MAPTYPE_MULTIPLAYER) {
+		game.coop_isActive = true;
+
+		//let the level scripts know that this is coop
+		levelVars.SetVariable("isCoopActive", 1.0f);
 	}
 
 	//hzm coop mod chrissstrahl - check if ssv_floodprotect should be enabled
