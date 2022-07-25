@@ -232,7 +232,7 @@ void DefaultStrategos::_CheckForInConeOfFire()
 				check = player->GetVAngles();
 
 				//[b611] debug - test
-				gi.Printf(va("\n_CheckForInConeOfFire - eamMateList.ObjectAt( %d ) %s\n", player->client->pers.netname, i));
+				gi.Printf(va("\n_CheckForInConeOfFire - eamMateList.ObjectAt( %d ) %s\n",i, player->client->pers.netname));
             }
 			else
             {
