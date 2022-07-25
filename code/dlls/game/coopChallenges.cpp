@@ -203,13 +203,28 @@ void CoopChallenges::updateStayClose(float frameTime)
 	}
 }
 
+
+//[b611] chrissstrahl - check if player can pickup this item while challange is active
+bool CoopChallenges::haloCanPickup(Sentient* sentient, str sItem)
+{
+	if (/* haloThingActive */ 0 ) {
+		if (sentient->isSubclassOf(Player)) {
+			Player* player = (Player*)sentient;
+			player->hudPrint("Halo Challange is active, you can't receive or pick this up\n");
+		}
+		return false;
+	}
+
+	return true;
+}
+
 //[b611] chrissstrahl - if player has shield take from shield until depleted, discard any left over damage
 bool CoopChallenges::haloShieldRelayDamage(Sentient *sentient,float fDamage)
 {	
 	bool bRelayDamage = true;
 	float fArmor = sentient->GetArmorValue();
 	float fVal = fArmor;
-	if (game.coop_isActive /* && haloThingActive */ && fArmor > 0) {
+	if (game.coop_isActive && 0 /* && haloThingActive */ && fArmor > 0) {
 		if (fArmor > 0) {
 			bRelayDamage = false;
 		}
@@ -225,6 +240,9 @@ bool CoopChallenges::haloShieldRelayDamage(Sentient *sentient,float fDamage)
 void CoopChallenges::updateHalo(float frameTime)
 {
 	//used to recharge player shields and set vars if they take no damage because the shield is up
+
+	//disable -> coop_classRegenerate regen
+	//add -> func to quickly recharge shields and call it maybe from -> coop_playerThink
 }
 
 #endif

@@ -42,6 +42,7 @@ public:
 	void		updateStayClose(float frameTime);
 	void		updateHalo(float frameTime);
 	bool		haloShieldRelayDamage(Sentient* sentient, float fDamage);
+	bool		haloCanPickup(Sentient* sentient, str sItem);
 };
 
 #endif
