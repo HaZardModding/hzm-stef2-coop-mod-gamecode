@@ -720,14 +720,17 @@ qboolean G_TauntCmd( const gentity_t *ent )
 	{
 		Player *player = (Player *)ent->entity;
 
-		//[b611] chrissstrahl - set a cooldown time for taunt
-		if (player->coopPlayer.tauntCooldownTime > (level.time + 6)) {
+		//[b611] chrissstrahl - set a cooldown time for taunt - also don't play during cinematic
+		if (level.cinematic || player->coopPlayer.tauntCooldownTime > level.time) {
 			return true;
 		}
-		player->coopPlayer.tauntCooldownTime += (level.time + 3);
 
 		if ( multiplayerManager.inMultiplayer() && !multiplayerManager.isPlayerSpectator( player ) )
 		{
+			//[b611] chrissstrahl - update a cooldown time for taunt
+			player->coopPlayer.tauntCooldownTime = (level.time + 5.0f);
+			//player->hudPrint(va("G_TauntCmd: %f -> %f\n", player->coopPlayer.tauntCooldownTime,level.time));
+
 			//ent->entity->Sound( tauntName, CHAN_TAUNT, DEFAULT_VOL, LEVEL_WIDE_MIN_DIST );
 			ent->entity->Sound( tauntName, CHAN_TAUNT, DEFAULT_VOL, 250.0f );
 		}
