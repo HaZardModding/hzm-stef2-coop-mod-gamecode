@@ -120,6 +120,8 @@ class CThread : public Interpreter
 		//[b611] chrissstrahl - read and write mapspecific ini data - allowing levels to hold thair own database
 		void getIniData(Event *ev);
 		void setIniData(Event *ev);
+		//[b611] chrissstrahl
+		void getVectorFromString(Event* ev);
 		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 		void configstringRemoveCombatSounds(Event *ev);
 		void configstringRemove(Event *ev);

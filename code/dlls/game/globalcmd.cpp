@@ -1229,6 +1229,16 @@ Event EV_ScriptThread_getFloatFromString
 	"returnFloat string" ,
 	"Returns the given value as float, if possible"
 );
+//[b611] chrissstrahl
+Event EV_ScriptThread_getVectorFromString
+(
+	"getVectorFromString" ,
+	EV_SCRIPTONLY ,
+	"@vs" ,
+	"returnVector string" ,
+	"Returns the given value as vector, if possible"
+);
+//end
 Event EV_ScriptThread_isDigit
 (
 	"isDigit" ,
@@ -1411,6 +1421,8 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	//[b611] chrissstral - allow read write to map specific ini files
 	{ &EV_ScriptThread_getIniData,					&CThread::getIniData },
 	{ &EV_ScriptThread_setIniData,					&CThread::setIniData },
+	//[b611] chrissstrahl
+	{ &EV_ScriptThread_getVectorFromString, &CThread::getVectorFromString } ,
 	//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 	{ &EV_ScriptThread_ConfigstringRemove, &CThread::configstringRemove },
 	{ &EV_ScriptThread_ConfigstringRemoveCombatSounds, &CThread::configstringRemoveCombatSounds },
@@ -1644,6 +1656,7 @@ void CThread::getLevelParamaterValue( Event *ev )
 	}
 	ev->ReturnString( sValue.c_str() );
 }
+
 void CThread::getFloatFromString( Event *ev )
 {
 	ev->ReturnFloat( coop_returnFloatFromString( ev->GetString( 1 ) ) );
@@ -1670,9 +1683,12 @@ void CThread::missionFailed( Event *ev )
 }
 //end of hzm
 
-
-
-
+//[b611] chrissstrahl
+void CThread::getVectorFromString(Event* ev)
+{
+	ev->ReturnVector(ev->GetVector(1));
+}
+//end
 
 
 
