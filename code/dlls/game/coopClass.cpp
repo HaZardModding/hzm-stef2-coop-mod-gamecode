@@ -93,7 +93,8 @@ void coop_classCeckUpdateStat( Player *player )
 void coop_classRegenerate( Player *player )
 {
 	//do not regenerate if dead, neutralized or under fire
-	if (	player->health <= 0 ||
+	if (	/* haloThingActive || */
+			player->health <= 0 ||
 			player->coopPlayer.neutralized ||
 			(player->getLastDamageTime() + COOP_CLASS_HURT_WAITTIME) > level.time )
 	{
