@@ -950,11 +950,11 @@ bool coop_playerSpawnTrySpSpawn( Player *player , bool bRespawning )
 		spawnLocation = G_FindClass( NULL , "info_player_start" );
 		if ( spawnLocation ){
 			player->WarpToPoint( spawnLocation );
-			gi.Printf( "No info_player_deathmatch found, spawning player at info_player_start\n" );
+			gi.Printf("ERROR: No info_player_deathmatch with targetname $ipd%i found\n", (1 + player->entnum)); //[b611] chrissstrahl - added targetname info
 			return true;
 		}
 		else{
-			gi.Printf( "ERROR: No info_player_deathmatch or info_player_start found, spawning player at '0 0 0'\n" );
+			gi.Printf( "ERROR: No info_player_start or info_player_deathmatch found, spawning player at '0 0 0'\n" );
 			return false;		
 		}
 	}
