@@ -1,21 +1,9 @@
 //-----------------------------------------------------------------------------------
 // Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Based upon code from the HaZardModding Coop Mod Level Scripts created at 2006
-// E-Mail:		chrissstrahl@yahoo.de
+// E-Mail:	chrissstrahl@yahoo.de
 //
 // CONTAINING SERVER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2019 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
+//-----------------------------------------------------------------------------------
 
 //>>starts everytime a map is chnaged or a game is closed
 //void MultiplayerManager::cleanup
@@ -25,11 +13,17 @@
 
 #include "coopEvents.hpp"
 #include "coopServer.hpp"
+CoopServer coopServer;
+
 #include "coopReturn.hpp"
 #include "coopPlayer.hpp"
 #include "coopObjectives.hpp"
 #include "coopText.hpp"
 #include "coopParser.hpp"
+
+//[b611] chrissstrahl
+#include "coopNpcTeam.hpp"
+extern CoopNpcTeam coopNpcTeam;
 
 #include "player.h"
 #include "mp_manager.hpp"
@@ -41,6 +35,42 @@
 #include "program.h"
 #include "trigger.h"
 extern Event EV_ScriptThread_StuffCommand;
+
+//[b611] chrissstrahl
+#define COOP_SERVER_PHYSICS_BUG_MAX_FPS 80
+#define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 80 to fix a game bug on this level.\n"
+
+
+void CoopServer::enforceLevelSpecificSettings()
+//[b611] chrissstrahl - enforce variouse settings in levels to ensure the game working correctly
+{
+	if (level.mapname == "m6-exterior"){
+		//make sure the physics is correct - this can happen due to a coop mod voting option
+		if (world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
+			if (multiplayerManager.inMultiplayer()) {
+				multiplayerManager.HUDPrintAllClients("Server: Air Accelerate reset to 2 for this level to work\n");
+			}
+			world->setPhysicsVar("airAccelerate", 2.0f);
+		}
+		//this is a listen server - the host is also playing on the same instance - there is no seperate server running
+		//this is a default game bug, where fps higher 80 can cause player to get stuck floating above in low grav
+		//this is apperently only happening to the host (SP/MP)
+		if (dedicated->integer == 0 || g_gametype->integer == GT_SINGLE_PLAYER) {
+			int iFps = coop_returnCvarInteger("com_maxFps");
+			if (iFps > COOP_SERVER_PHYSICS_BUG_MAX_FPS) {
+				gi.cvar_set("com_maxFps",""+COOP_SERVER_PHYSICS_BUG_MAX_FPS);
+				Player* player;
+				player = (Player*)g_entities[0].entity;
+				if (g_gametype->integer == GT_SINGLE_PLAYER) {
+					gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_CRITICAL, COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE );
+				}
+				else {
+					player->hudPrint(COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+				}
+			}
+		}
+	}
+}
 
 //================================================================
 // Name:        coop_serverInizializeGameVars
@@ -1077,6 +1107,9 @@ void coop_serverCoop()
 
 	//hzm coop mod chrissstrahl - run server corrections and setup
 	coop_serverSetup();
+
+	//[b611] chrissstrahl - load data from ini file of this level for NPC Auto Teammates
+	coopNpcTeam.npcLoadData();
 }
 
 //================================================================
@@ -1445,6 +1478,9 @@ void coop_serverThink( void )
 
 	//hzm coop mod chrissstrahl - this will manage the objective marker
 	coop_objectivesMarkerUpdate();
+
+	//[b611] chrissstrahl - make sure certain settings are forced for levels that won't work right without it
+	coopServer.enforceLevelSpecificSettings();
 }
 
 //[b610] chrissstrahl - executed from Level::CleanUp
