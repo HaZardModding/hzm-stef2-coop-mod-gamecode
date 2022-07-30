@@ -619,7 +619,7 @@ void PuzzleObject::useEvent(Event* event)
 			fLastMsgTime = uservar->floatValue();
 		}
 		if ( !Q_stricmpn( "class m" , sCoopClass , 7 ) ){
-			if ( player->coopPlayer.className != "Medic" ){
+			if ( player->coopPlayer.className != COOP_CLASS_NAME_MEDIC){
 				if ( ( fLastMsgTime + 3 ) < level.time ){
 					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
 					if (coop_checkPlayerLanguageGerman(player)) {
@@ -633,7 +633,7 @@ void PuzzleObject::useEvent(Event* event)
 			}
 		}
 		else if ( !Q_stricmpn( "class t" , sCoopClass , 7 ) ){
-			if ( player->coopPlayer.className != "Technician" ){
+			if ( player->coopPlayer.className != COOP_CLASS_NAME_TECHNICIAN){
 				if ( ( fLastMsgTime + 3 ) < level.time ){
 					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
 					if (coop_checkPlayerLanguageGerman(player)) {
@@ -646,7 +646,7 @@ void PuzzleObject::useEvent(Event* event)
 			}
 		}
 		else if ( !Q_stricmpn( "class h" , sCoopClass , 7 ) ){
-			if ( player->coopPlayer.className != "HeavyWeapons" ){
+			if ( player->coopPlayer.className != COOP_CLASS_NAME_HEAVYWEAPONS){
 				if ( ( fLastMsgTime + 3 ) < level.time ){
 					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
 					if (coop_checkPlayerLanguageGerman(player)) {
