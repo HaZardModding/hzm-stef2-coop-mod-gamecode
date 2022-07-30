@@ -20,6 +20,11 @@
 #ifndef __COOPCLASS_HPP__
 #define __COOPCLASS_HPP__
 
+//[b611] chrissstrahl - have the classnames fixed
+#define COOP_CLASS_NAME_TECHNICIAN "Technician"
+#define COOP_CLASS_NAME_MEDIC "Medic"
+#define COOP_CLASS_NAME_HEAVYWEAPONS "HeavyWeapons"
+
 #define COOP_CLASS_HURT_WAITTIME 6
 #define COOP_CLASS_REGENERATE_HEALTH 3
 #define COOP_CLASS_REGENERATE_ARMOR 5

@@ -101,10 +101,10 @@ void coop_classRegenerate( Player *player )
 		return;
 	}
 
-	if ( !Q_stricmp( player->coopPlayer.className, "Medic") ){
+	if ( !Q_stricmp( player->coopPlayer.className, COOP_CLASS_NAME_MEDIC) ){
 		player->AddHealth( COOP_CLASS_REGENERATE_HEALTH );
 	}
-	else if ( !Q_stricmp( player->coopPlayer.className,"Technician") ){
+	else if ( !Q_stricmp( player->coopPlayer.className, COOP_CLASS_NAME_TECHNICIAN) ){
 		float fArmorCurrent = player->GetArmorValue();
 		if ( ( fArmorCurrent + COOP_CLASS_REGENERATE_ARMOR ) <= COOP_MAX_ARMOR ){
 			fArmorCurrent++;
@@ -115,7 +115,7 @@ void coop_classRegenerate( Player *player )
 			player->ProcessEvent( armorEvent );
 		}
 	}
-	else if ( !Q_stricmp( player->coopPlayer.className, "HeavyWeapons") ){
+	else if ( !Q_stricmp( player->coopPlayer.className, COOP_CLASS_NAME_HEAVYWEAPONS) ){
 		player->GiveAmmo( "Fed" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_FED );
 		player->GiveAmmo( "Plasma" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_PLASMA );
 		player->GiveAmmo( "Idryll" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_IDRYLL );
@@ -242,13 +242,13 @@ void coop_classSet( Player *player , str classToSet )
 
 		//[b611] chrissstrahl - make sure the right class is set
 		if (Q_stricmpn("h", currentClass.c_str(), 1) == 0) {
-			currentClass = "HeavyWeapons";
+			currentClass = COOP_CLASS_NAME_HEAVYWEAPONS;
 		}
 		else if (Q_stricmpn("m", currentClass.c_str(), 1) == 0) {
-			currentClass = "Medic";
+			currentClass = COOP_CLASS_NAME_MEDIC;
 		}
 		else {
-			currentClass = "Technician";
+			currentClass = COOP_CLASS_NAME_TECHNICIAN;
 		}
 
 		player->coopPlayer.className = currentClass;
@@ -305,7 +305,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		int classGiveAmmoIdryll = classMaxAmmoIdryll;
 	}
 
-	if ( !Q_stricmp( currentClass, "Medic") ){
+	if ( !Q_stricmp( currentClass, COOP_CLASS_NAME_MEDIC) ){
 		classMaxHealth		= COOP_CLASS_MEDIC_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_MEDIC_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_MEDIC_MAX_AMMO_PHASER;
@@ -315,7 +315,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->gravity		= COOP_CLASS_MEDIC_GRAVITY;
 		player->mass		= COOP_CLASS_MEDIC_MASS;
 	}
-	else if ( !Q_stricmp( currentClass, "HeavyWeapons") ){
+	else if ( !Q_stricmp( currentClass, COOP_CLASS_NAME_HEAVYWEAPONS) ){
 		classMaxHealth		= COOP_CLASS_HEAVYWEAPONS_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_HEAVYWEAPONS_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_PHASER;
@@ -326,7 +326,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->mass		= COOP_CLASS_HEAVYWEAPONS_MASS;
 	}
 	else{ //technician
-		currentClass = "Technician";
+		currentClass = COOP_CLASS_NAME_HEAVYWEAPONS;
 		classMaxHealth		= COOP_CLASS_TECHNICIAN_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_TECHNICIAN_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_TECHNICIAN_MAX_AMMO_PHASER;
@@ -542,7 +542,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 			}
 			else{
 				if ( equipment ){
-					if ( !Q_stricmp( usingPlayer->coopPlayer.className, "Medic") ){
+					if ( !Q_stricmp( usingPlayer->coopPlayer.className, COOP_CLASS_NAME_MEDIC) ){
 						if ( usedPlayer->health >= usedPlayer->max_health ){
 							return;
 						}
@@ -556,7 +556,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						//give full health
 						usedPlayer->health = usedPlayer->max_health;
 					}
-					else if ( !Q_stricmp( usingPlayer->coopPlayer.className, "Technician") ){
+					else if ( !Q_stricmp( usingPlayer->coopPlayer.className, COOP_CLASS_NAME_TECHNICIAN) ){
 						float fArmorToGive = COOP_MAX_ARMOR_TO_GIVE;
 						float fArmorToGive_max = COOP_MAX_ARMOR_TO_GIVE;
 						float fArmorCurrent = usedPlayer->GetArmorValue();
@@ -632,7 +632,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 			}
 			else{
 				if ( equipment ){
-					if ( !Q_stricmp( usingPlayer->coopPlayer.className , "Medic") ){
+					if ( !Q_stricmp( usingPlayer->coopPlayer.className , COOP_CLASS_NAME_MEDIC) ){
 						if ( usedPlayer->health >= usedPlayer->max_health ){
 							if ( coop_checkPlayerLanguageGerman((usingPlayer)) ){//[b607] chrissstrahl - using now correct entity
 								usingPlayer->hudPrint( "^5COOP^8 - Spieler bereits bei voller Gesundheit!\n" );
@@ -649,7 +649,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 							usingPlayer->hudPrint( va( "^5COOP^8 - You healed: %s\n" , usedPlayer->client->pers.netname ) );
 						}
 					}
-					else if ( !Q_stricmp( usingPlayer->coopPlayer.className , "Technician" ) ){
+					else if ( !Q_stricmp( usingPlayer->coopPlayer.className , COOP_CLASS_NAME_TECHNICIAN) ){
 						if ( usedPlayer->GetArmorValue() >= COOP_MAX_ARMOR ){
 							if ( coop_checkPlayerLanguageGerman((usingPlayer)) ){//[b607] chrissstrahl - using now correct entity
 								usingPlayer->hudPrint( va( "^5COOP^8 - %ss Schild ist bereits bei maximler Kapazitaet\n" , usedPlayer->client->pers.netname ) );
@@ -713,11 +713,11 @@ int coop_classPlayersOfClass(str className)
 	temp = className.tolower();
 
 	if ( temp[0] == 'm' )
-		temp = "Medic";
+		temp = COOP_CLASS_NAME_MEDIC;
 	else if ( temp[0] == 'h' )
-		temp = "HeavyWeapons";
+		temp = COOP_CLASS_NAME_HEAVYWEAPONS;
 	else
-		temp = "Technician";
+		temp = COOP_CLASS_NAME_TECHNICIAN;
 	
 	gentity_t   *other;
 	Player      *player;
