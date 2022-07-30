@@ -1488,7 +1488,7 @@ Event EV_Player_setCamera
 //hzm gameupdate chrissstrahl [b611] - widgetcommand
 Event EV_Player_WidgetCommand
 (
-	"widgetCommand",
+	"widgetCmd",
 	EV_SCRIPTONLY,
 	"ssS",
 	"string-widgetname string-command string-parameter",
@@ -1923,7 +1923,7 @@ void Player::getCoopClass(Event* ev)
 //[b611] chrissstrahl - check if coop class is technician
 void Player::isCoopClassTechnician(Event* ev)
 {
-	if (this->coopPlayer.className == "Technician") {
+	if (this->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
 		ev->ReturnFloat(1.0f);
 		return;
 	}
@@ -1933,7 +1933,7 @@ void Player::isCoopClassTechnician(Event* ev)
 //[b611] chrissstrahl - check if coop class is Medic
 void Player::isCoopClassMedic(Event* ev)
 {
-	if (this->coopPlayer.className == "Medic") {
+	if (this->coopPlayer.className == COOP_CLASS_NAME_MEDIC) {
 		ev->ReturnFloat(1.0f);
 		return;
 	}
@@ -1943,7 +1943,7 @@ void Player::isCoopClassMedic(Event* ev)
 //[b611] chrissstrahl - check if coop class is HeavyWeapons
 void Player::isCoopClassHeavyWeapons(Event* ev)
 {
-	if (this->coopPlayer.className == "HeavyWeapons") {
+	if (this->coopPlayer.className == COOP_CLASS_NAME_HEAVYWEAPONS) {
 		ev->ReturnFloat(1.0f);
 		return;
 	}
