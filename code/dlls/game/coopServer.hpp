@@ -1,21 +1,9 @@
 //-----------------------------------------------------------------------------------
 // Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Based upon code from the HaZardModding Coop Mod Level Scripts created at 2006
-// E-Mail:		chrissstrahl@yahoo.de
+// E-Mail:	chrissstrahl@yahoo.de
 //
 // CONTAINING SERVER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2018 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
+//-----------------------------------------------------------------------------------
 
 #ifndef __COOPSERVER_HPP__
 #define __COOPSERVER_HPP__
@@ -66,6 +54,14 @@ static int iSPRITES = 0;
 #define COOP_MAX_SAFE_SKA_LOAD		9
 #define COOP_MAX_SAFE_COMBINED_LOAD	23
 */
+
+//[b611] chrissstrahl
+class CoopServer
+{
+public:
+	void enforceLevelSpecificSettings();
+};
+
 int coop_serverConfigstringRemoveCombatSounds(str sActorname);//[b607] chrissstrahl - used to remove combatsounds for named actor
 void coop_serverConfigstringRemoveNonCoopStrings(); //[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
 int coop_serverConfigstringRemove(str sRem); //[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
