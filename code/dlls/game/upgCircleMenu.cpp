@@ -1,22 +1,9 @@
 //-----------------------------------------------------------------------------------
 // Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Circle Menu Related Code, used to add New Mewnu Type to the game, like known from modern games.
-// E-Mail:		chrissstrahl@yahoo.de
+// E-Mail:	chrissstrahl@yahoo.de
 //
-// CONTAINING TEXT AND LOCALIZING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2022 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
-//[b611] Chrissstrahl
+// Circle Menu Related Code, used to add New Mewnu Type to the game, like known from modern games.
+//-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
 #include "upgCircleMenu.hpp"
