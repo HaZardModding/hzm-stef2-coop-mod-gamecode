@@ -305,6 +305,7 @@ GOBJ =\
     $(B)/game/weaputils.o \
     $(B)/game/worldspawn.o \
 	$(B)/game/upgCircleMenu.o \
+	$(B)/game/coopNpcTeam.o \
     $(B)/game/coopArmory.o \
     $(B)/game/coopChallenges.o \
     $(B)/game/coopCheck.o \
@@ -497,6 +498,7 @@ $(B)/game/weaputils.o : $(GDIR)/weaputils.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/worldspawn.o : $(GDIR)/worldspawn.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgCircleMenu.o : $(GDIR)/upgCircleMenu.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/coopNpcTeam.o : $(GDIR)/coopNpcTeam.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopArmory.o : $(GDIR)/coopArmory.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopChallenges.o : $(GDIR)/coopChallenges.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopCheck.o : $(GDIR)/coopCheck.cpp; $(DO_GAME_SHLIB_CC)
