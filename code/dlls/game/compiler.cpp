@@ -18,6 +18,8 @@
 #include "_pch_cpp.h"
 #include "compiler.h"
 #include "coopReturn.hpp"
+#include "coopScripting.hpp"
+extern CoopScripting coopScripting;
 
 opcode_t pr_opcodes[] =
 {
@@ -1223,25 +1225,8 @@ void Compiler::ParseDefs( void )
 				lex.ParseError( "Expected quoted filename" );
             }
 
-			//[b607] chrissstrahl - dynamically replace tricorder globalscripts with coop versions (only in multiplayer)
-			if (g_gametype->integer == 1) {
-				if (!Q_stricmp(lex.pr_immediate_string, "maps/global_scripts/global_tricorderBase.scr") ||
-					!Q_stricmp(lex.pr_immediate_string, "maps/global_scripts/global_tricorderRoute.scr") ||
-					!Q_stricmp(lex.pr_immediate_string, "maps/global_scripts/global_tricorderKeypad.scr") ||
-					!Q_stricmp(lex.pr_immediate_string, "maps/global_scripts/global_tricorderMod.scr")
-					)
-				{					
-					str s = "coop_mod/maps/global_scripts/";
-					str sFn = coop_returnStringFilenameOnly((str)lex.pr_immediate_string);
-					s += sFn;
-					if (gi.FS_ReadFile(s, NULL, true) != -1) {
-						strcpy(lex.pr_immediate_string, s.c_str());
-						gi.Printf(va("HZM Coop Mod is using %s from coop_mod folders\n", sFn.c_str()));
-						//strcpy(cc, "coop_mod/maps/global_scripts/");
-						//strcat(cc,"xx.scr");
-					}
-				}
-			}
+			//[b611] chrissstrahl - check for variouse include files
+			coopScripting.checkIncludedFiles(lex.pr_immediate_string);
 
 			program.Compile(lex.pr_immediate_string);
 			lex.Lex();
