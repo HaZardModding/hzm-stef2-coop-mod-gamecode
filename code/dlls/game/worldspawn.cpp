@@ -561,10 +561,6 @@ void World::loadMap( Event *ev )
 
 World::World()
 {
-	//[b607] chrissstrahl - disabled as i suspect it is redudant
-	//hzm gameupdate chrissstrahl - inizialize all coop gamevars
-	//coop_serverInizializeGameVars();
-
 	//hzm coop mod chrissstrahl - added to allow skip cinematic to activate a entity
 	skipthreadEntity = NULL;
 
