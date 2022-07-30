@@ -230,13 +230,9 @@ void DefaultStrategos::_CheckForInConeOfFire()
 				
 				player = (Player*)teammate;
 				check = player->GetVAngles();
-
-				//[b611] debug - test
-				gi.Printf(va("\n_CheckForInConeOfFire - eamMateList.ObjectAt( %d ) %s\n",i, player->client->pers.netname));
             }
 			else
             {
-				
 				_checkYawMin = -5.0f;
 				_checkYawMax =  5.0f;
 				
