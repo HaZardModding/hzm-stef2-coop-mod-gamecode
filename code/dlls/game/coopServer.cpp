@@ -37,8 +37,8 @@ extern CoopNpcTeam coopNpcTeam;
 extern Event EV_ScriptThread_StuffCommand;
 
 //[b611] chrissstrahl
-#define COOP_SERVER_PHYSICS_BUG_MAX_FPS 80
-#define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 80 to fix a game bug on this level.\n"
+#define COOP_SERVER_PHYSICS_BUG_MAX_FPS 85
+#define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 85 to fix a game bug on this level.\n"
 
 
 void CoopServer::enforceLevelSpecificSettings()
@@ -58,14 +58,20 @@ void CoopServer::enforceLevelSpecificSettings()
 		if (dedicated->integer == 0 || g_gametype->integer == GT_SINGLE_PLAYER) {
 			int iFps = coop_returnCvarInteger("com_maxFps");
 			if (iFps > COOP_SERVER_PHYSICS_BUG_MAX_FPS) {
-				gi.cvar_set("com_maxFps",""+COOP_SERVER_PHYSICS_BUG_MAX_FPS);
 				Player* player;
 				player = (Player*)g_entities[0].entity;
-				if (g_gametype->integer == GT_SINGLE_PLAYER) {
-					gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_CRITICAL, COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE );
-				}
-				else {
-					player->hudPrint(COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+				if (player != NULL) {
+					gi.cvar_set("com_maxFps",va("%d",COOP_SERVER_PHYSICS_BUG_MAX_FPS));
+					if (g_gametype->integer == GT_SINGLE_PLAYER) {
+						if (level.time > 12) {
+							gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_CRITICAL, COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+						}
+					}
+					else {
+						if ( level.time > (mp_warmUpTime->integer + 10) ) {
+							player->hudPrint(COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+						}
+					}
 				}
 			}
 		}
