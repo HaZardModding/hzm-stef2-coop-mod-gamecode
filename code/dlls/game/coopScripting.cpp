@@ -1,26 +1,108 @@
 //-----------------------------------------------------------------------------------
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Based upon code from the HaZardModding Coop Mod Level Scripts created at 2006
+// Code by:	HaZardModding, Christian Sebastian Strahl
 // E-Mail:		chrissstrahl@yahoo.de
 //
-// CONTAINING SCRIPTING OR LEVEL SCRIPT RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2018 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
+// CONTAINING SCRIPTING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
-
+#include "coopReturn.hpp"
 #include "coopScripting.hpp"
+CoopScripting coopScripting;
 #include "coopObjectives.hpp"
+
+#define COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU_4 "mom4_coopInput.scr"
+#define COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU "multioptions.scr"
+#define COOP_SCRIPTING_FILENAME_NOSCRIPT "noscript.scr"
+#define COOP_SCRIPTING_FILENAME_MISSIONRESOURCEMENU "_mrm.scr"
+
+#define COOP_SCRIPTING_ENTITYVAR_MISSIONRESOURCEMENU_PLAYER_DONE "mrmLoadOutComplete"
+
+
+bool CoopScripting::getIncludedMrm() { return includedMrm; }
+bool CoopScripting::getIncludedMom4() { return includedMom4; }
+bool CoopScripting::getIncludedMom() { return includedMom; }
+bool CoopScripting::getIncludedNoscript() { return includedNoscript; }
+
+void CoopScripting::checkIncludedFiles(str sLex)
+{
+	//[b611] chrissstrahl - check and remember if special scripts are used
+	if (checkIncludedMom(sLex)) { return; }
+	if (checkIncludedMom4(sLex)) { return; }
+	if (checkIncludedMrm(sLex)) { return; }
+	if (checkIncludedNoscript(sLex)) { return; }
+	//[b607] chrissstrahl - dynamically replace tricorder globalscripts with coop versions (only in multiplayer)
+	checkReplaceInclude(sLex);
+}
+
+bool CoopScripting::checkIncludedMrm(str sLex)
+{
+	if (coop_returnIntFind(sLex, COOP_SCRIPTING_FILENAME_MISSIONRESOURCEMENU) != -1) {
+		includedMrm = true;
+	}
+	return includedMrm;
+}
+
+bool CoopScripting::checkIncludedMom4(str sLex)
+{
+	if (coop_returnIntFind(sLex, COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU_4) != -1) {
+		includedMom4 = true;
+	}
+	return includedMom4;
+}
+
+bool CoopScripting::checkIncludedMom(str sLex)
+{
+	if (coop_returnIntFind(sLex, COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU) != -1) {
+		includedMom = true;
+	}
+	return includedMom;
+}
+
+bool CoopScripting::checkIncludedNoscript(str sLex)
+{
+	if (coop_returnIntFind(sLex, COOP_SCRIPTING_FILENAME_NOSCRIPT) != -1) {
+		includedNoscript = true;
+	}
+	return includedNoscript;
+}
+
+str CoopScripting::checkReplaceInclude(str sLex)
+{
+	if (g_gametype->integer != GT_SINGLE_PLAYER) {
+		if (!Q_stricmp(sLex, "maps/global_scripts/global_tricorderBase.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderRoute.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderKeypad.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderMod.scr")
+			)
+		{
+			str s = "coop_mod/maps/global_scripts/";
+			str sFn = coop_returnStringFilenameOnly(sLex);
+			s += sFn;
+			if (gi.FS_ReadFile(s, NULL, true) != -1) {
+				//strcpy(lex.pr_immediate_string, s.c_str());
+				sLex = s;
+				gi.Printf(va("HZM Coop Mod is using %s from coop_mod folders\n", sFn.c_str()));
+			}
+		}
+	}
+	return sLex;
+}
+
+bool CoopScripting::mrnPlayerReady(Player* player)
+{
+	if (!player) { return false; }
+
+	ScriptVariable* entityData;
+	entityData = NULL;
+	entityData = player->entityVars.GetVariable(COOP_SCRIPTING_ENTITYVAR_MISSIONRESOURCEMENU_PLAYER_DONE);
+	if (entityData == NULL) {
+		return false;
+	}
+	float fReady = entityData->floatValue();
+	return (bool)fReady;
+}
+
 
 
 //================================================================
