@@ -326,7 +326,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->mass		= COOP_CLASS_HEAVYWEAPONS_MASS;
 	}
 	else{ //technician
-		currentClass = COOP_CLASS_NAME_HEAVYWEAPONS;
+		currentClass = COOP_CLASS_NAME_TECHNICIAN;
 		classMaxHealth		= COOP_CLASS_TECHNICIAN_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_TECHNICIAN_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_TECHNICIAN_MAX_AMMO_PHASER;
