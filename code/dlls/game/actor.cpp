@@ -3930,7 +3930,7 @@ void Actor::HeadWatchEvent ( Event *ev	)
 	//hzm gameupdate chrissstrahl - if it is refering to any entity that does not exist, try to get the last activator, if he isnt to far away
 	if ( !entToWatch ){
 		//hzm gameupdate chrissstrahl - don't do this in singleplayer, it might not be wanted
-		if ( !activator || g_gametype->integer == 0 ){
+		if ( !activator || g_gametype->integer == GT_SINGLE_PLAYER ){
 			return;
 		}
 
