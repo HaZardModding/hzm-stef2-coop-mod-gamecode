@@ -1,3 +1,10 @@
+//-----------------------------------------------------------------------------------
+// Code by:	HaZardModding, Christian Sebastian Strahl, 
+// E-Mail:	chrissstrahl@yahoo.de
+//
+// Gamecommands / Console Commands for Coop
+//-----------------------------------------------------------------------------------
+
 #ifndef __COOPGAMECMDS_CPP__
 #define __COOPGAMECMDS_CPP__
 
@@ -151,10 +158,10 @@ qboolean G_coopCom_class(const gentity_t* ent)
 	classSelected = classSelected.tolower();
 	
 	if (Q_stricmpn("h", classSelected.c_str(), 1) == 0) {
-		classSelected = "HeavyWeapons";
+		classSelected = COOP_CLASS_NAME_HEAVYWEAPONS;
 	}
 	else if (Q_stricmpn("m", classSelected.c_str(), 1) == 0) {
-		classSelected = "Medic";
+		classSelected = COOP_CLASS_NAME_MEDIC;
 	}
 	else {
 		if (Q_stricmpn("t", classSelected.c_str(), 1) != 0) {
@@ -167,7 +174,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 				}
 			}
 		}
-		classSelected = "Technician";
+		classSelected = COOP_CLASS_NAME_TECHNICIAN;
 	}
 
 	//hzm coop mod chrissstrahl - set new class on player
@@ -1164,7 +1171,7 @@ qboolean G_coopInstalled(const gentity_t* ent)
 // Name:        G_coopItem
 // Class:       -
 //              
-// Description: Add a new command, used to detect coop mod client installation
+// Description: Allowing players to make use of special coop inventory
 //              
 // Parameters:  int entNum
 //              
@@ -1174,8 +1181,7 @@ qboolean G_coopInstalled(const gentity_t* ent)
 //              
 //================================================================
 qboolean G_coopItem(const gentity_t* ent)
-//[b611] chrissstrahl - add command allowing players to make use of special coop inventory
-//allowing to place objects like mines and turrets
+//[b611] chrissstrahl - allowing to place objects like mines and turrets
 {
 	if (!ent || !ent->inuse || !ent->client)
 		return qfalse;
