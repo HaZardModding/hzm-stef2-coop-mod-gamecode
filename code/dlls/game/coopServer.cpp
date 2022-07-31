@@ -46,7 +46,7 @@ void CoopServer::enforceLevelSpecificSettings()
 {
 	if (level.mapname == "m6-exterior"){
 		//make sure the physics is correct - this can happen due to a coop mod voting option
-		if (world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
+		if (g_gametype->integer != GT_SINGLE_PLAYER && world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
 			if (multiplayerManager.inMultiplayer()) {
 				multiplayerManager.HUDPrintAllClients("Server: Air Accelerate reset to 2 for this level to work\n");
 			}
@@ -74,6 +74,15 @@ void CoopServer::enforceLevelSpecificSettings()
 					}
 				}
 			}
+		}
+	}
+	else if ( level.mapname == "m3l1a-forever") {
+		//make sure the physics is correct - this can happen due to a coop mod voting option
+		if (g_gametype->integer != GT_SINGLE_PLAYER && world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
+			if (multiplayerManager.inMultiplayer()) {
+				multiplayerManager.HUDPrintAllClients("Server: Air Accelerate reset to 2 for this level to work\n");
+			}
+			world->setPhysicsVar("airAccelerate", 2.0f);
 		}
 	}
 }
@@ -1445,6 +1454,9 @@ bool coop_serverError( str sError, bool bFatal )
 //================================================================
 void coop_serverThink( void )
 {
+	//[b611] chrissstrahl - make sure certain settings are forced for levels that won't work right without it
+	coopServer.enforceLevelSpecificSettings();
+
 	if (!game.coop_isActive) { return; }
 
 	//hzm coop mod chrissstrahl - quit server if requested
@@ -1484,9 +1496,6 @@ void coop_serverThink( void )
 
 	//hzm coop mod chrissstrahl - this will manage the objective marker
 	coop_objectivesMarkerUpdate();
-
-	//[b611] chrissstrahl - make sure certain settings are forced for levels that won't work right without it
-	coopServer.enforceLevelSpecificSettings();
 }
 
 //[b610] chrissstrahl - executed from Level::CleanUp
