@@ -1,28 +1,19 @@
 //-----------------------------------------------------------------------------------
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Based upon code from the HaZardModding Coop Mod Level Scripts created at 2006
+// Code by:	HaZardModding, Christian Sebastian Strahl
 // E-Mail:		chrissstrahl@yahoo.de
 //
-// CONTAINING PLAYER HANDLING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2018 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
+// CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
+#include "coopPlayer.hpp"
 
 //[b611] chrissstrahl - gameupgrades
 #include "upgCircleMenu.hpp"
 
-//[b611] chrissstrahl - gamefixes
+//[b611] chrissstrahl
+#include "coopNpcTeam.hpp"
+extern CoopNpcTeam coopNpcTeam;
 
 #include "coopAlias.hpp"
 #include "coopParser.hpp"
@@ -32,14 +23,12 @@
 #include "coopText.hpp"
 #include "coopStory.hpp"
 #include "coopServer.hpp"
-#include "coopPlayer.hpp"
 #include "coopClass.hpp"
 #include "coopArmory.hpp"
 #include "coopObjectives.hpp"
 #include "coopHuds.hpp"
 #include "coopReturn.hpp"
 
-//[b611] chrissstrahl - HaZardModding Coop Mod - specific
 #include "level.h"
 #include "player.h"
 #include "weapon.h"
@@ -580,6 +569,8 @@ void coop_playerSetupHost(Player* player)
 	player->coopPlayer.coopId = coop_checkPlayerCoopIdExistInIni(player, sCvar);
 	coop_playerRestore(player);
 
+	coop_playerSetupCoop(player);
+
 	if (game.coop_isActive) {
 		cvar = gi.cvar_get("coop_class");
 		sCvar = (cvar ? cvar->string : "");
@@ -676,7 +667,6 @@ void coop_playerSetupCoop( Player *player )
 	if ( g_gametype->integer != GT_SINGLE_PLAYER ){
 		//hzm coop mod chrissstrahl - execute clientside cfg file
 		DelayedServerCommand( player->entnum , "exec coop_mod/cfg/init.cfg" );
-		//DelayedServerCommand( player->entnum , "exec coop_mod/cfg/enable_modelsel.cfg" ); //[b607] chrissstrahl - moved into init.cfg
 	}
 
 	//not used anmyore
@@ -1227,7 +1217,10 @@ void coop_playerEnterArena(int entnum, float health)
 	//}
 
 	//hzm coop mod chrissstrahl - retore health, armor and ammo to previouse state
-	coop_playerRestore( player );
+	coop_playerRestore(player);
+
+	//[b611] chrissstrahl - handle NPC / AI Teammates
+	coopNpcTeam.playerReadyCheck(player);
 }
 
 
@@ -1235,7 +1228,7 @@ void coop_playerEnterArena(int entnum, float health)
 // Name:        coop_playerKilled
 // Class:       -
 //              
-// Description: this is our own death message handling function, return fale if player is not meant to die (coop_gametype)
+// Description: this is our own death message handling function, return false if player is not meant to die (coop_gametype)
 //              
 // Parameters:  Player *killedPlayer , Entity *attacker , Entity *inflictor , int meansOfDeath
 //              
@@ -1660,6 +1653,9 @@ void coop_playerSpectator( Player *player )
 		return;
 	}
 
+	//[b611] chrissstrahl - handle NPC / AI Teammates
+	coopNpcTeam.playerSpectator(player);
+
 	//hzm coop mod chrissstrahl - remove the injured symbol
 	player->coopPlayer.injuredSymbolVisible = false;
 	player->removeAttachedModelByTargetname( "globalCoop_playerInjured" );
@@ -1956,6 +1952,9 @@ void coop_playerThink( Player *player )
 		coop_classRegenerate( player );
 		coop_classCheckApplay( player );
 		coop_classCeckUpdateStat( player );
+
+		//[b611] chrissstrahl - handle NPC / AI Teammates
+		coopNpcTeam.playerReadyCheck(player);
 	}
 }
 
@@ -2005,6 +2004,9 @@ void coop_playerLeft( Player *player )
 	//hzm coop mod chrissstrahl - save current status when player leaves the game (unless he is spec)
 	if ( !multiplayerManager.isPlayerSpectator( player ) ){
 		coop_serverSaveClientDataWrite( player );
+		
+		//[b611] chrissstrahl - handle NPC / AI Teammates
+		coopNpcTeam.playerLeft(player);
 	}
 
 	//chrissstrahl - make sure server is restarted if it really needs to
