@@ -2001,6 +2001,12 @@ void coop_playerLeft( Player *player )
 		return;
 	}
 
+	//[b611] chrissstrahl - moved code here
+	//enable/disable ai
+	//check if mission failed
+	coop_serverManageAi();
+	coop_serverLmsCheckFailure();	
+
 	//hzm coop mod chrissstrahl - save current status when player leaves the game (unless he is spec)
 	if ( !multiplayerManager.isPlayerSpectator( player ) ){
 		coop_serverSaveClientDataWrite( player );
@@ -2011,7 +2017,7 @@ void coop_playerLeft( Player *player )
 
 	//chrissstrahl - make sure server is restarted if it really needs to
 	//no player on the server left, see if server should be rebooted
-	if (coop_returnPlayerQuantityInArena() <= 1) { //[b607] chrissstrahl - fixed, because this chaunts leaving player as well
+	if (coop_returnPlayerQuantityInArena() <= 1) { //[b607] chrissstrahl - fixed, because this counts leaving player as well
 		if (coop_serverManageReboot(level.mapname.c_str())) {
 			return; //[b607] chrissstrahl - if server is going to reboot we don't need to continue
 		}
@@ -2032,6 +2038,9 @@ void coop_playerLeft( Player *player )
 			iFailtime = 3000;
 		}
 
+		//[b611] chrissstrahl - reset air accelerate, to prevent new players to get confused or stuck
+		world->setPhysicsVar("airAccelerate", 2.0f);
+
 		game.coop_autoFailPending = true;
 		Event *newEvent2 = new Event(EV_World_AutoFailure);
 		world->PostEvent(newEvent2, (iFailtime * 60));
@@ -2040,13 +2049,6 @@ void coop_playerLeft( Player *player )
 
 	//hzm coop mod chrissstrahl - update statistic for all players
 	coop_classUpdateClassStats();
-	//coop_classUpdateHealthStatFor( player->entnum );
-
-	//hzm coop mod chrissstrahl - call ai manager - do we need to follow a different player, or disable ai
-	coop_serverManageAi();
-
-	//hzm coop mod chrissstrahl - check if mission failed
-	coop_serverLmsCheckFailure();
 
 	//[b607] chrissstrahl - clear player name from all other players their communicator transport buttons
 	coop_playerCommunicator(player, 0);
