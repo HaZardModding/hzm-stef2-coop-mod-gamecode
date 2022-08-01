@@ -135,7 +135,6 @@ bool coop_checkInsidePlayerOrActor( Entity *entity1 )
 			entity2->setSolidType( SOLID_NOT );
 			entity2->_makeSolidASAP = true;
 			entity2->_makeSolidASAPTime = 0.0f;
-			//entity2->_makeSolidASAPSupposedToBeSolid = true;
 			return true;
 		}
 	}

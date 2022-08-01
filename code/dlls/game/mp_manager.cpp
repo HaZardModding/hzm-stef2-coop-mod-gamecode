@@ -3520,7 +3520,6 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	if ( level.cinematic == false )
 	{
 		//hzm gameupdate chrissstrahl - not suppose to be solid
-		//player->_makeSolidASAPSupposedToBeSolid = false;
 		player->_makeSolidASAPTime = 0.0f;
 		player->_makeSolidASAP = true;
 		//end of hzm
@@ -3531,7 +3530,6 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	}
 	else{
 		//hzm gameupdate chrissstrahl - suppose to be solid
-		//player->_makeSolidASAPSupposedToBeSolid = false;
 		player->_makeSolidASAPTime = -1.0f;
 		player->_makeSolidASAP = false;
 		//end of hzm

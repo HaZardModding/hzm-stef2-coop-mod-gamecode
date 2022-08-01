@@ -835,7 +835,6 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 
 	//hzm coop mod chrissstrahl - make sure players do not get stuck inside each other
 	player->_makeSolidASAP = true;
-	//player->_makeSolidASAPSupposedToBeSolid = true;
 
 	//remember tarnsport time
 	player->coopPlayer.lastTimeTransported = level.time;
@@ -862,7 +861,6 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	player->SetViewAngles(targetPlayer->angles);
 
 	targetPlayer->_makeSolidASAP = true;
-	//targetPlayer->_makeSolidASAPSupposedToBeSolid = true;
 	return true;
 }
 

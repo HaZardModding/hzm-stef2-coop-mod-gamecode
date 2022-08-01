@@ -1645,7 +1645,6 @@ void coop_playerSpectator( Player *player )
 	}
 
 	player->coopPlayer.injuredSymbolVisible = false;
-	//player->_makeSolidASAPSupposedToBeSolid = false;
 	player->_makeSolidASAPTime = -1.0f;
 	player->_makeSolidASAP = false;
 
