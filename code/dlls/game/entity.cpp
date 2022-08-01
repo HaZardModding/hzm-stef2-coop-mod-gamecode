@@ -2075,7 +2075,6 @@ void Entity::MakeSolidAsap(Event* ev)
 {
 	_makeSolidASAP = true;
 	_makeSolidASAPTime = 0.0f;
-	//entity->_makeSolidASAPSupposedToBeSolid = true;
 }
 
 //--------------------------------------------------------------
@@ -2276,7 +2275,6 @@ void Entity::Setup()
 	//hzm gameupdate chrissstrahl - handle make solid asap relevant vars
 	_makeSolidASAP = false;
 	_makeSolidASAPTime = 0.0f;
-	//_makeSolidASAPSupposedToBeSolid = false;
 	//end of hzm
 
 	// Pluggable modules
@@ -4153,7 +4151,6 @@ void Entity::BecomeNonSolid
 	if ( isSubclassOf( Actor ) || isSubclassOf( Player ) ){
 		_makeSolidASAP = false;
 		_makeSolidASAPTime = 0.0f;
-		//_makeSolidASAPSupposedToBeSolid = false;
 	}
 	//end of hzm
 	
@@ -10681,6 +10678,13 @@ void Entity::warp( Event *ev )
 	setAngles();
 
 	NoLerpThisFrame();
+
+	//[b611] chrisstrahl - make sure actors do not get stuck inside players or vice versa
+	if (isSubclassOf(Actor) || isSubclassOf(Player) && coop_checkInsidePlayerOrActor(this)) {
+		_makeSolidASAP = true;
+		_makeSolidASAPTime = 0.01f;
+	}
+	//end
 
 	if ( bind_info )
 	{
