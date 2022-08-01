@@ -249,11 +249,15 @@ void Player::circleMenuThink()
 
 	//detect which movedirection the player did move towards
 	//on menu show exec reset
-	if (upgCircleMenu.active <= 0 || upgCircleMenu.thinkTime > level.time || health <= 0) {
+	if (upgCircleMenu.active <= 0 || upgCircleMenu.thinkTime > level.time) {
 		return;
 	}
 	//make sure it can not be abused by spec
-	if (multiplayerManager.inMultiplayer() && (!multiplayerManager.isFightingAllowed() || multiplayerManager.isPlayerSpectator(this))){
+	if (this->getHealth() <= 0 || multiplayerManager.inMultiplayer() && !multiplayerManager.isFightingAllowed() || multiplayerManager.isPlayerSpectator(this)) {
+		if (upgCircleMenu.active) {
+			circleMenuHud(false);
+			upgCircleMenu.active = 0;
+		}
 		return;
 	}
 
