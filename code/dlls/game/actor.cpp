@@ -3605,17 +3605,9 @@ void Actor::Start( Event *ev )
 	// Override starting health if we're using the GameplayManager
 	GameplayManager *gpm = GameplayManager::getTheGameplayManager();
 	GameplayFormulaData fd(this);
-	if ( gpm->hasObject(getArchetype()) && gpm->hasFormula("Health"))
+	if (gpm->hasObject(getArchetype()) && gpm->hasFormula("Health")) {
 		health = gpm->calculate("Health", fd);
-
-	//hzm coop mod chrissstrahl - mark for actor::think to check
-	//if actor is inside a player or another actor
-	//if ( edict->solid != SOLID_NOT ) {
-		//_makeSolidASAP = true;
-		//_makeSolidASAPTime = -1.0f;
-	//}
-	//_makeSolidASAPSupposedToBeSolid = true;
-	//end of hzm
+	}
 }
 
 
