@@ -2076,13 +2076,7 @@ void Player::widgetCommandEvent(Event* ev)
 
 		//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
 		if (coop_returnIntFind(sParameters.c_str(), "labeltext") != -1) {
-			int i;
-			for (i = 0; i < strlen(sTemp); i++) {
-				if (sTemp[i] == '\n' || sTemp[i] == '#')
-					sTemp[i] = '~';
-				if (sTemp[i] == ' ')
-					sTemp[i] = '^';
-			}
+
 		}
 
 		sParameters += sTemp;
@@ -2221,6 +2215,7 @@ void Player::circleMenuDialogSet(int iOption, str sText,str sThread,str sImage)
 
 	//send commands to menu
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
+	sText = coop_replaceForLabelText(sText);
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 }
 
@@ -2301,25 +2296,39 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 
 	//send commands to menu
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
+	//replace withespace and newline to make it work with labeltext
+	sText = coop_replaceForLabelText(sText);
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s",sWidgetName.c_str(), sText.c_str()));
 }
 
 //hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
 void Player::circleMenuClearEvent(Event* ev)
 {
-	circleMenuClear();
+	int iOption = ev->GetInteger(1);
+	circleMenuClear(iOption);
 }
 
 //hzm gameupdate chrissstrahl [b611]  - clears dialog option from circle menu
-void Player::circleMenuClear()
+void Player::circleMenuClear(int iOption)
 {
 	if (upgCircleMenu.active <= 0) {
 		gi.Printf(va("%s.circleMenuClear() - Can only be used while menu active.\n", targetname.c_str()));
+		return;
+	}
+	
+	if (iOption < 0 || iOption > CIRCLEMENU_MAX_OPTIONS) {
+		gi.Printf(va("%s.circleMenuClear() - Out of range: %d.\n", targetname.c_str(), iOption));
+		return;
 	}
 
-	int i;
-	for (int i = 0; i < CIRCLEMENU_MAX_OPTIONS; i++) {
-		circleMenuSet(i, "", "", "",false,999999,0,"");
+	if (iOption != 0) {
+		circleMenuSet(iOption, "", "", "", false, 999999, 0, "");
+	}
+	else {
+		int i;
+		for (int i = 0; i < CIRCLEMENU_MAX_OPTIONS; i++) {
+			circleMenuSet(i, "", "", "", false, 999999, 0, "");
+		}
 	}
 }
 
