@@ -79,5 +79,6 @@ void coop_textChatTimeCountDown( Player *player );
 str coop_textPhraseLocalStrUmlaute( Player *player, str sText );
 void coop_textHudprint( Player *player , str sText );
 void coop_textHudprintAll( str messageToShow );
+str coop_replaceForLabelText(str sPure);
 
 #endif /* coopText.hpp */

@@ -535,3 +535,17 @@ void coop_textHudprintAll( str messageToShow )
 	}
 }
 
+//[b611]=Chrissstrahl=============================================
+// Replaces withespace and newline with labeltext compatible chars, which are handled client side
+//================================================================
+str coop_replaceForLabelText(str sPure)
+{
+	int i;
+	for (i = 0; i < strlen(sPure); i++) {
+		if (sPure[i] == '\n' || sPure[i] == '#')
+			sPure[i] = '~';
+		if (sPure[i] == ' ')
+			sPure[i] = '^';
+	}
+	return sPure;
+}
