@@ -136,8 +136,8 @@ void CreateExplosion( const Vector &pos, float damage, Entity *inflictor, Entity
 
   "dmg" specifies how much damage to cause. Default indicates 120.
   "key" The item needed to activate this. (default nothing)
-  "thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+  "thread" name of the thread to start in the scripts
+
 ******************************************************************************/
 
 CLASS_DECLARATION( Trigger, Exploder, "func_exploder" )
@@ -227,8 +227,8 @@ void Exploder::SetHealth( Event *ev )
   "wait" time between each explosion (default 0.25 seconds)
   "random" random factor (default 0.25)
   "key" The item needed to activate this. (default nothing)
-  "thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+  "thread" name of the thread to start in the scripts
+
   "health" makes the object damageable
   "scale" set the maximum size for spawned debris and explosions.
 
@@ -448,8 +448,8 @@ void MultiExploder::SetHealth( Event *ev )
   "severity" how violent the debris should be ejected from the object( default 1.0 )
   "debrismodel" What kind of debris to spawn (default nothing)
   "amount" how much debris to spawn for each explosion (default 4)
-  "thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+  "thread" name of the thread to start in the scripts
+
   "health" makes the object damageable
   "scale" set the maximum size for spawned debris and explosions
   "doexplosion" specifies to use an explosion (can also specify explosion model and explosion radius)
