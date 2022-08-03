@@ -248,7 +248,7 @@ class Player : public Sentient
 		void				circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType);
 		void				circleMenuClear(int iOption);
 		void				circleMenuDialogSet(int iOption, str sText, str sThread, str sImage);
-		void				circleMenuDialogClear();
+		void				circleMenuDialogClear(int iOption);
 		void				circleMenuHud(bool show);
 		void				circleMenuSetEvent(Event* ev);
 		void				circleMenuClearEvent(Event* ev);

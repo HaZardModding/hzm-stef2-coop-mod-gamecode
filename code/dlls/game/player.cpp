@@ -1445,8 +1445,8 @@ Event EV_Player_circleMenuDialogClear
 (
 	"circleMenuDialogClear",
 	EV_SCRIPTONLY,
-	"",
-	"",
+	"F",
+	"int-dialog-number",
 	"Clears all circle menu dialog options from menu"
 );
 //hzm gameupdate chrissstrahl [b611] - add new commands for script use
@@ -1464,7 +1464,7 @@ Event EV_Player_circleMenuClear
 	"circleMenuClear",
 	EV_SCRIPTONLY,
 	"F",
-	"float-dialognumber",
+	"int-item-number",
 	"Clears a option if a number is given. otherwise it clears all options for player circle menu"
 );
 //hzm gameupdate chrissstrahl [b611] - add new commands for script use
@@ -2222,19 +2222,31 @@ void Player::circleMenuDialogSet(int iOption, str sText,str sThread,str sImage)
 //hzm gameupdate chrissstrahl [b611]  - clears dialog options from circle menu
 void Player::circleMenuDialogClearEvent(Event* ev)
 {
-	circleMenuDialogClear();
+	int iOption = ev->GetInteger(1);
+	circleMenuDialogClear(iOption);
 }
 
 //hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu for player
-void Player::circleMenuDialogClear()
+void Player::circleMenuDialogClear(int iOption)
 {
 	if (upgCircleMenu.active <= 0) {
 		gi.Printf(va("%s.circleMenuDialogClear() - Can only be used while menu active.\n", targetname.c_str()));
+		return;
 	}
 
-	int i;
-	for (int i = 0; i < CIRCLEMENU_MAX_OPTIONSDIALOG;i++) {
-		circleMenuDialogSet(i,"","","");
+	if (iOption < 0 || iOption > CIRCLEMENU_MAX_OPTIONSDIALOG) {
+		gi.Printf(va("%s.circleMenuDialogClear() - Out of range: %d.\n", targetname.c_str(), iOption));
+		return;
+	}
+
+	if (iOption != 0) {
+		circleMenuDialogSet(iOption, "", "", "");
+	}
+	else {
+		int i;
+		for (int i = 0; i < CIRCLEMENU_MAX_OPTIONSDIALOG; i++) {
+			circleMenuDialogSet(i, "", "", "");
+		}
 	}
 }
 
