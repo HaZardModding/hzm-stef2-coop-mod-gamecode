@@ -376,8 +376,8 @@ on destructible.  To make a trigger that triggers everytime it takes damage
 and when it dies, set both triggerondamage to be true and triggerondeath to
 be true.
 
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 if "angle" is set, the trigger will only fire when someone is facing the
 direction of the angle.
@@ -1364,8 +1364,8 @@ If "delay" is set, the trigger waits some time after activating before firing.
 
 "targetname".  If "health" is set, the trigger must be killed to activate.
 
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 if "killtarget" is set, any objects that have a matching "target" will be
 removed when the trigger is fired.
@@ -1452,8 +1452,7 @@ if "angle" is set, the trigger will only fire when someone is facing the
 direction of the angle.
 "cone" the cone in which a directed trigger can be triggered (default 60 degrees)
 
-"thread" name of thread to trigger.  This can be in a different script file as well \
-by using the '::' notation.  (defaults to "global/universal_script.scr::secret")
+"thread" name of the thread to start in the scripts
 
 "triggerable" turn trigger on
 "nottriggerable" turn trigger off
@@ -1522,8 +1521,8 @@ If "delay" is set, the trigger waits some time after activating before firing.
 
 "targetname".  If "health" is set, the trigger must be killed to activate.
 
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 if "killtarget" is set, any objects that have a matching "target" will be
 removed when the trigger is fired.
@@ -2025,8 +2024,8 @@ if (AMBIENT-?) is not set, then the sound is sent over explicitly this creates m
 "channel" channel on which to play sound\
 (0 auto, 1 weapon, 2 voice, 3 item, 4 body, 8 don't use PHS) (voice is default)
 "key" The item needed to activate this. (default nothing)
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 Normal sounds play each time the target is used.
 
@@ -2315,8 +2314,8 @@ const char *TriggerChangeLevel::SpawnSpot( void )
 
 Activates targets when 'used' by an entity
 "key"          The item needed to activate this. (default nothing)
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 "triggerable" turn trigger on
 "nottriggerable" turn trigger off
@@ -2356,8 +2355,8 @@ TriggerUse::TriggerUse()
 
 Activates targets when 'used' by an entity, but only once
 "key"          The item needed to activate this. (default nothing)
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 "triggerable" turn trigger on
 "nottriggerable" turn trigger off
@@ -2746,8 +2745,8 @@ void TriggerDamageTargets::DamageTargets( Event *ev )
 Activates 'targeted' camera when 'used'
 If activated, toggles through cameras
 "key"          The item needed to activate this. (default nothing)
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 "triggerable" turn trigger on
 "nottriggerable" turn trigger off
@@ -2883,8 +2882,8 @@ be spawned via script.
 If "health" is set, the trigger must be killed to activate each time.
 If "delay" is set, the trigger waits some time after activating before firing.
 
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 "wait" : Seconds between triggerings. (.2 default)
 "cnt" how many times it can be triggered (infinite default)
@@ -2961,8 +2960,8 @@ If "delay" is set, the trigger waits some time after activating before firing.
 "multiFaceted" if 1, then trigger is North/South separate triggerable\
 if 2, then trigger East/West separate triggerable
 
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 "wait" : Seconds between triggerings. (1.0 default)
 "cnt" how many times it can be triggered (infinite default)
 "oneshot" make this a one time trigger
@@ -3153,8 +3152,8 @@ If "delay" is set, the trigger waits some time after activating before firing.
 "multiFaceted" if 1, then trigger is North/South separate triggerable\
 if 2, then trigger East/West separate triggerable
 
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 "wait" : Seconds between triggerings. (1.0 default)
 "cnt" how many times it can be triggered (infinite default)
 "oneshot" make this a one time trigger
@@ -3697,8 +3696,8 @@ Variable sized repeatable trigger.  Must be targeted at one or more entities.
 If "health" is set, the trigger must be killed to activate each time.
 If "delay" is set, the trigger waits some time after activating before firing.
 
-"thread" name of thread to trigger.  This can be in a different script file as well\
-by using the '::' notation.
+"thread" name of the thread to start in the scripts
+
 
 if "angle" is set, the trigger will only fire when someone is facing the
 direction of the angle.
