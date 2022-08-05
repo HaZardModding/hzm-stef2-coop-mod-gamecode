@@ -2948,7 +2948,7 @@ void Entity::TriggerEvent
    int         i;
    int         num;
 
-	name = ev->GetString( 1 );
+   name = ev->GetString(1);
 
 	if ( !name )
 		return;
@@ -2963,6 +2963,12 @@ void Entity::TriggerEvent
          ent = tlist->list.ObjectAt( i );
 
 		   assert( ent );
+
+		   //[b611] Chrissstrahl - used for debugging - turned out to be a bug in the bsp
+		   //Trigger* t;
+		   //t = (Trigger*)ent;
+		   //str ssssss = t->GetThread();
+		   //str ssss = ent->targetname;
 
          event = new Event( EV_Activate );
 			event->SetSource( ev->GetSource() );
