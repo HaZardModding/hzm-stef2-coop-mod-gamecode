@@ -236,6 +236,7 @@ class Player : public Sentient
 		//hzm gameupdate chrissstrahl - added for message of the day ststus check
 		bool				messageOfTheDaySend;
 		//hzm gameupdate chrissstrahl [b611] - circlemenu stuff
+	public:
 		UpgCircleMenu		upgCircleMenu;
 		friend class		UpgCircleMenu;
 		void				circleMenu(int iType);
@@ -254,6 +255,9 @@ class Player : public Sentient
 		void				circleMenuClearEvent(Event* ev);
 		void				circleMenuDialogSetEvent(Event* ev);
 		void				circleMenuDialogClearEvent(Event* ev);
+		void				circleMenuEvent(Event* ev);
+		//circlemenu - end
+
 		//HaZardModding Coop Mod Added and Modified Stuff
 		//HaZardModding Coop Mod Added and Modified Stuff
 		//HaZardModding Coop Mod Added and Modified Stuff
@@ -277,8 +281,6 @@ class Player : public Sentient
 		void				checkFirealt(Event* ev);
 		//[b611] chrissstrahl - checks if player is in third person
 		void				checkThirdperson(Event* ev);
-		//[b611] chrissstrahl - start circlemenu for player
-		void				circleMenuEvent(Event* ev);
 
 		//[b611] chrissstrahl - allow to run thread from player entity (sets currententity)
 		void				RunThread(Event* ev);

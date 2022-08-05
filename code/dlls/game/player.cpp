@@ -23,6 +23,7 @@
 #include "coopPlayer.hpp"
 #include "coopText.hpp"
 #include "coopReturn.hpp"
+#include "upgCircleMenu.hpp"
 
 #include "worldspawn.h"
 #include "weapon.h"
@@ -1423,51 +1424,6 @@ Event EV_Player_setKillThread
 	"Sets the thread to run if player gets killed."
 );
 //hzm gameupdate chrissstrahl [b611] - add new commands for script use
-Event EV_Player_circleMenu
-(
-	"circleMenu",
-	EV_SCRIPTONLY,
-	"f",
-	"integer-menutype",
-	"Shows Circle Menu to player, 1=Normal, 2=Dialog."
-);
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
-Event EV_Player_circleMenuDialogSet
-(
-	"circleMenuDialogSet",
-	EV_SCRIPTONLY,
-	"issS",
-	"optionnumber optiontext threadname imageORshader",
-	"Adds a dialog option for player to circle menu"
-);
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
-Event EV_Player_circleMenuDialogClear
-(
-	"circleMenuDialogClear",
-	EV_SCRIPTONLY,
-	"F",
-	"int-dialog-number",
-	"Clears all circle menu dialog options from menu"
-);
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
-Event EV_Player_circleMenuSet
-(
-	"circleMenuSet",
-	EV_SCRIPTONLY,
-	"issSIIIS",
-	"optionnumber optiontext threadOrCommandName imageORshader isThread iAmmount iCost sCostType",
-	"Adds a option for player from circle menu"
-);
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
-Event EV_Player_circleMenuClear
-(
-	"circleMenuClear",
-	EV_SCRIPTONLY,
-	"F",
-	"int-item-number",
-	"Clears a option if a number is given. otherwise it clears all options for player circle menu"
-);
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
 Event EV_Player_getLanguage
 (
 	"getLanguage",
@@ -1648,6 +1604,7 @@ Event EV_Player_HasLanguageEnglish
 	"bool-yes-or-no",
 	"Check if Player has English Language of the game"
 );
+
 /*
 ==============================================================================
 
@@ -1847,8 +1804,8 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 
 	//hzm gameupdate chrissstrahl [b611] circlemenu
-	{ &EV_Player_circleMenu,					&Player::circleMenuEvent },
-	{ &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent },
+	{ &EV_Player_circleMenu,					&Player::circleMenuEvent},
+	{ &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent},
 	{ &EV_Player_circleMenuDialogClear,			&Player::circleMenuDialogClearEvent },
 	{ &EV_Player_circleMenuSet,					&Player::circleMenuSetEvent },
 	{ &EV_Player_circleMenuClear,				&Player::circleMenuClearEvent },
@@ -1875,10 +1832,6 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getTeamName,					&Player::getTeamName },
 	{ &EV_Player_getTeamScore,					&Player::getTeamScore },
 	{ &EV_Player_getCoopVersion,				&Player::getCoopVersion },
-
-	//HaZardModding Coop Mod
-	//HaZardModding Coop Mod
-	//HaZardModding Coop Mod
 	//[b611] chrissstrahl - checks if player is using the use button
 	{ &EV_Player_checkUse,						&Player::checkUsePressing },
 	//[b611] chrissstrahl - checks if player is in third person
@@ -1905,14 +1858,10 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b611] chrissstrahl - checks player has ger/eng langauge
 	{ &EV_Player_HasLanguageGerman ,				&Player::hasLanguageGerman },
 	{ &EV_Player_HasLanguageEnglish ,				&Player::hasLanguageEnglish },
-	
-	
-	//HaZardModding Coop Mod END
-	//HaZardModding Coop Mod END
-	//HaZardModding Coop Mod END
-
 	{ NULL , NULL }
 };
+
+extern void Player::circleMenuEvent(Event ev);
 
 //[b611] chrissstrahl - get coop class name
 void Player::getCoopClass(Event* ev)
@@ -2170,178 +2119,6 @@ void Player::setLanguage(str sLang)
 		return;
 	}
 	language = sLang;
-}
-
-//hzm gameupdate chrissstrahl [b611]  - starts circle menu
-void Player::circleMenuEvent(Event* ev)
-{
-	if (health <= 0 || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this,SPECTATOR_TYPE_ANY)) { return; }
-
-	int iMenuType = ev->GetInteger(1);
-	circleMenu(iMenuType);
-}
-
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
-void Player::circleMenuDialogSetEvent(Event* ev)
-{
-	int iOption		= ev->GetInteger(1);
-	str sText		= ev->GetString(2);
-	str sThread		= ev->GetString(3);
-	str sImage		= "";
-	if (ev->NumArgs() > 3) {
-		sImage = ev->GetString(4);
-	}
-	circleMenuDialogSet(iOption,sText,sThread,sImage);
-}
-
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
-void Player::circleMenuDialogSet(int iOption, str sText,str sThread,str sImage)
-{
-	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONSDIALOG) {
-		gi.Printf(va("circleMenuDialogSet: Given Option %i is out of Range\n"));
-		return;
-	}
-	if (upgCircleMenu.active <= 0) {
-		gi.Printf(va("%s.circleMenuDialogSet() - Can only be used while menu active.\n", targetname.c_str()));
-	}
-	upgCircleMenu.optionDialogThread[iOption] = sThread;
-	upgCircleMenu.optionDialogText[iOption] = sText;
-	upgCircleMenu.optionDialogIcon[iOption] = sImage;
-
-	if (!sImage.length()) { sImage = "weapons/empty"; }
-	if (!sText.length()) { sText = "^"; }
-
-	str sWidgetName = circleMenuGetWidgetName(iOption);
-
-	//send commands to menu
-	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
-	sText = coop_replaceForLabelText(sText);
-	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
-}
-
-//hzm gameupdate chrissstrahl [b611]  - clears dialog options from circle menu
-void Player::circleMenuDialogClearEvent(Event* ev)
-{
-	int iOption = ev->GetInteger(1);
-	circleMenuDialogClear(iOption);
-}
-
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu for player
-void Player::circleMenuDialogClear(int iOption)
-{
-	if (upgCircleMenu.active <= 0) {
-		gi.Printf(va("%s.circleMenuDialogClear() - Can only be used while menu active.\n", targetname.c_str()));
-		return;
-	}
-
-	if (iOption < 0 || iOption > CIRCLEMENU_MAX_OPTIONSDIALOG) {
-		gi.Printf(va("%s.circleMenuDialogClear() - Out of range: %d.\n", targetname.c_str(), iOption));
-		return;
-	}
-
-	if (iOption != 0) {
-		circleMenuDialogSet(iOption, "", "", "");
-	}
-	else {
-		int i;
-		for (int i = 0; i < CIRCLEMENU_MAX_OPTIONSDIALOG; i++) {
-			circleMenuDialogSet(i, "", "", "");
-		}
-	}
-}
-
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu for player
-void Player::circleMenuSetEvent(Event* ev)
-{
-	int iOption		= ev->GetInteger(1);
-	str sText		= ev->GetString(2);
-	str sThread		= ev->GetString(3);
-	str sImage		= "";
-	bool bIsThread = false;
-	int iAmmount = 999999;
-	int iCost = 0;
-	str sCostType = "";
-	if (ev->NumArgs() > 3) {
-		sImage = ev->GetString(4);
-	}
-	if (ev->NumArgs() > 4) {
-		bIsThread = (bool)ev->GetInteger(5);
-	}
-	if (ev->NumArgs() > 5) {
-		iAmmount = ev->GetInteger(6);
-	}
-	if (ev->NumArgs() > 7) {
-		iCost = ev->GetInteger(7);
-		sCostType = ev->GetInteger(8);
-	}
-
-	circleMenuSet(iOption, sText, sThread, sImage, bIsThread, iAmmount, iCost, sCostType);
-}
-
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
-void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread,int iAmmount,int iCost,str sCostType)
-{
-	//correct offset
-	iOption = (iOption - 1);
-
-	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONS) {
-		gi.Printf(va("circleMenuSet: Given Option %i is out of Range\n", iOption));
-		return;
-	}
-	if (upgCircleMenu.active <= 0) {
-		gi.Printf(va("%s.circleMenuSet() - Can only be used while menu active.\n", targetname.c_str()));
-	}
-
-	if (!sImage.length()) { sImage = "weapons/empty"; }
-	if (!sText.length()) { sText = "^"; }
-	if (iAmmount == -1) { iAmmount = 999999; }
-
-	upgCircleMenu.optionThreadOrCommand[iOption] = sThread;
-	upgCircleMenu.optionText[iOption] = sText;
-	upgCircleMenu.optionIcon[iOption] = sImage;
-	upgCircleMenu.optionIsScript[iOption] = bThread;
-	upgCircleMenu.optionAmmount[iOption] = iAmmount;
-	upgCircleMenu.optionCost[iOption] = iCost;
-	upgCircleMenu.optionCostType[iOption] = sCostType;
-
-	str sWidgetName = circleMenuGetWidgetName(iOption);
-
-	//send commands to menu
-	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
-	//replace withespace and newline to make it work with labeltext
-	sText = coop_replaceForLabelText(sText);
-	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s",sWidgetName.c_str(), sText.c_str()));
-}
-
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
-void Player::circleMenuClearEvent(Event* ev)
-{
-	int iOption = ev->GetInteger(1);
-	circleMenuClear(iOption);
-}
-
-//hzm gameupdate chrissstrahl [b611]  - clears dialog option from circle menu
-void Player::circleMenuClear(int iOption)
-{
-	if (upgCircleMenu.active <= 0) {
-		gi.Printf(va("%s.circleMenuClear() - Can only be used while menu active.\n", targetname.c_str()));
-		return;
-	}
-	
-	if (iOption < 0 || iOption > CIRCLEMENU_MAX_OPTIONS) {
-		gi.Printf(va("%s.circleMenuClear() - Out of range: %d.\n", targetname.c_str(), iOption));
-		return;
-	}
-
-	if (iOption != 0) {
-		circleMenuSet(iOption, "", "", "", false, 999999, 0, "");
-	}
-	else {
-		int i;
-		for (int i = 0; i < CIRCLEMENU_MAX_OPTIONS; i++) {
-			circleMenuSet(i, "", "", "", false, 999999, 0, "");
-		}
-	}
 }
 
 //[b611] chrissstrahl - checks if player is pressing fire button
