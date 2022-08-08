@@ -658,6 +658,7 @@
     <ClCompile Include="coopGamecmds.cpp" />
     <ClCompile Include="coopHuds.cpp" />
     <ClCompile Include="coopModel.cpp" />
+    <ClCompile Include="coopNpcTeam.cpp" />
     <ClCompile Include="coopObjectives.cpp" />
     <ClCompile Include="coopParser.cpp" />
     <ClCompile Include="coopPlayer.cpp" />
@@ -1481,6 +1482,7 @@
     <ClInclude Include="coopGamecmds.hpp" />
     <ClInclude Include="coopHuds.hpp" />
     <ClInclude Include="coopModel.hpp" />
+    <ClInclude Include="coopNpcTeam.hpp" />
     <ClInclude Include="coopObjectives.hpp" />
     <ClInclude Include="coopParser.hpp" />
     <ClInclude Include="coopPlayer.hpp" />
