@@ -343,9 +343,10 @@ void Interpreter::ThreadCall( const Interpreter *source, dfunction_t *newf, int 
 	int start;
 	int i;
 	
-	if ( scr_printfunccalls->integer )
-		gi.Printf( "thread call - %s (ignore previous and next func call)\n", newf->s_name.c_str() );		
-	
+	if (scr_printfunccalls->integer) {
+		gi.Printf("thread call - %s (ignore previous and next func call)\n", newf->s_name.c_str());
+	}
+
 	Reset();
 	start = source->localstack_used - args;
 
