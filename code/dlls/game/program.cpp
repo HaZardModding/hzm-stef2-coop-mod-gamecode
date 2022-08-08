@@ -704,7 +704,7 @@ FreeString
 */
 void Program::FreeString( int idx )
 {
-	assert( ( idx > 0 ) && ( idx < MAX_STRINGS ) );
+	assert( ( idx > 0 ) && ( idx < MAX_STRINGS ) ); //[b611] Chrissstrahl - this can also trigger if a script function (not a hardcoded eventcall) is called with to few parameters
 	assert( strings[idx].inuse );
 
 	strings[idx].inuse = false;
