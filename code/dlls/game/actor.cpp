@@ -4474,6 +4474,12 @@ void Actor::AttackEntity( Event *ev	)
 		return;
 		}
 
+	//[b611] chrissstrahl - gamefix - if given entity does not exist, givee us at least something man!
+	if (!target) {
+		gi.Printf(va("Actor::AttackEntity - script $%s.attack(entity) failed, enity does not exist\n",this->targetname));
+		return;
+	}
+
 	if ( ev->NumArgs() > 1 )
 		forceEnemy = ev->GetBoolean( 2 );
 
