@@ -10769,13 +10769,19 @@ void Entity::setOriginEveryFrame( Event *ev )
 	
 }
 
-void Entity::isWithinDistanceOf( Event *ev )
+void Entity::isWithinDistanceOf(Event* ev)
 {
-	Entity *destination;
+	Entity* destination;
 	float distance;
 	float returnValue;
 
-	destination = ev->GetEntity( 1 );
+	destination = ev->GetEntity(1);
+	
+	//[b611] chrissstrahl - gameupgrade - make sure we know when something goes wrong, this is such a waste of time sometimes
+	if (!destination) {
+		gi.Printf(va("isWithinDistanceOf faild for $%s, the Entity given in parameter1 does not exist!\nRemember, you can not use Pathnodes and Helpernodes\n",this->targetname.c_str()));
+	}
+
 	distance = ev->GetFloat( 2 );
 	returnValue = 0.0f;
 
