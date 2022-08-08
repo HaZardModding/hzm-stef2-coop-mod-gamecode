@@ -206,7 +206,7 @@ void coop_objectivesSetup( Player *player)
 	//[b610] chrissstrahl - moved it here
 	//standard maps always have ritual entertainment as author
 	if (game.isStandardLevel) {
-		game.coop_author = "Ritual_Entertainment";
+		game.coop_author = "Ritual Entertainment";
 	}
 	else {
 		if (game.coop_author.length() < 1) {
@@ -216,7 +216,8 @@ void coop_objectivesSetup( Player *player)
 			game.coop_author = "$$Empty$$";
 		}
 	}
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor title %s" , game.coop_author.c_str() ) );
+	game.coop_author = coop_replaceForLabelText(game.coop_author);
+	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor labeltext %s" , game.coop_author.c_str() ) );
 	
 	//hzm coop mod chrissstrahl - set story right away, need to do this differently in mp see coop_playerSay
 	coop_storySet( player );
