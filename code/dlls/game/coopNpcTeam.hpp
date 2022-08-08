@@ -37,3 +37,8 @@ public:
 	void	npcRemove(Player* player);
 };
 
+/*
+ADDED playerLeft() TO coopPLayer.cpp at coop_playerLeft()
+ADDED playerReadyCheck() TO coopPLayer.cpp at coop_playerEnterArena()
+ADDED playerSpectator() TO coopPLayer.cpp at coop_playerSpectator()
+*/
