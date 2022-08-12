@@ -2054,6 +2054,21 @@ void coop_playerLeft( Player *player )
 }
 
 //================================================================
+// Name:        coop_updateStats
+// Class:       -
+//              
+// Description: handles player stats in coop - executed from coopPlayer.cpp at Player::UpdateStats( void )
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+//void Player::coop_updateStats(void)
+//{
+//}
+
+//================================================================
 // Name:        DelayedServerCommand
 // Class:       -
 //              
@@ -2192,8 +2207,8 @@ void handleDelayedServerCommands( void )
 						//make sure the text is no longer than 287 units or it will crash the game
 						if ( sNewText.length() > 287 ) {
 							sNewText = coop_substr( sNewText , 0 , 286 );
-							gi.DPrintf( "handleDelayedServerCommands: String to long, was cut down to 286\n" );
-							gi.DPrintf( "%s" , sCmd.c_str() );
+							gi.Printf( "handleDelayedServerCommands: String to long, was cut down to 286\n" );
+							gi.Printf( "%s" , sCmd.c_str() );
 						}
 						sCmd += sNewText;
 						sCmd += "\"\n";
