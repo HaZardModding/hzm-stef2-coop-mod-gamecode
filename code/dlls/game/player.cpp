@@ -1861,8 +1861,6 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ NULL , NULL }
 };
 
-extern void Player::circleMenuEvent(Event ev);
-
 //[b611] chrissstrahl - get coop class name
 void Player::getCoopClass(Event* ev)
 {
@@ -9673,120 +9671,102 @@ void Player::UpdateStats( void )
 	float healthToDisplay;
 	float armorToDisplay;
 
-
-	// Deathmatch stats for arena mode
-	if ( multiplayerManager.inMultiplayer() )
-	{
-		/*
-		// Arena name configstring index
-		if ( current_arena )
+	//[b611] chrissstrahl - handle Coop Stats (in multiplayer) in seperate func, if no coop, execute regular mp stats
+	if (!coop_updateStats()) {
+		// Deathmatch stats for arena mode
+		if (multiplayerManager.inMultiplayer())
 		{
-		client->ps.stats[STAT_ARENA] = CS_ARENA_INFO + current_arena->getID();
-		}
-		else
-		{
-		// CS_ARENA_INFO index holds the "No Arena" string
-		client->ps.stats[STAT_ARENA] = CS_ARENA_INFO;
-		}
+			/*
+			// Arena name configstring index
+			if ( current_arena )
+			{
+			client->ps.stats[STAT_ARENA] = CS_ARENA_INFO + current_arena->getID();
+			}
+			else
+			{
+			// CS_ARENA_INFO index holds the "No Arena" string
+			client->ps.stats[STAT_ARENA] = CS_ARENA_INFO;
+			}
 
-		if ( current_team )
-		{
-		client->ps.stats[STAT_TEAM] = current_team->getIndex();
-		}
-		else
-		{
-		// CS_TEAM_INFO index holds the "No Team" string
-		client->ps.stats[STAT_TEAM] = CS_TEAM_INFO;
-		}
-		*/
+			if ( current_team )
+			{
+			client->ps.stats[STAT_TEAM] = current_team->getIndex();
+			}
+			else
+			{
+			// CS_TEAM_INFO index holds the "No Team" string
+			client->ps.stats[STAT_TEAM] = CS_TEAM_INFO;
+			}
+			*/
 
-		//client->ps.stats[STAT_KILLS]		= multiplayerManager.getPoints( this );
-		//client->ps.stats[STAT_DEATHS]		= multiplayerManager.getDeaths( this );
-		//client->ps.stats[STAT_ARENA]		= multiplayerManager.getTeamPoints( this );
+			client->ps.stats[STAT_RED_TEAM_SCORE] = multiplayerManager.getTeamPoints("Red");
+			client->ps.stats[STAT_BLUE_TEAM_SCORE] = multiplayerManager.getTeamPoints("Blue");
 
-		//hzm coop mod chrissstrahl - try to reduce network traffic, these are not needed in the coop mod
-		if ( !game.coop_isActive ) {
-			client->ps.stats[STAT_RED_TEAM_SCORE] = multiplayerManager.getTeamPoints( "Red" );
-			client->ps.stats[STAT_BLUE_TEAM_SCORE] = multiplayerManager.getTeamPoints( "Blue" );
-		}
+			client->ps.stats[STAT_SCORE] = multiplayerManager.getPoints(this);
+			client->ps.stats[STAT_KILLS] = multiplayerManager.getKills(this);
+			client->ps.stats[STAT_DEATHS] = multiplayerManager.getDeaths(this);
 
-		client->ps.stats[STAT_SCORE] = multiplayerManager.getPoints( this );
-		client->ps.stats[STAT_KILLS] = multiplayerManager.getKills( this );
-		client->ps.stats[STAT_DEATHS] = multiplayerManager.getDeaths( this );
+			client->ps.stats[STAT_MP_GENERIC1] = multiplayerManager.getStat(this, STAT_MP_GENERIC1);
+			client->ps.stats[STAT_MP_GENERIC2] = multiplayerManager.getStat(this, STAT_MP_GENERIC2);
+			client->ps.stats[STAT_MP_GENERIC3] = multiplayerManager.getStat(this, STAT_MP_GENERIC3);
+			client->ps.stats[STAT_MP_GENERIC4] = multiplayerManager.getStat(this, STAT_MP_GENERIC4);
+			client->ps.stats[STAT_MP_GENERIC5] = multiplayerManager.getStat(this, STAT_MP_GENERIC5);
+			client->ps.stats[STAT_MP_GENERIC6] = multiplayerManager.getStat(this, STAT_MP_GENERIC6);
+			client->ps.stats[STAT_MP_GENERIC7] = multiplayerManager.getStat(this, STAT_MP_GENERIC7);
+			client->ps.stats[STAT_MP_GENERIC8] = multiplayerManager.getStat(this, STAT_MP_GENERIC8);
 
+			client->ps.stats[STAT_MP_MODE_ICON] = multiplayerManager.getIcon(this, STAT_MP_MODE_ICON);
+			client->ps.stats[STAT_MP_TEAM_ICON] = multiplayerManager.getIcon(this, STAT_MP_TEAM_ICON);
+			client->ps.stats[STAT_MP_TEAMHUD_ICON] = multiplayerManager.getIcon(this, STAT_MP_TEAMHUD_ICON);
+			client->ps.stats[STAT_MP_SPECIALTY_ICON] = multiplayerManager.getIcon(this, STAT_MP_SPECIALTY_ICON);
+			client->ps.stats[STAT_MP_OTHERTEAM_ICON] = multiplayerManager.getIcon(this, STAT_MP_OTHERTEAM_ICON);
 
-		//hzm coop mod chrissstrahl - do not update these statistics, so that the scripts can use them on m6-exterior
-		if ( !game.coop_isActive || game.coop_isActive && level.mapname != "m6-exterior" ) {
-			client->ps.stats[STAT_MP_GENERIC1] = multiplayerManager.getStat( this , STAT_MP_GENERIC1 );
-			client->ps.stats[STAT_MP_GENERIC2] = multiplayerManager.getStat( this , STAT_MP_GENERIC2 );
-			client->ps.stats[STAT_MP_GENERIC3] = multiplayerManager.getStat( this , STAT_MP_GENERIC3 );
-			client->ps.stats[STAT_MP_GENERIC4] = multiplayerManager.getStat( this , STAT_MP_GENERIC4 );
-			client->ps.stats[STAT_MP_GENERIC5] = multiplayerManager.getStat( this , STAT_MP_GENERIC5 );
-			client->ps.stats[STAT_MP_GENERIC6] = multiplayerManager.getStat( this , STAT_MP_GENERIC6 );
-			client->ps.stats[STAT_MP_GENERIC7] = multiplayerManager.getStat( this , STAT_MP_GENERIC7 );
-			client->ps.stats[STAT_MP_GENERIC8] = multiplayerManager.getStat( this , STAT_MP_GENERIC8 );
-		}
+			client->ps.stats[STAT_MP_SPECTATING_ENTNUM] = multiplayerManager.getStat( this , STAT_MP_SPECTATING_ENTNUM );
 
-		client->ps.stats[STAT_MP_SPECTATING_ENTNUM] = multiplayerManager.getStat( this , STAT_MP_SPECTATING_ENTNUM );
+			edict->s.infoIcon = multiplayerManager.getInfoIcon(this, last_ucmd.buttons);
 
+			client->ps.stats[STAT_MP_AWARD_ICON] = multiplayerManager.getIcon(this, STAT_MP_AWARD_ICON);
+			client->ps.stats[STAT_MP_AWARD_COUNT] = multiplayerManager.getStat(this, STAT_MP_AWARD_COUNT);
 
-		//hzm coop mod chrissstrahl - try to reduce network traffic, these are not needed in the coop mod
-		if ( !game.coop_isActive ) {
-			client->ps.stats[STAT_MP_MODE_ICON] = multiplayerManager.getIcon( this , STAT_MP_MODE_ICON );
-			client->ps.stats[STAT_MP_TEAM_ICON] = multiplayerManager.getIcon( this , STAT_MP_TEAM_ICON );
-			client->ps.stats[STAT_MP_TEAMHUD_ICON] = multiplayerManager.getIcon( this , STAT_MP_TEAMHUD_ICON );
-			client->ps.stats[STAT_MP_SPECIALTY_ICON] = multiplayerManager.getIcon( this , STAT_MP_SPECIALTY_ICON );
-			client->ps.stats[STAT_MP_OTHERTEAM_ICON] = multiplayerManager.getIcon( this , STAT_MP_OTHERTEAM_ICON );
-		}
+			client->ps.stats[STAT_MP_STATE] = multiplayerManager.getStat(this, STAT_MP_STATE);
 
-		if ( multiplayerManager.inMultiplayer() )
-			edict->s.infoIcon = multiplayerManager.getInfoIcon( this , last_ucmd.buttons );
-		else
-			edict->s.infoIcon = 0;
+			/* client->ps.stats[STAT_WON_MATCHES]     = num_won_matches;
+			client->ps.stats[STAT_LOST_MATCHES]    = num_lost_matches; */
 
-		//hzm coop mod chrissstrahl - try to reduce network traffic, these are not needed in the coop mod
-		if ( !game.coop_isActive || game.coop_isActive && game.coop_awardsActive ) {
-			client->ps.stats[STAT_MP_AWARD_ICON] = multiplayerManager.getIcon( this , STAT_MP_AWARD_ICON );
-			client->ps.stats[STAT_MP_AWARD_COUNT] = multiplayerManager.getStat( this , STAT_MP_AWARD_COUNT );
-		}
+			// Get queue position
+			//client->ps.stats[STAT_QUEUE_PLACE] = 0;
+			/*
+			if ( current_arena )
+			{
+			client->ps.stats[STAT_QUEUE_PLACE] = current_arena->GetLinePosition( this );
+			}
+			*/
+			//		multiplayerManager.getStat( this, STAT_TIMELEFT_MINUTES );
 
-		client->ps.stats[STAT_MP_STATE] = multiplayerManager.getStat( this , STAT_MP_STATE );
-
-		if ( _holdableItem )
-			client->ps.stats[STAT_MP_HOLDABLEITEM_ICON] = _holdableItem->getIcon();
-		else
-			client->ps.stats[STAT_MP_HOLDABLEITEM_ICON] = -1;
-
-		if ( _rune )
-			client->ps.stats[STAT_MP_RUNE_ICON] = _rune->getIcon();
-		else
-			client->ps.stats[STAT_MP_RUNE_ICON] = -1;
-
-		if ( _powerup )
-			client->ps.stats[STAT_MP_POWERUP_ICON] = _powerup->getIcon();
-		else
-			client->ps.stats[STAT_MP_POWERUP_ICON] = -1;
-
-		/* client->ps.stats[STAT_WON_MATCHES]     = num_won_matches;
-		client->ps.stats[STAT_LOST_MATCHES]    = num_lost_matches; */
-
-		// Get queue position
-		//client->ps.stats[STAT_QUEUE_PLACE] = 0;
-		/*
-		if ( current_arena )
-		{
-		client->ps.stats[STAT_QUEUE_PLACE] = current_arena->GetLinePosition( this );
-		}
-		*/
-		//		multiplayerManager.getStat( this, STAT_TIMELEFT_MINUTES );
-
-		//hzm coop mod chrissstrahl - try to reduce network traffic, these are not needed in the coop mod
-		if ( !game.coop_isActive ) {
-			client->ps.stats[STAT_TIMELEFT_SECONDS] = multiplayerManager.getStat( this , STAT_TIMELEFT_SECONDS );
+			client->ps.stats[STAT_TIMELEFT_SECONDS] = multiplayerManager.getStat(this, STAT_TIMELEFT_SECONDS);
 		}
 	}
 
-
+	//[b611] chrissstrahl - gamefix - moving code here makes it work in coop and singleplayer, items would not show in singleplayer but still be usable
+	if (_holdableItem) {
+		client->ps.stats[STAT_MP_HOLDABLEITEM_ICON] = _holdableItem->getIcon();
+	}
+	else {
+		client->ps.stats[STAT_MP_HOLDABLEITEM_ICON] = -1;
+	}
+	if (_rune) {
+		client->ps.stats[STAT_MP_RUNE_ICON] = _rune->getIcon();
+	}
+	else {
+		client->ps.stats[STAT_MP_RUNE_ICON] = -1;
+	}
+	if (_powerup) {
+		client->ps.stats[STAT_MP_POWERUP_ICON] = _powerup->getIcon();
+	}
+	else {
+		client->ps.stats[STAT_MP_POWERUP_ICON] = -1;
+	}
+	
 	//
 	// Health
 	//
@@ -9833,8 +9813,6 @@ void Player::UpdateStats( void )
 	{
 		client->ps.stats[STAT_DEAD_YAW] = 0;
 	}
-
-
 
 	//ArmorValue Stat Update
 	client->ps.stats[STAT_ARMOR_LEVEL] = ( int )armorToDisplay;
@@ -10012,8 +9990,6 @@ void Player::UpdateStats( void )
 
 		}
 	}
-
-
 
 	//
 	// set boss health and name
@@ -13188,7 +13164,6 @@ void Player::SetStat( Event *ev )
 	}
 
 	stat_value = ev->GetInteger( 2 );
-
 	client->ps.stats[stat_index] = stat_value;
 }
 

@@ -235,6 +235,9 @@ class Player : public Sentient
 		void				getScriptVariablesCommand(Event* ev);
 		//hzm gameupdate chrissstrahl - added for message of the day ststus check
 		bool				messageOfTheDaySend;
+		//[b611] chrissstrahl - handle multiplayer stats for coop seperate
+		bool				coop_updateStats(void);
+		int					coop_updateStatsCoopHealth(int statNum);
 		//hzm gameupdate chrissstrahl [b611] - circlemenu stuff
 	public:
 		UpgCircleMenu		upgCircleMenu;
