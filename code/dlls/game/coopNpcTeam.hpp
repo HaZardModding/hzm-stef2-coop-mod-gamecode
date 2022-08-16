@@ -21,20 +21,25 @@ class CoopNpcTeam
 {
 private:
 	bool teamMateAvailable = false;
+	short teamMateClientEquivilent[COOP_NPC_TEAM_MATE_MAX]{-1,-1,-1,-1};
 	str teamMateModel[COOP_NPC_TEAM_MATE_MAX]{ "","","",""};
 	str teamMateName[COOP_NPC_TEAM_MATE_MAX]{ "","","","" };
-	str teamMateWeapon[COOP_NPC_TEAM_MATE_MAX]{ "","","","" };
 	bool teamMateActive[COOP_NPC_TEAM_MATE_MAX]{ false,false,false,false };
 	Entity *teamMateEntity[COOP_NPC_TEAM_MATE_MAX]{ NULL,NULL,NULL,NULL };
 	Player *teamMatePlayer[COOP_NPC_TEAM_MATE_MAX]{ NULL,NULL,NULL,NULL };
+	short teamMatesOnLevel = 0;
 
 public:
+	void	init();
 	void	npcLoadData();
 	void	playerLeft(Player* player);
 	void	playerReadyCheck(Player* player);
 	void	playerSpectator(Player* player);
 	void	npcAdd(Player* player);
+	void	npcAdd(Vector vOrigin, Vector vAngles);
 	void	npcRemove(Player* player);
+	Entity* npcGetSpawnPos();
+	void	cleanUp(bool restart);
 };
 
 /*
