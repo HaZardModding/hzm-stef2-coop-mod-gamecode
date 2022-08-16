@@ -24,6 +24,8 @@ CoopServer coopServer;
 //[b611] chrissstrahl
 #include "coopNpcTeam.hpp"
 extern CoopNpcTeam coopNpcTeam;
+#include "coopChallenges.hpp"
+extern CoopChallenges coopChallenges;
 
 #include "player.h"
 #include "mp_manager.hpp"
@@ -551,7 +553,7 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 	//set marker that server rebooted
 	coop_parserIniSet( "ini/serverData.ini" , "rebooting" , "true" , "server" );
 
-	//save client data into coop_status.ini
+	//save client data into serverData.ini
 	coop_serverSaveAllClientData();
 
 	gi.Printf("REBOOT: ISSUING RECONNECT TO CLIENTS\n");
@@ -1124,7 +1126,8 @@ void coop_serverCoop()
 	coop_serverSetup();
 
 	//[b611] chrissstrahl - load data from ini file of this level for NPC Auto Teammates
-	coopNpcTeam.npcLoadData();
+	coopNpcTeam.init();
+	coopChallenges.init();
 }
 
 //================================================================
@@ -1426,9 +1429,10 @@ bool coop_serverError( str sError, bool bFatal )
 	coop_parserIniSet( "ini/serverData.ini" , "errormap" , level.mapname , "server" );
 	coop_parserIniSet( "ini/serverData.ini" , "errortext" , sError , "server" );
 
-	//[b607] chrissstrahl - this prevents the server from rebooting if errorhalt=true in coop_status.ini
-	//only the commentary was added, the code was already in place
-	if ( coop_returnBool( coop_parserIniGet( "ini/serverData.ini" , "errorhalt" , "server" ) ) )
+	//[b611] chrissstrahl - this prevents the server from exiting/rebooting if noerrorhalt=true in serverData.ini
+	//Changed from, errorhalt to noerrorhalt, so that a server will not reboot on default
+	//You are REQUIRED now to set noerrorhalt=true in /ini/serverData.ini to allow server to exit on error
+	if ( coop_returnBool( coop_parserIniGet( "ini/serverData.ini" , "noerrorhalt" , "server" ) ) )
 		return true;
 
 	//print info to console/logfile
@@ -1437,7 +1441,10 @@ bool coop_serverError( str sError, bool bFatal )
 	gi.Printf( "HZM COOP MOD FEATURE================\n" );
 	gi.Printf( va("%s\n", sError.c_str()) );
 	gi.Printf( "====================================\n" );
-	gi.SendConsoleCommand( "quit\n" );
+	
+	//[b611] chrissstrahl - execute cfg with delayed quit
+	//gi.SendConsoleCommand( "quit\n" );
+	gi.SendConsoleCommand( "coop_mod/cfg/quitServerDelayed.cfg\n" );
 	return true;
 }
 
@@ -1510,11 +1517,32 @@ void coop_serverThink( void )
 // Returns:     void
 //              
 //================================================================
-void coop_serverCleanup(void)
+void coop_serverCleanup(bool restart)
 {
+	//[b611] chrissstrahl - moved code here from: void MultiplayerManager::cleanup( qboolean restart )
+
+	//[b611] chrissstrahl - this lets us detect if the map was restarted or loadad
+	game.levelRestarted = restart;
+
 	game.coop_author = "";
 	game.coop_story = "";
 	game.coop_story_deu = "";
+	game.coop_awardsActive = false;
+	game.coop_isActive = false;
+
+	//[b611] chrissstrahl - only clean up while in multiplayer bejond this point
+	if (!multiplayerManager.inMultiplayer()) {
+		return;
+	}
+
+	//hzm coop mod chrissstrahl - save client data
+	if (game.coop_isActive) {
+		coop_serverSaveAllClientData();
+	}
+
+	//[b611] chrissstrahl
+	coopChallenges.cleanUp(restart);
+	coopNpcTeam.cleanUp(restart);
 }
 
 //[b611] chrissstrahl - bad setting Warning
