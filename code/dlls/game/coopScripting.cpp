@@ -15,7 +15,6 @@ CoopScripting coopScripting;
 #define COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU "multioptions.scr"
 #define COOP_SCRIPTING_FILENAME_NOSCRIPT "noscript.scr"
 #define COOP_SCRIPTING_FILENAME_MISSIONRESOURCEMENU "_mrm.scr"
-
 #define COOP_SCRIPTING_ENTITYVAR_MISSIONRESOURCEMENU_PLAYER_DONE "mrmLoadOutComplete"
 
 
@@ -27,11 +26,12 @@ bool CoopScripting::getIncludedNoscript() { return includedNoscript; }
 void CoopScripting::checkIncludedFiles(str sLex)
 {
 	//[b611] chrissstrahl - check and remember if special scripts are used
-	if (checkIncludedMom(sLex)) { return; }
-	if (checkIncludedMom4(sLex)) { return; }
-	if (checkIncludedMrm(sLex)) { return; }
-	if (checkIncludedNoscript(sLex)) { return; }
-	//[b607] chrissstrahl - dynamically replace tricorder globalscripts with coop versions (only in multiplayer)
+	checkIncludedMom(sLex);
+	checkIncludedMom4(sLex);
+	checkIncludedMrm(sLex);
+	checkIncludedNoscript(sLex);
+
+	//[b607] chrissstrahl - dynamically replace global_scripts with coop versions (only in multiplayer)
 	checkReplaceInclude(sLex);
 }
 
@@ -70,10 +70,25 @@ bool CoopScripting::checkIncludedNoscript(str sLex)
 str CoopScripting::checkReplaceInclude(str sLex)
 {
 	if (g_gametype->integer != GT_SINGLE_PLAYER) {
-		if (!Q_stricmp(sLex, "maps/global_scripts/global_tricorderBase.scr") ||
-			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderRoute.scr") ||
-			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderKeypad.scr") ||
-			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderMod.scr")
+		//[b611] chrissstrahl - added other global files
+		//so that the scripts will be switched by the mod and scripters don't have to worry
+		if (!Q_stricmp(sLex, "maps/global_scripts/global_acceleratedmovement.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_archetype.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_cinematicfx.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_common.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_flyin.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_playerloadout.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_shuttle.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_soundpan.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_spawnwave.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_tubedoor.scr.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/igm_dialog.scr") ||
+			//[b611] end
+			
+			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderbase.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderroute.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderkeypad.scr") ||
+			!Q_stricmp(sLex, "maps/global_scripts/global_tricordermod.scr")
 			)
 		{
 			str s = "coop_mod/maps/global_scripts/";
