@@ -25,23 +25,59 @@
 #include "mp_manager.hpp"
 #include "_pch_cpp.h"
 
-extern CoopChallenges coopChallenges;
+#define COOP_CHALLANGE_STICKTOGETHER_DAMAGE 5.0f
+#define COOP_CHALLANGE_STICKTOGETHER_CYCLE 5.0f
+#define COOP_CHALLANGE_STICKTOGETHER_REGROUPTIME 30.0f
+
+CoopChallenges coopChallenges;
+
 
 void CoopChallenges::init(void)
 {
+	fLastDamageTime = (level.time + COOP_CHALLANGE_STICKTOGETHER_CYCLE);
 }
 
-void CoopChallenges::cleanup(bool restart)
+void CoopChallenges::cleanUp(bool restart)
 {
+	fLastDamageTime = -1.0f;
+	//need to reset the current challange and load it from ini each mapload - maybe have some dedicated function to load all coop settings from ini at once
+}
+
+void CoopChallenges::playerEntered(Player* player)
+{
+	//give the players some time to regroup
+	fLastDamageTime = (level.time + COOP_CHALLANGE_STICKTOGETHER_REGROUPTIME);
+}
+
+void CoopChallenges::playerLeft(Player* player)
+{
+	//give the players some time to regroup
+	fLastDamageTime = (level.time + COOP_CHALLANGE_STICKTOGETHER_REGROUPTIME);
 }
 
 void CoopChallenges::update(float frameTime)
 {
+	//[b611] chrissstrahl - development protection - do not execute for anyone else
+	//this way untested and unfinished features do not accidently leak and cause issues
+	cvar_t* cvar = gi.cvar_get("username");
+	if (!cvar || coop_returnIntFind(cvar->string, "chrissstrahl") == -1) {
+		return;
+	}
+	//end development protection
+
+
+	//do not update the challanges:
+	// during cinematic
+	// if only one player is alive
+	if (level.cinematic || coop_returnPlayerQuantity(2) < 2 ) {
+		return;
+	}
+
 	int iCallangeNumber = 2;
 	switch (iCallangeNumber)
 	{
 	case 1:
-		CoopChallenges::updateCollision(frameTime);
+		updateCollision(frameTime);
 		break;
 	case 2:
 		updateStayClose(frameTime);
@@ -160,49 +196,71 @@ void CoopChallenges::updateCollision(float frameTime)
 void CoopChallenges::updateStayClose(float frameTime)
 {
 	//needs only to be updated once every sec or every 2 secs
-
-	Player* player;
-	Entity* entityOther;
-
-	player = coop_returnPlayerFavored();//
-
-	//don't do anything if not in coop or if there is no active player
-	if (!game.coop_isActive || !player) {
+	if (!game.coop_isActive || (fLastDamageTime + COOP_CHALLANGE_STICKTOGETHER_CYCLE) > level.time) {
 		return;
 	}
 
-	//check if this player is close to any other player
+	//remember last run time
+	fLastDamageTime = level.time;
+
+	//check each player distance and hurt the players that are to far away from the group
+	Entity* playerAnker;
+	Entity* entityOther;
+
 	int i;
 	//for (i = 0; i < maxentities->integer; i++) { //check only players in the beginning - deactivate actor checks
 	for (i = 0; i < maxclients->integer; i++) { //check only players in the beginning - deactivate actor checks
-		entityOther = g_entities[i].entity;
+		playerAnker = g_entities[i].entity;
 
-		if (!entityOther ||
-			entityOther == player ||
-			!entityOther->isSubclassOf(Sentient) ||
-			entityOther->health <= 0.0f ||
-			entityOther->isSubclassOf(Player) && multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator((Player*)entityOther))
+		if (!playerAnker ||
+			playerAnker->health <= 0.0f ||
+			multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator((Player*)playerAnker))
 		{
 			continue;
 		}
 
-		if (entityOther->isSubclassOf(Actor)) {
-			Actor* actor = NULL;
-			actor = (Actor*)entityOther;
-			if (!actor->GetActorFlag(ACTOR_FLAG_AI_ON) && actor->hidden()) {
+		int j;
+		bool iAnyClose = false;
+		entityOther = NULL;
+		for (j = 0; j < maxclients->integer; j++) {
+			entityOther = g_entities[j].entity;
+
+			if (!entityOther ||
+				j == i ||
+				entityOther->health <= 0.0f ||
+				multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator((Player*)entityOther))
+			{
 				continue;
 			}
+			//if they are to far apart like 300 make em get hurt
+			if (Distance(entityOther->origin, playerAnker->origin) < 300) {
+				iAnyClose = true;
+				break;
+			}
 		}
+		if (!iAnyClose) {
+			Player* player = (Player*)playerAnker;
+			player->hudPrint("Coop Challenge Stick together: To far away from Group!\n");
 
-		//if they are to far apart like 300 make em get hurt
-		if (Distance(entityOther->origin, player->origin) < 300) {
-			continue;
+			Event *event = new Event(EV_Pain);
+			event->AddFloat(COOP_CHALLANGE_STICKTOGETHER_DAMAGE);
+			event->AddEntity(player);
+			event->AddInteger(0);
+			player->ProcessEvent(event);
+
+			//substract health - make it ignore armor
+			float fPlayerHealth = player->getHealth();
+			fPlayerHealth = (fPlayerHealth - COOP_CHALLANGE_STICKTOGETHER_DAMAGE);
+			if (fPlayerHealth > 0) {
+				player->setHealth(fPlayerHealth);
+			}
+			else {
+				player->setHealth(0.0f);
+				player->Damage(player, player, 10.0f, player->origin, vec_zero, vec_zero, 0, 0, MOD_SUICIDE);
+			}
 		}
-		int iDamage = 5;
-		player->Damage(world, world, iDamage, player->centroid, player->centroid, player->centroid, (int)iDamage, 0, MOD_NONE);
 	}
 }
-
 
 //[b611] chrissstrahl - check if player can pickup this item while challange is active
 bool CoopChallenges::haloCanPickup(Sentient* sentient, str sItem)

@@ -29,20 +29,20 @@ extern Event EV_Player_PutawayWeapon;
 extern Event EV_Player_UseItem;
 extern Event EV_UseAnim_SetAnim;
 
-class CoopChallenges;
-//CoopChallenges coopChallenges; //This did not work, I had to use declare it external
-
 class CoopChallenges : public Class
 {
 public:
 	void		init(void);
-	void		cleanup(bool restart);
+	void		cleanUp(bool restart);
+	void		playerEntered(Player *player);
+	void		playerLeft(Player* player);
 	void		update(float frameTime);
 	void		updateCollision(float frameTime);
 	void		updateStayClose(float frameTime);
 	void		updateHalo(float frameTime);
 	bool		haloShieldRelayDamage(Sentient* sentient, float fDamage);
 	bool		haloCanPickup(Sentient* sentient, str sItem);
+	float		fLastDamageTime = 0.0f;
 };
 
 #endif
