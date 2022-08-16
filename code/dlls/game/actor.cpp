@@ -4474,9 +4474,9 @@ void Actor::AttackEntity( Event *ev	)
 		return;
 		}
 
-	//[b611] chrissstrahl - gamefix - if given entity does not exist, givee us at least something man!
+	//[b611] chrissstrahl - gamefix - if given entity does not exist, give us at least something man! Don't you just crash
 	if (!target) {
-		gi.Printf(va("Actor::AttackEntity - $%s.attack(entity) failed, enity does not exist\n",this->targetname));
+		gi.Printf(va("Actor::AttackEntity - $%s.attack(entity) failed, entity does not exist\n",this->targetname));
 		return;
 	}
 

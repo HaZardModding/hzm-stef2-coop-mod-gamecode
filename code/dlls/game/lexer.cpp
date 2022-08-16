@@ -520,13 +520,13 @@ void Lexer::ParseError( const char *error, ... )
 	va_start( argptr, error );
 	vsprintf( string, error, argptr );
 	va_end( argptr );
-	
+		
 	gi.Printf( "%s(%i) : %s\n", program.s_file.c_str(), source_line, string );
 
-	//[b607] chrissstrahl - set errorscript key and value to coop_status.ini
-	static bool bErrorSourceSet = false; //only the first error is relevant
+	//[b611] chrissstrahl - set errorscript key and value to serverData.ini
+	static bool bErrorSourceSet = false; //only print the first error
 	if (!bErrorSourceSet) {
-		bErrorSourceSet = true;
+		bErrorSourceSet = true;		
 		str sError = va("%s(%i) : %s", program.s_file.c_str(), source_line, string);
 		coop_parserIniSet("ini/serverData.ini", "errorscript", sError, "server");
 	}

@@ -2160,7 +2160,7 @@ void Event::Error( const char *fmt, ... )
 			{
 				filename = thread->Filename();
 			}
-			//[b607] chrissstrahl - set errorevent key and value to coop_status.ini
+			//[b607] chrissstrahl - set errorevent key and value to serverData.ini
 			str sError = va("%s(%d): '%s' :%s", filename, info.linenumber, getName(), text);
 			coop_parserIniSet("ini/serverData.ini", "errorevent", sError, "server");
 
