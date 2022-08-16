@@ -26,7 +26,7 @@
 
 #include "coopVote.hpp" //[b607] chrissstrahl - moved coop vote stuff to seperate file
 #include "coopChallenges.hpp" //[b611] chrissstrahl
-CoopChallenges coopChallenges;
+extern CoopChallenges coopChallenges;
 
 
 MultiplayerManager multiplayerManager;
@@ -113,20 +113,6 @@ MultiplayerManager::~MultiplayerManager()
 
 void MultiplayerManager::cleanup( qboolean restart )
 {
-//[b607] chrissstrahl - this lets us detect if the map was restarted or loadad
-	game.levelRestarted = (bool)restart;
-
-//hzm coop mod chrissstrahl - save client data
-	if ( game.coop_isActive ){
-		coop_serverSaveAllClientData();
-	}
-
-//hzm coop mod chrissstrahl - set coop variable for the gamecode!
-//hzm coop mod chrissstrahl - restore cvar for regular multiplayer use
-	game.coop_awardsActive = false;
-	game.coop_isActive = false;
-//hzm coop mod eof edit
-
 	_inMultiplayerGame = false;
 
 	_gameStarted = false;
@@ -1931,24 +1917,9 @@ int MultiplayerManager::getStat( Player *player, int statNum )
 
 	if ( !_inMultiplayerGame )
 		return 0;
-
+	
 	//hzm coop mod chrissstrahl - show health
-	if ( game.coop_isActive && player->coopPlayer.installed ) {
-		Entity *target;
-		if ( statNum == STAT_MP_GENERIC4 )
-		{
-			target = player->GetTargetedEntity();
-			if ((target) && target->isSubclassOf(Player))
-			{
-				Player * targetPlayer = (Player*)target;
-				//[b607] chrissstrahl - fix health showing when targeting a different entity that is not a player
-				value = (int)(target->getHealth());
-				value = (int)(target->getHealth() + 0.99f);
-			}
-		}
-	}
-	//end of hzm
-
+	value = player->coop_updateStatsCoopHealth(statNum);
 
 //hzm coop mod chrissstrahl
 	/*Entity *target;
@@ -1973,7 +1944,7 @@ int MultiplayerManager::getStat( Player *player, int statNum )
 
 
 	// See if this is one of the stats that the manager cares about
-
+	//hzm coop mod - chrissstrahl - prevent timer to be set during coop
 	if ( ( statNum == STAT_TIMELEFT_SECONDS ) && game.coop_isActive == false )
 	{
 		value = 0;
@@ -2649,7 +2620,7 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	else
 	{
 //hzm gamefix chrissstrahl - do not print "Server: score" when a player connects while he has the score still displayed, this can happen when a map changes, and scores are shown
-		if ( !Q_stricmp( "score" , tempText ) )
+		if ( !Q_stricmp( "score" , tempText ) || !Q_stricmpn("!class", tempText,6)) //[b611] chrissstrahl - also filter class command
 		{
 			return;
 		}
