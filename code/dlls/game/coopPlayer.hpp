@@ -215,9 +215,6 @@ void coop_playerSpectator( Player *player );
 void coop_playerThink( Player *player );
 void coop_playerLeft( Player *player );
 
-//[b611] chrissstrahl - handle stats for coop seperate
-//void Player::coop_updateStats(void);
-
 void DelayedServerCommand( int entNum, const char *commandText );
 void handleDelayedServerCommands( void );
 void clearDelayedServerCommands( int entNum );

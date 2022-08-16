@@ -36,7 +36,7 @@ extern CoopNpcTeam coopNpcTeam;
 #include "mp_modeDm.hpp"
 #include "mp_modeTeamDm.hpp"
 #include "mp_modeCtf.hpp"
-#include <qcommon/gameplaymanager.h>"
+#include <qcommon/gameplaymanager.h>
 //#include "powerups.h"
 
 //[b611] chrissstrahl - make avialable to use here
@@ -1209,6 +1209,18 @@ void coop_playerEnterArena(int entnum, float health)
 		if ( sValue  != ""){
 			coop_hudsAdd( player , sValue );
 		}
+
+		//[b611] chrissstrahl - execute command if one is attached - usually to exec a cfg or to handle globalwidgetcommands for ui elements
+		sValue = "";
+		entityData = NULL;
+		entityData = world->entityVars.GetVariable(va("coop_registredHud%d_command", iHuds));
+		if (entityData != NULL) {
+			sValue = entityData->stringValue();
+			if (sValue != "") {
+				DelayedServerCommand(player->entnum, sValue.c_str());
+			}
+		}
+
 	}
 
 	//hzm coop mod chrissstrahl - sometimes the timer hud reactivates
@@ -1701,14 +1713,12 @@ bool coop_playerMakeSolidASAPThink(Player* player)
 			player->_makeSolidASAP = true;
 			return false;
 		}
-		else{
-			if ( g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager._playerData[player->entnum]._spectator ) {
-				player->setSolidType( SOLID_BBOX );
-			}
-			player->_makeSolidASAP = false;
-			return true;//[b611] chrissstrahl - moved
+		if ( g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager._playerData[player->entnum]._spectator ) {
+			player->setSolidType( SOLID_BBOX );
 		}
+		player->_makeSolidASAP = false;
 	}
+	return true;//[b611] chrissstrahl - moved
 }
 
 //================================================================
@@ -2038,7 +2048,13 @@ void coop_playerLeft( Player *player )
 		}
 
 		//[b611] chrissstrahl - reset air accelerate, to prevent new players to get confused or stuck
-		world->setPhysicsVar("airAccelerate", 2.0f);
+		world->setPhysicsVar("airAccelerate", COOP_DEFAULT_AIRACCELERATE);
+		//[b611] chrissstrahl - reset max speed, to prevent new players to get confused
+		world->setPhysicsVar("maxSpeed", COOP_DEFAULT_MAXSPEED);
+
+		//[b611] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
+		Engine_TIKI_FreeAll(1);//call to function pointer
+		gi.SendServerCommand(NULL, "stufftext \"flushtikis\"\n");
 
 		game.coop_autoFailPending = true;
 		Event *newEvent2 = new Event(EV_World_AutoFailure);
@@ -2053,20 +2069,79 @@ void coop_playerLeft( Player *player )
 	coop_playerCommunicator(player, 0);
 }
 
+int Player::coop_updateStatsCoopHealth(int statNum)
+{
+	int value = 0;
+	if (game.coop_isActive && coopPlayer.installed) {
+		Entity* target;
+		if (statNum == STAT_MP_GENERIC4)
+		{
+			target = GetTargetedEntity();
+			if ((target) && target->isSubclassOf(Player))
+			{
+				Player* targetPlayer = (Player*)target;
+				//[b607] chrissstrahl - fix health showing when targeting a different entity that is not a player
+				value = (int)(target->getHealth() + 0.99f);
+			}
+		}
+	}
+	return value;
+}
+
+
 //================================================================
 // Name:        coop_updateStats
 // Class:       -
 //              
-// Description: handles player stats in coop - executed from coopPlayer.cpp at Player::UpdateStats( void )
+// Description: handles player stats in coop - executed from player.cpp at Player::UpdateStats( void )
 //              
 // Parameters:  void
 //              
 // Returns:     void
 //              
+// PLEASE SEE ALSO:
+// int MultiplayerManager::getStat( Player *player, int statNum )
+// void Player::UpdateStats( void )
 //================================================================
-//void Player::coop_updateStats(void)
-//{
-//}
+bool Player::coop_updateStats(void)
+{
+	if (!game.coop_isActive) {
+		return false;
+	}
+
+	// Deathmatch stats for arena mode
+	if (multiplayerManager.inMultiplayer()) {
+		client->ps.stats[STAT_SCORE] = multiplayerManager.getPoints(this);
+		client->ps.stats[STAT_KILLS] = multiplayerManager.getKills(this);
+		client->ps.stats[STAT_DEATHS] = multiplayerManager.getDeaths(this);
+
+		client->ps.stats[STAT_MP_SPECTATING_ENTNUM] = multiplayerManager.getStat(this, STAT_MP_SPECTATING_ENTNUM);
+
+		edict->s.infoIcon = multiplayerManager.getInfoIcon(this, last_ucmd.buttons);
+
+		if (game.coop_awardsActive) {
+			client->ps.stats[STAT_MP_AWARD_ICON] = multiplayerManager.getIcon(this, STAT_MP_AWARD_ICON);
+			client->ps.stats[STAT_MP_AWARD_COUNT] = multiplayerManager.getStat(this, STAT_MP_AWARD_COUNT);
+		}
+
+		//used for player health on targeting
+		client->ps.stats[STAT_MP_GENERIC4] = multiplayerManager.getStat(this, STAT_MP_GENERIC4); //SPECIALTY_MEDIC - health targeted
+		/*
+		//They have multiple use cases (changed with each modifier), I listed one for each so a general idea can be derived
+		client->ps.stats[STAT_MP_GENERIC1] = multiplayerManager.getStat(this, STAT_MP_GENERIC1); //_redDestructionObject
+		client->ps.stats[STAT_MP_GENERIC2] = multiplayerManager.getStat(this, STAT_MP_GENERIC2); //_blueDestructionObject
+		client->ps.stats[STAT_MP_GENERIC3] = multiplayerManager.getStat(this, STAT_MP_GENERIC3); //_blueBombPlace
+		client->ps.stats[STAT_MP_GENERIC5] = multiplayerManager.getStat(this, STAT_MP_GENERIC5); //ctfflag
+		client->ps.stats[STAT_MP_GENERIC6] = multiplayerManager.getStat(this, STAT_MP_GENERIC6); //oneFlag
+		client->ps.stats[STAT_MP_GENERIC7] = multiplayerManager.getStat(this, STAT_MP_GENERIC7); //bomber get name
+		client->ps.stats[STAT_MP_GENERIC8] = multiplayerManager.getStat(this, STAT_MP_GENERIC8); //CONTROL_POINT_GAMMA
+		*/
+
+		client->ps.stats[STAT_MP_STATE] = multiplayerManager.getStat(this, STAT_MP_STATE);
+	}
+
+	return true;
+}
 
 //================================================================
 // Name:        DelayedServerCommand
