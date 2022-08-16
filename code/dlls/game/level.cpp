@@ -316,9 +316,8 @@ void Level::CleanUp( qboolean restart )
 	
 	_earthquakes.ClearObjectList();
 
-	//[b610] chrissstrahl - added cleanup func
-	//I am pretty sure some more issues with not reset vars will come up over time
-
+	//[b611] chrissstrahl - added cleanup func
+	coop_serverCleanup(restart);
 	
 	_cleanup = false;
 }
