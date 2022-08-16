@@ -10,6 +10,12 @@
 *.ncb
 *.ipch
 *.vs
+*.obj
+*.bsc
+*.pch
+*.lib
+*.exp
+*.pdb
 Browse.VC.*
 code/linux/debugi386
 code/linux/releasei386
