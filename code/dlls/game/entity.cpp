@@ -3992,6 +3992,11 @@ void Entity::FadeIn
       rate = 0.03f;
       }
 
+   //[b611] chrissstrahl - add printout to help with logic errors in scripting
+   if (target == 0.0f) {
+	   gi.Printf(va("Entity::FadeIn - $%s.fadeIn(parameter1,parameter2) - Parameter 2 is 0!\nModel will not be visible, set it to 1 if you want it fully visible!\n",this->targetname));
+   }
+
    myalpha = edict->s.alpha;
    myalpha += rate;
 
@@ -10684,13 +10689,6 @@ void Entity::warp( Event *ev )
 	setAngles();
 
 	NoLerpThisFrame();
-
-	//[b611] chrisstrahl - make sure actors do not get stuck inside players or vice versa
-	if (isSubclassOf(Actor) || isSubclassOf(Player) && coop_checkInsidePlayerOrActor(this)) {
-		_makeSolidASAP = true;
-		_makeSolidASAPTime = 0.01f;
-	}
-	//end
 
 	if ( bind_info )
 	{
