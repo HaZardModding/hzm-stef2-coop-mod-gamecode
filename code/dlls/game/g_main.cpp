@@ -2417,7 +2417,7 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 			}
 		}
 
-		//does not work, keeps players at reconnect getting the no challange for ip address error
+		//does not work, keeps players at reconnect getting the no challenge for ip address error
 		//hzm coop mod chrissstrahl - do not allow any user to connect while the server performs a reboot
 		//if ( coop_reboot->integer == 1 ){
 			//gi.Printf( "%s faild to connect: Server Rebooting\n" , Info_ValueForKey( userinfo , "name" ) );
