@@ -1,25 +1,11 @@
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Code related to Coop Player Challenges
-// E-Mail:		chrissstrahl@yahoo.de
+//-----------------------------------------------------------------------------------
+// Code by:	HaZardModding, Christian Sebastian Strahl
+// E-Mail:	chrissstrahl@yahoo.de
 //
-// CONTAINING TEXT AND LOCALIZING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+// CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//-----------------------------------------------------------------------------------
 
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2022 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
-//[b60011] Chrissstrahl
-
-
-#ifndef __COOPCHALLENGE_CPP__
-#define __COOPCHALLENGE_CPP__
+#pragma once
 
 #include "coopChallenges.hpp"
 #include "mp_manager.hpp"
@@ -28,31 +14,100 @@
 #define COOP_CHALLENGE_STICKTOGETHER_DAMAGE 5.0f
 #define COOP_CHALLENGE_STICKTOGETHER_CYCLE 5.0f
 #define COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME 30.0f
+#define COOP_CHALLENGE_STICKTOGETHER_NAME "Stick together"
 
 CoopChallenges coopChallenges;
 
 
 void CoopChallenges::init(void)
+//on level start, init all challenges
 {
-	fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_CYCLE);
+	fLastDamageTime			= (level.time + COOP_CHALLENGE_STICKTOGETHER_CYCLE);
+	bIsDisabled				= false;
 }
 
 void CoopChallenges::cleanUp(bool restart)
 {
 	fLastDamageTime = -1.0f;
+	bIsDisabled		= false;
 	//need to reset the current challenge and load it from ini each mapload - maybe have some dedicated function to load all coop settings from ini at once
 }
 
 void CoopChallenges::playerEntered(Player* player)
 {
-	//give the players some time to regroup
-	fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+	switch (iCurrentChallenge)
+	{
+	case 1: //collision
+
+		break;
+	case 2: //stayClose
+		//give the players some time to regroup
+		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+		
+		//STOP challange is disabled
+		if (bIsDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
+		
+		//inform all players to regroup
+		if (player) {
+			player->hudPrint(va("Challene %s is active, you have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		}
+		break;
+	case 3: //halo
+
+		break;
+	default:
+		break;
+	}
 }
 
 void CoopChallenges::playerLeft(Player* player)
 {
-	//give the players some time to regroup
-	fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+	switch (iCurrentChallenge)
+	{
+	case 1: //collision
+		
+		break;
+	case 2: //stayClose
+		//give the players some time to regroup
+		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+
+		//STOP challange is disabled
+		if ( bIsDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
+
+		//inform all players to regroup
+		coop_textHudprintAll(va("Challene %s: A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		break;
+	case 3: //halo
+		
+		break;
+	default:
+		break;
+	}
+}
+
+void CoopChallenges::playerLeft(Player* player)
+{
+	switch (iCurrentChallenge)
+	{
+	case 1: //collision
+
+		break;
+	case 2: //stayClose
+		//give the players some time to regroup
+		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+
+		//inform all players to regroup
+		if (coop_returnPlayerQuantity(2) > 1) {
+			coop_textHudprintAll(va("Challene %s: A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		}
+
+		break;
+	case 3: //halo
+
+		break;
+	default:
+		break;
+	}
 }
 
 void CoopChallenges::update(float frameTime)
@@ -65,16 +120,16 @@ void CoopChallenges::update(float frameTime)
 	}
 	//end development protection
 
-
 	//do not update the challenges:
+	// if disabled via script
 	// during cinematic
 	// if only one player is alive
-	if (level.cinematic || coop_returnPlayerQuantity(2) < 2 ) {
+	if (bIsDisabled || level.cinematic || coop_returnPlayerQuantity(2) < 2 ) {
 		return;
 	}
 
-	int iCallangeNumber = 2;
-	switch (iCallangeNumber)
+	iCurrentChallenge = 2;
+	switch (iCurrentChallenge)
 	{
 	case 1:
 		updateCollision(frameTime);
@@ -240,7 +295,7 @@ void CoopChallenges::updateStayClose(float frameTime)
 		}
 		if (!iAnyClose) {
 			Player* player = (Player*)playerAnker;
-			player->hudPrint("Coop Challenge Stick together: To far away from Group!\n");
+			player->hudPrint(va("Coop Challenge %s: To far away from Group!\n",));
 
 			Event *event = new Event(EV_Pain);
 			event->AddFloat(COOP_CHALLENGE_STICKTOGETHER_DAMAGE);
@@ -303,4 +358,27 @@ void CoopChallenges::updateHalo(float frameTime)
 	//add -> func to quickly recharge shields and call it maybe from -> coop_playerThink
 }
 
-#endif
+void CoopChallenges::disabled(bool bEnable)
+//allowes to disable/enable the challange - meant to be used from the scripts
+{
+	bIsDisabled = bEnable;
+	gi.Printf(va("Coop Challenge status (0=on/1=off) changed: ",(int)bEnable));
+}
+
+bool CoopChallenges::isDisabled()
+//allowes to check if challenges are disabled/enabled currently (from script)
+{
+	return bIsDisabled;
+}
+
+
+void CThread::challengeDisabled(Event* ev)
+//allowes to disable/enable the challange - meant to be used from the scripts
+//also returns the status of the challenge 0=enabled 1=disabled
+{
+	if (ev->NumArgs() < 1) {
+		bool bEnabled = (bool)ev->GetInteger(1);
+		coopChallenges.disabled(bEnabled);
+	}
+	ev->ReturnInteger(coopChallenges.isDisabled());
+}

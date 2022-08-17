@@ -1,25 +1,11 @@
 //-----------------------------------------------------------------------------------
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Code related to Coop Player challenges
+// Code by:	HaZardModding, Christian Sebastian Strahl
 // E-Mail:		chrissstrahl@yahoo.de
 //
-// CONTAINING TEXT AND LOCALIZING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+// CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//-----------------------------------------------------------------------------------
 
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2022 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
-//[b60011] Chrissstrahl
-
-#ifndef __COOPCHALLENGE_HPP__
-#define __COOPCHALLENGE_HPP__
+#pragma once
 
 #include "_pch_cpp.h"
 #include "player.h"
@@ -42,7 +28,17 @@ public:
 	void		updateHalo(float frameTime);
 	bool		haloShieldRelayDamage(Sentient* sentient, float fDamage);
 	bool		haloCanPickup(Sentient* sentient, str sItem);
-	float		fLastDamageTime = 0.0f;
+	void		disabled(bool bEnable);
+	bool		isDisabled();
+	
+	float		fLastDamageTime			= 0.0f;
+	bool		bIsDisabled				= false;
+	short		iCurrentChallenge		= 0;
 };
 
-#endif
+//[b60011] chrissstrahl - Variouse External Dependencies
+/*
+void CThread::challengeDisabled(Event* ev){}							-> coopChallenges.cpp
+void CThread::challengeDisabled(Event* ev);								-> globalcmd.h
+
+*/

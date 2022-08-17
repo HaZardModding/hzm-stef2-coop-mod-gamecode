@@ -1229,16 +1229,6 @@ Event EV_ScriptThread_getFloatFromString
 	"returnFloat string" ,
 	"Returns the given value as float, if possible"
 );
-//[b60011] chrissstrahl
-Event EV_ScriptThread_getVectorFromString
-(
-	"getVectorFromString" ,
-	EV_SCRIPTONLY ,
-	"@vs" ,
-	"returnVector string" ,
-	"Returns the given value as vector, if possible"
-);
-//end
 Event EV_ScriptThread_isDigit
 (
 	"isDigit" ,
@@ -1270,6 +1260,23 @@ Event EV_ScriptThread_setIniData
 	"@fsss",
 	"returndbool category keyname value",
 	"sets data to map-specific ini file"
+);
+//[b60011] chrissstrahl
+Event EV_ScriptThread_getVectorFromString
+(
+	"getVectorFromString",
+	EV_SCRIPTONLY,
+	"@vs",
+	"returnVector string",
+	"Returns the given value as vector, if possible"
+);
+Event EV_ScriptThread_challengeDisabled
+(
+	"challengeDisabled",
+	EV_SCRIPTONLY,
+	"@fF",
+	"returnIsDisabled SetDisabledOrNot",
+	"Returns current status if no value is given, otherwise 0=enables/1=disables challenge on current level"
 );
 //end of hzm
 
@@ -1422,7 +1429,8 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_getIniData,					&CThread::getIniData },
 	{ &EV_ScriptThread_setIniData,					&CThread::setIniData },
 	//[b60011] chrissstrahl
-	{ &EV_ScriptThread_getVectorFromString, &CThread::getVectorFromString } ,
+	{ &EV_ScriptThread_getVectorFromString,			&CThread::getVectorFromString } ,
+	{ &EV_ScriptThread_challengeDisabled,			&CThread::challengeDisabled } ,
 	//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 	{ &EV_ScriptThread_ConfigstringRemove, &CThread::configstringRemove },
 	{ &EV_ScriptThread_ConfigstringRemoveCombatSounds, &CThread::configstringRemoveCombatSounds },

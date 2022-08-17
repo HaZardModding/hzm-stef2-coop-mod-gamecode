@@ -121,7 +121,9 @@ class CThread : public Interpreter
 		void getIniData(Event *ev);
 		void setIniData(Event *ev);
 		//[b60011] chrissstrahl
-		void getVectorFromString(Event* ev);
+		void getVectorFromString(Event *ev);
+		//[b60011] chrissstrahl - allow to enable/disable challenges from script
+		void challengeDisabled(Event *ev);
 		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 		void configstringRemoveCombatSounds(Event *ev);
 		void configstringRemove(Event *ev);
