@@ -25,34 +25,34 @@
 #include "mp_manager.hpp"
 #include "_pch_cpp.h"
 
-#define COOP_CHALLANGE_STICKTOGETHER_DAMAGE 5.0f
-#define COOP_CHALLANGE_STICKTOGETHER_CYCLE 5.0f
-#define COOP_CHALLANGE_STICKTOGETHER_REGROUPTIME 30.0f
+#define COOP_CHALLENGE_STICKTOGETHER_DAMAGE 5.0f
+#define COOP_CHALLENGE_STICKTOGETHER_CYCLE 5.0f
+#define COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME 30.0f
 
 CoopChallenges coopChallenges;
 
 
 void CoopChallenges::init(void)
 {
-	fLastDamageTime = (level.time + COOP_CHALLANGE_STICKTOGETHER_CYCLE);
+	fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_CYCLE);
 }
 
 void CoopChallenges::cleanUp(bool restart)
 {
 	fLastDamageTime = -1.0f;
-	//need to reset the current challange and load it from ini each mapload - maybe have some dedicated function to load all coop settings from ini at once
+	//need to reset the current challenge and load it from ini each mapload - maybe have some dedicated function to load all coop settings from ini at once
 }
 
 void CoopChallenges::playerEntered(Player* player)
 {
 	//give the players some time to regroup
-	fLastDamageTime = (level.time + COOP_CHALLANGE_STICKTOGETHER_REGROUPTIME);
+	fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 }
 
 void CoopChallenges::playerLeft(Player* player)
 {
 	//give the players some time to regroup
-	fLastDamageTime = (level.time + COOP_CHALLANGE_STICKTOGETHER_REGROUPTIME);
+	fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 }
 
 void CoopChallenges::update(float frameTime)
@@ -66,7 +66,7 @@ void CoopChallenges::update(float frameTime)
 	//end development protection
 
 
-	//do not update the challanges:
+	//do not update the challenges:
 	// during cinematic
 	// if only one player is alive
 	if (level.cinematic || coop_returnPlayerQuantity(2) < 2 ) {
@@ -196,7 +196,7 @@ void CoopChallenges::updateCollision(float frameTime)
 void CoopChallenges::updateStayClose(float frameTime)
 {
 	//needs only to be updated once every sec or every 2 secs
-	if (!game.coop_isActive || (fLastDamageTime + COOP_CHALLANGE_STICKTOGETHER_CYCLE) > level.time) {
+	if (!game.coop_isActive || (fLastDamageTime + COOP_CHALLENGE_STICKTOGETHER_CYCLE) > level.time) {
 		return;
 	}
 
@@ -243,14 +243,14 @@ void CoopChallenges::updateStayClose(float frameTime)
 			player->hudPrint("Coop Challenge Stick together: To far away from Group!\n");
 
 			Event *event = new Event(EV_Pain);
-			event->AddFloat(COOP_CHALLANGE_STICKTOGETHER_DAMAGE);
+			event->AddFloat(COOP_CHALLENGE_STICKTOGETHER_DAMAGE);
 			event->AddEntity(player);
 			event->AddInteger(0);
 			player->ProcessEvent(event);
 
 			//substract health - make it ignore armor
 			float fPlayerHealth = player->getHealth();
-			fPlayerHealth = (fPlayerHealth - COOP_CHALLANGE_STICKTOGETHER_DAMAGE);
+			fPlayerHealth = (fPlayerHealth - COOP_CHALLENGE_STICKTOGETHER_DAMAGE);
 			if (fPlayerHealth > 0) {
 				player->setHealth(fPlayerHealth);
 			}
@@ -262,13 +262,13 @@ void CoopChallenges::updateStayClose(float frameTime)
 	}
 }
 
-//[b60011] chrissstrahl - check if player can pickup this item while challange is active
+//[b60011] chrissstrahl - check if player can pickup this item while challenge is active
 bool CoopChallenges::haloCanPickup(Sentient* sentient, str sItem)
 {
 	if (/* haloThingActive */ 0 ) {
 		if (sentient->isSubclassOf(Player)) {
 			Player* player = (Player*)sentient;
-			player->hudPrint("Halo Challange is active, you can't receive or pick this up\n");
+			player->hudPrint("Halo challenge is active, you can't receive or pick this up\n");
 		}
 		return false;
 	}

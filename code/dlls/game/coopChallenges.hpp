@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------------
 // Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Code related to Coop Player Challanges
+// Code related to Coop Player challenges
 // E-Mail:		chrissstrahl@yahoo.de
 //
 // CONTAINING TEXT AND LOCALIZING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
@@ -18,8 +18,8 @@
 //CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
 //[b60011] Chrissstrahl
 
-#ifndef __COOPCHALLANGE_HPP__
-#define __COOPCHALLANGE_HPP__
+#ifndef __COOPCHALLENGE_HPP__
+#define __COOPCHALLENGE_HPP__
 
 #include "_pch_cpp.h"
 #include "player.h"
