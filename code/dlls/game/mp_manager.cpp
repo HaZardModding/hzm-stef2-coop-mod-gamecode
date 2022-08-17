@@ -249,7 +249,7 @@ void MultiplayerManager::update( float frameTime )
 		skill->modified = false;
 	}
 
-	//[b60011] chrissstrahl - update coop challanges
+	//[b60011] chrissstrahl - update coop challenges
 	coopChallenges.update(frameTime);
 
 	// Start the game if not started already
