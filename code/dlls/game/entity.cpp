@@ -1772,7 +1772,7 @@ Event EV_NetworkDetail
 	"Sets this entity as detail that doesn't get sent across the network of set as low bandwidth by the client"
 );
 
-//[b611] chrissstrahl - add boster script entity event
+//[b60011] chrissstrahl - add boster script entity event
 Event EV_BoosterNearbyPlayer
 (
 	"boosterNearbyPlayer",
@@ -1781,7 +1781,7 @@ Event EV_BoosterNearbyPlayer
 	"typeOfBoost bostRange ammount maximum",
 	"Gives a boost to players within range (ammo,health,armor)"
 );
-//hzm gameupdate chrissstrahl [b611] - check if actor/player has item
+//hzm gameupdate chrissstrahl [b60011] - check if actor/player has item
 Event EV_HasItem
 (
 	"hasItem",
@@ -1790,7 +1790,7 @@ Event EV_HasItem
 	"float-true-false item-name",
 	"Checks if player or actor has named item"
 );
-//hzm gameupdate chrissstrahl [b611] - check if actor/player has item
+//hzm gameupdate chrissstrahl [b60011] - check if actor/player has item
 Event EV_GetSubclassNameEvent
 (
 	"getSubclassName",
@@ -1808,7 +1808,7 @@ Event EV_Entity_IsEntityInsideOfEntity
 	"returnInteger entity",
 	"Returns if given entity bounding-box is touching/inside-of each other"
 );
-//hzm gameupdate chrissstrahl [b611] - marks entity to become solid asap
+//hzm gameupdate chrissstrahl [b60011] - marks entity to become solid asap
 Event EV_Entity_MakeSolidAsap
 (
 	"makeSolidAsap",
@@ -1820,7 +1820,7 @@ Event EV_Entity_MakeSolidAsap
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
-		//[b611] chrissstrahl - add boster script entity event
+		//[b60011] chrissstrahl - add boster script entity event
 		{ &EV_BoosterNearbyPlayer ,			&Entity::BoosterNearbyPlayer } ,
 		//hzm coop mod chrissstrahl - new event to set a idle animation, used for the new coop triggers
 		{ &EV_Idle ,						&Entity::SetIdleAnimation } ,
@@ -2130,7 +2130,7 @@ void Entity::HasItemEvent(Event* ev)
 }
 
 //--------------------------------------------------------------
-//[b611] chrissstrahl - gives specified boost to near by players
+//[b60011] chrissstrahl - gives specified boost to near by players
 //typeofboost,range,amount,maximum
 //ammo,armor,health
 //--------------------------------------------------------------
@@ -2396,7 +2396,7 @@ Entity::~Entity()
 		num = bindlist.NumObjects();
 		for( i = 1; i <= num; i++ )
 		{
-			//[b611] chrissstrahl - make sure we delete previousely attached entities (atttachmodel hack)
+			//[b60011] chrissstrahl - make sure we delete previousely attached entities (atttachmodel hack)
 			if (bindlist.ObjectAt(i)->bind_info->detach_at_death == qfalse) {
 				bindlist.ObjectAt(i)->PostEvent(EV_Remove, 0.01f);
 			}
@@ -2964,7 +2964,7 @@ void Entity::TriggerEvent
 
 		   assert( ent );
 
-		   //[b611] Chrissstrahl - used for debugging - turned out to be a bug in the bsp
+		   //[b60011] Chrissstrahl - used for debugging - turned out to be a bug in the bsp
 		   //Trigger* t;
 		   //t = (Trigger*)ent;
 		   //str ssssss = t->GetThread();
@@ -3992,7 +3992,7 @@ void Entity::FadeIn
       rate = 0.03f;
       }
 
-   //[b611] chrissstrahl - add printout to help with logic errors in scripting
+   //[b60011] chrissstrahl - add printout to help with logic errors in scripting
    if (target == 0.0f) {
 	   gi.Printf(va("Entity::FadeIn - $%s.fadeIn(parameter1,parameter2) - Parameter 2 is 0!\nModel will not be visible, set it to 1 if you want it fully visible!\n",this->targetname));
    }
@@ -5864,7 +5864,7 @@ void Entity::AttachModelEvent
 		obj->bind_info->detach_at_death = ev->GetInteger(5);
 	}
 
-	//[b611] chrissstrahl - allow to attach a model to origin of given entity (attachmodel hack)
+	//[b60011] chrissstrahl - allow to attach a model to origin of given entity (attachmodel hack)
 	//this allowes us to attach a model to a entity without using tags
 	if ((!strcmpi(bone, "none"))) {
 		Vector vOriginNew = this->origin;
@@ -5893,7 +5893,7 @@ void Entity::AttachModelEvent
       {
       if ( !obj->attach( this->entnum, tagnum, use_angles, offset, angles_offset ) )
          {
-		warning( "AttachModelEvent", "Could not attach model %s", modelname.c_str() ); //[b611] chrissstrahl - let us know if it fails
+		warning( "AttachModelEvent", "Could not attach model %s", modelname.c_str() ); //[b60011] chrissstrahl - let us know if it fails
          delete obj;
          return;
          }
@@ -7300,7 +7300,7 @@ inline void Entity::Archive( Archiver &arc )
 			useData->Archive(arc);
 			}
 		}
-//[b611] chrissstrahl - fix variables not being properly saved and loaded
+//[b60011] chrissstrahl - fix variables not being properly saved and loaded
 	// This is either a loadgame or a restart
 	if (LoadingSavegame) {}
 	// When saveing the game
@@ -10775,7 +10775,7 @@ void Entity::isWithinDistanceOf(Event* ev)
 
 	destination = ev->GetEntity(1);
 	
-	//[b611] chrissstrahl - gameupgrade - make sure we know when something goes wrong, this is such a waste of time sometimes
+	//[b60011] chrissstrahl - gameupgrade - make sure we know when something goes wrong, this is such a waste of time sometimes
 	if (!destination) {
 		gi.Printf(va("isWithinDistanceOf faild for $%s, the Entity given in parameter1 does not exist!\nRemember, you can not use Pathnodes and Helpernodes\n",this->targetname.c_str()));
 	}

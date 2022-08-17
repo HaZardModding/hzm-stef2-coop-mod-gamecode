@@ -10,7 +10,7 @@
 #include "player.h"
 #include "gamecmds.h"
 
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_circleMenu
 (
 	"circleMenu",
@@ -19,7 +19,7 @@ Event EV_Player_circleMenu
 	"integer-menutype",
 	"Shows Circle Menu to player, 1=Normal, 2=Dialog."
 );
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_circleMenuDialogSet
 (
 	"circleMenuDialogSet",
@@ -28,7 +28,7 @@ Event EV_Player_circleMenuDialogSet
 	"optionnumber optiontext threadname imageORshader",
 	"Adds a dialog option for player to circle menu"
 );
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_circleMenuDialogClear
 (
 	"circleMenuDialogClear",
@@ -37,7 +37,7 @@ Event EV_Player_circleMenuDialogClear
 	"int-dialog-number",
 	"Clears all circle menu dialog options from menu"
 );
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_circleMenuSet
 (
 	"circleMenuSet",
@@ -46,7 +46,7 @@ Event EV_Player_circleMenuSet
 	"optionnumber optiontext threadOrCommandName imageORshader isThread iAmmount iCost sCostType",
 	"Adds a option for player from circle menu"
 );
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_circleMenuClear
 (
 	"circleMenuClear",
@@ -57,7 +57,7 @@ Event EV_Player_circleMenuClear
 );
 
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        switchWidgets
 // Class:       -
@@ -83,7 +83,7 @@ void Player::switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2
 	G_SendCommandToPlayer(this->edict, command.c_str());
 }
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        circleMenuIsActive
 // Class:       -
@@ -104,7 +104,7 @@ bool Player::circleMenuIsActive()
 	return false;
 }
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        circleMenu
 // Class:       -
@@ -157,7 +157,7 @@ void Player::circleMenu(int iType)
 	}
 }
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        circleMenuGetWidgetName();
 // Class:       -
@@ -235,7 +235,7 @@ str Player::circleMenuGetWidgetName(int iSegment)
 	return currentWidget;
 }
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        getSegmentNumForAngle();
 // Class:       -
@@ -273,7 +273,7 @@ int Player::getSegmentNumForAngle(float fAngle)
 	return -1;
 }
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        circleMenuThink
 // Class:       -
@@ -371,7 +371,7 @@ void Player::circleMenuThink()
 	upgCircleMenu.lastSegment = fSegmentNum;
 }
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        circleMenuSelect
 // Class:       -
@@ -411,7 +411,7 @@ void Player::circleMenuSelect(int iOption)
 	circleMenu(upgCircleMenu.active);
 }
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        circleMenuHud
 // Class:       -
@@ -448,7 +448,7 @@ void Player::circleMenuHud(bool show)
 	gi.SendServerCommand(entnum, va("stufftext \"%s %s\"\n", sCommand.c_str(), sMenu.c_str()));
 }
 
-//hzm gameupdate chrissstrahl [b611]  - starts circle menu
+//hzm gameupdate chrissstrahl [b60011]  - starts circle menu
 void Player::circleMenuEvent(Event* ev)
 {
 	if (health <= 0 || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this, SPECTATOR_TYPE_ANY)) { return; }
@@ -457,7 +457,7 @@ void Player::circleMenuEvent(Event* ev)
 	circleMenu(iMenuType);
 }
 
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
 void Player::circleMenuDialogSetEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
@@ -470,7 +470,7 @@ void Player::circleMenuDialogSetEvent(Event* ev)
 	circleMenuDialogSet(iOption, sText, sThread, sImage);
 }
 
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
 void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage)
 {
 	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONSDIALOG) {
@@ -495,14 +495,14 @@ void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 }
 
-//hzm gameupdate chrissstrahl [b611]  - clears dialog options from circle menu
+//hzm gameupdate chrissstrahl [b60011]  - clears dialog options from circle menu
 void Player::circleMenuDialogClearEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
 	circleMenuDialogClear(iOption);
 }
 
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu for player
+//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu for player
 void Player::circleMenuDialogClear(int iOption)
 {
 	if (upgCircleMenu.active <= 0) {
@@ -526,7 +526,7 @@ void Player::circleMenuDialogClear(int iOption)
 	}
 }
 
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu for player
+//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu for player
 void Player::circleMenuSetEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
@@ -554,7 +554,7 @@ void Player::circleMenuSetEvent(Event* ev)
 	circleMenuSet(iOption, sText, sThread, sImage, bIsThread, iAmmount, iCost, sCostType);
 }
 
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
 void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType)
 {
 	//correct offset
@@ -589,14 +589,14 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 }
 
-//hzm gameupdate chrissstrahl [b611]  - adds dialog option to circle menu
+//hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
 void Player::circleMenuClearEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
 	circleMenuClear(iOption);
 }
 
-//hzm gameupdate chrissstrahl [b611]  - clears dialog option from circle menu
+//hzm gameupdate chrissstrahl [b60011]  - clears dialog option from circle menu
 void Player::circleMenuClear(int iOption)
 {
 	if (upgCircleMenu.active <= 0) {

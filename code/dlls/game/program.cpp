@@ -510,7 +510,7 @@ void Program::CreateDefForEvent( Event *ev )
 	num = ev->getNumArgDefs();
 	if ( num > MAX_PARMS )
 	{
-		gi.Printf( "Event '%s' has too many arguments for function call.\n", ev->getName() ); //[b611] chrissstrahl - make sure we see this always
+		gi.Printf( "Event '%s' has too many arguments for function call.\n", ev->getName() ); //[b60011] chrissstrahl - make sure we see this always
 		return;
 	}
 	
@@ -704,7 +704,7 @@ FreeString
 */
 void Program::FreeString( int idx )
 {
-	assert( ( idx > 0 ) && ( idx < MAX_STRINGS ) ); //[b611] Chrissstrahl - this can also trigger if a script function (not a hardcoded eventcall) is called with to few parameters
+	assert( ( idx > 0 ) && ( idx < MAX_STRINGS ) ); //[b60011] Chrissstrahl - this can also trigger if a script function (not a hardcoded eventcall) is called with to few parameters
 	assert( strings[idx].inuse );
 
 	strings[idx].inuse = false;
@@ -793,7 +793,7 @@ bool Program::FinishCompilation( void )
 			// function parms are ok
 			if (!d->initialized)
 			{
-				gi.Printf( "function %s was not defined\n", d->name.c_str() ); //[b611] chrissstrahl - make sure we see this always
+				gi.Printf( "function %s was not defined\n", d->name.c_str() ); //[b60011] chrissstrahl - make sure we see this always
 				errors = true;
 			}
 		}
@@ -826,7 +826,7 @@ void Program::Compile( const char *filename )
 			//[b607] chrissstrahl - changed from WPrintf to regular printf to make sure this is always shown not only if com_printwarnings is enabled
 			gi.Printf( "***\n***\n***\n*** Couldn't load %s\n***\n***\n***\n" , filename);
 #ifndef DEBUG
-			assert(0 == "Program::Compile - Couldn't load script file" ); //[b611] chrissstrahl - added to see what the problem is while debugging
+			assert(0 == "Program::Compile - Couldn't load script file" ); //[b60011] chrissstrahl - added to see what the problem is while debugging
 #endif		
 			throw "Error";
 
@@ -835,7 +835,7 @@ void Program::Compile( const char *filename )
 			//[b607] chrissstrahl - changed from WPrintf to regular printf to make sure this is always shown not only if com_printwarnings is enabled
 			gi.Printf( "***\n***\n***\n*** Couldn't load %s\n***\n***\n***\n", filename);
 #ifndef DEBUG
-			assert(0 == "Program::Compile - Couldn't load script file"); //[b611] chrissstrahl - added to see what the problem is while debugging
+			assert(0 == "Program::Compile - Couldn't load script file"); //[b60011] chrissstrahl - added to see what the problem is while debugging
 #endif	
 			throw "Error";		
 		}
@@ -850,11 +850,11 @@ void Program::Compile( const char *filename )
 
 		//hzm coop mod chrissstrahl - quit complete game, allow reboot if server is dedicated
 		if ( coop_serverError( "Level Script Compile failed: #include ERROR\n" , true ) ) {
-			gi.Printf( "Level Script Compile failed: #include ERROR\n" ); //[b611] chrissstrahl - make sure we see this always
+			gi.Printf( "Level Script Compile failed: #include ERROR\n" ); //[b60011] chrissstrahl - make sure we see this always
 			throw "Error";
 		}
 		else {
-			gi.Printf( "Level Script Compile failed: #include ERROR\n" ); //[b611] chrissstrahl - make sure we see this always
+			gi.Printf( "Level Script Compile failed: #include ERROR\n" ); //[b60011] chrissstrahl - make sure we see this always
 			throw "Error";
 		}
    	}

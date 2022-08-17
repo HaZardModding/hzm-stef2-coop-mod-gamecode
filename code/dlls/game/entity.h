@@ -108,7 +108,7 @@ typedef enum
 #define DAMAGE_NO_PROTECTION	0x00000020  // armor, shields, invulnerability, and godmode have no effect
 #define DAMAGE_NO_SKILL			0x00000040  // damage is not affected by skill level
 
-//[b611] chrissstrahl - add boster script entity event
+//[b60011] chrissstrahl - add boster script entity event
 extern Event EV_BoosterNearbyPlayer;
 
 extern Event EV_ClientMove;
@@ -463,15 +463,15 @@ class Entity : public Listener
 		void				SetUserVar9(Event* ev);
 		void				SetUserVar10(Event* ev);
 
-		//[b611] chrissstrahl - add boster script entity event
+		//[b60011] chrissstrahl - add boster script entity event
 		void				BoosterNearbyPlayer( Event *ev );
 		//hzm gameupdate chrissstrahl - check if entity is inside other entity
 		void				IsEntityInsideOfEntity(Event* ev);
 		//hzm gameupdate chrissstrahl - mark to become solid asap
 		void				MakeSolidAsap(Event* ev);
-		//hzm gameupdate chrissstrahl [b611] - check if player/actor has item
+		//hzm gameupdate chrissstrahl [b60011] - check if player/actor has item
 		void				HasItemEvent( Event *ev );
-		//hzm gameupdate chrissstrahl [b611] - returns entity classname
+		//hzm gameupdate chrissstrahl [b60011] - returns entity classname
 		void				GetSubclassName(Event* ev);
 		//hzm coop mod chrissstrahl - added	for the new coop triggers
 		void				SetIdleAnimation( Event *ev );

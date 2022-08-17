@@ -28,7 +28,7 @@ class HoldableItem;
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-//[b611] Chrissstrahl
+//[b60011] Chrissstrahl
 #include "coopChallenges.hpp"
 #include "upgCircleMenu.hpp"
 #include "coopPlayer.hpp"
@@ -98,7 +98,7 @@ typedef enum TargetTypes
 	FRIEND, 
 	ENEMY,
 	OJBECT
-} TargetTypes; //[b611] chrissstrahl - testing if this fixes error messages
+} TargetTypes; //[b60011] chrissstrahl - testing if this fixes error messages
 
 enum PlayerCameraModes
 {
@@ -212,20 +212,20 @@ class Player : public Sentient
 		str					getLanguage(void);
 		void				setLanguage(str sLang);
 		void				getLanguageEvent(Event *ev);
-		//hzm gameupdate chrissstrahl [b611]  - returns if player has german language of game
+		//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
 		void				hasLanguageGerman(Event* ev);
 		void				hasLanguageEnglish(Event* ev);
 		//hzm gameupdate chrissstrahl - check if player is spectator
 		void				isSpectator(Event* ev);
 		//hzm gameupdate chrissstrahl - get player name
 		void				getNameEvent(Event* ev);
-		//hzm gameupdate chrissstrhal [b611] - allow to set widgettext with SPACE and NEWLINE
+		//hzm gameupdate chrissstrhal [b60011] - allow to set widgettext with SPACE and NEWLINE
 		void				widgetCommandEvent(Event* ev);
 		//hzm gameupdate chrissstrahl - sets specific camera for this player
 		void				setCameraEvent(Event *ev);
 		//hzm gameupdate chrissstrahl - make sure we handle the branchdialog stuff right
 		bool				branchdialog_active;
-		//hzm gameupdate chrissstrahl [b611] - switch widgets - send in one burst to player
+		//hzm gameupdate chrissstrahl [b60011] - switch widgets - send in one burst to player
 		void				switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
 		//hzm gameupdate chrissstrahl - add new function returning the last time the player was hurt
 		float				getLastDamageTime(void);
@@ -235,10 +235,10 @@ class Player : public Sentient
 		void				getScriptVariablesCommand(Event* ev);
 		//hzm gameupdate chrissstrahl - added for message of the day ststus check
 		bool				messageOfTheDaySend;
-		//[b611] chrissstrahl - handle multiplayer stats for coop seperate
+		//[b60011] chrissstrahl - handle multiplayer stats for coop seperate
 		bool				coop_updateStats(void);
 		int					coop_updateStatsCoopHealth(int statNum);
-		//hzm gameupdate chrissstrahl [b611] - circlemenu stuff
+		//hzm gameupdate chrissstrahl [b60011] - circlemenu stuff
 	public:
 		UpgCircleMenu		upgCircleMenu;
 		friend class		UpgCircleMenu;
@@ -265,37 +265,37 @@ class Player : public Sentient
 		//HaZardModding Coop Mod Added and Modified Stuff
 		//HaZardModding Coop Mod Added and Modified Stuff
 	private:
-		//[b611] chrissstrahl - get coop class name
+		//[b60011] chrissstrahl - get coop class name
 		void				getCoopClass(Event* ev);
-		//[b611] chrissstrahl - check if coop class is technician
+		//[b60011] chrissstrahl - check if coop class is technician
 		void				isCoopClassTechnician(Event* ev);
-		//[b611] chrissstrahl - check if coop class is Medic
+		//[b60011] chrissstrahl - check if coop class is Medic
 		void				isCoopClassMedic(Event* ev);
-		//[b611] chrissstrahl - check if coop class is Medic
+		//[b60011] chrissstrahl - check if coop class is Medic
 		void				isCoopClassHeavyWeapons(Event* ev);
-		//[b611] chrissstrahl - prevent/allow player from switching class - script command
+		//[b60011] chrissstrahl - prevent/allow player from switching class - script command
 		void				setClassLocked(Event* ev);
 	public:
-		//[b611] chrissstrahl - return if player is pressing use or not
+		//[b60011] chrissstrahl - return if player is pressing use or not
 		void				checkUsePressing(Event* ev);
-		//[b611] chrissstrahl - checks if player is pressing fire button
+		//[b60011] chrissstrahl - checks if player is pressing fire button
 		void				checkFire(Event* ev);
-		//[b611] chrissstrahl - checks if player is pressing fire button
+		//[b60011] chrissstrahl - checks if player is pressing fire button
 		void				checkFirealt(Event* ev);
-		//[b611] chrissstrahl - checks if player is in third person
+		//[b60011] chrissstrahl - checks if player is in third person
 		void				checkThirdperson(Event* ev);
 
-		//[b611] chrissstrahl - allow to run thread from player entity (sets currententity)
+		//[b60011] chrissstrahl - allow to run thread from player entity (sets currententity)
 		void				RunThread(Event* ev);
 		void				RunThread(const str& thread_name);
-		//[b611] chrissstrahl - get player viewangle
+		//[b60011] chrissstrahl - get player viewangle
 		void				getViewanglesEvent(Event* ev);
 		//[b607] chrissstrahl - return targeted entity of player
 		void				getTargetedEntity(Event* ev);
 		//[b607] chrissstrahl - just fucking give me the data, i don't care for your conditions
 		qboolean			checkthirdperson();
 
-		//[b611] chrissstrahl - containerize
+		//[b60011] chrissstrahl - containerize
 		CoopPlayer			coopPlayer;
 		friend class		CoopPlayer;
 	private:
@@ -1762,11 +1762,11 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveBool( &_cameraCutThisFrame );
 
 
-	//hzm gameupdate chrissstrahl [b611] - store player langauge
+	//hzm gameupdate chrissstrahl [b60011] - store player langauge
 	arc.ArchiveString(&language);
 
 
-	//[b611] chrissstrahl - fix variables not being properly saved and loaded
+	//[b60011] chrissstrahl - fix variables not being properly saved and loaded
 	// This is either a loadgame or a restart
 	if (LoadingSavegame) {}
 	// When saveing the game
@@ -1834,7 +1834,7 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveString(&coopPlayer.className);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.coopId);
 	arc.ArchiveString(&coopPlayer.coopStatus);
-	//[b611] chrissstrahl - added for the new features - which are also used in singleplayer
+	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
 	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);
 	arc.ArchiveSafePointer(&coopPlayer.ePlacable);
 	}

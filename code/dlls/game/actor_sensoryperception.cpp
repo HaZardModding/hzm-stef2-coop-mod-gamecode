@@ -18,7 +18,7 @@
 #include "player.h"
 #include "object.h"
 
-#include "coopReturn.hpp" //[b611] chrissstrahl
+#include "coopReturn.hpp" //[b60011] chrissstrahl
 
 //======================================
 // SensoryPerception Implementation
@@ -192,8 +192,8 @@ void SensoryPerception::SenseEnemies()
 		}
 		
 		//In case we didn't find an enemy, but if the players nearby, we want to wake up anyway
-		//_SenseEntity( GetPlayer( 0 ) ); //[b611]
-		_SenseEntity(coop_returnPlayerClosestTo((Entity*)act)); //[b611] chrissstrahl
+		//_SenseEntity( GetPlayer( 0 ) ); //[b60011]
+		_SenseEntity(coop_returnPlayerClosestTo((Entity*)act)); //[b60011] chrissstrahl
 	}	
 	
 }

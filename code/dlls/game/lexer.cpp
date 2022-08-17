@@ -523,7 +523,7 @@ void Lexer::ParseError( const char *error, ... )
 		
 	gi.Printf( "%s(%i) : %s\n", program.s_file.c_str(), source_line, string );
 
-	//[b611] chrissstrahl - set errorscript key and value to serverData.ini
+	//[b60011] chrissstrahl - set errorscript key and value to serverData.ini
 	static bool bErrorSourceSet = false; //only print the first error
 	if (!bErrorSourceSet) {
 		bErrorSourceSet = true;		

@@ -8,10 +8,10 @@
 #include "_pch_cpp.h"
 #include "coopPlayer.hpp"
 
-//[b611] chrissstrahl - gameupgrades
+//[b60011] chrissstrahl - gameupgrades
 #include "upgCircleMenu.hpp"
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 #include "coopNpcTeam.hpp"
 extern CoopNpcTeam coopNpcTeam;
 
@@ -39,7 +39,7 @@ extern CoopNpcTeam coopNpcTeam;
 #include <qcommon/gameplaymanager.h>
 //#include "powerups.h"
 
-//[b611] chrissstrahl - make avialable to use here
+//[b60011] chrissstrahl - make avialable to use here
 extern Event EV_SetOriginEveryFrame;
 extern Event EV_World_AutoFailure;
 
@@ -437,7 +437,7 @@ bool coop_playerSetup(Player* player)
 	//[b610] chrissstrahl - add var in any case
 	player->entityVars.SetVariable("_playerIsBot", (float)(int)level.spawn_bot);
 
-	//[b611] chrissstrahl - what happned to this ? I readded this as I can't find it
+	//[b60011] chrissstrahl - what happned to this ? I readded this as I can't find it
 	player->coopPlayer.timeEntered = level.time;
 
 	//[b607] chrissstrahl - make sure we do not handle bots
@@ -492,7 +492,7 @@ bool coop_playerSetup(Player* player)
 		//[b607] chrissstrahl - add this player to the communicator menu
 		coop_playerCommunicator(player, 1);
 
-		//[b611] chrissstrahl - set for all players - SCOREBOARD Gametype Name
+		//[b60011] chrissstrahl - set for all players - SCOREBOARD Gametype Name
 		DelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
 	}
 
@@ -517,17 +517,17 @@ bool coop_playerSetup(Player* player)
 //================================================================
 void coop_playerSetupClient(Player* player)
 {
-	//[b611] chrissstrahl - get player langauge/clientid/clientCoopVersion
+	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
 	DelayedServerCommand(player->entnum, "vstr local_language");
 	DelayedServerCommand(player->entnum, "vstr coop_pId");
 	DelayedServerCommand(player->entnum, "vstr coop_verInfo");
 
 	//Do this only during a active coop game
 	if (game.coop_isActive) {
-		//[b611] chrissstrahl - get player class
+		//[b60011] chrissstrahl - get player class
 		DelayedServerCommand(player->entnum, "vstr coop_class");
 
-		//[b611] chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right (flickering)
+		//[b60011] chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right (flickering)
 		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect -10000 0 0 0");
 	}
 }
@@ -940,7 +940,7 @@ bool coop_playerSpawnTrySpSpawn( Player *player , bool bRespawning )
 		spawnLocation = G_FindClass( NULL , "info_player_start" );
 		if ( spawnLocation ){
 			player->WarpToPoint( spawnLocation );
-			gi.Printf("ERROR: No info_player_deathmatch with targetname $ipd%i found\n", (1 + player->entnum)); //[b611] chrissstrahl - added targetname info
+			gi.Printf("ERROR: No info_player_deathmatch with targetname $ipd%i found\n", (1 + player->entnum)); //[b60011] chrissstrahl - added targetname info
 			return true;
 		}
 		else{
@@ -1021,7 +1021,7 @@ bool coop_playerPlaceAtSpawn( Player *player )
 	return bSpawnedSucessfull;
 }
 
-//[b611] chrissstrahl - major restructure, moved commands to - coopGamecmds.cpp
+//[b60011] chrissstrahl - major restructure, moved commands to - coopGamecmds.cpp
 //================================================================
 // Name:        coop_playerSay
 // Class:       -
@@ -1039,7 +1039,7 @@ bool coop_playerSay( Player *player , str sayString)
 		return false;
 
 
-	//[b611] chrissstrahl - Strip out any bad characters
+	//[b60011] chrissstrahl - Strip out any bad characters
 	int i;
 	for (i = 0; i < sayString.length(); i++){
 		if (sayString[i] == '%'){
@@ -1048,14 +1048,14 @@ bool coop_playerSay( Player *player , str sayString)
 	}
 	sayString = sayString.tolower();
 
-	//[b611] gameupdate add ! as command start inside say strings
+	//[b60011] gameupdate add ! as command start inside say strings
 	if (sayString[0] == '!') {
 		//send back to client and client console will decide if it wants to send it again without say infront of it
 		gi.SendServerCommand(player->entnum, va("stufftext \"%s \"\n", sayString.c_str()));
 		return true;
 	}
 
-	//[b611] chrissstrahl - clientid backwardscompatibility - create new id
+	//[b60011] chrissstrahl - clientid backwardscompatibility - create new id
 	if (!Q_stricmpn(sayString.c_str(), "cid.", 4)) {
 		coop_playerSaveNewPlayerId(player);
 		return true;
@@ -1210,7 +1210,7 @@ void coop_playerEnterArena(int entnum, float health)
 			coop_hudsAdd( player , sValue );
 		}
 
-		//[b611] chrissstrahl - execute command if one is attached - usually to exec a cfg or to handle globalwidgetcommands for ui elements
+		//[b60011] chrissstrahl - execute command if one is attached - usually to exec a cfg or to handle globalwidgetcommands for ui elements
 		sValue = "";
 		entityData = NULL;
 		entityData = world->entityVars.GetVariable(va("coop_registredHud%d_command", iHuds));
@@ -1231,7 +1231,7 @@ void coop_playerEnterArena(int entnum, float health)
 	//hzm coop mod chrissstrahl - retore health, armor and ammo to previouse state
 	coop_playerRestore(player);
 
-	//[b611] chrissstrahl - handle NPC / AI Teammates
+	//[b60011] chrissstrahl - handle NPC / AI Teammates
 	coopNpcTeam.playerReadyCheck(player);
 }
 
@@ -1664,7 +1664,7 @@ void coop_playerSpectator( Player *player )
 		return;
 	}
 
-	//[b611] chrissstrahl - handle NPC / AI Teammates
+	//[b60011] chrissstrahl - handle NPC / AI Teammates
 	coopNpcTeam.playerSpectator(player);
 
 	//hzm coop mod chrissstrahl - remove the injured symbol
@@ -1718,7 +1718,7 @@ bool coop_playerMakeSolidASAPThink(Player* player)
 		}
 		player->_makeSolidASAP = false;
 	}
-	return true;//[b611] chrissstrahl - moved
+	return true;//[b60011] chrissstrahl - moved
 }
 
 //================================================================
@@ -1885,7 +1885,7 @@ void coop_playerThink( Player *player )
 		return;
 	}
 
-	//[b611] chrissstrahl - put the code in dedicated functions
+	//[b60011] chrissstrahl - put the code in dedicated functions
 	coop_checkDoesPlayerHaveCoopMod(player);
 	coop_checkDoesPlayerHaveCoopId(player);
 
@@ -1962,7 +1962,7 @@ void coop_playerThink( Player *player )
 		coop_classCheckApplay( player );
 		coop_classCeckUpdateStat( player );
 
-		//[b611] chrissstrahl - handle NPC / AI Teammates
+		//[b60011] chrissstrahl - handle NPC / AI Teammates
 		coopNpcTeam.playerReadyCheck(player);
 	}
 }
@@ -2010,7 +2010,7 @@ void coop_playerLeft( Player *player )
 		return;
 	}
 
-	//[b611] chrissstrahl - moved code here
+	//[b60011] chrissstrahl - moved code here
 	//enable/disable ai
 	//check if mission failed
 	coop_serverManageAi();
@@ -2020,7 +2020,7 @@ void coop_playerLeft( Player *player )
 	if ( !multiplayerManager.isPlayerSpectator( player ) ){
 		coop_serverSaveClientDataWrite( player );
 		
-		//[b611] chrissstrahl - handle NPC / AI Teammates
+		//[b60011] chrissstrahl - handle NPC / AI Teammates
 		coopNpcTeam.playerLeft(player);
 	}
 
@@ -2047,12 +2047,12 @@ void coop_playerLeft( Player *player )
 			iFailtime = 3000;
 		}
 
-		//[b611] chrissstrahl - reset air accelerate, to prevent new players to get confused or stuck
+		//[b60011] chrissstrahl - reset air accelerate, to prevent new players to get confused or stuck
 		world->setPhysicsVar("airAccelerate", COOP_DEFAULT_AIRACCELERATE);
-		//[b611] chrissstrahl - reset max speed, to prevent new players to get confused
+		//[b60011] chrissstrahl - reset max speed, to prevent new players to get confused
 		world->setPhysicsVar("maxSpeed", COOP_DEFAULT_MAXSPEED);
 
-		//[b611] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
+		//[b60011] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
 		Engine_TIKI_FreeAll(1);//call to function pointer
 		gi.SendServerCommand(NULL, "stufftext \"flushtikis\"\n");
 

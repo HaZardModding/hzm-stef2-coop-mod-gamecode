@@ -1181,7 +1181,7 @@ void Compiler::ParseVariableDef( type_t *type, const char *name )
 			if ( pr_scope )
 			{
 				//Statement( &pr_opcodes[ OP_STORE_S ], immediate, def );
-				//[b611 chrissstrahl - make this extremly hard to find issue easy
+				//[b60011 chrissstrahl - make this extremly hard to find issue easy
 				str sPrintMsg = va("Declaring and init a string at the same on the stack doesn't work.\nPlease change line %d in:%s\nFunc:%s var:%s\n", lex.SourceLine(), program.s_file.c_str(), pr_scope->name.c_str(),name);
 				gi.Printf("\n====================================\n");
 				gi.Printf(sPrintMsg.c_str());
@@ -1229,7 +1229,7 @@ void Compiler::ParseDefs( void )
 				lex.ParseError( "Expected quoted filename" );
             }
 
-			//[b611] chrissstrahl - check for variouse include files
+			//[b60011] chrissstrahl - check for variouse include files
 			coopScripting.checkIncludedFiles(lex.pr_immediate_string);
 
 			program.Compile(lex.pr_immediate_string);

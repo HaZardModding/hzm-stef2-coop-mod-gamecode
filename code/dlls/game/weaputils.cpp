@@ -1953,7 +1953,7 @@ Projectile *ProjectileAttack( const Vector &start, Vector &dir, Entity *owner, c
 	}else {
 		gi.WDPrintf("%s is not of class projectile\n", projectileModel.c_str());
 	
-	//[b611] chrissstrahl - added handling for placing objects with a weapon
+	//[b60011] chrissstrahl - added handling for placing objects with a weapon
 		delete obj;
 		obj = NULL;
 

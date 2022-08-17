@@ -5056,7 +5056,7 @@ void TriggerCoopPlayerMessage::Activate( Event *ev )
 			if ( !currentPlayer )
 				continue;
 
-			float fVectorLength = Distance(currentPlayer->origin, origin); //[b611] chrissstrahl - changed how the distance is calculated
+			float fVectorLength = Distance(currentPlayer->origin, origin); //[b60011] chrissstrahl - changed how the distance is calculated
 
 			if ( fVectorLength <= fMaxDist && fVectorLength >= fMinDist )
 			{
@@ -5073,7 +5073,7 @@ void TriggerCoopPlayerMessage::Activate( Event *ev )
 		Player* player;
 		player = ( Player* )( Entity * )activator;
 		
-		float fVectorLength = Distance(player->origin, origin); //[b611] chrissstrahl - changed how the dicstance is calculated
+		float fVectorLength = Distance(player->origin, origin); //[b60011] chrissstrahl - changed how the dicstance is calculated
 
 		if ( fVectorLength <= fMaxDist && fVectorLength >= fMinDist )
 		{

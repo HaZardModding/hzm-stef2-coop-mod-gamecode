@@ -1333,7 +1333,7 @@ Event EV_Player_CallVote
 	"arg1 arg2 arg",
 	"Player calls a vote"
 );
-//[b611] chrissstrahl - Returns Int/Bool if player was pressing use or not
+//[b60011] chrissstrahl - Returns Int/Bool if player was pressing use or not
 Event EV_Player_checkUse
 (
 	"checkUse",
@@ -1343,7 +1343,7 @@ Event EV_Player_checkUse
 	"Returns Int/Bool if player was pressing use or not"
 );
 
-//[b611] chrissstrahl - Returns Int/Bool if player is in third person view or not
+//[b60011] chrissstrahl - Returns Int/Bool if player is in third person view or not
 Event EV_Player_checkThirdperson
 (
 	"checkThirdperson",
@@ -1353,7 +1353,7 @@ Event EV_Player_checkThirdperson
 	"Returns Int/Bool if player is in third person view"
 );
 
-//[b611] chrissstrahl - Returns Int/Bool if player is pressing fire button
+//[b60011] chrissstrahl - Returns Int/Bool if player is pressing fire button
 Event EV_Player_checkFire
 (
 	"checkFire",
@@ -1363,7 +1363,7 @@ Event EV_Player_checkFire
 	"Returns Int/Bool if player is pressing fire button"
 );
 
-//[b611] chrissstrahl - Returns Int/Bool if player is pressing alternative fire button
+//[b60011] chrissstrahl - Returns Int/Bool if player is pressing alternative fire button
 Event EV_Player_checkFirealt
 (
 	"checkFirealt",
@@ -1373,7 +1373,7 @@ Event EV_Player_checkFirealt
 	"Returns Int/Bool if player is pressing alternatvive fire button"
 );
 
-//[b611] chrissstrahl - allowes a player entity to start a thread
+//[b60011] chrissstrahl - allowes a player entity to start a thread
 Event EV_Player_RunThread
 (
 	"runthread",
@@ -1383,7 +1383,7 @@ Event EV_Player_RunThread
 	"Runs the specified thread. and sets this player as currententity"
 );
 
-//[b611] chrissstrahl - get player viewangle
+//[b60011] chrissstrahl - get player viewangle
 Event EV_Player_GetViewangles
 (
 	"getViewangles",
@@ -1423,7 +1423,7 @@ Event EV_Player_setKillThread
 	"kill_thread",
 	"Sets the thread to run if player gets killed."
 );
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_getLanguage
 (
 	"getLanguage",
@@ -1432,7 +1432,7 @@ Event EV_Player_getLanguage
 	"language-string",
 	"Gets language string from player."
 );
-//hzm gameupdate chrissstrahl [b611] - add new commands for script use
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_setCamera
 (
 	"setCamera",
@@ -1441,7 +1441,7 @@ Event EV_Player_setCamera
 	"camera switchtime",
 	"Sets view of this player to this camera"
 );
-//hzm gameupdate chrissstrahl [b611] - widgetcommand
+//hzm gameupdate chrissstrahl [b60011] - widgetcommand
 Event EV_Player_WidgetCommand
 (
 	"widgetCmd",
@@ -1540,7 +1540,7 @@ Event EV_Player_getCoopVersion
 	"return-Integer",
 	"Returns player coop mod installed version"
 );
-//[b611] chrissstrahl - locks player to his currently selected coop class
+//[b60011] chrissstrahl - locks player to his currently selected coop class
 Event EV_Player_SetClassLocked
 (
 	"setClassLocked",
@@ -1549,7 +1549,7 @@ Event EV_Player_SetClassLocked
 	"bool-yes-or-no",
 	"Locks/Unlocks player to his current Coop class"
 );
-//[b611] chrissstrahl - get coop class name
+//[b60011] chrissstrahl - get coop class name
 Event EV_Player_GetCoopClass
 (
 	"getCoopClass",
@@ -1558,7 +1558,7 @@ Event EV_Player_GetCoopClass
 	"string-classname",
 	"returns Player Coop class name"
 );
-//[b611] chrissstrahl - check if coop class is Technician
+//[b60011] chrissstrahl - check if coop class is Technician
 Event EV_Player_IsTechnichian
 (
 	"isCoopClassTechnician",
@@ -1567,7 +1567,7 @@ Event EV_Player_IsTechnichian
 	"bool-yes-or-no",
 	"Check if Player Coop class is Technician"
 );
-//[b611] chrissstrahl - check if coop class is Medic
+//[b60011] chrissstrahl - check if coop class is Medic
 Event EV_Player_IsMedic
 (
 	"isCoopClassMedic",
@@ -1577,7 +1577,7 @@ Event EV_Player_IsMedic
 	"Check if Player Coop class is Medic"
 );
 
-//[b611] chrissstrahl - check if coop class is HeavyWeapons
+//[b60011] chrissstrahl - check if coop class is HeavyWeapons
 Event EV_Player_IsHeavyWeapons
 (
 	"isCoopClassHeavyWeapons",
@@ -1587,7 +1587,7 @@ Event EV_Player_IsHeavyWeapons
 	"Check if Player Coop class is HeavyWeapons"
 );
 
-//[b611] chrissstrahl - checks player has ger/eng langauge
+//[b60011] chrissstrahl - checks player has ger/eng langauge
 Event EV_Player_HasLanguageGerman
 (
 	"hasLanguageGerman",
@@ -1803,7 +1803,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 
 
-	//hzm gameupdate chrissstrahl [b611] circlemenu
+	//hzm gameupdate chrissstrahl [b60011] circlemenu
 	{ &EV_Player_circleMenu,					&Player::circleMenuEvent},
 	{ &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent},
 	{ &EV_Player_circleMenuDialogClear,			&Player::circleMenuDialogClearEvent },
@@ -1832,42 +1832,42 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getTeamName,					&Player::getTeamName },
 	{ &EV_Player_getTeamScore,					&Player::getTeamScore },
 	{ &EV_Player_getCoopVersion,				&Player::getCoopVersion },
-	//[b611] chrissstrahl - checks if player is using the use button
+	//[b60011] chrissstrahl - checks if player is using the use button
 	{ &EV_Player_checkUse,						&Player::checkUsePressing },
-	//[b611] chrissstrahl - checks if player is in third person
+	//[b60011] chrissstrahl - checks if player is in third person
 	{ &EV_Player_checkThirdperson,				&Player::checkThirdperson },
-	//[b611] chrissstrahl - checks if player is pressing fire/alternative fire button
+	//[b60011] chrissstrahl - checks if player is pressing fire/alternative fire button
 	{ &EV_Player_checkFire,						&Player::checkFire },
 	{ &EV_Player_checkFirealt,					&Player::checkFirealt },
-	//[b611] chrissstrahl - runs thread from player entity
+	//[b60011] chrissstrahl - runs thread from player entity
 	{ &EV_Player_RunThread,						&Player::RunThread },
-	//[b611] chrissstrahl - get player viewangle
+	//[b60011] chrissstrahl - get player viewangle
 	{ &EV_Player_GetViewangles ,				&Player::getViewanglesEvent } ,
 	//[b607] chrissstrahl - return targeted entity of player
 	{ &EV_Player_GetTargetedEntity ,			&Player::getTargetedEntity },
-	//[b611] chrissstrahl - allowing/preventing player from switching class
+	//[b60011] chrissstrahl - allowing/preventing player from switching class
 	{ &EV_Player_SetClassLocked ,				&Player::setClassLocked },
-	//[b611] chrissstrahl - get coop class name
+	//[b60011] chrissstrahl - get coop class name
 	{ &EV_Player_GetCoopClass ,						&Player::getCoopClass },
-	//[b611] chrissstrahl - check if coop class is technician
+	//[b60011] chrissstrahl - check if coop class is technician
 	{ &EV_Player_IsTechnichian ,				&Player::isCoopClassTechnician },
-	//[b611] chrissstrahl - check if coop class is Medic
+	//[b60011] chrissstrahl - check if coop class is Medic
 	{ &EV_Player_IsMedic ,						&Player::isCoopClassMedic },
-	//[b611] chrissstrahl - check if coop class is HeavyWeapons
+	//[b60011] chrissstrahl - check if coop class is HeavyWeapons
 	{ &EV_Player_IsHeavyWeapons ,				&Player::isCoopClassHeavyWeapons },
-	//[b611] chrissstrahl - checks player has ger/eng langauge
+	//[b60011] chrissstrahl - checks player has ger/eng langauge
 	{ &EV_Player_HasLanguageGerman ,				&Player::hasLanguageGerman },
 	{ &EV_Player_HasLanguageEnglish ,				&Player::hasLanguageEnglish },
 	{ NULL , NULL }
 };
 
-//[b611] chrissstrahl - get coop class name
+//[b60011] chrissstrahl - get coop class name
 void Player::getCoopClass(Event* ev)
 {
 	ev->ReturnString(this->coopPlayer.className);
 }
 
-//[b611] chrissstrahl - check if coop class is technician
+//[b60011] chrissstrahl - check if coop class is technician
 void Player::isCoopClassTechnician(Event* ev)
 {
 	if (this->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
@@ -1877,7 +1877,7 @@ void Player::isCoopClassTechnician(Event* ev)
 	ev->ReturnFloat(0.0f);
 }
 
-//[b611] chrissstrahl - check if coop class is Medic
+//[b60011] chrissstrahl - check if coop class is Medic
 void Player::isCoopClassMedic(Event* ev)
 {
 	if (this->coopPlayer.className == COOP_CLASS_NAME_MEDIC) {
@@ -1887,7 +1887,7 @@ void Player::isCoopClassMedic(Event* ev)
 	ev->ReturnFloat(0.0f);
 }
 
-//[b611] chrissstrahl - check if coop class is HeavyWeapons
+//[b60011] chrissstrahl - check if coop class is HeavyWeapons
 void Player::isCoopClassHeavyWeapons(Event* ev)
 {
 	if (this->coopPlayer.className == COOP_CLASS_NAME_HEAVYWEAPONS) {
@@ -1897,7 +1897,7 @@ void Player::isCoopClassHeavyWeapons(Event* ev)
 	ev->ReturnFloat(0.0f);
 }
 
-//[b611] chrissstrahl - set coop class restriction - allowing/preventing player from switching class
+//[b60011] chrissstrahl - set coop class restriction - allowing/preventing player from switching class
 void Player::setClassLocked(Event* ev)
 {
 	coopPlayer.classChangingDisabled = (bool)ev->GetInteger(1);
@@ -2003,7 +2003,7 @@ void Player::getNameEvent(Event* ev)
 	ev->ReturnString(s.c_str());
 }
 
-//[b611] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
+//[b60011] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
 //widgetname,commandparameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter
 void Player::widgetCommandEvent(Event* ev)
 {
@@ -2034,7 +2034,7 @@ void Player::widgetCommandEvent(Event* ev)
 	gi.SendServerCommand(edict - g_entities, sData.c_str());
 }
 
-//hzm gameupdate chrissstrahl [b611]  - sets specific camera on player
+//hzm gameupdate chrissstrahl [b60011]  - sets specific camera on player
 void Player::setCameraEvent(Event* ev)
 {
 	Entity* camera;
@@ -2067,7 +2067,7 @@ void Player::setCameraEvent(Event* ev)
 	SetCamera((Camera*)camera, switchTime);
 }
 
-//hzm gameupdate chrissstrahl [b611]  - returns if player has german language of game
+//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
 void Player::hasLanguageGerman(Event* ev)
 {
 	bool bLangMatch = false;
@@ -2077,7 +2077,7 @@ void Player::hasLanguageGerman(Event* ev)
 	ev->ReturnFloat( (float)bLangMatch );
 }
 
-//hzm gameupdate chrissstrahl [b611]  - returns if player has german language of game
+//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
 void Player::hasLanguageEnglish(Event* ev)
 {
 	bool bLangMatch = false;
@@ -2087,19 +2087,19 @@ void Player::hasLanguageEnglish(Event* ev)
 	ev->ReturnFloat((float)bLangMatch);
 }
 
-//hzm gameupdate chrissstrahl [b611]  - returns player language string
+//hzm gameupdate chrissstrahl [b60011]  - returns player language string
 void Player::getLanguageEvent(Event* ev)
 {
 	ev->ReturnString( this->getLanguage() );
 }
 
-//hzm gameupdate chrissstrahl [b611]  - returns player language string
+//hzm gameupdate chrissstrahl [b60011]  - returns player language string
 str Player::getLanguage()
 {
 	return language;
 }
 
-//hzm gameupdate chrissstrahl [b611]  - sets player language string
+//hzm gameupdate chrissstrahl [b60011]  - sets player language string
 void Player::setLanguage(str sLang)
 {
 	if (sLang.length() < 1 || sLang.length() > 3) {
@@ -2119,31 +2119,31 @@ void Player::setLanguage(str sLang)
 	language = sLang;
 }
 
-//[b611] chrissstrahl - checks if player is pressing fire button
+//[b60011] chrissstrahl - checks if player is pressing fire button
 void Player::checkFire(Event* ev)
 {
 	ev->ReturnInteger((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0);
 }
 
-//[b611] chrissstrahl - checks if player is pressing fire button
+//[b60011] chrissstrahl - checks if player is pressing fire button
 void Player::checkFirealt(Event* ev)
 {
 	ev->ReturnInteger((last_ucmd.buttons & BUTTON_ATTACKRIGHT) != 0);
 }
 
-//[b611] chrissstrahl - checks if player is in third person
+//[b60011] chrissstrahl - checks if player is in third person
 void Player::checkThirdperson(Event *ev)
 {
 	ev->ReturnInteger(_isThirdPerson);
 }
 
-//[b611] chrissstrahl - checks if player is using the use button
+//[b60011] chrissstrahl - checks if player is using the use button
 void Player::checkUsePressing(Event *ev)
 {
 	ev->ReturnInteger((last_ucmd.buttons & BUTTON_USE) != 0);	
 }
 
-//[b611] chrissstrahl - runs thread from player entity
+//[b60011] chrissstrahl - runs thread from player entity
 void Player::RunThread(Event* ev)
 {
 	str thread_name="";
@@ -2159,7 +2159,7 @@ void Player::RunThread(const str &thread_name)
 	ExecuteThread(thread_name, true, this);
 }
 
-//[b611] chrissstrahl - get player viewangle
+//[b60011] chrissstrahl - get player viewangle
 void Player::getViewanglesEvent( Event* ev)
 {
 	Vector vAngle = Vector(0,0,0);
@@ -6360,7 +6360,7 @@ void Player::ClientThink( Event *ev )
 	client->cmd_angles[1] = SHORT2ANGLE(current_ucmd->angles[1]);
 	client->cmd_angles[2] = SHORT2ANGLE(current_ucmd->angles[2]);
 
-	//[b611] chrissstrahl - check if circle menu is active, if so react
+	//[b60011] chrissstrahl - check if circle menu is active, if so react
 	circleMenuThink();
 	//hzm coop mod chrissstrahl - handle coop specific stuff in here
 	coop_playerThink(this);
@@ -9671,7 +9671,7 @@ void Player::UpdateStats( void )
 	float healthToDisplay;
 	float armorToDisplay;
 
-	//[b611] chrissstrahl - handle Coop Stats (in multiplayer) in seperate func, if no coop, execute regular mp stats
+	//[b60011] chrissstrahl - handle Coop Stats (in multiplayer) in seperate func, if no coop, execute regular mp stats
 	if (!coop_updateStats()) {
 		// Deathmatch stats for arena mode
 		if (multiplayerManager.inMultiplayer())
@@ -9747,7 +9747,7 @@ void Player::UpdateStats( void )
 		}
 	}
 
-	//[b611] chrissstrahl - gamefix - moving code here makes it work in coop and singleplayer, items would not show in singleplayer but still be usable
+	//[b60011] chrissstrahl - gamefix - moving code here makes it work in coop and singleplayer, items would not show in singleplayer but still be usable
 	if (_holdableItem) {
 		client->ps.stats[STAT_MP_HOLDABLEITEM_ICON] = _holdableItem->getIcon();
 	}
@@ -11691,7 +11691,7 @@ void Player::ReceivedItem( Item * item )
 		if (item->getName() == "health") {  // I know this is horrible :(
 			setItemText(item->getIcon(), va("$$PickedUp$$ %d $$Item-%s$$\n", (int)item->getAmount(), item->getName().c_str()));
 		}
-		else { //[b611] chrissstrahl - fixed this up to work properly
+		else { //[b60011] chrissstrahl - fixed this up to work properly
 			str sItemName = item->getName();
 			str sItemLocString = va("$$Item-%s$$", sItemName.c_str());
 			if (sItemName == "BasicArmor") {

@@ -21,7 +21,7 @@
 #include "RageAI.h"
 #include "player.h"
 
-#include "mp_manager.hpp" //[b611] chrissstrahl
+#include "mp_manager.hpp" //[b60011] chrissstrahl
 
 void Strategos::DoArchive( Archiver &arc , Actor *actor )
 {
@@ -190,7 +190,7 @@ void DefaultStrategos::_EvaluateWorld()
 	_CheckForInConeOfFire();   
 }
 
-//[b611] chrissstrahl - now checks for each player
+//[b60011] chrissstrahl - now checks for each player
 void DefaultStrategos::_CheckForInConeOfFire()
 {
 	Vector dir;
@@ -260,7 +260,7 @@ void DefaultStrategos::_CheckForInConeOfFire()
 	act->SetActorFlag( ACTOR_FLAG_IN_PLAYER_CONE_OF_FIRE , false );
 }
 
-//[b611] chrissstrahl - seperated from parent func so it can be called for each player
+//[b60011] chrissstrahl - seperated from parent func so it can be called for each player
 void DefaultStrategos::_CheckForInTheWay(Player* player)
 {
 	if (!player)
@@ -309,10 +309,10 @@ void DefaultStrategos::_CheckForInTheWay(Player* player)
 	}
 }
 
-//[b611] chrissstrahl - now checks for each player
+//[b60011] chrissstrahl - now checks for each player
 void DefaultStrategos::_CheckForInTheWay() 
 {
-	//[b611] chrissstrahl
+	//[b60011] chrissstrahl
 	int i;
 	Entity* entity;
 

@@ -24,8 +24,8 @@
 Entity*	coop_returnEntity( const str &name );
 str coop_returnBoolWord( int iValue );
 str coop_returnBoolWord( bool bValue );
-int coop_returnIntWithinOrDefault(const str& sVal, const int& iMin, const int& iMax, const int& iDefault); //[b611] chrissstrahl - have it also accept strings
-float coop_returnFloatWithinOrDefault(const str& sVal, const float& fMin, const float& fMax, const float& fDefault); //[b611] chrissstrahl - have it also accept strings
+int coop_returnIntWithinOrDefault(const str& sVal, const int& iMin, const int& iMax, const int& iDefault); //[b60011] chrissstrahl - have it also accept strings
+float coop_returnFloatWithinOrDefault(const str& sVal, const float& fMin, const float& fMax, const float& fDefault); //[b60011] chrissstrahl - have it also accept strings
 float coop_returnFloatOrDefaultFromString( str sSource , float fDefault );
 int coop_returnIntOrDefaultFromString( str sSource , int iDefault );
 int coop_returnIntWithinOrDefault(const int &iCur, const int &iMin, const int &iMax, const int &iDefault);	//[b607] chrissstrahl -  looks like we need something like that
@@ -75,7 +75,7 @@ float coop_getFloatScriptVariable( str s );
 str coop_getStringScriptVariable( str s );
 float coop_returnFloatFromString( str extrapolate );
 bool coop_returnLevelType( str sLevelname , bool &standard , int &type );
-//[b611] chrissstrahl - frequently needed, couldn't find them in code but was sure they did exist
+//[b60011] chrissstrahl - frequently needed, couldn't find them in code but was sure they did exist
 float coop_returnFloatNotNegative(float fLt);
 int coop_returnIntegerNotNegative(int iNt);
 #endif /* coopReturn.hpp */

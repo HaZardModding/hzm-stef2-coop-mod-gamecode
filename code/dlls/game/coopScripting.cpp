@@ -25,7 +25,7 @@ bool CoopScripting::getIncludedNoscript() { return includedNoscript; }
 
 void CoopScripting::checkIncludedFiles(str sLex)
 {
-	//[b611] chrissstrahl - check and remember if special scripts are used
+	//[b60011] chrissstrahl - check and remember if special scripts are used
 	checkIncludedMom(sLex);
 	checkIncludedMom4(sLex);
 	checkIncludedMrm(sLex);
@@ -70,7 +70,7 @@ bool CoopScripting::checkIncludedNoscript(str sLex)
 str CoopScripting::checkReplaceInclude(str sLex)
 {
 	if (g_gametype->integer != GT_SINGLE_PLAYER) {
-		//[b611] chrissstrahl - added other global files
+		//[b60011] chrissstrahl - added other global files
 		//so that the scripts will be switched by the mod and scripters don't have to worry
 		if (!Q_stricmp(sLex, "maps/global_scripts/global_acceleratedmovement.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_archetype.scr") ||
@@ -83,7 +83,7 @@ str CoopScripting::checkReplaceInclude(str sLex)
 			!Q_stricmp(sLex, "maps/global_scripts/global_spawnwave.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_tubedoor.scr.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/igm_dialog.scr") ||
-			//[b611] end
+			//[b60011] end
 			
 			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderbase.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_tricorderroute.scr") ||

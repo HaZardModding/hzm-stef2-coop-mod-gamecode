@@ -120,7 +120,7 @@ qboolean SV_FilterPacket( const char *from )
 {
 	int i;
 	unsigned	in;
-	byte m[4] = { 0,0,0,0 }; //[b611] chrissstrahl - fix accsessing this var uninizialised
+	byte m[4] = { 0,0,0,0 }; //[b60011] chrissstrahl - fix accsessing this var uninizialised
 	const char *p;
 	
 	if ( !from )

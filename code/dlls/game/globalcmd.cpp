@@ -1229,7 +1229,7 @@ Event EV_ScriptThread_getFloatFromString
 	"returnFloat string" ,
 	"Returns the given value as float, if possible"
 );
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 Event EV_ScriptThread_getVectorFromString
 (
 	"getVectorFromString" ,
@@ -1418,10 +1418,10 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_ConnectPathnodes,			&CThread::connectPathnodes },
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
-	//[b611] chrissstral - allow read write to map specific ini files
+	//[b60011] chrissstral - allow read write to map specific ini files
 	{ &EV_ScriptThread_getIniData,					&CThread::getIniData },
 	{ &EV_ScriptThread_setIniData,					&CThread::setIniData },
-	//[b611] chrissstrahl
+	//[b60011] chrissstrahl
 	{ &EV_ScriptThread_getVectorFromString, &CThread::getVectorFromString } ,
 	//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 	{ &EV_ScriptThread_ConfigstringRemove, &CThread::configstringRemove },
@@ -1447,7 +1447,7 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 };
 
 /*
-//[b611] chrissstrahl - sets status of named achivment for a player
+//[b60011] chrissstrahl - sets status of named achivment for a player
 //returns: void
 //takes: player, achivmentname, value
 void CThread::setAchivment(Event* ev)
@@ -1467,7 +1467,7 @@ void CThread::checkAchivment(Event* ev)
 }
 */
 	
-//[b611] chrissstrahl - add command allow reading and writing to ini file
+//[b60011] chrissstrahl - add command allow reading and writing to ini file
 //returns: string ini data
 //takes: categoryname, keyname, filename
 void CThread::getIniData(Event *ev)
@@ -1683,7 +1683,7 @@ void CThread::missionFailed( Event *ev )
 }
 //end of hzm
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 void CThread::getVectorFromString(Event* ev)
 {
 	ev->ReturnVector(ev->GetVector(1));
@@ -3673,7 +3673,7 @@ void CThread::SendClientCommand( Event *ev )
 	
 	entity = ev->GetEntity( 1 );
 	
-	//[b611] chrissstrahl - gamefix - added check if entity even exists
+	//[b60011] chrissstrahl - gamefix - added check if entity even exists
 	//this was crashing server if given player did not exist
 	if (!entity) {
 		gi.Printf("SendClientCommand: Given Player does not exist!\n");
@@ -3711,7 +3711,7 @@ void CThread::GetNumFreeReliableServerCommands( Event* ev )
 
 	entity = ev->GetEntity( 1 );
 
-	//[b611] chrissstrahl - gamefix - added check if entity even exists
+	//[b60011] chrissstrahl - gamefix - added check if entity even exists
 	//this was crashing server if given player did not exist
 	if (!entity) {
 		gi.Printf("GetNumFreeReliableServerCommands: Given Player does not exist!\n");

@@ -511,7 +511,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 
 	//make sure we can write file
 	if ( !iniFile ) {
-		//[b611] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
+		//[b60011] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
 		throw( va( "HZM-Parser coud not open file to write: %s - Write-protection? Bad-Accsess-rights?\n" , sFile.c_str() ) );
 		//if ( coop_returnCvarInteger( "developer" ) > 0 ) {
 		//}
@@ -630,7 +630,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 		sLine = "";
 	}
 	if (gi.FS_Write(sNewBuffer, sNewBuffer.length(), iniFile) == 0) {
-		//[b611] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
+		//[b60011] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
 		throw(va("HZM-Parser coud not write data to file: %s - Write-protection? Bad-Accsess-rights?\n", sFile.c_str()));
 	}
 

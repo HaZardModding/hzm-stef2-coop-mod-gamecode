@@ -9,14 +9,14 @@
 qboolean G_coopInstalled(const gentity_t* ent);
 //hzm coop mod chrissstrahl - allow client to send a idendification string
 qboolean G_coopClientId(const gentity_t* ent);
-//[b611] chrissstrahl - allowing players to make use of special coop inventory
+//[b60011] chrissstrahl - allowing players to make use of special coop inventory
 qboolean G_coopItem(const gentity_t* ent);
-//[b611] chrissstrahl - allowing players to start thread that can be tied back
+//[b60011] chrissstrahl - allowing players to start thread that can be tied back
 qboolean G_coopThread(const gentity_t* ent);
-//[b611] chrissstrahl - allowing players to send text to server
+//[b60011] chrissstrahl - allowing players to send text to server
 qboolean G_coopInput(const gentity_t* ent);
 
-//[b611] chrissstrahl - add coop ! commads
+//[b60011] chrissstrahl - add coop ! commads
 qboolean G_coopCom_block(const gentity_t* ent);
 qboolean G_coopCom_class(const gentity_t* ent);
 qboolean G_coopCom_drop(const gentity_t* ent);

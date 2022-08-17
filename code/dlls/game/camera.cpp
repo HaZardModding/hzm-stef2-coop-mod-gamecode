@@ -2103,7 +2103,7 @@ void Camera::Watch( const str& watch, float time )
 	// make sure we process any setup events before continuing
 	ProcessPendingEvents();
 
-	//[b611] chrissstrahl - I think we don't need this - we want this to execute without being in a cinematic for everyone
+	//[b60011] chrissstrahl - I think we don't need this - we want this to execute without being in a cinematic for everyone
 	//hzm gameupdate chrissstrahl - make sure the player camera is not controlled when we are NOT in a cinematic
 	//if ( level.cinematic == false ){
 		//return;

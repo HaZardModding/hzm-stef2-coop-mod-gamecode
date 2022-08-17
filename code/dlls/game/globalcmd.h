@@ -83,7 +83,7 @@ extern Event EV_ScriptThread_RoundEvent ;
 extern Event EV_ScriptThread_ConfigstringRemoveCombatSounds;
 extern Event EV_ScriptThread_ConfigstringRemove;
 
-//[b611] chrissstrahl - added events support for all coop script stuff
+//[b60011] chrissstrahl - added events support for all coop script stuff
 extern Event EV_ScriptThread_getIniData;
 extern Event EV_ScriptThread_setIniData;
 extern Event EV_ScriptThread_getStringFromStringWithLengt;
@@ -117,10 +117,10 @@ class CThread : public Interpreter
 		CLASS_PROTOTYPE( CThread );
 
 		CThread();
-		//[b611] chrissstrahl - read and write mapspecific ini data - allowing levels to hold thair own database
+		//[b60011] chrissstrahl - read and write mapspecific ini data - allowing levels to hold thair own database
 		void getIniData(Event *ev);
 		void setIniData(Event *ev);
-		//[b611] chrissstrahl
+		//[b60011] chrissstrahl
 		void getVectorFromString(Event* ev);
 		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 		void configstringRemoveCombatSounds(Event *ev);

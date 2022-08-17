@@ -27,7 +27,7 @@
 #define COOP_JOIN_SEPERATOR_SIZE 1			//size of join seperator (;) for console commands
 #define COOP_JOIN_MAX_SINGLE_COMMAND (((COOP_MAX_TRANSMITT_STRING / 2 ) - (COOP_TRANSMITT_STARTCMD / 2)) - 1)
 
-//[b611] chrissstrahl - text for variouse outputs
+//[b60011] chrissstrahl - text for variouse outputs
 #define COOP_TEXT_CLASS_MEDIC_ONLY_DEU "Benutzen nur durch: ^5$$Medic$$^8!\n"
 #define COOP_TEXT_CLASS_MEDIC_ONLY_ENG "To use, you need to be: ^5$$Medic$$^8!\n"
 #define COOP_TEXT_CLASS_TECHNICIAN_ONLY_DEU "Benutzen nur durch: ^5$$Technician$$^8!\n"

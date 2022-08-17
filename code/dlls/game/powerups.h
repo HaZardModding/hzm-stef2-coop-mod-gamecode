@@ -423,7 +423,7 @@ public:
 	HoldableItemExplosive();
 	~HoldableItemExplosive();
 
-	//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+	//[b60011] Chrisssrahl - add customizable model for explosive item TIKI
 	void explosiveModel(Event * ev);
 
 	/* virtual */ bool			use( void );

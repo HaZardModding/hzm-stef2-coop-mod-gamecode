@@ -128,7 +128,7 @@ private: // Functions
 	void  _EvaluatePackages();
 	void  _EvaluateWorld();
 	void  _CheckForInTheWay();
-	void  _CheckForInTheWay(Player* player); //[b611] chrissstrahl - seperated from parent func so it can be called for each player
+	void  _CheckForInTheWay(Player* player); //[b60011] chrissstrahl - seperated from parent func so it can be called for each player
 	void  _CheckForInConeOfFire();
 	
 private: // Member Variables

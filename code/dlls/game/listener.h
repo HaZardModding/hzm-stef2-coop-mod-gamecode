@@ -1134,7 +1134,7 @@ inline bool Event::GetBoolean
 
 #ifdef GAME_DLL
 
-//[b611] chrissstrahl - allow to get a NULL ENTITY
+//[b60011] chrissstrahl - allow to get a NULL ENTITY
 inline Entity *Event::GetEntity(int pos, bool allowNull)
 {
 	if ( !data || ( pos < 1 ) || ( data->NumObjects() < pos ) ){

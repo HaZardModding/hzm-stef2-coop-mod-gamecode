@@ -32,7 +32,7 @@
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
 
-#include "coopChallenges.hpp" //[b611] chrissstrahl
+#include "coopChallenges.hpp" //[b60011] chrissstrahl
 extern CoopChallenges coopChallenges;
 
 #include "decals.h"
@@ -2473,7 +2473,7 @@ void Sentient::ArmorDamage( float damage, Entity *inflictor, Entity *attacker, c
 		return;
 	}
 
-	if ( meansofdeath != MOD_LIFEDRAIN && coopChallenges.haloShieldRelayDamage(this, damage)) //[b611] chrissstrahl - should damage be relayed to health or not
+	if ( meansofdeath != MOD_LIFEDRAIN && coopChallenges.haloShieldRelayDamage(this, damage)) //[b60011] chrissstrahl - should damage be relayed to health or not
 	{
 		if ( damage < 0 )
 		{

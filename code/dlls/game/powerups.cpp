@@ -924,7 +924,7 @@ bool HoldableItemTransporter::use( void )
 	return false;
 }
 
-//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+//[b60011] Chrisssrahl - add customizable model for explosive item TIKI
 Event EV_HoldableItem_ExplosiveModel
 (
 	"explosiveModel",
@@ -934,7 +934,7 @@ Event EV_HoldableItem_ExplosiveModel
 	"Sets the model to be used when the explosive is placed."
 );
 
-//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+//[b60011] Chrisssrahl - add customizable model for explosive item TIKI
 void HoldableItemExplosive::explosiveModel(Event *ev)
 {
 	_explosiveModel = ev->GetString(1);
@@ -943,14 +943,14 @@ void HoldableItemExplosive::explosiveModel(Event *ev)
 
 CLASS_DECLARATION( HoldableItem, HoldableItemExplosive, NULL )
 {
-	//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+	//[b60011] Chrisssrahl - add customizable model for explosive item TIKI
 	{ &EV_HoldableItem_ExplosiveModel, &HoldableItemExplosive::explosiveModel },
 	{ NULL, NULL }
 };
 
 HoldableItemExplosive::HoldableItemExplosive()
 {
-	//[b611] Chrisssrahl - add customizable model for explosive item TIKI
+	//[b60011] Chrisssrahl - add customizable model for explosive item TIKI
 	_explosiveModel = "";
 
 
@@ -1040,7 +1040,7 @@ bool HoldableItemExplosive::use( void )
 
 			_explosive = new Entity( ENTITY_CREATE_FLAG_ANIMATE );
 
-			//[b611] chrissstrahl - for coop alien
+			//[b60011] chrissstrahl - for coop alien
 			//allow holdable explosive to have custom models
 			if (_explosiveModel.length() != 0) {
 				_explosive->setModel(_explosiveModel);

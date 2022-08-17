@@ -21,7 +21,7 @@ CoopServer coopServer;
 #include "coopText.hpp"
 #include "coopParser.hpp"
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 #include "coopNpcTeam.hpp"
 extern CoopNpcTeam coopNpcTeam;
 #include "coopChallenges.hpp"
@@ -38,13 +38,13 @@ extern CoopChallenges coopChallenges;
 #include "trigger.h"
 extern Event EV_ScriptThread_StuffCommand;
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 #define COOP_SERVER_PHYSICS_BUG_MAX_FPS 85
 #define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 85 to fix a game bug on this level.\n"
 
 
 void CoopServer::enforceLevelSpecificSettings()
-//[b611] chrissstrahl - enforce variouse settings in levels to ensure the game working correctly
+//[b60011] chrissstrahl - enforce variouse settings in levels to ensure the game working correctly
 {
 	if (level.mapname == "m6-exterior"){
 		//make sure the physics is correct - this can happen due to a coop mod voting option
@@ -147,7 +147,7 @@ void coop_serverInizializeGameVars(void)
 	#endif
 
 	//gametype 0=sp 1=mp 2=solo, dedicated 0=listen 1=landedicated 2=internetdedicated
-	//[b611] chrissstrahl - fixed crash on accsess to uninizialized cvar
+	//[b60011] chrissstrahl - fixed crash on accsess to uninizialized cvar
 	if (bConfigChange && g_gametype && g_gametype->integer > 0 && dedicated->integer > 0) {
 		cvar_t *cvarUser = gi.cvar_get("username");
 		str sUser = (cvarUser ? cvarUser->string : "");
@@ -385,7 +385,7 @@ bool coop_serverCheckEndMatch(void) //added [b607]
 	if (multiplayerManager.getTime() > 172800.0f) {//259200 3days  //172800 2days //1500000.0f  //1999000.0f
 		multiplayerManager.centerPrintAllClients("^5Coop:^8 The Server needs to reboot now!\n", CENTERPRINT_IMPORTANCE_CRITICAL);
 
-		//[b611] chrissstrahl - using now dedicated function
+		//[b60011] chrissstrahl - using now dedicated function
 		coop_serverWarningBadSetting(va("HZM Coop Mod: The Server needs to reboot now! (%f)\n", multiplayerManager.getTime()));
 
 		//[b608] chrissstrahl - fix loading a map from mp_maplist - same map is loaded now
@@ -889,7 +889,7 @@ void coop_serverRestoreGameVars()
 		gameVars.SetVariable( "statusM5L2CUnlocked" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "statusM5L2CUnlocked" , "server" ) , 0 ) );//game.
 	}
 
-	//[b611] chrissstrah - fixed a few checks that where done to sloppy and did not work right
+	//[b60011] chrissstrah - fixed a few checks that where done to sloppy and did not work right
 	str sValue;
 	int iVal;
 
@@ -1085,7 +1085,7 @@ void coop_serverCoop()
 		return;
 	}
 
-	//[b611] chrissstrahl - dectect if coop mod should be active
+	//[b60011] chrissstrahl - dectect if coop mod should be active
 	if (game.levelType > MAPTYPE_MULTIPLAYER) {
 		game.coop_isActive = true;
 
@@ -1125,7 +1125,7 @@ void coop_serverCoop()
 	//hzm coop mod chrissstrahl - run server corrections and setup
 	coop_serverSetup();
 
-	//[b611] chrissstrahl - load data from ini file of this level for NPC Auto Teammates
+	//[b60011] chrissstrahl - load data from ini file of this level for NPC Auto Teammates
 	coopNpcTeam.init();
 	coopChallenges.init();
 }
@@ -1192,7 +1192,7 @@ void coop_serverSetup( void )
 
 		//hzm coop mod chrissstrahl - check if the file exists, server would go into a map loading loop otherwise
 		if ( !gi.FS_Exists( "coop_mod/cfg/server/setup.cfg" ) ){
-			//[b611] chrissstrahl - made warnings more compact
+			//[b60011] chrissstrahl - made warnings more compact
 			coop_serverWarningBadSetting("SETUP ERROR");
 			coop_serverWarningBadSetting("coop_mod/cfg/server/setup.cfg $$NotFoundOnServer$$ !!!\nCould not configure server for Coop Mod!");
 			gi.SendConsoleCommand( "killserver\n" );
@@ -1201,7 +1201,7 @@ void coop_serverSetup( void )
 
 		SetupExecuted++;
 		if ( SetupExecuted > COOP_MAX_SETUP_TRIES ){
-			//[b611] chrissstrahl - made warnings more compact
+			//[b60011] chrissstrahl - made warnings more compact
 			coop_serverWarningBadSetting("SETUP ERROR");
 			coop_serverWarningBadSetting("Server was stuck in a loop executing setup.cfg\nCould not configure server for Coop Mod!");
 			gi.SendConsoleCommand( "killserver\n" );
@@ -1221,7 +1221,7 @@ void coop_serverSetup( void )
 		correctingTheseSettingsRequiresMapload = true;
 	}
 	
-	//[b611] chrissstrahl - make sure at least 4 players are able to play from the get go (this is in Coop)
+	//[b60011] chrissstrahl - make sure at least 4 players are able to play from the get go (this is in Coop)
 	if ( coop_returnCvarInteger( "sv_maxclients" ) < 2 )
 	{
 		gi.SendConsoleCommand("set sv_maxclients 4\n"); //can't set this cvar directly or game crashes
@@ -1344,7 +1344,7 @@ str coop_serverModifiedFile( str standardPath )
 	bool loadFromCoopDir = false;
 	bool isScriptFile = false;
 
-	//[b611] Chrissstrahl - clean this up a bit - and while I am at it, fix issues
+	//[b60011] Chrissstrahl - clean this up a bit - and while I am at it, fix issues
 	str sFileExt = coop_returnStringFileExtensionOnly(standardPath);
 
 	//we handle alternative script file extension, so we need to know
@@ -1429,7 +1429,7 @@ bool coop_serverError( str sError, bool bFatal )
 	coop_parserIniSet( "ini/serverData.ini" , "errormap" , level.mapname , "server" );
 	coop_parserIniSet( "ini/serverData.ini" , "errortext" , sError , "server" );
 
-	//[b611] chrissstrahl - this prevents the server from exiting/rebooting if noerrorhalt=true in serverData.ini
+	//[b60011] chrissstrahl - this prevents the server from exiting/rebooting if noerrorhalt=true in serverData.ini
 	//Changed from, errorhalt to noerrorhalt, so that a server will not reboot on default
 	//You are REQUIRED now to set noerrorhalt=true in /ini/serverData.ini to allow server to exit on error
 	if ( coop_returnBool( coop_parserIniGet( "ini/serverData.ini" , "noerrorhalt" , "server" ) ) )
@@ -1442,7 +1442,7 @@ bool coop_serverError( str sError, bool bFatal )
 	gi.Printf( va("%s\n", sError.c_str()) );
 	gi.Printf( "====================================\n" );
 	
-	//[b611] chrissstrahl - execute cfg with delayed quit
+	//[b60011] chrissstrahl - execute cfg with delayed quit
 	//gi.SendConsoleCommand( "quit\n" );
 	gi.SendConsoleCommand( "coop_mod/cfg/quitServerDelayed.cfg\n" );
 	return true;
@@ -1461,7 +1461,7 @@ bool coop_serverError( str sError, bool bFatal )
 //================================================================
 void coop_serverThink( void )
 {
-	//[b611] chrissstrahl - make sure certain settings are forced for levels that won't work right without it
+	//[b60011] chrissstrahl - make sure certain settings are forced for levels that won't work right without it
 	coopServer.enforceLevelSpecificSettings();
 
 	if (!game.coop_isActive) { return; }
@@ -1519,9 +1519,9 @@ void coop_serverThink( void )
 //================================================================
 void coop_serverCleanup(bool restart)
 {
-	//[b611] chrissstrahl - moved code here from: void MultiplayerManager::cleanup( qboolean restart )
+	//[b60011] chrissstrahl - moved code here from: void MultiplayerManager::cleanup( qboolean restart )
 
-	//[b611] chrissstrahl - this lets us detect if the map was restarted or loadad
+	//[b60011] chrissstrahl - this lets us detect if the map was restarted or loadad
 	game.levelRestarted = restart;
 
 	game.coop_author = "";
@@ -1530,7 +1530,7 @@ void coop_serverCleanup(bool restart)
 	game.coop_awardsActive = false;
 	game.coop_isActive = false;
 
-	//[b611] chrissstrahl - only clean up while in multiplayer bejond this point
+	//[b60011] chrissstrahl - only clean up while in multiplayer bejond this point
 	if (!multiplayerManager.inMultiplayer()) {
 		return;
 	}
@@ -1540,12 +1540,12 @@ void coop_serverCleanup(bool restart)
 		coop_serverSaveAllClientData();
 	}
 
-	//[b611] chrissstrahl
+	//[b60011] chrissstrahl
 	coopChallenges.cleanUp(restart);
 	coopNpcTeam.cleanUp(restart);
 }
 
-//[b611] chrissstrahl - bad setting Warning
+//[b60011] chrissstrahl - bad setting Warning
 //================================================================
 // Name:        coop_serverWarningBadSetting
 // Class:       -

@@ -585,10 +585,10 @@ void StationaryFireCombatEX::updateEnemy()
 		if ( !currentEnemy )
 			{
 			Player* player = NULL;
-			//player = GetPlayer( 0 ); //[b611] chrissstrahl
+			//player = GetPlayer( 0 ); //[b60011] chrissstrahl
 
 
-			//[b611] chrissstrahl - get a valid visible player
+			//[b60011] chrissstrahl - get a valid visible player
 			//NO offset from ground/origin because we don't know if it is a inverted turret
 			int i;
 			Entity* entity;
@@ -610,7 +610,7 @@ void StationaryFireCombatEX::updateEnemy()
 					break;
 				}
 			}
-			//[b611] end
+			//[b60011] end
 
 			if ( player && GetSelf()->enemyManager->Hates(player) && _forceAttack )
 				{

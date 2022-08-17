@@ -25,7 +25,7 @@
 #include "program.h"
 
 #include "coopVote.hpp" //[b607] chrissstrahl - moved coop vote stuff to seperate file
-#include "coopChallenges.hpp" //[b611] chrissstrahl
+#include "coopChallenges.hpp" //[b60011] chrissstrahl
 extern CoopChallenges coopChallenges;
 
 
@@ -249,7 +249,7 @@ void MultiplayerManager::update( float frameTime )
 		skill->modified = false;
 	}
 
-	//[b611] chrissstrahl - update coop challanges
+	//[b60011] chrissstrahl - update coop challanges
 	coopChallenges.update(frameTime);
 
 	// Start the game if not started already
@@ -2620,7 +2620,7 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	else
 	{
 //hzm gamefix chrissstrahl - do not print "Server: score" when a player connects while he has the score still displayed, this can happen when a map changes, and scores are shown
-		if ( !Q_stricmp( "score" , tempText ) || !Q_stricmpn("!class", tempText,6)) //[b611] chrissstrahl - also filter class command
+		if ( !Q_stricmp( "score" , tempText ) || !Q_stricmpn("!class", tempText,6)) //[b60011] chrissstrahl - also filter class command
 		{
 			return;
 		}

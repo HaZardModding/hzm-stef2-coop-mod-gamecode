@@ -104,7 +104,7 @@ int coop_returnIntOrDefaultFromString( str sSource, int iDefault )
 	{
 		coop_trimM( sSource , " \t\r\n;=,f" );
 		if ( sSource.length() ) {
-			return atoi( sSource ); //[b611] chrissstrahl - changed from (int)atof()
+			return atoi( sSource ); //[b60011] chrissstrahl - changed from (int)atof()
 		}
 		else {
 			return iDefault;
@@ -114,7 +114,7 @@ int coop_returnIntOrDefaultFromString( str sSource, int iDefault )
 	{ return iDefault; }
 }
 
-//[b611] chrissstrahl - have it also accept strings
+//[b60011] chrissstrahl - have it also accept strings
 int coop_returnIntWithinOrDefault(const str& sVal, const int& iMin, const int& iMax, const int& iDefault)
 {
 	const int iCur = coop_returnIntOrDefaultFromString(sVal, iDefault);
@@ -129,7 +129,7 @@ int coop_returnIntWithinOrDefault(const int &iCur, const int &iMin, const int &i
 	return iCur;
 }
 
-//[b611] chrissstrahl - have it also accept strings
+//[b60011] chrissstrahl - have it also accept strings
 float coop_returnFloatWithinOrDefault(const str& sVal, const float& fMin, const float& fMax, const float& fDefault)
 {
 	const float fCur = coop_returnIntOrDefaultFromString(sVal, fDefault);
@@ -1952,7 +1952,7 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	return false;
 }
 
-//[b611] chrissstrahl - frequently needed, couldn't find them in code but was sure they did exist
+//[b60011] chrissstrahl - frequently needed, couldn't find them in code but was sure they did exist
 //================================================================
 // Name:        coop_returnFloatNotNegative
 // Class:       -
@@ -1972,7 +1972,7 @@ float coop_returnFloatNotNegative(float fLt)
 	return fLt;
 }
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 //================================================================
 // Name:        coop_returnIntegerNotNegative
 // Class:       -

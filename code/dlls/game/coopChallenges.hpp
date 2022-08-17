@@ -16,7 +16,7 @@
 //LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
 
 //CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
-//[b611] Chrissstrahl
+//[b60011] Chrissstrahl
 
 #ifndef __COOPCHALLANGE_HPP__
 #define __COOPCHALLANGE_HPP__

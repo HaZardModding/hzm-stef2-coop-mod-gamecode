@@ -316,7 +316,7 @@ void Level::CleanUp( qboolean restart )
 	
 	_earthquakes.ClearObjectList();
 
-	//[b611] chrissstrahl - added cleanup func
+	//[b60011] chrissstrahl - added cleanup func
 	coop_serverCleanup(restart);
 	
 	_cleanup = false;
@@ -817,7 +817,7 @@ void Level::Archive( Archiver &arc )
 	arc.ArchiveInteger( &currentInstanceNumber );
     //int            spawnflags;
 
-	arc.ArchiveInteger( &spawn_bot); //[b611] chrissstrahl - fixed this not working with savegames
+	arc.ArchiveInteger( &spawn_bot); //[b60011] chrissstrahl - fixed this not working with savegames
 
 	arc.ArchiveInteger( &framenum );
 	arc.ArchiveInteger( &inttime );

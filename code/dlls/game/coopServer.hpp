@@ -55,7 +55,7 @@ static int iSPRITES = 0;
 #define COOP_MAX_SAFE_COMBINED_LOAD	23
 */
 
-//[b611] chrissstrahl
+//[b60011] chrissstrahl
 class CoopServer
 {
 public:
@@ -87,6 +87,6 @@ void coop_serverManageAi( void );
 str coop_serverModifiedFile( str standardPath );
 void coop_serverThink( void );
 void coop_serverCleanup(bool restart); //[b610] chrissstrahl - used to reset vars and clean up stuff
-void coop_serverWarningBadSetting(str sMessage); //[b611] chrissstrahl - to print server errors in a standardized way
+void coop_serverWarningBadSetting(str sMessage); //[b60011] chrissstrahl - to print server errors in a standardized way
 
 #endif /* coopServer.hpp */

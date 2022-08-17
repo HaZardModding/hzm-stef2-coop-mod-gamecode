@@ -28,7 +28,7 @@
 #include <qcommon/gameplaymanager.h>
 #include "botmenudef.h"
 
-//[b611] chrissstrahl - make avialable to use here
+//[b60011] chrissstrahl - make avialable to use here
 extern Event EV_SetOriginEveryFrame;
 
 typedef struct
@@ -42,15 +42,15 @@ consolecmd_t G_ConsoleCmds[] =
 {
 	//   command name       function             available in multiplayer?
 
-//[b611] chrissstrahl - coop commands 
-//[b611] chrissstrahl - coop commands 
-//[b611] chrissstrahl - coop commands 
-	{ "coopthread",G_coopThread,			true }, //[b611] chrissstrahl - allowing players to start a script thread
-	{ "coopitem",G_coopItem,				true }, //[b611] chrissstrahl - allowing players to make use of special coop inventory
+//[b60011] chrissstrahl - coop commands 
+//[b60011] chrissstrahl - coop commands 
+//[b60011] chrissstrahl - coop commands 
+	{ "coopthread",G_coopThread,			true }, //[b60011] chrissstrahl - allowing players to start a script thread
+	{ "coopitem",G_coopItem,				true }, //[b60011] chrissstrahl - allowing players to make use of special coop inventory
 	{ "coopinstalled",G_coopInstalled,		true },	//[b600] chrissstrahl - allow deetection if mod is installed
-	{ "coopinput",G_coopInput	,			true }, //[b611] chrissstrahl - allowing players to send text to server
-	{ "coopcid",G_coopClientId	,			true }, //[b611] chrissstrahl - allowing players to send idendification string
-//[b611] chrissstrahl - ! text commands moved here from coop_playerSay in coopPlayer.cpp
+	{ "coopinput",G_coopInput	,			true }, //[b60011] chrissstrahl - allowing players to send text to server
+	{ "coopcid",G_coopClientId	,			true }, //[b60011] chrissstrahl - allowing players to send idendification string
+//[b60011] chrissstrahl - ! text commands moved here from coop_playerSay in coopPlayer.cpp
 	{ "!thread",G_coopThread	,			true }, 
 	{ "!block",G_coopCom_block	,			true }, 
 	{ "!class",G_coopCom_class	,			true }, 
@@ -80,11 +80,11 @@ consolecmd_t G_ConsoleCmds[] =
 //Coop Commands End
 
 	//hzm gameupdate chrissstrahl - add features to game without coop dependency
-	{ "Eng",				G_LanguageEng,			true },	//[b611] chrissstrahl - select English Player Laguage
-	{ "Deu",				G_LanguageDeu,			true },	//[b611] chrissstrahl - select English German Laguage
-	{ "circle",				G_circleMenu,			true }, //[b611] chrissstrahl - show circle menu to player
-	{ "circledialog",		G_circleDialog,			true }, //[b611] chrissstrahl - show circle menu to player
-	{ "widgettext",			G_widgettext,			true }, //[b611] chrissstrahl - allowing players to make use of widgettext command
+	{ "Eng",				G_LanguageEng,			true },	//[b60011] chrissstrahl - select English Player Laguage
+	{ "Deu",				G_LanguageDeu,			true },	//[b60011] chrissstrahl - select English German Laguage
+	{ "circle",				G_circleMenu,			true }, //[b60011] chrissstrahl - show circle menu to player
+	{ "circledialog",		G_circleDialog,			true }, //[b60011] chrissstrahl - show circle menu to player
+	{ "widgettext",			G_widgettext,			true }, //[b60011] chrissstrahl - allowing players to make use of widgettext command
 	{ "dialogrunthread",	G_DialogRunThread,		true }, //[b608] chrissstrahl - allow this in multiplayer/coop - used to be false
 	//hzm gameupdate end
 
@@ -354,7 +354,7 @@ void G_Say( const gentity_t *ent, bool team, qboolean arg0 )
 	}
 }
 
-//===========================================================[b611]
+//===========================================================[b60011]
 // Name:        G_circleMenu
 // Class:       -
 //              
@@ -378,7 +378,7 @@ qboolean G_circleMenu(const gentity_t* ent)
 	player->circleMenu(1);
 }
 
-//===========================================================[b611]
+//===========================================================[b60011]
 // Name:        G_circleDialog
 // Class:       -
 //              
@@ -402,7 +402,7 @@ qboolean G_circleDialog(const gentity_t* ent)
 	player->circleMenu(2);
 }
 
-//===========================================================[b611]
+//===========================================================[b60011]
 // Name:        G_widgettext
 // Class:       -
 //              
@@ -728,14 +728,14 @@ qboolean G_TauntCmd( const gentity_t *ent )
 	{
 		Player *player = (Player *)ent->entity;
 
-		//[b611] chrissstrahl - set a cooldown time for taunt - also don't play during cinematic
+		//[b60011] chrissstrahl - set a cooldown time for taunt - also don't play during cinematic
 		if (level.cinematic || player->coopPlayer.tauntCooldownTime > level.time) {
 			return true;
 		}
 
 		if ( multiplayerManager.inMultiplayer() && !multiplayerManager.isPlayerSpectator( player ) )
 		{
-			//[b611] chrissstrahl - update a cooldown time for taunt
+			//[b60011] chrissstrahl - update a cooldown time for taunt
 			player->coopPlayer.tauntCooldownTime = (level.time + 5.0f);
 			//player->hudPrint(va("G_TauntCmd: %f -> %f\n", player->coopPlayer.tauntCooldownTime,level.time));
 
@@ -1571,7 +1571,7 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 	return G_ClientRunThreadCmd( ent );
 }
 
-//[b611] chrissstrahl - add language detection
+//[b60011] chrissstrahl - add language detection
 //--------------------------------------------------------------
 //
 // Name:			G_LanguageEng
@@ -1596,7 +1596,7 @@ qboolean G_LanguageEng(const gentity_t* ent)
 }
 
 
-//[b611] chrissstrahl - add language detection
+//[b60011] chrissstrahl - add language detection
 //--------------------------------------------------------------
 //
 // Name:			G_LanguageDeu

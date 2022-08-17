@@ -1332,7 +1332,7 @@ void Interpreter::Execute( Event *e )
 			if ( pr_depth == exitdepth )
 			{
 				// all done
-				DoMove(); //[b611] chrissstrahl - if you get a error here, you might terminating a parent thread from a child thread(function), start the child function as thread, this will fix it
+				DoMove(); //[b60011] chrissstrahl - if you get a error here, you might terminating a parent thread from a child thread(function), start the child function as thread, this will fix it
 				Director.NotifyOtherThreads( threadNum );
 				PostEvent( EV_Remove, 0.0f );
 				doneProcessing = true;

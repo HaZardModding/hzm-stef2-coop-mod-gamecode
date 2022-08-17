@@ -70,7 +70,7 @@ qboolean G_coopCom_block(const gentity_t* ent)
 		return true;
 	}
 
-	//[b611] chrissstrahl - set a cooldown time for !block
+	//[b60011] chrissstrahl - set a cooldown time for !block
 	if (player->coopPlayer.cmdBlockCooldownTime > (level.time + 9)) {
 		return true;
 	}
@@ -123,7 +123,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 		return true;
 	}
 
-	//[b611] chrissstrahl - if chaning classes is disabled for this player, abbort
+	//[b60011] chrissstrahl - if chaning classes is disabled for this player, abbort
 	if (player->coopPlayer.classChangingDisabled) {
 		if (coop_checkPlayerLanguageGerman(player)) {
 			player->hudPrint(COOP_TEXT_CLASS_CANT_CHANGE_ANYMORE_DEU);
@@ -1050,7 +1050,7 @@ qboolean G_coopCom_noclip(const gentity_t* ent)
 	return true;
 }
 
-//===========================================================[b611]
+//===========================================================[b60011]
 // Name:        G_coopInput
 // Class:       -
 //              
@@ -1101,7 +1101,7 @@ qboolean G_coopInput(const gentity_t* ent)
 	return true;
 }
 
-//===========================================================[b611]
+//===========================================================[b60011]
 // Name:        G_coopThread
 // Class:       -
 //              
@@ -1157,7 +1157,7 @@ qboolean G_coopInstalled(const gentity_t* ent)
 
 	Player* player = (Player*)ent->entity;
 	const char* coopVer = gi.argv(1);
-	if (strlen(coopVer)) { //[b611] Chrissstrahl - fixed bad check
+	if (strlen(coopVer)) { //[b60011] Chrissstrahl - fixed bad check
 		player->coopPlayer.installedVersion = atoi(coopVer);
 	}
 	coop_playerSetupCoop(player);
@@ -1179,7 +1179,7 @@ qboolean G_coopInstalled(const gentity_t* ent)
 //              
 //================================================================
 qboolean G_coopItem(const gentity_t* ent)
-//[b611] chrissstrahl - allowing to place objects like mines and turrets
+//[b60011] chrissstrahl - allowing to place objects like mines and turrets
 {
 	if (!ent || !ent->inuse || !ent->client)
 		return qfalse;

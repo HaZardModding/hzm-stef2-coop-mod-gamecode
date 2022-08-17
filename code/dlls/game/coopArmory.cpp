@@ -81,7 +81,7 @@ void coop_armoryEquipPlayer(Player *player)
 		sVariableName += iTemporary;
 		sTikiName = program.getVariableValueAsString( sVariableName.c_str() );
 
-		if ( sTikiName.length() > 4 && sTikiName != "<NULL>") { //[b611] Chrissstrahl - fix handling if <NULL> string is returned
+		if ( sTikiName.length() > 4 && sTikiName != "<NULL>") { //[b60011] Chrissstrahl - fix handling if <NULL> string is returned
 			iWeapons++;
 
 			//make this work in coop and singleplayer

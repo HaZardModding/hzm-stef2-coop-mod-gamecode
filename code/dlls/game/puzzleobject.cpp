@@ -151,7 +151,7 @@ Event EV_PuzzleObject_BecomeModBarInSkill
 	"Tells a puzzleobject to just display a timed modulation bar in any skill less than or equal to the specified one."
 );
 
-//[b611] chrissstrahl - thread called when puzzle is started to be used
+//[b60011] chrissstrahl - thread called when puzzle is started to be used
 Event EV_PuzzleObject_SetUsedStartThread
 (
 	"puzzleobject_usedStartThread",
@@ -193,7 +193,7 @@ CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 	{ &EV_PuzzleObject_AnimationDone,		&PuzzleObject::animationDone		},
 	{ &EV_PuzzleObject_SetItemToUse,		&PuzzleObject::setItemToUse		},
 	{ &EV_PuzzleObject_SetItemUsedThread,	&PuzzleObject::setItemUsedThread	}, //Chrissstrahl - This only works if there is no time set on the puzzle, since we do not want to change the behaviour we added new functionality below
-	{ &EV_PuzzleObject_SetUsedStartThread,	&PuzzleObject::setUsedStartThread	}, //[b611] chrissstrahl - thread called when puzzle is started to be used
+	{ &EV_PuzzleObject_SetUsedStartThread,	&PuzzleObject::setUsedStartThread	}, //[b60011] chrissstrahl - thread called when puzzle is started to be used
 	{ &EV_PuzzleObject_SetFailedThread,		&PuzzleObject::setFailedThread		},
 	{ &EV_PuzzleObject_SetSolvedThread,		&PuzzleObject::setSolvedThread		},
 	{ &EV_PuzzleObject_SetCanceledThread,	&PuzzleObject::setCanceledThread	},
@@ -210,7 +210,7 @@ CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 	{NULL, NULL}
 };
 
-//[b611] chrissstrahl - thread called when puzzle is started to be used
+//[b60011] chrissstrahl - thread called when puzzle is started to be used
 //-----------------------------------------------------
 void PuzzleObject::setUsedStartThread(Event* event)
 {
@@ -596,7 +596,7 @@ void PuzzleObject::useEvent(Event* event)
 	str sCoopClass;
 	ScriptVariable *uservar;
 	int i;
-	//[b611] chrissstrahl - coop mod supports more than 4 uservars, now 10
+	//[b60011] chrissstrahl - coop mod supports more than 4 uservars, now 10
 	for ( i = 1; i < 11; i++ ){
 		uservar = NULL;
 		uservar = entityVars.GetVariable( va("uservar%i", i) );
@@ -723,7 +723,7 @@ void PuzzleObject::useEvent(Event* event)
 void PuzzleObject::normalUse( Event* event )
 //used to be void, added event parameter
 {
-	//[b611] chrissstrahl - thread called when puzzle is started to be used [_usedStartThread]
+	//[b60011] chrissstrahl - thread called when puzzle is started to be used [_usedStartThread]
 	if ( _itemUsedThread.length() <= 0 && _usedStartThread.length() <= 0)
 		return;
 
@@ -746,11 +746,11 @@ void PuzzleObject::normalUse( Event* event )
 	}
 
 	// let script take it from here
-	if ( _itemUsedThread.length() > 0) { //[b611] chrissstrahl - thread called when puzzle is started to be used [added check as string could be empty now]
+	if ( _itemUsedThread.length() > 0) { //[b60011] chrissstrahl - thread called when puzzle is started to be used [added check as string could be empty now]
 		ExecuteThread(_itemUsedThread, true, this);
 	}
 
-	//[b611] chrissstrahl - thread called when puzzle is started to be used
+	//[b60011] chrissstrahl - thread called when puzzle is started to be used
 	if (_usedStartThread.length() > 0) {
 		ExecuteThread(_usedStartThread, true, this);
 	}
@@ -793,7 +793,7 @@ void PuzzleObject::timedUse( Event* event )
 
 	if ( !_hudOn )
 	{
-		//[b611] chrissstrahl - thread called when puzzle is started to be used
+		//[b60011] chrissstrahl - thread called when puzzle is started to be used
 		if (_usedStartThread.length() != 0) {
 			ExecuteThread(_usedStartThread, true, this);
 		}

@@ -65,7 +65,7 @@ public:
 
 
 /* THIS WAS ADDED TO: player.cpp at CLASS_DECLARATION( Sentient , Player , "player" )
-//hzm gameupdate chrissstrahl [b611] circlemenu
+//hzm gameupdate chrissstrahl [b60011] circlemenu
 { &EV_Player_circleMenu,					&Player::circleMenuEvent},
 { &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent },
 { &EV_Player_circleMenuDialogClear,			&Player::circleMenuDialogClearEvent },
@@ -74,7 +74,7 @@ public:
 */
 
 /* THIS WAS ADDED TO: player.h at class Player : public Sentient
-		//hzm gameupdate chrissstrahl [b611] - circlemenu stuff
+		//hzm gameupdate chrissstrahl [b60011] - circlemenu stuff
 	public:
 		UpgCircleMenu		upgCircleMenu;
 		friend class		UpgCircleMenu;

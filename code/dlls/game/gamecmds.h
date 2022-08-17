@@ -26,11 +26,11 @@ extern "C" qboolean  G_ConsoleCommand( void );
 void     G_InitConsoleCommands( void );
 qboolean G_ProcessClientCommand( gentity_t *ent );
 
-qboolean G_LanguageEng( const gentity_t *ent );		//[b611] chrissstrahl - add language detection
-qboolean G_LanguageDeu( const gentity_t *ent );		//[b611] chrissstrahl - add language detection
-qboolean G_widgettext(const gentity_t* ent);		//[b611] chrissstrahl - allowing players to make use of widgettext command
-qboolean G_circleMenu(const gentity_t* ent);		//[b611] chrissstrahl - add and remember circle menu
-qboolean G_circleDialog(const gentity_t* ent);		//[b611] chrissstrahl - add and remember circle menu for dialog
+qboolean G_LanguageEng( const gentity_t *ent );		//[b60011] chrissstrahl - add language detection
+qboolean G_LanguageDeu( const gentity_t *ent );		//[b60011] chrissstrahl - add language detection
+qboolean G_widgettext(const gentity_t* ent);		//[b60011] chrissstrahl - allowing players to make use of widgettext command
+qboolean G_circleMenu(const gentity_t* ent);		//[b60011] chrissstrahl - add and remember circle menu
+qboolean G_circleDialog(const gentity_t* ent);		//[b60011] chrissstrahl - add and remember circle menu for dialog
 
 void     G_Say( const gentity_t *ent, bool team, qboolean arg0 );
 qboolean G_CameraCmd( const gentity_t *ent );

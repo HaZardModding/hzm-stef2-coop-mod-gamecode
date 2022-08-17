@@ -25,7 +25,7 @@ Vector		   currentVertex( 0.0f, 0.0f, 0.0f );
 Vector		   vertColor( 1.0f, 1.0f, 1.0f );
 float			   vertAlpha = 1.0f;
 float			   vertexIndex = 0.0f;
-float          linewidth = 10.0f; //[b611] chrissstrahl - test - fix me back to 1.0
+float          linewidth = 10.0f; //[b60011] chrissstrahl - test - fix me back to 1.0
 unsigned short lineStippleFactor = 1;
 unsigned short linePattern = 0xffff;
 
@@ -314,7 +314,7 @@ void G_DebugBBox
       }
    }
 
-//[b611] chrissstrahl - trying to crate letters - this is just a test
+//[b60011] chrissstrahl - trying to crate letters - this is just a test
 static int Letters[4][8] =
 {
 	{ 7, 2, 6, 1, 4, 5, 0, 0 }, // A

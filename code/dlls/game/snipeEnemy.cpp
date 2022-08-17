@@ -494,9 +494,9 @@ void SnipeEnemy::updateEnemy()
 		if (!currentEnemy)
 		{
 			//Player* player;
-			//player = GetPlayer( 0 ); //[b611] chrissstrahl- looks like this was never finished
+			//player = GetPlayer( 0 ); //[b60011] chrissstrahl- looks like this was never finished
 
-			//[b611] chrissstrahl - get a valid visible player
+			//[b60011] chrissstrahl - get a valid visible player
 			//set offset from ground/origin about 70, should be vision height
 			int i;
 			Vector pos = _self->origin;

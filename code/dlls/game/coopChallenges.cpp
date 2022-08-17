@@ -15,7 +15,7 @@
 //LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
 
 //CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
-//[b611] Chrissstrahl
+//[b60011] Chrissstrahl
 
 
 #ifndef __COOPCHALLENGE_CPP__
@@ -57,7 +57,7 @@ void CoopChallenges::playerLeft(Player* player)
 
 void CoopChallenges::update(float frameTime)
 {
-	//[b611] chrissstrahl - development protection - do not execute for anyone else
+	//[b60011] chrissstrahl - development protection - do not execute for anyone else
 	//this way untested and unfinished features do not accidently leak and cause issues
 	cvar_t* cvar = gi.cvar_get("username");
 	if (!cvar || coop_returnIntFind(cvar->string, "chrissstrahl") == -1) {
@@ -262,7 +262,7 @@ void CoopChallenges::updateStayClose(float frameTime)
 	}
 }
 
-//[b611] chrissstrahl - check if player can pickup this item while challange is active
+//[b60011] chrissstrahl - check if player can pickup this item while challange is active
 bool CoopChallenges::haloCanPickup(Sentient* sentient, str sItem)
 {
 	if (/* haloThingActive */ 0 ) {
@@ -276,7 +276,7 @@ bool CoopChallenges::haloCanPickup(Sentient* sentient, str sItem)
 	return true;
 }
 
-//[b611] chrissstrahl - if player has shield take from shield until depleted, discard any left over damage
+//[b60011] chrissstrahl - if player has shield take from shield until depleted, discard any left over damage
 bool CoopChallenges::haloShieldRelayDamage(Sentient *sentient,float fDamage)
 {	
 	bool bRelayDamage = true;
