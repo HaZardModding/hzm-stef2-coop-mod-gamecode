@@ -23,7 +23,7 @@ bool CoopScripting::getIncludedMom4() { return includedMom4; }
 bool CoopScripting::getIncludedMom() { return includedMom; }
 bool CoopScripting::getIncludedNoscript() { return includedNoscript; }
 
-void CoopScripting::checkIncludedFiles(str sLex)
+str CoopScripting::checkIncludedFiles(str sLex)
 {
 	//[b60011] chrissstrahl - check and remember if special scripts are used
 	checkIncludedMom(sLex);
@@ -32,7 +32,9 @@ void CoopScripting::checkIncludedFiles(str sLex)
 	checkIncludedNoscript(sLex);
 
 	//[b607] chrissstrahl - dynamically replace global_scripts with coop versions (only in multiplayer)
-	checkReplaceInclude(sLex);
+	sLex = checkReplaceInclude(sLex);
+	//[b611] chrissstrahl - return replaced script files
+	return sLex;
 }
 
 bool CoopScripting::checkIncludedMrm(str sLex)

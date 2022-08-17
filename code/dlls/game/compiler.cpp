@@ -1229,8 +1229,9 @@ void Compiler::ParseDefs( void )
 				lex.ParseError( "Expected quoted filename" );
             }
 
-			//[b60011] chrissstrahl - check for variouse include files
-			coopScripting.checkIncludedFiles(lex.pr_immediate_string);
+			//[b60011] chrissstrahl - check/replace various include files
+			//allows to keep scripts identical and replace, specific files with coop files
+			memcpy(lex.pr_immediate_string,coopScripting.checkIncludedFiles(lex.pr_immediate_string), sizeof(lex.pr_immediate_string));
 
 			program.Compile(lex.pr_immediate_string);
 			lex.Lex();
