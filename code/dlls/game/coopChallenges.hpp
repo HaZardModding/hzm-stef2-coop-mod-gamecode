@@ -22,6 +22,7 @@ public:
 	void		cleanUp(bool restart);
 	void		playerEntered(Player *player);
 	void		playerLeft(Player* player);
+	void		playerSpectator(Player* player);
 	void		update(float frameTime);
 	void		updateCollision(float frameTime);
 	void		updateStayClose(float frameTime);

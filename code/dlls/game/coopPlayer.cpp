@@ -14,6 +14,7 @@
 //[b60011] chrissstrahl
 #include "coopNpcTeam.hpp"
 extern CoopNpcTeam coopNpcTeam;
+extern CoopChallenges coopChallenges;
 
 #include "coopAlias.hpp"
 #include "coopParser.hpp"
@@ -1666,6 +1667,7 @@ void coop_playerSpectator( Player *player )
 
 	//[b60011] chrissstrahl - handle NPC / AI Teammates
 	coopNpcTeam.playerSpectator(player);
+	coopChallenges.playerSpectator(player);
 
 	//hzm coop mod chrissstrahl - remove the injured symbol
 	player->coopPlayer.injuredSymbolVisible = false;

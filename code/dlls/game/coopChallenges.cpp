@@ -49,7 +49,7 @@ void CoopChallenges::playerEntered(Player* player)
 		
 		//inform all players to regroup
 		if (player) {
-			player->hudPrint(va("Challene %s is active, you have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+			player->hudPrint(va("Challenge %s is active, you have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		}
 		break;
 	case 3: //halo
@@ -60,7 +60,7 @@ void CoopChallenges::playerEntered(Player* player)
 	}
 }
 
-void CoopChallenges::playerLeft(Player* player)
+void CoopChallenges::playerSpectator(Player* player)
 {
 	switch (iCurrentChallenge)
 	{
@@ -75,7 +75,7 @@ void CoopChallenges::playerLeft(Player* player)
 		if ( bIsDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
 
 		//inform all players to regroup
-		coop_textHudprintAll(va("Challene %s: A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		coop_textHudprintAll(va("Challenge %s: A Player pauses you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		break;
 	case 3: //halo
 		
@@ -98,7 +98,7 @@ void CoopChallenges::playerLeft(Player* player)
 
 		//inform all players to regroup
 		if (coop_returnPlayerQuantity(2) > 1) {
-			coop_textHudprintAll(va("Challene %s: A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+			coop_textHudprintAll(va("Challenge %s: A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		}
 
 		break;
@@ -295,7 +295,7 @@ void CoopChallenges::updateStayClose(float frameTime)
 		}
 		if (!iAnyClose) {
 			Player* player = (Player*)playerAnker;
-			player->hudPrint(va("Coop Challenge %s: To far away from Group!\n",));
+			player->hudPrint("Coop Challenge: To far away from Group!\n");
 
 			Event *event = new Event(EV_Pain);
 			event->AddFloat(COOP_CHALLENGE_STICKTOGETHER_DAMAGE);
