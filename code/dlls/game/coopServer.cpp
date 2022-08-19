@@ -39,13 +39,16 @@ extern CoopChallenges coopChallenges;
 extern Event EV_ScriptThread_StuffCommand;
 
 //[b60011] chrissstrahl
-#define COOP_SERVER_PHYSICS_BUG_MAX_FPS 85
-#define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 85 to fix a game bug on this level.\n"
+#define COOP_SERVER_PHYSICS_BUG_MAX_FPS 80
+#define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 80 to fix a game bug on this level.\n"
 
 
 void CoopServer::enforceLevelSpecificSettings()
 //[b60011] chrissstrahl - enforce variouse settings in levels to ensure the game working correctly
 {
+	//wait a moment so that the message will actually be printed
+	if (level.time < 10.0f) { return; }
+
 	if (level.mapname == "m6-exterior"){
 		//make sure the physics is correct - this can happen due to a coop mod voting option
 		if (g_gametype->integer != GT_SINGLE_PLAYER && world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
@@ -57,7 +60,7 @@ void CoopServer::enforceLevelSpecificSettings()
 		//this is a listen server - the host is also playing on the same instance - there is no seperate server running
 		//this is a default game bug, where fps higher 80 can cause player to get stuck floating above in low grav
 		//this is apperently only happening to the host (SP/MP)
-		if (dedicated->integer == 0 || g_gametype->integer == GT_SINGLE_PLAYER) {
+		if (dedicated->integer == 0 && multiplayerManager.inMultiplayer() || g_gametype->integer == GT_SINGLE_PLAYER) {
 			int iFps = coop_returnCvarInteger("com_maxFps");
 			if (iFps > COOP_SERVER_PHYSICS_BUG_MAX_FPS) {
 				Player* player;
@@ -78,7 +81,7 @@ void CoopServer::enforceLevelSpecificSettings()
 			}
 		}
 	}
-	else if ( level.mapname == "m3l1a-forever") {
+	else if ( level.mapname == "m3l1a-forever" || level.mapname == "m5l1b-drull_ruins1") {
 		//make sure the physics is correct - this can happen due to a coop mod voting option
 		if (g_gametype->integer != GT_SINGLE_PLAYER && world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
 			if (multiplayerManager.inMultiplayer()) {
