@@ -35,6 +35,10 @@
 #include "coopReturn.hpp"
 #include "coopParser.hpp"
 
+//[b60011] chrissstrahl - moved flushtikis there
+#include "coopServer.hpp"
+extern CoopServer coopServer;
+
 WorldPtr  world;
 
 #define DEFAULT_ENTITY_FADE_DIST  3000
@@ -1289,22 +1293,11 @@ World::~World()
 
 	freeAllBrokenThings();
 
+
 	//hzm gameupdate chrissstrahl - to further reduce issues I have disabled this if the current game is not in coop
 	//hzm gameupdate chrissstrahl - disabled the checks because it didn't work as expected
-	//if ( g_gametype->integer > GT_SINGLE_PLAYER && game.coop_isActive )//mp, or solomatch
-	//{
-		//hzm gameupdate Chrissstrahl - refined the handling, handle dedicated server as before
-		if ( dedicated->integer > 0 ) {
-			Engine_TIKI_FreeAll( 1 );//call to function pointer
-
-			//[b607] chrissstrahl - flushtikis - fixing animation issues of actor and other models
-			gi.SendServerCommand(NULL, "stufftext \"flushtikis\"\n");
-		}
-		//hzm gameupdate Chrissstrahl - but, handle listen servers with a automatic flushtikis
-		else {
-			gi.SendServerCommand( 0 , "stufftext flushtikis\n" );
-		}
-	//}
+	//[b60011] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
+	coopServer.flushTikis();
 }
 
 void World::FreeTargetList( void )
