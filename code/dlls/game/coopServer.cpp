@@ -41,6 +41,7 @@ extern Event EV_ScriptThread_StuffCommand;
 //[b60011] chrissstrahl
 #define COOP_SERVER_PHYSICS_BUG_MAX_FPS 80
 #define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 80 to fix a game bug on this level.\n"
+#define COOP_SERVER_MASTERSERVER "master.hazardmodding.com"
 
 
 void CoopServer::enforceLevelSpecificSettings()
@@ -1158,7 +1159,7 @@ void coop_serverSetup( void )
 	for ( i = 1; i < 7; i++ ){
 		cvarValueString = coop_returnCvarString( va( "sv_master%i" , i ) );
 		if ( strlen( va( "sv_master%d" , i ) ) > 0 ){
-			if ( !stricmp( cvarValueString , "ef2master.sfu-server.de" ) ){
+			if ( !stricmp( cvarValueString , COOP_SERVER_MASTERSERVER) ){ //[b60011] chrissstrahl - changed to new Master address
 				bMasterSet = true;
 				break;
 			}
@@ -1170,7 +1171,7 @@ void coop_serverSetup( void )
 		if ( iEmptySlot == 0){
 			iEmptySlot = 7;
 		}
-		gi.SendConsoleCommand( va( "set sv_master%d ef2master.sfu-server.de\n" , iEmptySlot ) );
+		gi.SendConsoleCommand( va( "set sv_master%d %s\n" , iEmptySlot, COOP_SERVER_MASTERSERVER) );
 	}
 
 	//hzm coop mod chrissstrahl - notify masters that this server is up and running
