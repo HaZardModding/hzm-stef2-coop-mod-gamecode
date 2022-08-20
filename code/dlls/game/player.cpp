@@ -2023,7 +2023,7 @@ void Player::widgetCommandEvent(Event* ev)
 
 		//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
 		if (coop_returnIntFind(sParameters.c_str(), "labeltext") != -1) {
-
+			sTemp = coop_replaceForLabelText(sTemp);
 		}
 
 		sParameters += sTemp;
