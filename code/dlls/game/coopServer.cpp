@@ -44,6 +44,21 @@ extern Event EV_ScriptThread_StuffCommand;
 #define COOP_SERVER_MASTERSERVER "master.hazardmodding.com"
 
 
+void CoopServer::flushTikis()
+{
+	//[b60011] chrissstrahl - refined the handling, handle dedicated server as before
+	if (dedicated->integer > 0) {
+		Engine_TIKI_FreeAll(1);//call to function pointer
+
+		//[b607] chrissstrahl - flushtikis - fixing animation issues of actor and other models
+		gi.SendServerCommand(NULL, "stufftext \"flushtikis\"\n");
+	}
+	//hzm gameupdate Chrissstrahl - but, handle listen servers with a automatic flushtikis
+	else {
+		gi.SendServerCommand(0, "stufftext flushtikis\n");
+	}
+}
+
 void CoopServer::enforceLevelSpecificSettings()
 //[b60011] chrissstrahl - enforce variouse settings in levels to ensure the game working correctly
 {

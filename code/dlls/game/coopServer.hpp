@@ -60,6 +60,7 @@ class CoopServer
 {
 public:
 	void enforceLevelSpecificSettings();
+	void flushTikis();
 };
 
 int coop_serverConfigstringRemoveCombatSounds(str sActorname);//[b607] chrissstrahl - used to remove combatsounds for named actor
