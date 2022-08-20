@@ -15,6 +15,7 @@
 #include "coopNpcTeam.hpp"
 extern CoopNpcTeam coopNpcTeam;
 extern CoopChallenges coopChallenges;
+extern CoopServer coopServer;
 
 #include "coopAlias.hpp"
 #include "coopParser.hpp"
@@ -2055,8 +2056,7 @@ void coop_playerLeft( Player *player )
 		world->setPhysicsVar("maxSpeed", COOP_DEFAULT_MAXSPEED);
 
 		//[b60011] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
-		Engine_TIKI_FreeAll(1);//call to function pointer
-		gi.SendServerCommand(NULL, "stufftext \"flushtikis\"\n");
+		coopServer.flushTikis();
 
 		game.coop_autoFailPending = true;
 		Event *newEvent2 = new Event(EV_World_AutoFailure);
