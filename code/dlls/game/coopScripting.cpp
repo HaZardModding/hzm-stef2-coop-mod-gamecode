@@ -76,7 +76,6 @@ str CoopScripting::checkReplaceInclude(str sLex)
 		//so that the scripts will be switched by the mod and scripters don't have to worry
 		if (!Q_stricmp(sLex, "maps/global_scripts/global_acceleratedmovement.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_archetype.scr") ||
-			!Q_stricmp(sLex, "maps/global_scripts/global_cinematicfx.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_common.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_flyin.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_playerloadout.scr") ||
