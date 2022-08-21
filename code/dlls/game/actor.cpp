@@ -7427,14 +7427,8 @@ void Actor::Killed( Event *ev )
 	{
 	//hzm gameupdate chrissstrahl - handle this correctly in multiplayer, fixed 27.06.2015
 		Player* player = NULL;
-		if ( g_gametype != 0 ){
-			if( attacker && attacker->isSubclassOf( Player ) ){
-				player = ( Player * )attacker;
-			}
-		}
-	//keep standard handling for singleplayer
-		else{
-			player = GetPlayer( 0 );
+		if( attacker && attacker->isSubclassOf( Player ) ){
+			player = ( Player * )attacker;
 		}
 
 		if ( player )
