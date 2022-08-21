@@ -721,9 +721,8 @@ void coop_playerSetupCoop( Player *player )
 
 	player->coopPlayer.setupComplete = true;
 
-	//[b607] chrissstrahl - dublicated, is set in coop_objectivesSetup
-	//hzm coop mod chrissstrahl - set story here, need to do this differently in sp see coop_playerSetup
-	//coop_storySet( player );
+	//[b60011] chrissstrahl 
+	coopChallenges.playerEnteredWarning(player);
 }
 
 
@@ -1235,6 +1234,9 @@ void coop_playerEnterArena(int entnum, float health)
 
 	//[b60011] chrissstrahl - handle NPC / AI Teammates
 	coopNpcTeam.playerReadyCheck(player);
+
+	//[b60011] chrissstrahl 
+	coopChallenges.playerEntered(player);
 }
 
 
