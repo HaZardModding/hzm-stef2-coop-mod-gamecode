@@ -7,49 +7,137 @@
 
 #pragma once
 
+//[b60011]
+
 #include "coopChallenges.hpp"
 #include "mp_manager.hpp"
 #include "_pch_cpp.h"
+
+CoopChallenges coopChallenges;
+Container<str> CoopChallengeTypes;
+Container<str> CoopChallengeTypesDisabled;
 
 #define COOP_CHALLENGE_STICKTOGETHER_DAMAGE 5.0f
 #define COOP_CHALLENGE_STICKTOGETHER_CYCLE 5.0f
 #define COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME 30.0f
 #define COOP_CHALLENGE_STICKTOGETHER_NAME "Stick together"
 
-CoopChallenges coopChallenges;
-
 
 void CoopChallenges::init(void)
 //on level start, init all challenges
 {
-	fLastDamageTime			= (level.time + COOP_CHALLENGE_STICKTOGETHER_CYCLE);
-	bIsDisabled				= false;
+	fLastDamageTime					= (level.time + COOP_CHALLENGE_STICKTOGETHER_CYCLE);
+	challenesAreDisabled			= false;
+
+	//populate lists
+	CoopChallengeTypes.AddObject("sticktogether");
+	CoopChallengeTypes.AddObject("collision");
+	CoopChallengeTypes.AddObject("halo");
 }
 
 void CoopChallenges::cleanUp(bool restart)
 {
 	fLastDamageTime = -1.0f;
-	bIsDisabled		= false;
+	challenesAreDisabled		= false;
+
+	//clean up lists
+	CoopChallengeTypes.FreeObjectList();
+	CoopChallengeTypesDisabled.FreeObjectList();
 	//need to reset the current challenge and load it from ini each mapload - maybe have some dedicated function to load all coop settings from ini at once
+}
+
+void CoopChallenges::playerEnteredWarning(Player* player)
+{
+	//STOP challanges are disabled or just 1 player
+	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
+
+	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
+
+	switch (iCurrentChallenge)
+	{
+	case 1: //collision
+		break;
+	case 2: //stayClose
+		//give the players some time to regroup
+		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+		//inform all players to regroup
+		player->hudPrint(va("^5Challenge ^2%s ^5is active!^8 You have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
+		break;
+	case 3: //halo
+
+		break;
+	default:
+		break;
+	}
+}
+
+void CoopChallenges::playerLeftWarning(Player* player)
+{
+	//STOP challanges are disabled or just 1 player
+	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
+
+	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
+
+	switch (iCurrentChallenge)
+	{
+	case 1: //collision
+		break;
+	case 2: //stayClose
+		//give the players some time to regroup
+		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+		//inform all players to regroup
+		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
+		break;
+	case 3: //halo
+
+		break;
+	default:
+		break;
+	}
+}
+
+void CoopChallenges::playerSpectatorWarning(Player* player)
+{
+	//STOP challanges are disabled or just 1 player
+	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
+
+	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
+
+	switch (iCurrentChallenge)
+	{
+	case 1: //collision
+		break;
+	case 2: //stayClose
+		//give the players some time to regroup
+		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+		//inform all players to regroup
+		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player pauses you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
+		break;
+	case 3: //halo
+
+		break;
+	default:
+		break;
+	}
 }
 
 void CoopChallenges::playerEntered(Player* player)
 {
+	//STOP challanges are disabled or just 1 player
+	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
+
 	switch (iCurrentChallenge)
 	{
 	case 1: //collision
 
 		break;
-	case 2: //stayClose
+	case 2: //sticktogether
 		//give the players some time to regroup
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		
-		//STOP challange is disabled
-		if (bIsDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
-		
 		//inform all players to regroup
-		if (player) {
-			player->hudPrint(va("Challenge %s is active, you have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		if (player->coopPlayer.setupComplete) {
+			playerEnteredWarning(player);
 		}
 		break;
 	case 3: //halo
@@ -71,11 +159,8 @@ void CoopChallenges::playerSpectator(Player* player)
 		//give the players some time to regroup
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 
-		//STOP challange is disabled
-		if ( bIsDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
-
 		//inform all players to regroup
-		coop_textHudprintAll(va("Challenge %s: A Player pauses you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		playerSpectatorWarning(player);
 		break;
 	case 3: //halo
 		
@@ -97,10 +182,7 @@ void CoopChallenges::playerLeft(Player* player)
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 
 		//inform all players to regroup
-		if (coop_returnPlayerQuantity(2) > 1) {
-			coop_textHudprintAll(va("Challenge %s: A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
-		}
-
+		playerSpectatorWarning(player);
 		break;
 	case 3: //halo
 
@@ -124,7 +206,7 @@ void CoopChallenges::update(float frameTime)
 	// if disabled via script
 	// during cinematic
 	// if only one player is alive
-	if (bIsDisabled || level.cinematic || coop_returnPlayerQuantity(2) < 2 ) {
+	if (challenesAreDisabled || level.cinematic || coop_returnPlayerQuantity(2) < 2 ) {
 		return;
 	}
 
@@ -361,24 +443,68 @@ void CoopChallenges::updateHalo(float frameTime)
 void CoopChallenges::disabled(bool bEnable)
 //allowes to disable/enable the challange - meant to be used from the scripts
 {
-	bIsDisabled = bEnable;
+	challenesAreDisabled = bEnable;
 	gi.Printf(va("Coop Challenge status (0=on/1=off) changed: ",(int)bEnable));
 }
 
 bool CoopChallenges::isDisabled()
 //allowes to check if challenges are disabled/enabled currently (from script)
 {
-	return bIsDisabled;
+	return challenesAreDisabled;
 }
 
-
-void CThread::challengeDisabled(Event* ev)
+void CThread::challengesDisabled(Event* ev)
 //allowes to disable/enable the challange - meant to be used from the scripts
 //also returns the status of the challenge 0=enabled 1=disabled
 {
-	if (ev->NumArgs() < 1) {
-		bool bEnabled = (bool)ev->GetInteger(1);
-		coopChallenges.disabled(bEnabled);
+	if (ev->NumArgs() > 0) {
+		bool challenesAreDisabled = (bool)ev->GetInteger(1);
+		coopChallenges.disabled(challenesAreDisabled);
+		gi.Printf(va("challengeDisabled: Challages set to %d (0=on/1=off)\n", challenesAreDisabled));
 	}
 	ev->ReturnInteger(coopChallenges.isDisabled());
+}
+
+void CThread::challengeDisabledNamed(Event* ev)
+//allowes to disable/enable the challange - meant to be used from the scripts
+//also returns the status of the challenge 0=enabled 1=disabled
+{
+	str sName = ev->GetString(1);
+	bool namedChallangeIsDisabled = true;
+
+	//check if the given challenge name is valid
+	if (sName == "" || !CoopChallengeTypes.ObjectInList(sName.tolower())) {
+		gi.Printf(va("challengeDisabledNamed: Challege '%s' does not exist!\n", sName.c_str()));
+		gi.Printf("challenges that do exist are named:\n");
+		short iChallenge;
+		for (iChallenge = CoopChallengeTypes.NumObjects(); iChallenge > 0;iChallenge--) {
+			gi.Printf(va("%s\n",CoopChallengeTypes.ObjectAt(iChallenge)));
+		}
+		ev->ReturnInteger(iChallenge); //return 0
+		return;
+	}
+
+	if (ev->NumArgs() > 1) {
+		bool challenesAreDisabled = (bool)ev->GetInteger(2);
+		short iChallenge = CoopChallengeTypesDisabled.IndexOfObject(sName.c_str());
+		
+		//if should be disabled but is not, add it
+		if (challenesAreDisabled && iChallenge == 0) {
+			CoopChallengeTypesDisabled.AddObject(sName.c_str());
+			namedChallangeIsDisabled = true;
+		}
+		//if should be NOT disabled but is, remove it
+		else if (!challenesAreDisabled && iChallenge != 0) {
+			CoopChallengeTypesDisabled.RemoveObjectAt(iChallenge);
+			namedChallangeIsDisabled = false;
+		}
+
+		//debug
+		//for (iChallenge = CoopChallengeTypesDisabled.NumObjects(); iChallenge > 0; iChallenge--) {
+			//gi.Printf(va("Challenges Disabled: %s\n", CoopChallengeTypesDisabled.ObjectAt(iChallenge)));
+		//}
+
+		gi.Printf(va("challengeDisabledNamed: Challege %s set to %i (0=on/1=off)\n", sName.c_str(), (int)namedChallangeIsDisabled));
+	}
+	ev->ReturnInteger((int)namedChallangeIsDisabled);
 }

@@ -1270,13 +1270,21 @@ Event EV_ScriptThread_getVectorFromString
 	"returnVector string",
 	"Returns the given value as vector, if possible"
 );
-Event EV_ScriptThread_challengeDisabled
+Event EV_ScriptThread_challengesDisabled
 (
-	"challengeDisabled",
+	"challengesDisabled",
 	EV_SCRIPTONLY,
 	"@fF",
 	"returnIsDisabled SetDisabledOrNot",
-	"Returns current status if no value is given, otherwise 0=enables/1=disables challenge on current level"
+	"Returns current status, if parameter1 given 0=enables/1=disables challenge on current level"
+);
+Event EV_ScriptThread_challengeDisabledNamed
+(
+	"challengeDisabledNamed",
+	EV_SCRIPTONLY,
+	"@fsF",
+	"returnIsDisabled name SetDisabledOrNot",
+	"Returns current status of named challenge, if parameter2 given 0=enables/1=disables challenge on current level"
 );
 //end of hzm
 
@@ -1430,7 +1438,8 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_setIniData,					&CThread::setIniData },
 	//[b60011] chrissstrahl
 	{ &EV_ScriptThread_getVectorFromString,			&CThread::getVectorFromString } ,
-	{ &EV_ScriptThread_challengeDisabled,			&CThread::challengeDisabled } ,
+	{ &EV_ScriptThread_challengesDisabled,			&CThread::challengesDisabled } ,
+	{ &EV_ScriptThread_challengeDisabledNamed,		&CThread::challengeDisabledNamed } ,
 	//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 	{ &EV_ScriptThread_ConfigstringRemove, &CThread::configstringRemove },
 	{ &EV_ScriptThread_ConfigstringRemoveCombatSounds, &CThread::configstringRemoveCombatSounds },
