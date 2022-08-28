@@ -453,13 +453,6 @@ bool coop_playerSetup(Player* player)
 		return true;
 	}
 
-	//hzm coop mod chrissstrahl - exit here on singleplayer / solomatch
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
-		//restore dialog head hud position
-		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
-		return true;
-	}
-
 #ifdef WIN32
 	bool bWindows = true;
 #else
@@ -471,6 +464,11 @@ bool coop_playerSetup(Player* player)
 	}
 	else {
 		coop_playerSetupClient(player);
+	}
+
+	//[b60011] chrissstrahl - exit here on singleplayer / solomatch
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		return true;
 	}
 
 	//hzm coop mod chrissstrahl - disable radar hud selected symbol
@@ -2243,7 +2241,7 @@ void handleDelayedServerCommands( void )
 				pendingServerCommand *pendingCommand = pendingServerCommandList[i];
 
 				while ( pendingCommand ){
-					//[b607] chrissstrahl, testedt value 71, result was that the mission succsess and sublevelLoading hud did stay on at th enext level
+					//[b607] chrissstrahl, testedt value 71, result was that the mission succsess and sublevelLoading hud did stay on at the next level
 					//the command ui_removehuds in coop_huds_setupMultiplayerUI did no longer work
 					//the client 0 player name was set empty and player was named redshirt 105 WORKED FOR A LONG TIME but we are testing 90 now
 					//the lower the number the potentially faster the commands get send, which is good for tricorder puzzles
