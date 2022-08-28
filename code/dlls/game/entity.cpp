@@ -10777,7 +10777,7 @@ void Entity::isWithinDistanceOf(Event* ev)
 	
 	//[b60011] chrissstrahl - gameupgrade - make sure we know when something goes wrong, this is such a waste of time sometimes
 	if (!destination) {
-		gi.Printf(va("isWithinDistanceOf faild for $%s, the Entity given in parameter1 does not exist!\nRemember, you can not use Pathnodes and Helpernodes\n",this->targetname.c_str()));
+		gi.Printf(va("isWithinDistanceOf failed for $%s, the Entity given in parameter1 does not exist!\nRemember, you can not use Pathnodes and Helpernodes\n",this->targetname.c_str()));
 	}
 
 	distance = ev->GetFloat( 2 );
