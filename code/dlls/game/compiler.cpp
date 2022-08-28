@@ -1231,7 +1231,10 @@ void Compiler::ParseDefs( void )
 
 			//[b60011] chrissstrahl - check/replace various include files
 			//allows to keep scripts identical and replace, specific files with coop files
-			memcpy(lex.pr_immediate_string,coopScripting.checkIncludedFiles(lex.pr_immediate_string), sizeof(lex.pr_immediate_string));
+			char repaceString[2048];
+			str sReplace = coopScripting.checkIncludedFiles(lex.pr_immediate_string);
+			strcpy(repaceString, sReplace.c_str());
+			memcpy(lex.pr_immediate_string, repaceString, sizeof(lex.pr_immediate_string));
 
 			program.Compile(lex.pr_immediate_string);
 			lex.Lex();
