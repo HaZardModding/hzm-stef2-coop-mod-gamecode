@@ -951,8 +951,9 @@ void Level::loadLevelStrings( void )
 	if ( !strlen(environmentName) ) {
 		environmentName = mapname;
 		//i think they only have a effect on the loading screen
-		/*levelName = mapname;
-		sublevelName = mapname;*/
+		//[b60011] chrissstrahl - reactivated - for testing
+		levelName = mapname;
+		sublevelName = mapname;
 	}
 	//end of hzm
 
