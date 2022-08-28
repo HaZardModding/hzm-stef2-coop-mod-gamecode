@@ -155,7 +155,7 @@ public:
 	//[b607] chrissstrahl - addad coop admin check var
 	bool admin = false;
 	//[b607] chrissstrahl - addad delayed equip routine to prevent issues we are having especially in singleplayer and on fast computers
-	bool armoryNeedstoBeEquiped = false;
+	bool armoryNeedstoBeEquiped = true;
 	//[b60011] chrissstrahl - used to allow playing of objects - this will be the temp model used to visualize where a object will be placed
 	EntityPtr ePlacable = NULL;
 	//[b60011] chrissstrahl - used to keep track of the class ability of a player to place a class specific station
