@@ -21,6 +21,8 @@ Container<str> CoopChallengeTypesDisabled;
 #define COOP_CHALLENGE_STICKTOGETHER_CYCLE 5.0f
 #define COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME 30.0f
 #define COOP_CHALLENGE_STICKTOGETHER_NAME "Stick together"
+#define COOP_CHALLENGE_HALO_NAME "Halo"
+#define COOP_CHALLENGE_COLLISION_NAME "Collision"
 
 
 void CoopChallenges::init(void)
@@ -194,6 +196,8 @@ void CoopChallenges::playerLeft(Player* player)
 
 void CoopChallenges::update(float frameTime)
 {
+	/*
+
 	//[b60011] chrissstrahl - development protection - do not execute for anyone else
 	//this way untested and unfinished features do not accidently leak and cause issues
 	cvar_t* cvar = gi.cvar_get("username");
@@ -201,6 +205,8 @@ void CoopChallenges::update(float frameTime)
 		return;
 	}
 	//end development protection
+	
+	*/
 
 	//do not update the challenges:
 	// if disabled via script
