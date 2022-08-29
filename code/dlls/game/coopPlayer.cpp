@@ -520,7 +520,7 @@ void coop_playerSetupClient(Player* player)
 	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
 	DelayedServerCommand(player->entnum, "vstr local_language");
 	DelayedServerCommand(player->entnum, "vstr coop_pId");
-	DelayedServerCommand(player->entnum, "vstr coop_verInfo");
+	DelayedServerCommand(player->entnum, "vstr coop_verInf"); //[b60011] chrissstrahl - changed to avoid command being shown as text on older servers
 
 	//Do this only during a active coop game
 	if (game.coop_isActive) {
