@@ -20,6 +20,7 @@ Container<str> CoopChallengeTypesDisabled;
 #define COOP_CHALLENGE_STICKTOGETHER_DAMAGE 5.0f
 #define COOP_CHALLENGE_STICKTOGETHER_CYCLE 5.0f
 #define COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME 30.0f
+#define COOP_CHALLENGE_STICKTOGETHER_DISTANCE 600.0f
 #define COOP_CHALLENGE_STICKTOGETHER_NAME "Stick together"
 #define COOP_CHALLENGE_HALO_NAME "Halo"
 #define COOP_CHALLENGE_COLLISION_NAME "Collision"
@@ -376,7 +377,7 @@ void CoopChallenges::updateStayClose(float frameTime)
 				continue;
 			}
 			//if they are to far apart like 300 make em get hurt
-			if (Distance(entityOther->origin, playerAnker->origin) < 300) {
+			if (Distance(entityOther->origin, playerAnker->origin) < COOP_CHALLENGE_STICKTOGETHER_DISTANCE) {
 				iAnyClose = true;
 				break;
 			}
