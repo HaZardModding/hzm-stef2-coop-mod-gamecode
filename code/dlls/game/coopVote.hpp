@@ -21,7 +21,7 @@ int coop_vote_mapValidate(Player* player, const str &command, const str &arg, st
 //int coop_vote_mpmodifierValidate(Player* player, const str &command, const str &arg, str &_voteString); //handled in MultiplayerManager::callVote
 int coop_vote_airaccelerateValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_stasistimeValidate(Player* player, const str &command, const str &arg, str &_voteString);
-int coop_vote_teamiconValidate(Player* player, const str &command, const str &arg, str &_voteString);
+int coop_vote_challengeValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_deadbodiesValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_kickValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_execValidate(Player* player, const str &command, const str &arg, str &_voteString);
@@ -39,7 +39,7 @@ bool coop_vote_stasistimeSet(const str _voteString);
 bool coop_vote_awardsSet(const str _voteString);
 bool coop_vote_friendlyfireSet(const str _voteString);
 bool coop_vote_maxspeedSet(const str _voteString);
-bool coop_vote_teamiconSet(const str _voteString);
+bool coop_vote_challengeSet(const str _voteString);
 bool coop_vote_deadbodiesSet(const str _voteString);
 bool coop_vote_mapSet(const str _voteString);
 bool coop_vote_kickbotsSet(const str _voteString);

@@ -89,8 +89,8 @@ bool coop_textModifyVoteText( const str _voteString, str &sVoteText, Player* pla
 		else if ( coop_returnIntFind( _voteString , "coop_skill" ) > -1 )
 			{ sVoteText = "Setze Schwiergkeitsgrad auf:"; sVoteText += coop_returnStringStartingFrom( _voteString , 5 ); }
 		//chrissstrahl - print readable string instead of command [b607]
-		else if (coop_returnIntFind(_voteString, "coop_teamicon") > -1)
-			{ sVoteText = "Setze Team Indikator auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);}
+		else if (coop_returnIntFind(_voteString, "coop_challenge") > -1)
+			{ sVoteText = "Setze Herausforderung auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);}
 		else if (coop_returnIntFind(_voteString, "coop_lms") > -1)
 			{ sVoteText = "Setze Last Man Standing auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 8);}
 		else if (coop_returnIntFind(_voteString, "coop_awards") > -1)
@@ -112,7 +112,7 @@ bool coop_textModifyVoteText( const str _voteString, str &sVoteText, Player* pla
 			{ sVoteText = "Set Dificulty to:"; sVoteText += coop_returnStringStartingFrom( _voteString , 5 ); }
 		//chrissstrahl - print readable string instead of command [b607]
 		else if (coop_returnIntFind(_voteString, "coop_teamicon") > -1)
-			{ sVoteText = "Set Team Indicator to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);}
+			{ sVoteText = "Set Challenge to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);}
 		else if (coop_returnIntFind(_voteString, "coop_lms") > -1)
 			{ sVoteText = "Set Last Man Standing to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 8);}
 		else if (coop_returnIntFind(_voteString, "coop_awards") > -1)

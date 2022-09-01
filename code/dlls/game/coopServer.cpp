@@ -149,7 +149,6 @@ void coop_serverInizializeGameVars(void)
 	game.cinematicCurrentCam = NULL;
 	game.bForceDynLightUpdate = false;
 	game.cinematicSkipping = false;
-	game.coop_teamIcon = COOP_DEFAULT_TEAMICON; //[b607] team arrow show 
 	game.coop_showEventsTime = 0;//[b607] used to manage g_showevents 
 	game.coop_deadBodiesPerArea = 0;//[b607] used to manage actors deadfade
 	game.coop_deadBodiesAllNum = 0;//[b607] used to manage actors deadfade
@@ -789,10 +788,10 @@ void coop_serverSaveGameVars( const str &name , const str &value )
 		gameVars.SetVariable( "maxSpeed" , iCorrected );
 		world->setPhysicsVar( "maxSpeed" , iCorrected );
 	}
-	//hzm coop mod chrissstrahl - added teamicon support [b607]
-	else if (!Q_stricmp(name, "teamIcon")) {
+	//[b60011]chrissstrahl - challenge voteable option
+	else if (!Q_stricmp(name, "challenge")) {
 		iCorrected = coop_returnIntOrDefaultFromString(value, 0);
-		game.coop_teamIcon = (bool)iCorrected;
+		coopChallenges.iCurrentChallenge = (short)iCorrected;
 	}
 
 
@@ -936,7 +935,7 @@ void coop_serverRestoreGameVars()
 	game.coop_awardsActive = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "awards", "server"), 0, 1, COOP_DEFAULT_AWARDS);
 	
 	//TEAMICON
-	game.coop_teamIcon = (bool)coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "teamicon", "server"), 0,1 ,(int)COOP_DEFAULT_TEAMICON );
+	coopChallenges.iCurrentChallenge = (short)coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "challenge", "server"), 0,1 ,(short)COOP_DEFAULT_CHALLENGE);
 	
 	//LMS - LAST MAN STANDING
 	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "lastmanstanding", "server"), 0,1 ,(int)COOP_DEFAULT_LASTMANSTANDING );

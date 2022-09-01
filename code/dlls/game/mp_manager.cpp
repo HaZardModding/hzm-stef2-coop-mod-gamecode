@@ -2165,7 +2165,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 	//if (iVoteValid == 0) { iVoteValid = coop_vote_mpmodifierValidate(player, command, arg, _voteString); } //handled above
 	if (iVoteValid == 0) { iVoteValid = coop_vote_airaccelerateValidate(player, command, arg, _voteString); }
 	if (iVoteValid == 0) { iVoteValid = coop_vote_stasistimeValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_teamiconValidate(player, command, arg, _voteString); }
+	if (iVoteValid == 0) { iVoteValid = coop_vote_challengeValidate(player, command, arg, _voteString); }
 	if (iVoteValid == 0) { iVoteValid = coop_vote_deadbodiesValidate(player, command, arg, _voteString); }
 	if (iVoteValid == 0) { iVoteValid = coop_vote_kickValidate(player, command, arg, _voteString); }
 	if (iVoteValid == 0) { iVoteValid = coop_vote_execValidate(player, command, arg, _voteString); }
@@ -2351,7 +2351,7 @@ gi.Printf(va("COOPDEBUG $$VoteCast$$ - $$No$$: %s\n", player->client->pers.netna
 	// NOTE: a majority will be determined in checkVote
 }
 
-//[b607] chrissstrahl - multiple withespaces added to vote string and added coop_teamIcon vote
+//[b607] chrissstrahl - multiple withespaces added to vote string and added coop_challenge vote
 //info - chrissstrahl - this checks if the vote has passed or failed
 void MultiplayerManager::checkVote( void )
 {
@@ -2415,7 +2415,7 @@ gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes,
 			if (!bCoopVote) { bCoopVote = coop_vote_mpmodifierSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_airaccelerateSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_stasistimeSet(_voteString.c_str()); }
-			if (!bCoopVote) { bCoopVote = coop_vote_teamiconSet(_voteString.c_str()); }
+			if (!bCoopVote) { bCoopVote = coop_vote_challengeSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_deadbodiesSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_kickbotsSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_execSet(_voteString.c_str()); }

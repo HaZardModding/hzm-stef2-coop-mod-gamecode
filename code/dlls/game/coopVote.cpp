@@ -26,6 +26,9 @@
 #include "coopParser.hpp"
 #include "coopActor.hpp"
 
+extern CoopChallenges coopChallenges;
+#include "coopChallenges.hpp"
+
 #include "actor.h"
 #include "player.h"
 #include "mp_manager.hpp"
@@ -60,7 +63,7 @@ bool coop_vote_checkvalid(const str &command)
 		stricmp(command.c_str(), "coop_respawntime") == 0 ||
 		stricmp(command.c_str(), "coop_lms") == 0 ||
 		stricmp(command.c_str(), "coop_airaccelerate") == 0 || //added in [b607]
-		stricmp(command.c_str(), "coop_teamicon") == 0 || //added in [b607]
+		stricmp(command.c_str(), "coop_challenge") == 0 || //added in [b607]
 		stricmp(command.c_str(), "coop_deadbodies") == 0 || //added in [b607]
 		stricmp(command.c_str(), "coop_stasistime") == 0 || //added in [b607]
 		stricmp(command.c_str(), "coop_next") == 0 ||
@@ -91,7 +94,7 @@ void coop_vote_printcommands(Player *player)
 		return;
 	}
 	multiplayerManager.HUDPrint(player->entnum, "coop_skill <0-3>, coop_ff <0.0-2.0>, coop_maxspeed <200-1000>,coop_awards <0-1>\n");
-	multiplayerManager.HUDPrint(player->entnum, "coop_respawntime <0-60>, coop_lms <0-1>,coop_teamicon <0-1>, coop_next, coop_prev\n"); //[b607] added coop_teamIcon
+	multiplayerManager.HUDPrint(player->entnum, "coop_respawntime <0-60>, coop_lms <0-1>,coop_challenge <0-3>, coop_next, coop_prev\n"); //[b607] added coop_teamIcon
 	multiplayerManager.HUDPrint(player->entnum, "coop_deadbodies <0-25>,coop_airaccelerate <0-4>,coop_stasisTime <5-60>\n"); //[b607] added
 }
 
@@ -459,7 +462,7 @@ int coop_vote_stasistimeValidate(Player* player, const str &command, const str &
 }
 
 //========================================================= [b607]
-// Name:        coop_vote_teamiconValidate
+// Name:        coop_vote_challengeValidate
 // Class:       -
 //              
 // Description: Validates team-icon vote string before it becomes a vote
@@ -469,29 +472,25 @@ int coop_vote_stasistimeValidate(Player* player, const str &command, const str &
 // Returns:     INTEGER
 //              
 //================================================================
-int coop_vote_teamiconValidate(Player* player, const str &command, const str &arg, str &_voteString)
+int coop_vote_challengeValidate(Player* player, const str &command, const str &arg, str &_voteString)
 {
-	if (Q_stricmp(command.c_str(), "coop_teamicon") != 0) {
+	if (Q_stricmp(command.c_str(), "challenge") != 0) {
 		return 0;
 	}
 
-	if (!stricmp(arg.c_str(), "")) {
-		multiplayerManager.HUDPrint(player->entnum,va("^2$$Usage$$:^8 coop_teamicon 0 - 1, current: %i\n", (int)game.coop_teamIcon));
+	if (!stricmp(arg.c_str(), "coop_challenge")) {
+		multiplayerManager.HUDPrint(player->entnum,va("^2$$Usage$$:^8 coop_challenge 0 - 3, current: %i\n", (short)coopChallenges.iCurrentChallenge));
 		return 1;
 	}
 
-	int iIcon = atoi(arg.c_str());
-	if (mp_gametype->integer < 1 && (bool)iIcon) {
-		multiplayerManager.HUDPrint(player->entnum, va("5^Coop:^8 Team Icons will show if mp_gametype(%i) is > 0. Current:^5 %i\n", mp_gametype->integer, iIcon));
+	int iChallenge = atoi(arg.c_str());
+	if (iChallenge > 1) {
+		iChallenge = 1;
 	}
-
-	if (iIcon > 1) {
-		iIcon = 1;
+	else if (iChallenge < 0) {
+		iChallenge = 0;
 	}
-	else if (iIcon < 0) {
-		iIcon = 0;
-	}
-	_voteString = va("coop_teamicon %i", iIcon);
+	_voteString = va("coop_challenge %i", iChallenge);
 	return 2;
 }
 
@@ -1512,12 +1511,12 @@ bool coop_vote_maxspeedSet(const str _voteString)
 // Returns:     BOOL
 //              
 //================================================================
-bool coop_vote_teamiconSet(const str _voteString)
+bool coop_vote_challengeSet(const str _voteString)
 {
-	if (Q_stricmpn(_voteString, "coop_teamicon", 13) != 0) {
+	if (Q_stricmpn(_voteString, "coop_challenge", 15) != 0) {
 		return false;
 	}
-	str icon;
+	str sChallenge;
 	int i;
 
 	int iStart = coop_returnIntFind(_voteString, " ");
@@ -1525,18 +1524,18 @@ bool coop_vote_teamiconSet(const str _voteString)
 	else { return true; }
 
 	for (i = iStart; i < _voteString.length(); i++) {
-		icon += _voteString[i];
+		sChallenge += _voteString[i];
 	}
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	icon = (bool)atoi(icon);
-	coop_parserIniSet("ini/serverData.ini", "teamIcon", icon.c_str(), "server");
+	sChallenge = (short)atoi(sChallenge);
+	coop_parserIniSet("ini/serverData.ini", "challenge", sChallenge.c_str(), "server");
 
 	//hzm coop mod chrissstrahl - set global var
-	game.coop_teamIcon = (bool)atoi(icon);
+	coopChallenges.iCurrentChallenge = (bool)atoi(sChallenge);
 
 	//[b607] chrissstrahl - update callvote ui
-	coop_huds_callvoteOptionChangedUI("Team-Icon", game.coop_teamIcon, "coopGpoTi");
+	coop_huds_callvoteOptionChangedUI("$$c#032$$", coopChallenges.iCurrentChallenge, "coopGpoCh");
 
 	return true;
 }

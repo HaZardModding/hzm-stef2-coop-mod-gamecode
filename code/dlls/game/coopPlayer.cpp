@@ -685,7 +685,7 @@ void coop_playerSetupCoop( Player *player )
 	//[b607] chrissstrahl - deadbodies option
 	//[b607] chrissstrahl - teamicon option
 	DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoDb title %d", game.coop_deadBodiesPerArea));
-	DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoTi title %d",(int)game.coop_teamIcon));
+	DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoCh title %d",(short)coopChallenges.iCurrentChallenge));
 	DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSt title %d",(int)game.coop_stasisTime));
 
 	//[b607] chrissstrahl - airaccelerate option

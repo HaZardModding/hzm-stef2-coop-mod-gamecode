@@ -112,8 +112,6 @@ class Game : public Class
 	   int			coop_respawnTime;
 //hzm coop mod chrissstrahl - stores the realtime when the map has started
 	   int			coop_levelStartTime;
-//[b607] hzm coop mod chrissstrahl - enables/disables the team indicator above players 
-	   bool			coop_teamIcon;
 //[b607] hzm coop mod chrissstrahl - used to manage g_showevents 
 	   int			coop_showEventsTime;
 //[b607] chrissstrahl - sets the number of dead actor bodies per area, 0 means disabled

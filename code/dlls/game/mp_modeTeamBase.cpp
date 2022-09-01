@@ -901,7 +901,7 @@ int ModeTeamBase::getIcon( Player *player, int statNum, int value )
 {
 	//hzm coop daggolin - no teamicons in coop
 	//hzm coop mod chrissstrahl - added optional teamicons [b607]
-	if (game.coop_isActive && game.coop_teamIcon == false) {
+	if (game.coop_isActive) {
 		return MultiplayerModeBase::getIcon(player, statNum, value);
 	}
 	/* if ( statNum == STAT_MP_TEAMHUD_ICON )
@@ -979,7 +979,7 @@ int ModeTeamBase::getInfoIcon( Player *player )
 	
 	//hzm coop daggolin - no teamicons in coop
 	//hzm coop mod chrissstrahl - added optional teamicons [b607]
-	if (game.coop_isActive && game.coop_teamIcon == false) {
+	if (game.coop_isActive) {
 		return 0;
 	}
 
@@ -991,11 +991,6 @@ int ModeTeamBase::getInfoIcon( Player *player )
 			return _redTeamIconIndex;
 		else if ( team->getName() == "Blue" )
 			return _blueTeamIconIndex;
-	}
-	//hzm coop mod chrissstrahl - added optional teamicons [b607]
-	//return blue icon/arrow on default for coop
-	else if (game.coop_isActive && game.coop_teamIcon == true) {
-		return _blueTeamIconIndex;
 	}
 
 	return 0;
