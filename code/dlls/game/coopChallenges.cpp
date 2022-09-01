@@ -58,16 +58,15 @@ void CoopChallenges::playerEnteredWarning(Player* player)
 
 	switch (iCurrentChallenge)
 	{
-	case 1: //collision
-		break;
-	case 2: //stayClose
+	case 1: //stayClose
 		//give the players some time to regroup
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		//inform all players to regroup
 		player->hudPrint(va("^5Challenge ^2%s ^5is active!^8 You have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
 		break;
-	case 3: //halo
-
+	case 2: //halo
+		break;
+	case 3: //collision
 		break;
 	default:
 		break;
@@ -83,15 +82,15 @@ void CoopChallenges::playerLeftWarning(Player* player)
 
 	switch (iCurrentChallenge)
 	{
-	case 1: //collision
-		break;
-	case 2: //stayClose
+	case 1: //stayClose
 		//give the players some time to regroup
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		//inform all players to regroup
 		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
 		break;
-	case 3: //halo
+	case 2: //halo
+		break;
+	case 3: //collision
 
 		break;
 	default:
@@ -108,16 +107,15 @@ void CoopChallenges::playerSpectatorWarning(Player* player)
 
 	switch (iCurrentChallenge)
 	{
-	case 1: //collision
-		break;
-	case 2: //stayClose
+	case 1: //stayClose
 		//give the players some time to regroup
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		//inform all players to regroup
 		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player pauses you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
 		break;
-	case 3: //halo
-
+	case 2: //halo
+		break;
+	case 3: //collision
 		break;
 	default:
 		break;
@@ -131,10 +129,7 @@ void CoopChallenges::playerEntered(Player* player)
 
 	switch (iCurrentChallenge)
 	{
-	case 1: //collision
-
-		break;
-	case 2: //sticktogether
+	case 1: //sticktogether
 		//give the players some time to regroup
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		
@@ -143,8 +138,9 @@ void CoopChallenges::playerEntered(Player* player)
 			playerEnteredWarning(player);
 		}
 		break;
-	case 3: //halo
-
+	case 2: //halo
+		break;
+	case 3: //collision
 		break;
 	default:
 		break;
@@ -155,18 +151,16 @@ void CoopChallenges::playerSpectator(Player* player)
 {
 	switch (iCurrentChallenge)
 	{
-	case 1: //collision
-		
-		break;
-	case 2: //stayClose
+	case 1: //stayClose
 		//give the players some time to regroup
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 
 		//inform all players to regroup
-		playerSpectatorWarning(player);
+		playerSpectatorWarning(player);	
 		break;
-	case 3: //halo
-		
+	case 2: //halo
+		break;
+	case 3: //collision
 		break;
 	default:
 		break;
@@ -177,18 +171,16 @@ void CoopChallenges::playerLeft(Player* player)
 {
 	switch (iCurrentChallenge)
 	{
-	case 1: //collision
-
-		break;
-	case 2: //stayClose
+	case 1: //stayClose
 		//give the players some time to regroup
 		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 
 		//inform all players to regroup
 		playerSpectatorWarning(player);
 		break;
-	case 3: //halo
-
+	case 2: //halo
+		break;
+	case 3: //collision
 		break;
 	default:
 		break;
@@ -217,17 +209,16 @@ void CoopChallenges::update(float frameTime)
 		return;
 	}
 
-	iCurrentChallenge = 2;
 	switch (iCurrentChallenge)
 	{
 	case 1:
-		updateCollision(frameTime);
-		break;
-	case 2:
 		updateStayClose(frameTime);
 		break;
-	case 3:
+	case 2:
 		updateHalo(frameTime);
+		break;
+	case 3:
+		updateCollision(frameTime);
 		break;
 	default:
 		break;
