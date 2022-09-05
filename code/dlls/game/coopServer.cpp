@@ -608,7 +608,9 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 //================================================================
 void coop_serverMonitorTikiCache( str sData )
 {
-	if ( !sData || sData.length() < 5 || sData[0] == '*' || g_gametype->integer == GT_SINGLE_PLAYER /*|| dedicated->integer == 0*/ )return;
+	if (!sData || sData.length() < 5 || sData[0] == '*' || g_gametype->integer == GT_SINGLE_PLAYER /*|| dedicated->integer == 0*/) {
+		return;
+	}
 
 	sData = coop_returnStringFilenameOnly( sData );
 	sData = sData.tolower();
