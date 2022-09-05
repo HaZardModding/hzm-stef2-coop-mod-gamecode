@@ -1724,6 +1724,9 @@ void CacheResource( const char * stuff, Entity * ent )
 		//we want to find out how the loading of models and the tiki cache are related
 		coop_serverMonitorTikiCache( real_stuff );
 
+//[b60011] chrisssstrahl - debug
+//gi.Printf(va("CacheResource: %s\n", real_stuff.c_str()));
+
 		if ( index > 0 )
 		{
 			 if ( !ent )

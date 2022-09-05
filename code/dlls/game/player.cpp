@@ -8148,7 +8148,7 @@ void Player::gamefix_WorldEffects( void )
 				if ( drown_damage < 6 ) bubbleAmount = (random()*2)+1;
 				else					bubbleAmount = (random()*1)+2;
 				*/
-
+				
 				bubbleAmount = 1;
 				if ( health <= 75 )	bubbleAmount = 2;
 				if ( health <= 50 )	bubbleAmount = 3;
