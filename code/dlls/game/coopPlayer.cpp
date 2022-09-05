@@ -448,7 +448,7 @@ bool coop_playerSetup(Player* player)
 		str sCvar = (cvar ? cvar->string : "Eng");
 		player->setLanguage(sCvar);
 
-		player->coopPlayer.setupComplete = true;
+//player->coopPlayer.setupComplete = true;
 		coop_classSet(player, "HeavyWeapon");
 		return true;
 	}
