@@ -7,9 +7,12 @@
 
 #include "_pch_cpp.h"
 #include "coopReturn.hpp"
+#include "coopArmory.hpp"
+#include "coopObjectives.hpp"
+#include "coopParser.hpp"
 #include "coopScripting.hpp"
 CoopScripting coopScripting;
-#include "coopObjectives.hpp"
+
 
 #define COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU_4 "mom4_coopInput.scr"
 #define COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU "multioptions.scr"
@@ -69,11 +72,39 @@ bool CoopScripting::checkIncludedNoscript(str sLex)
 	return includedNoscript;
 }
 
+void CoopScripting::checkFuncCall(str sFunctioname,str parameterString[16])
+//check for various Coop specific function calls to execute certain code in dll
+//code that was perviously in the scripts but now is in the dll will be started from here
+// - so the scripts do not need to ne rewritten
+// - and no new script commands need to be put into place
+// - however, if this gets to bit we might want to have new script commands and call them from teh coop scripts
+{
+	sFunctioname = sFunctioname.tolower();
+	if (sFunctioname == "globalcoop_objectives_update_dll") {
+		coop_objectivesUpdate(parameterString[0], parameterString[1], parameterString[2]);
+	}
+	else if (sFunctioname == "globalcoop_server_itemunlockedset_dll") {
+		str sKey = va("unlocked.%s", coop_armoryReturnWeaponName(parameterString[0]).c_str());
+		coop_parserIniSet("ini/serverData.ini", sKey, "true", "server");
+	}
+	else if (sFunctioname == "globalcoop_server_itemlockedset_dll") {
+		str sKey = va("unlocked.%s", coop_armoryReturnWeaponName(parameterString[0]).c_str());
+		coop_parserIniSet("ini/serverData.ini", sKey, "false", "server");
+	}
+	else if (	sFunctioname == "coop_endlevel" ||
+				sFunctioname == "globalcoop_mission_accomplished" ||
+				sFunctioname == "globalcoop_mission_completed" ||
+				sFunctioname == "globalCoop_mission_failWithReason" )
+	{
+		coopChallenges.disabled(true);
+	}
+}
+
 str CoopScripting::checkReplaceInclude(str sLex)
+//will load coop optimized global files
+//global scripts will be switched by the mod and scripters don't have to worry
 {
 	if (g_gametype->integer != GT_SINGLE_PLAYER) {
-		//[b60011] chrissstrahl - added other global files
-		//so that the scripts will be switched by the mod and scripters don't have to worry
 		if (!Q_stricmp(sLex, "maps/global_scripts/global_acceleratedmovement.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_archetype.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_common.scr") ||
@@ -106,6 +137,7 @@ str CoopScripting::checkReplaceInclude(str sLex)
 }
 
 bool CoopScripting::mrnPlayerReady(Player* player)
+//checks if player has completed selecting equipment from Mission Resource Managment Menu
 {
 	if (!player) { return false; }
 
@@ -118,27 +150,6 @@ bool CoopScripting::mrnPlayerReady(Player* player)
 	float fReady = entityData->floatValue();
 	return (bool)fReady;
 }
-
-
-
-//================================================================
-// Name:        coop_scriptingFunctionStarted
-// Class:       -
-//              
-// Description: gets called when a function is called eigther as thread, or in line
-//              
-// Parameters:  str sFunctioname
-//              
-// Returns:     VOID
-//              
-//================================================================
-//void coop_scriptingFunctionStarted( str sFunctioname )
-//{
-//	gi.Printf( "coop func call - %s\n" , sFunctioname.c_str() );
-	//if ( !Q_stricmp( sFunctioname , "" ) ){
-	//	gi.Printf( va("FUNCTION: %s\n" , sFunctioname.c_str() ) );
-	//}
-//}
 
 void coop_setVectorScriptVariableValue( const char* varname , Vector vSet )
 {

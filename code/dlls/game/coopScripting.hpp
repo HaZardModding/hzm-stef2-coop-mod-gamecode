@@ -9,6 +9,9 @@
 #define __COOPSCRIPTING_HPP__
 
 #include "_pch_cpp.h"
+#include "coopChallenges.hpp"
+extern CoopChallenges coopChallenges;
+
 
 //[b60011] chrissstrahl
 class CoopScripting
@@ -28,6 +31,7 @@ public:
 	bool checkIncludedMom4(str sLex);
 	bool checkIncludedMom(str sLex);
 	bool checkIncludedNoscript(str sLex);
+	void checkFuncCall(str sFunctioname, str parameterString[16]);
 	str checkReplaceInclude(str sLex);
 	bool mrnPlayerReady(Player *player);
 };

@@ -23,6 +23,7 @@
 #include "camera.h"
 
 #include "coopObjectives.hpp"
+extern CoopScripting coopScripting;
 #include "coopScripting.hpp"
 #include "coopParser.hpp"
 #include "coopArmory.hpp"
@@ -416,22 +417,8 @@ void Interpreter::ThreadCall( const Interpreter *source, dfunction_t *newf, int 
 	CancelEventsOfType( EV_ScriptThread_Execute );
 	PostEvent( EV_ScriptThread_Execute, 0.0f );
 
-	//hzm coop mod chrissstrahl - allow the mod to scan function names
-	//coop_scriptingFunctionStarted( newf->s_name.c_str() );
-	str sFunctioname = newf->s_name;
-	sFunctioname = sFunctioname.tolower();
-
-	if ( sFunctioname == "globalcoop_objectives_update_dll" ) {
-		coop_objectivesUpdate( parameterString[0] , parameterString[1] , parameterString[2] );	
-	}
-	else if ( sFunctioname == "globalcoop_server_itemunlockedset_dll" ) {
-		str sKey = va( "unlocked.%s" , coop_armoryReturnWeaponName( parameterString[0] ).c_str() );
-		coop_parserIniSet( "ini/serverData.ini" , sKey , "true" , "server" );
-	}
-	else if ( sFunctioname == "globalcoop_server_itemlockedset_dll" ) {
-		str sKey = va( "unlocked.%s" , coop_armoryReturnWeaponName( parameterString[0] ).c_str() );
-		coop_parserIniSet( "ini/serverData.ini" , sKey , "false" , "server" );
-	}
+	//[b60011] chrissstrahl - allow coop mod to react to funccsalls
+	coopScripting.checkFuncCall(newf->s_name, parameterString);
 }
 
 /*
