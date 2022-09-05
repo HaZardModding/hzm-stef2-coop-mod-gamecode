@@ -186,9 +186,6 @@ void Level::update(int levelTime, int frameTime)
 					gi.SendServerCommand(player->entnum, "stufftext \"set coop_oExc score\"\n");
 				else
 					gi.SendServerCommand(player->entnum, "stufftext \"set coop_oExc pushmenu coop_objectives\"\n");
-
-				//hzm coop mod chrissstrahl - reset coop radar, we are using the native radar in sp
-				coop_radarReset(player);
 			}
 		}
 	}
