@@ -66,8 +66,8 @@ void coop_armoryRememberLastUsed( Player *player, str sWeapon )
 //================================================================
 void coop_armoryEquipPlayer(Player *player)
 {
+	gi.Printf("COOPDEBUG: coop_armoryEquipPlayer()\n");
 	if ( !player )return;
-
 //	bool bGiveSecretWeapons=true;
 	int iWeapons=0;
 	int iTemporary;
@@ -87,13 +87,13 @@ void coop_armoryEquipPlayer(Player *player)
 			//make this work in coop and singleplayer
 			if(g_gametype->integer != GT_SINGLE_PLAYER ){
 				multiplayerManager.givePlayerItem( player->entnum , sTikiName.c_str() );
-//gi.Printf(va("COOPDEBUG: Equiping %s with %s\n", player->client->pers.netname, sTikiName.c_str()));
 			}else{
 				Event *event;
 				event = new Event( EV_Player_GiveCheat );
 				event->AddString( sTikiName );
 				player->ProcessEvent( event );
 			}
+			gi.Printf(va("COOPDEBUG: Equiping %s with %s\n", player->client->pers.netname, sTikiName.c_str()));
 
 			str sTempName = coop_armoryReturnWeaponName( sTikiName );
 			sTikiName = sTikiName.tolower();
