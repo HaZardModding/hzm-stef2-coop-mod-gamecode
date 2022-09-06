@@ -23,8 +23,10 @@
 #include "camera.h"
 
 #include "coopObjectives.hpp"
-extern CoopScripting coopScripting;
+
 #include "coopScripting.hpp"
+extern CoopScripting coopScripting;
+
 #include "coopParser.hpp"
 #include "coopArmory.hpp"
 
