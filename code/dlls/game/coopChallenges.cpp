@@ -212,7 +212,7 @@ void CoopChallenges::update(float frameTime)
 	switch (iCurrentChallenge)
 	{
 	case 1:
-		updateStayClose(frameTime);
+		updateStickTogether(frameTime);
 		break;
 	case 2:
 		updateHalo(frameTime);
@@ -328,7 +328,7 @@ void CoopChallenges::updateCollision(float frameTime)
 	}
 }
 
-void CoopChallenges::updateStayClose(float frameTime)
+void CoopChallenges::updateStickTogether(float frameTime)
 {
 	//needs only to be updated once every sec or every 2 secs
 	if (!game.coop_isActive || (fLastDamageTime + COOP_CHALLENGE_STICKTOGETHER_CYCLE) > level.time) {

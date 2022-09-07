@@ -31,7 +31,7 @@ public:
 	void		playerSpectator(Player* player);
 	void		update(float frameTime);
 	void		updateCollision(float frameTime);
-	void		updateStayClose(float frameTime);
+	void		updateStickTogether(float frameTime);
 	void		updateHalo(float frameTime);
 	bool		haloShieldRelayDamage(Sentient* sentient, float fDamage);
 	bool		haloCanPickup(Sentient* sentient, str sItem);
