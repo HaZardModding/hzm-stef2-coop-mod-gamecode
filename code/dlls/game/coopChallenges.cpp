@@ -375,7 +375,14 @@ void CoopChallenges::updateStayClose(float frameTime)
 		}
 		if (!iAnyClose) {
 			Player* player = (Player*)playerAnker;
-			player->hudPrint("Coop Challenge: To far away from Group!\n");
+
+			//show distance hud
+			if (player->coopPlayer.installed) {
+				DelayedServerCommand(player->entnum, "coop_stickTogether");
+			}
+			else {
+				player->hudPrint("Coop Challenge: To far away from Group!\n");
+			}
 
 			Event *event = new Event(EV_Pain);
 			event->AddFloat(COOP_CHALLENGE_STICKTOGETHER_DAMAGE);
