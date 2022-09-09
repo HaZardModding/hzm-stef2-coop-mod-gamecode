@@ -1952,7 +1952,7 @@ void Player::getTeamScore(Event* ev)
 }
 void Player::getCoopVersion(Event* ev)
 {
-	//value is -1 while the mod is detecting, make sure we only return bool
+	//value is -1 while the mod is detecting
 	int i = coopPlayer.installedVersion;
 	if (i < 0) {
 		i = 0;
