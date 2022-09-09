@@ -378,7 +378,7 @@ void CoopChallenges::updateStickTogether(float frameTime)
 
 			//show distance hud
 			if (player->coopPlayer.installed) {
-				DelayedServerCommand(player->entnum, "coop_stickTogether");
+				DelayedServerCommand(player->entnum, "ui_addhud coop_stickTogether");
 			}
 			else {
 				player->hudPrint("Coop Challenge: To far away from Group!\n");
