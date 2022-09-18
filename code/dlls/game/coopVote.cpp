@@ -443,7 +443,7 @@ int coop_vote_stasistimeValidate(Player* player, const str &command, const str &
 	if (Q_stricmp(command.c_str(), "coop_stasistime") != 0) {
 		return 0;
 	}
-	int iAccel = -666; //this is unfinsied hjave a bad value here so it can be quickly spotted
+	int iAccel = -666; //this is unfinsied have a bad value here so it can be quickly spotted
 
 	if (!stricmp(arg.c_str(), "")) {
 		multiplayerManager.HUDPrint(player->entnum, va("current stasistime: %d\nRange: 5 - 60\n", iAccel));
@@ -474,11 +474,11 @@ int coop_vote_stasistimeValidate(Player* player, const str &command, const str &
 //================================================================
 int coop_vote_challengeValidate(Player* player, const str &command, const str &arg, str &_voteString)
 {
-	if (Q_stricmp(command.c_str(), "challenge") != 0) {
+	if (Q_stricmp(command.c_str(), "coop_challenge") != 0) {
 		return 0;
 	}
 
-	if (!stricmp(arg.c_str(), "coop_challenge")) {
+	if (!stricmp(arg.c_str(), "")) {
 		multiplayerManager.HUDPrint(player->entnum,va("^2$$Usage$$:^8 coop_challenge 0 - 3, current: %i\n", (short)coopChallenges.iCurrentChallenge));
 		return 1;
 	}
@@ -1513,7 +1513,7 @@ bool coop_vote_maxspeedSet(const str _voteString)
 //================================================================
 bool coop_vote_challengeSet(const str _voteString)
 {
-	if (Q_stricmpn(_voteString, "coop_challenge", 15) != 0) {
+	if (Q_stricmpn(_voteString, "coop_challenge", 14) != 0) {
 		return false;
 	}
 	str sChallenge;
