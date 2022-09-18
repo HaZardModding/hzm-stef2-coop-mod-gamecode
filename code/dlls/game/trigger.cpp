@@ -4404,6 +4404,9 @@ void TriggerEntryAndExit::TriggerStuff( Event *ev )
 		other = ev->GetEntity( 1 );
 	}
 	assert( other != this );
+
+	//[b60011] chrissstrahl //gamefix - fix activator not being set on entry event
+	activator = other;
 	
 	// Always respond to activate messages from the world since they're probably from
 	// the "trigger" command
