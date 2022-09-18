@@ -792,7 +792,7 @@ void coop_serverSaveGameVars( const str &name , const str &value )
 	}
 	//[b60011]chrissstrahl - challenge voteable option
 	else if (!Q_stricmp(name, "challenge")) {
-		iCorrected = coop_returnIntOrDefaultFromString(value, 0);
+		iCorrected = coop_returnIntOrDefaultFromString(value, 1);
 		coopChallenges.iCurrentChallenge = (short)iCorrected;
 	}
 
