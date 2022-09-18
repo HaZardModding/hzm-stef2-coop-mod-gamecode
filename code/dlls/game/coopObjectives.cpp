@@ -330,7 +330,7 @@ void coop_objectivesUpdatePlayer( Player* player )
 		return;
 
 	if ( player->coopPlayer.setupComplete ){
-		if ( player->coopPlayer.lastTimeUpdatedObjectives != game.coop_objectiveLastUpdate || ( player->coopPlayer.lastTimeSpawned + 1.0f ) > level.time ){
+		if (player->coopPlayer.lastTimeUpdatedObjectives != game.coop_objectiveLastUpdate && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
 			player->coopPlayer.lastTimeUpdatedObjectives = game.coop_objectiveLastUpdate;
 
 			coop_objectivesNotify( player );
