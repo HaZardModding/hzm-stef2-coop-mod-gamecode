@@ -51,8 +51,10 @@ void CoopChallenges::cleanUp(bool restart)
 
 void CoopChallenges::playerEnteredWarning(Player* player)
 {
-	//STOP challanges are disabled or just 1 player
-	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
+	//STOP challenges are disabled or just 1 player
+	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) {
+		return;
+	}
 
 	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
 
@@ -75,7 +77,7 @@ void CoopChallenges::playerEnteredWarning(Player* player)
 
 void CoopChallenges::playerLeftWarning(Player* player)
 {
-	//STOP challanges are disabled or just 1 player
+	//STOP challenges are disabled or just 1 player
 	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
 
 	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
@@ -100,7 +102,7 @@ void CoopChallenges::playerLeftWarning(Player* player)
 
 void CoopChallenges::playerSpectatorWarning(Player* player)
 {
-	//STOP challanges are disabled or just 1 player
+	//STOP challenges are disabled or just 1 player
 	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
 
 	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
@@ -124,7 +126,7 @@ void CoopChallenges::playerSpectatorWarning(Player* player)
 
 void CoopChallenges::playerEntered(Player* player)
 {
-	//STOP challanges are disabled or just 1 player
+	//STOP challenges are disabled or just 1 player
 	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
 
 	switch (iCurrentChallenge)
@@ -446,7 +448,7 @@ void CoopChallenges::updateHalo(float frameTime)
 }
 
 void CoopChallenges::disabled(bool bEnable)
-//allowes to disable/enable the challange - meant to be used from the scripts
+//allowes to disable/enable the challenge - meant to be used from the scripts
 {
 	challenesAreDisabled = bEnable;
 	gi.Printf(va("Coop Challenge status (0=on/1=off) changed: ",(int)bEnable));
@@ -459,7 +461,7 @@ bool CoopChallenges::isDisabled()
 }
 
 void CThread::challengesDisabled(Event* ev)
-//allowes to disable/enable the challange - meant to be used from the scripts
+//allowes to disable/enable the challenge - meant to be used from the scripts
 //also returns the status of the challenge 0=enabled 1=disabled
 {
 	if (ev->NumArgs() > 0) {
@@ -471,11 +473,11 @@ void CThread::challengesDisabled(Event* ev)
 }
 
 void CThread::challengeDisabledNamed(Event* ev)
-//allowes to disable/enable the challange - meant to be used from the scripts
+//allowes to disable/enable the challenge - meant to be used from the scripts
 //also returns the status of the challenge 0=enabled 1=disabled
 {
 	str sName = ev->GetString(1);
-	bool namedChallangeIsDisabled = true;
+	bool namedChallengeIsDisabled = true;
 
 	//check if the given challenge name is valid
 	if (sName == "" || !CoopChallengeTypes.ObjectInList(sName.tolower())) {
@@ -496,12 +498,12 @@ void CThread::challengeDisabledNamed(Event* ev)
 		//if should be disabled but is not, add it
 		if (challenesAreDisabled && iChallenge == 0) {
 			CoopChallengeTypesDisabled.AddObject(sName.c_str());
-			namedChallangeIsDisabled = true;
+			namedChallengeIsDisabled = true;
 		}
 		//if should be NOT disabled but is, remove it
 		else if (!challenesAreDisabled && iChallenge != 0) {
 			CoopChallengeTypesDisabled.RemoveObjectAt(iChallenge);
-			namedChallangeIsDisabled = false;
+			namedChallengeIsDisabled = false;
 		}
 
 		//debug
@@ -509,7 +511,7 @@ void CThread::challengeDisabledNamed(Event* ev)
 			//gi.Printf(va("Challenges Disabled: %s\n", CoopChallengeTypesDisabled.ObjectAt(iChallenge)));
 		//}
 
-		gi.Printf(va("challengeDisabledNamed: Challege %s set to %i (0=on/1=off)\n", sName.c_str(), (int)namedChallangeIsDisabled));
+		gi.Printf(va("challengeDisabledNamed: Challege %s set to %i (0=on/1=off)\n", sName.c_str(), (int)namedChallengeIsDisabled));
 	}
-	ev->ReturnInteger((int)namedChallangeIsDisabled);
+	ev->ReturnInteger((int)namedChallengeIsDisabled);
 }
