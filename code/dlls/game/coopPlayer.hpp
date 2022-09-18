@@ -98,7 +98,7 @@ public:
 	//hzm coop mod chrissstrahl - used to saveoff the player his last class info update time
 	float	lastTimeUpdatedClassStat = -999.0f;
 	//hzm coop mod chrissstrahl - used to save when the player has recived the last time the mission objectives
-	float	lastTimeUpdatedObjectives = 0.0f;
+	float	lastTimeUpdatedObjectives = -1.0f;
 	//hzm coop mod chrissstrahl - used to save when the player was used the last time by another player
 	float	lastTimeUsedClassMsg = 0.0f;
 	//hzm coop mod chrissstrahl - used to determin when player was injured last time
