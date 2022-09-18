@@ -1245,6 +1245,22 @@ Event EV_ScriptThread_MissionFailed
 	"reason" ,
 	"Displays the mission failed screen on the client side"
 	);
+Event EV_ScriptThread_setIniDataPlayer
+(
+	"setIniDataPlayer",
+	EV_SCRIPTONLY,
+	"@iesss",
+	"returnsuccsess player category keyname value",
+	"sets data for player from current map ini or given inifile"
+);
+Event EV_ScriptThread_getIniDataPlayer
+(
+	"getIniDataPlayer",
+	EV_SCRIPTONLY,
+	"@sesSS",
+	"returndatastring player category keyname filename",
+	"gets data for player from current map ini or given inifile"
+);
 Event EV_ScriptThread_getIniData
 (
 	"getIniData",
@@ -1434,6 +1450,8 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
 	//[b60011] chrissstral - allow read write to map specific ini files
+	{ &EV_ScriptThread_setIniDataPlayer,			&CThread::setIniDataPlayer },
+	{ &EV_ScriptThread_getIniDataPlayer,			&CThread::getIniDataPlayer },
 	{ &EV_ScriptThread_getIniData,					&CThread::getIniData },
 	{ &EV_ScriptThread_setIniData,					&CThread::setIniData },
 	//[b60011] chrissstrahl
@@ -1483,8 +1501,144 @@ void CThread::checkAchivment(Event* ev)
 
 }
 */
-	
-//[b60011] chrissstrahl - add command allow reading and writing to ini file
+
+//[b60011] chrissstrahl - add command allow reading player specific data from ini
+str CThread::getIniData(str sFilename,str sKeyname,str sCategoryname)
+{
+	if (!sFilename.length()) {
+		sFilename = va("ini/%s.ini", level.mapname.tolower());
+	}
+
+	//prevent certain ini files to be accsessed
+	//do not allow reading/writing specific files
+	const char* forBiddenFiles[1] = {
+		"serverdata.ini",
+		//"deathlist.ini",
+		//"maplist.ini",
+		//"vote_maplist.ini"
+	};
+	int arrSize = sizeof(forBiddenFiles) / sizeof(forBiddenFiles[0]);
+	for (int i = 0; i < arrSize; i++) {
+		if (coop_returnIntFind(forBiddenFiles[i], sFilename.c_str()) != -1) {
+			G_ExitWithError(va("getIniData/getIniDataPlayer - Accsess Violation on reading file: %s", sFilename.c_str()));
+		}
+	}
+	str sValue;
+	sValue = coop_parserIniGet(sFilename, sKeyname, sCategoryname);
+	return sValue;
+}
+
+//[b60011] chrissstrahl - add command allow reading player specific data from ini
+//returns: string ini data
+//takes: categoryname, player, key, filename
+void CThread::getIniDataPlayer(Event* ev)
+{
+	Entity* entity;
+	str sFilename;
+	str sKeyname;
+	str sCategoryname;
+	str sValue;
+	str sPlayerId;
+	sCategoryname = ev->GetString(2);
+
+	entity = ev->GetEntity(1);
+
+	if (!entity) {
+		str sEmpty = "";
+		gi.Printf("getIniDataPlayer - Given entity does not exist\n");
+		ev->ReturnString(sEmpty);
+		return;
+	}
+
+	if (!entity->isSubclassOf(Player)) {
+		str sEmpty = "";
+		gi.Printf("getIniDataPlayer - Given entity was not a player\n");
+		ev->ReturnString(sEmpty);
+		return;
+	}
+
+	Player* player;
+	player = (Player*)entity;
+	sPlayerId = player->coopPlayer.coopId;
+
+	if (ev->NumArgs() > 2) {
+		str sKey;
+		sKey = ev->GetString(3);
+		sKeyname = (va("%s%s", sPlayerId.c_str(), sKey.c_str()));
+	}
+
+	if(!sKeyname.length()) {
+		sKeyname = sPlayerId;
+	}
+
+	if (ev->NumArgs() > 3) {
+		sFilename = ev->GetString(4);
+	}
+	else {
+		sFilename = va("ini/%s.ini", level.mapname.tolower());
+	}
+
+	sValue = getIniData(sFilename, sKeyname, sCategoryname);
+	ev->ReturnString(sValue.c_str());
+}
+
+//[b60011] chrissstrahl - add command allow reading player specific data from ini
+//returns: string ini data
+//takes: categoryname, player, key, filename
+void CThread::setIniDataPlayer(Event* ev)
+{
+	bool bScuccsess = false;
+	Entity* entity;
+	str sFilename = va("ini/%s.ini", level.mapname.tolower());
+	str sKeyname;
+	str sCategoryname;
+	str sValue;
+	str sPlayerId;
+	sCategoryname = ev->GetString(2);
+
+	entity = ev->GetEntity(1);
+
+	if (!entity) {
+		str sEmpty = "";
+		gi.Printf("setIniDataPlayer - Given entity does not exist\n");
+		ev->ReturnInteger(0);
+		return;
+	}
+
+	if (!entity->isSubclassOf(Player)) {
+		str sEmpty = "";
+		gi.Printf("setIniDataPlayer - Given entity was not a player\n");
+		ev->ReturnInteger(0);
+		return;
+	}
+
+	Player* player;
+	player = (Player*)entity;
+	sPlayerId = player->coopPlayer.coopId;
+
+	if (ev->NumArgs() > 2) {
+		str sKey;
+		sKey = ev->GetString(3);
+		sKeyname = (va("%s%s", sPlayerId.c_str(), sKey.c_str()));
+	}
+
+	if (!sKeyname.length()) {
+		sKeyname = sPlayerId;
+	}
+
+	if (ev->NumArgs() < 3) {
+		ev->ReturnString("!Parameter-Error!");
+		return;
+	}
+
+	sValue = ev->GetString(4);
+
+	bScuccsess = coop_parserIniSet(sFilename, sKeyname, sValue, sCategoryname);
+	ev->ReturnFloat(float(bScuccsess));
+	//gi.Printf(va("setIniDataPlayer::%s at %s - %s\n", sFilename.c_str(), sCategoryname.c_str(), sKeyname.c_str()));
+}
+
+	//[b60011] chrissstrahl - add command allow reading and writing to ini file
 //returns: string ini data
 //takes: categoryname, keyname, filename
 void CThread::getIniData(Event *ev)
@@ -1507,23 +1661,7 @@ void CThread::getIniData(Event *ev)
 		sFilename = va("ini/%s.ini",level.mapname.tolower());
 	}
 
-	//prevent certain ini files to be accsessed
-	//do not allow reading/writing specific files
-	const char* forBiddenFiles[1] = {
-		"serverdata.ini",
-		//"deathlist.ini",
-		//"maplist.ini",
-		//"vote_maplist.ini"
-	};
-	int arrSize = sizeof(forBiddenFiles) / sizeof(forBiddenFiles[0]);
-	for (int i = 0; i < arrSize; i++) {
-		if (coop_returnIntFind(forBiddenFiles[i], sFilename.c_str()) != -1) {
-			ev->ReturnString("!Accsess-Error!");
-			G_ExitWithError(va("getIniData - Accsess Violation on reading file: %s", sFilename.c_str()));
-		}
-	}
-	
-	sValue = coop_parserIniGet(sFilename, sKeyname, sCategoryname);
+	sValue = getIniData(sFilename,sKeyname,sCategoryname);
 	ev->ReturnString(sValue.c_str());
 }
 
@@ -1539,7 +1677,6 @@ void CThread::setIniData(Event *ev)
 	str sKeyname;
 	str sCategoryname;
 	str sValue;
-	//sFilename		= ev->GetString(1);
 	sCategoryname	= ev->GetString(1);
 	sKeyname		= ev->GetString(2);
 	sValue			= ev->GetString(3);

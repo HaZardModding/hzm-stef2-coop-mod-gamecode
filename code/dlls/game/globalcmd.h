@@ -118,6 +118,9 @@ class CThread : public Interpreter
 
 		CThread();
 		//[b60011] chrissstrahl - read and write mapspecific ini data - allowing levels to hold thair own database
+		str getIniData(str sFilename, str sKeyname, str sCategoryname);
+		void getIniDataPlayer(Event* ev);
+		void setIniDataPlayer(Event* ev);
 		void getIniData(Event *ev);
 		void setIniData(Event *ev);
 		//[b60011] chrissstrahl
