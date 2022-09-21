@@ -5,7 +5,7 @@
 // CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
 
-#pragma once
+
 
 //[b60011]
 
@@ -29,6 +29,12 @@ Container<str> CoopChallengeTypesDisabled;
 void CoopChallenges::init(void)
 //on level start, init all challenges
 {
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		fLastDamageTime = 0;
+		challenesAreDisabled = true;
+		return;
+	}
+
 	fLastDamageTime					= (level.time + COOP_CHALLENGE_STICKTOGETHER_CYCLE);
 	challenesAreDisabled			= false;
 
@@ -40,6 +46,12 @@ void CoopChallenges::init(void)
 
 void CoopChallenges::cleanUp(bool restart)
 {
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		fLastDamageTime = 0;
+		challenesAreDisabled = true;
+		return;
+	}
+
 	fLastDamageTime = -1.0f;
 	challenesAreDisabled		= false;
 
@@ -207,7 +219,7 @@ void CoopChallenges::update(float frameTime)
 	// if disabled via script
 	// during cinematic
 	// if only one player is alive
-	if (challenesAreDisabled || level.cinematic || coop_returnPlayerQuantity(2) < 2 ) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || challenesAreDisabled || level.cinematic || coop_returnPlayerQuantity(2) < 2 ) {
 		return;
 	}
 
@@ -229,13 +241,15 @@ void CoopChallenges::update(float frameTime)
 
 void CoopChallenges::updateCollision(float frameTime)
 {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !game.coop_isActive ) {
+		return;
+	}
+
 	Player* player;
 	Entity* entityOther;
 
-	player = coop_returnPlayerFavored();//
-
-	//don't do anything if not in coop or if there is no active player
-	if (!game.coop_isActive || !player) {
+	player = coop_returnPlayerFavored();
+	if (!player) {
 		return;
 	}
 
