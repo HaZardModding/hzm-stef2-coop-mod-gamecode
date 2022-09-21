@@ -30,7 +30,7 @@
 //The map types of the string.
 //Global - this is a global string and is used for every level
 //Level  - this is a string specific for the level and therefore loaded when the level is loaded.
-typedef enum StringType { GLOBAL, LEVEL };
+enum StringType { GLOBAL, LEVEL }; //[b60011] code cleanup
 #define STRING_HASH_SIZE 1024
 
 

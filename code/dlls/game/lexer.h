@@ -85,7 +85,7 @@ class Lexer
       void           LexPreprocessor( void );
       void           Lex( void );
       void           ParseError( const char *error, ... );
-      void           Expect( char *string );
+      void           Expect( char const *string ); //[b60011] code cleanup
       bool           Check( const char *string );
       char           *ParseName( void );
       void           SkipOutOfFunction( void );

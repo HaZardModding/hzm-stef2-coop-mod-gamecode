@@ -870,7 +870,7 @@ static void G_SpawnBots( char *botList, int baseDelay ) {
 G_LoadBotsFromFile
 ===============
 */
-static void G_LoadBotsFromFile( char *filename ) {
+static void G_LoadBotsFromFile( char const *filename ) { //[b60011] code cleanup
 	int				len;
 	fileHandle_t	f;
 	char			buf[MAX_BOTS_TEXT];

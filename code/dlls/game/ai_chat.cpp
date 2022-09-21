@@ -288,28 +288,30 @@ char *BotRandomWeaponName(void) {
 	int rnd;
 
 	rnd = rand() % 17;
+	//[b60011] code cleanup
+	const char* returnVal;
 
 	switch( rnd ) {
-		case 0:  return "$$Weapon-AttrexianRifle$$";
-		case 1:  return "$$Weapon-Batleth$$";
-		case 2:  return "$$Weapon-BurstRifle$$";
-		case 3:  return "$$Weapon-CompressionRifle$$";
-		case 4:  return "$$Weapon-DrullStaff$$";
-		case 5:  return "$$Weapon-FieldAssaultRifle$$";
-		case 6:  return "$$Weapon-GrenadeLauncher$$";
-		case 7:  return "$$Weapon-I-Mod$$";
-		case 8:  return "$$Weapon-Phaser$$";
-		case 9:  return "$$Weapon-PhotonBurst$$";
-		case 10: return "$$Weapon-RomulanDisruptor$$";
-		case 11: return "$$Weapon-RomulanRadGun$$";
-		case 12: return "$$Weapon-FederationSniperRifle$$";
-		case 13: return "$$Weapon-TetryonGatlingGun$$";
-		case 14: return "$$Weapon-AttrexianRifle$$";
-		case 15: return "$$Weapon-AttrexianRifle$$";
-		case 16: return "$$Weapon-AttrexianRifle$$";
-
-		default: return "$$Weapon-Phaser$$";
+	case 0:		returnVal = "$$Weapon-AttrexianRifle$$"; break;
+	case 1:		returnVal = "$$Weapon - Batleth$$"; break;
+	case 2:		returnVal = "$$Weapon-BurstRifle$$"; break;
+	case 3:		returnVal = "$$Weapon-CompressionRifle$$"; break;
+	case 4:  	returnVal = "$$Weapon-DrullStaff$$"; break;
+	case 5:		returnVal = "$$Weapon-FieldAssaultRifle$$"; break;
+	case 6:		returnVal = "$$Weapon-GrenadeLauncher$$"; break;
+	case 7:		returnVal = "$$Weapon-I-Mod$$"; break;
+	case 8:		returnVal = "$$Weapon-Phaser$$"; break;
+	case 9:		returnVal = "$$Weapon-PhotonBurst$$"; break;
+	case 10:	returnVal = "$$Weapon-RomulanDisruptor$$"; break;
+	case 11:	returnVal = "$$Weapon-RomulanRadGun$$"; break;
+	case 12: 	returnVal = "$$Weapon-FederationSniperRifle$$"; break;
+	case 13: 	returnVal = "$$Weapon-TetryonGatlingGun$$"; break;
+	case 14:	returnVal = "$$Weapon-AttrexianRifle$$"; break;
+	case 15: 	returnVal = "$$Weapon-AttrexianRifle$$"; break;
+	case 16: 	returnVal = "$$Weapon-AttrexianRifle$$"; break;
+	default:	returnVal = "$$Weapon-Phaser$$";
 	}
+	return (char*)returnVal;
 }
 
 /*

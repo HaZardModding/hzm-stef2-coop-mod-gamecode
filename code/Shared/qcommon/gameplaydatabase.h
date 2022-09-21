@@ -33,7 +33,8 @@ class GameplayProperty;
 #include <game/container.h>
 #include <qcommon/tiki_script.h>
 
-typedef enum GameplayValueType
+//typedef enum GameplayValueType
+enum GameplayValueType //[b60011] code cleanup
 {
 	VALUE_FLOAT,
 	VALUE_STRING,

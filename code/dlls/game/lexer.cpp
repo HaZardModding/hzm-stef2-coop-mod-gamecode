@@ -541,7 +541,7 @@ Issues an error if the current token isn't equal to string
 Gets the next token
 =============
 */
-void Lexer::Expect( char *string )
+void Lexer::Expect( char const *string ) //[b60011] code cleanup
 {
 	if ( strcmp( string, pr_token ) )
 	{
