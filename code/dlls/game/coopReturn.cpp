@@ -1596,14 +1596,19 @@ Vector coop_returnCvarVector( str cvarName )
 //================================================================
 int coop_returnCvarInteger( str cvarName )
 {
-	if ( strlen( cvarName ) < 1 )
+	//[b60011] Chrissstrahl - fixed bad check of cvar
+	if (strlen(cvarName) < 1) {
+		gi.Printf("coopReturn.cpp - coop_returnCvarInteger() - Empty CVar Name given!\nCausing function to return -1\n");
 		return -1;
-	
-	int i = gi.Cvar_VariableIntegerValue( cvarName.c_str() );
-	if ( i == NULL ){
-		i = -1;
 	}
-	return i;
+	
+	cvar_t* cvar = gi.cvar_get(cvarName.c_str());
+	if (!cvar || !strlen(cvar->string)) {
+		gi.Printf("coopReturn.cpp - coop_returnCvarInteger() - CVar did not Exist or was empty!\nCausing function to return -1\n");
+		return -1;
+	}
+
+	return gi.Cvar_VariableIntegerValue(cvarName.c_str());
 }
 
 
