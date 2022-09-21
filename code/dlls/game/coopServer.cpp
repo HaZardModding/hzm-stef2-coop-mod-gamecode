@@ -53,10 +53,10 @@ void CoopServer::flushTikis()
 		Engine_TIKI_FreeAll(1);//call to function pointer
 
 		//[b607] chrissstrahl - flushtikis - fixing animation issues of actor and other models
-		gi.SendServerCommand(NULL, "stufftext \"flushtikis\"\n");
-	}
-	//hzm gameupdate Chrissstrahl - but, handle listen servers with a automatic flushtikis
+		gi.SendServerCommand(NULL, "stufftext flushtikis\n");
+	}	
 	else {
+		//hzm gameupdate Chrissstrahl - but, handle listen servers with a automatic flushtikis
 		gi.SendServerCommand(0, "stufftext flushtikis\n");
 	}
 }
