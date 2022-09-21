@@ -300,6 +300,9 @@ void Player::circleMenuThink()
 	if (upgCircleMenu.active <= 0 || upgCircleMenu.thinkTime > level.time) {
 		return;
 	}
+	
+gi.Printf(va("Player::circleMenuThink()->circleMenuGetWidgetName %i - %f\n", upgCircleMenu.active, upgCircleMenu.thinkTime));
+
 	//make sure it can not be abused by spec
 	if (this->getHealth() <= 0 || multiplayerManager.inMultiplayer() && !multiplayerManager.isFightingAllowed() || multiplayerManager.isPlayerSpectator(this)) {
 		if (upgCircleMenu.active) {
@@ -345,6 +348,7 @@ void Player::circleMenuThink()
 	float fSegmentNum;
 	str sWidgetName;
 	fSegmentNum = getSegmentNumForAngle(fAngle);
+gi.Printf("Player::circleMenuThink()->circleMenuGetWidgetName\n");
 	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
 
 	//reset
@@ -489,6 +493,7 @@ void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage
 	if (!sImage.length()) { sImage = "weapons/empty"; }
 	if (!sText.length()) { sText = "^"; }
 
+gi.Printf("Player::circleMenuDialogSet()->circleMenuGetWidgetName\n");
 	str sWidgetName = circleMenuGetWidgetName(iOption);
 
 	//send commands to menu
@@ -582,6 +587,7 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 	upgCircleMenu.optionCost[iOption] = iCost;
 	upgCircleMenu.optionCostType[iOption] = sCostType;
 
+gi.Printf("Player::circleMenuSet()->circleMenuGetWidgetName\n");
 	str sWidgetName = circleMenuGetWidgetName(iOption);
 
 	//send commands to menu
@@ -620,22 +626,4 @@ void Player::circleMenuClear(int iOption)
 			circleMenuSet(i, "", "", "", false, 999999, 0, "");
 		}
 	}
-}
-
-//hzm gameupdate chrissstrahl [b60011]  - clears dialog option from circle menu
-void UpgCircleMenu::init()
-{
-	int		active = 0;
-	int		numOfSegments = 0;
-	//viewangle - stored upon opening the menu
-	Vector	viewAngle = Vector(0, 0, 0);
-	//last time the menu did think
-	float	thinkTime = 0.0f;
-	//time when the menu was activated - used to prevent premature opening/closeing
-	float	activatingTime = 0.0f;
-	//remember stuff so we can compare
-	Vector	lastViewangle = Vector(0, 0, 0);
-	Vector	longtimeViewangle = Vector(0, 0, 0);
-	str		lastWidget = "";
-	int		lastSegment = -1;
 }
