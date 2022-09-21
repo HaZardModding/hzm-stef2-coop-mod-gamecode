@@ -223,14 +223,13 @@ int coop_returnIntFromFormatedString(str &sSource, const char &cFind)
 bool coop_returnBool(str sValue)
 {
 	coop_manipulateStringTrim(sValue, " \t\r\n");
-	//coop_trimM( sValue , " \t\r\n");
-	//[b607] chrissstrahl - added .c_str() below, checking length first
+	//[b607] chrissstrahl - made to return false on default
 	if ( !sValue.length() ) { return false; }
-	//if ( sValue == "\n" ) { return false; }
+
 	if ( !Q_stricmpn(sValue.c_str(),"true",4) ) { return true; }
-	if ( !Q_stricmpn( sValue.c_str(), "false" , 5 ) ) { return false; }
+	
 	if ( atoi( sValue.c_str()) > 0 ) { return true; }
-	if ( atoi( sValue.c_str()) < 1 ) { return false; }
+	return false;
 }
 
 //return position at which given string was found otherwise return -1
