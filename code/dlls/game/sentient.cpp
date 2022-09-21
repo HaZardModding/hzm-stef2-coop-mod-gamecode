@@ -3779,9 +3779,9 @@ int Sentient::GiveAmmo( const str &type, int amount, bool pickedUp, int maxamoun
 
 		iconIndex = gi.imageindex( imageName );
 
-		((Player *)this)->setItemText( iconIndex, va( "$$PickedUp$$ %d $$Ammo-%s$$\n", amount, type.c_str() ) );
-		//((Player *)this)->setItemText( iconIndex, va( "$$PickedUp$$ %d $$Ammo-%s$$\n", amount - amountLeft, type.c_str() ) );
-		//gi.centerprintf ( edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$PickedUp$$ %d %s\n", totalAmount, type.c_str() );
+		((Player *)this)->setItemText( iconIndex, va( "$$PickedUp$$ %d $$Ammo-%s$$", amount, type.c_str() ) );
+		//((Player *)this)->setItemText( iconIndex, va( "$$PickedUp$$ %d $$Ammo-%s$$", amount - amountLeft, type.c_str() ) );
+		//gi.centerprintf ( edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$PickedUp$$ %d %s", totalAmount, type.c_str() );
 	}
 	
 	AmmoAmountChanged( ammo );

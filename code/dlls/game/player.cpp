@@ -6123,6 +6123,7 @@ usually be a couple times for each server frame.
 */
 void Player::ClientThink( Event *ev )
 {
+	
 	// sanity check the command time to prevent speedup cheating
 	if ( current_ucmd->serverTime > level.inttime )
 	{
@@ -11681,7 +11682,7 @@ void Player::ReceivedItem( Item * item )
 
 	if ( item->isSubclassOf( Weapon ) )
 	{
-		setItemText( item->getIcon() , va( "$$PickedUpThe$$ $$Weapon-%s$$\n" , item->getName().c_str() ) );
+		setItemText( item->getIcon() , va( "$$PickedUpThe$$ $$Weapon-%s$$" , item->getName().c_str() ) );
 		//gi.centerprintf ( edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$PickedUpThe$$ $$%s$$\n", item->getName() );
 	}
 	else if ( item->getAmount() > 1 )
@@ -11689,7 +11690,7 @@ void Player::ReceivedItem( Item * item )
 		////gi.centerprintf ( edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$PickedUp$$ %d %s\n", (int)item->getAmount(), item->getName() );
 
 		if (item->getName() == "health") {  // I know this is horrible :(
-			setItemText(item->getIcon(), va("$$PickedUp$$ %d $$Item-%s$$\n", (int)item->getAmount(), item->getName().c_str()));
+			setItemText(item->getIcon(), va("$$PickedUp$$ %d $$Item-%s$$", (int)item->getAmount(), item->getName().c_str()));
 		}
 		else { //[b60011] chrissstrahl - fixed this up to work properly
 			str sItemName = item->getName();
@@ -11701,12 +11702,12 @@ void Player::ReceivedItem( Item * item )
 				sItemLocString = va("$$Ammo-%s$$", sItemName.c_str());
 			}
 			//gi.Printf(va("\nRecivedItem::%s\n\n", item->getName().c_str()));
-			setItemText(item->getIcon(), va("$$PickedUp$$ %d %s\n", (int)item->getAmount(), sItemLocString.c_str()));
+			setItemText(item->getIcon(), va("$$PickedUp$$ %d %s", (int)item->getAmount(), sItemLocString.c_str()));
 		}
 	}
 	else
 	{
-		setItemText( item->getIcon() , va( "$$PickedUpThe$$ $$Item-%s$$\n" , item->getName().c_str() ) );
+		setItemText( item->getIcon() , va( "$$PickedUpThe$$ $$Item-%s$$" , item->getName().c_str() ) );
 	}
 
 	fullname = str( "playeritem_" ) + item->getName();

@@ -129,6 +129,7 @@ Item *AmmoEntity::ItemPickup( Entity *other, qboolean add_to_inventory, qboolean
 
 void AmmoEntity::cacheStrings( void )
 {
+	gi.Printf(va("AmmoEntity::cacheStrings: %s\n", item_name.c_str()));
 	G_FindConfigstringIndex( va( "$$CouldNotPickUp$$ $$Ammo-%s$$ $$FullAmmo$$", item_name.c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
 	G_FindConfigstringIndex( va( "$$PickedUp$$ %d $$Ammo-%s$$\n", (int)amount, item_name.c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );	
 }
