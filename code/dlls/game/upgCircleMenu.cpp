@@ -10,6 +10,8 @@
 #include "player.h"
 #include "gamecmds.h"
 
+UpgCircleMenu upgCircleMenu;
+
 //hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_circleMenu
 (
@@ -618,4 +620,22 @@ void Player::circleMenuClear(int iOption)
 			circleMenuSet(i, "", "", "", false, 999999, 0, "");
 		}
 	}
+}
+
+//hzm gameupdate chrissstrahl [b60011]  - clears dialog option from circle menu
+void UpgCircleMenu::init()
+{
+	int		active = 0;
+	int		numOfSegments = 0;
+	//viewangle - stored upon opening the menu
+	Vector	viewAngle = Vector(0, 0, 0);
+	//last time the menu did think
+	float	thinkTime = 0.0f;
+	//time when the menu was activated - used to prevent premature opening/closeing
+	float	activatingTime = 0.0f;
+	//remember stuff so we can compare
+	Vector	lastViewangle = Vector(0, 0, 0);
+	Vector	longtimeViewangle = Vector(0, 0, 0);
+	str		lastWidget = "";
+	int		lastSegment = -1;
 }

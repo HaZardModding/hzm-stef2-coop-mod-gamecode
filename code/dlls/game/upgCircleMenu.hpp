@@ -28,19 +28,20 @@ extern Event EV_Player_circleMenuClear;
 class UpgCircleMenu
 {
 public:
-	int		active = 0;
-	int		numOfSegments = 0;
+	int		active;
+	int		numOfSegments;
 	//viewangle - stored upon opening the menu
-	Vector	viewAngle = Vector(0, 0, 0);
+	Vector	viewAngle;
 	//last time the menu did think
-	float	thinkTime = 0.0f;
+	float	thinkTime;
 	//time when the menu was activated - used to prevent premature opening/closeing
-	float	activatingTime = 0.0f;
+	float	activatingTime;
 	//remember stuff so we can compare
-	Vector	lastViewangle = Vector(0, 0, 0);
-	Vector	longtimeViewangle = Vector(0, 0, 0);
-	str		lastWidget = "";
-	int		lastSegment = -1;
+	Vector	lastViewangle;
+	Vector	longtimeViewangle;
+	str		lastWidget;
+	int		lastSegment;
+	void	init();
 //int		currentSegment = -1;
 
 	//circlemenu options
@@ -57,7 +58,6 @@ public:
 	str		optionDialogText	[CIRCLEMENU_MAX_OPTIONSDIALOG];
 	str		optionDialogIcon	[CIRCLEMENU_MAX_OPTIONSDIALOG];
 };
-
 
 //UpgCircleMenu::circleMenu();
 

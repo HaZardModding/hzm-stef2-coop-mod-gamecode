@@ -26,6 +26,8 @@ CoopServer coopServer;
 extern CoopNpcTeam coopNpcTeam;
 #include "coopChallenges.hpp"
 extern CoopChallenges coopChallenges;
+#include "upgCircleMenu.hpp"
+extern UpgCircleMenu upgCircleMenu;
 
 #include "player.h"
 #include "mp_manager.hpp"
@@ -1113,7 +1115,8 @@ void coop_serverCoop()
 		levelVars.SetVariable("isCoopActive", 1.0f);
 	}
 
-	//hzm coop mod chrissstrahl - check if ssv_floodprotect should be enabled
+	//hzm coop mod chrissstrahl - check if sv_floodprotect should be enabled
+	//if coop is not active
 	if ( !game.coop_isActive ) {
 		int iSvFlood = atoi( coop_parserIniGet( "ini/serverData.ini" , "sv_floodprotect" , "server" ) );
 		if ( iSvFlood ) {
@@ -1148,6 +1151,7 @@ void coop_serverCoop()
 	//[b60011] chrissstrahl - load data from ini file of this level for NPC Auto Teammates
 	coopNpcTeam.init();
 	coopChallenges.init();
+	upgCircleMenu.init();
 }
 
 //================================================================
