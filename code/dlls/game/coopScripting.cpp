@@ -36,7 +36,7 @@ str CoopScripting::checkIncludedFiles(str sLex)
 
 	//[b607] chrissstrahl - dynamically replace global_scripts with coop versions (only in multiplayer)
 	sLex = checkReplaceInclude(sLex);
-	//[b611] chrissstrahl - return replaced script files
+	//[b60011] chrissstrahl - return replaced script files
 	return sLex;
 }
 

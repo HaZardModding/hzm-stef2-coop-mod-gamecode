@@ -2546,7 +2546,7 @@ void Listener::PostEvent( Event *ev, float time, int flags )
 	if ( LoadingSavegame )
 	{
 		// while technically not bad, if we got here we have an event that is being posted while loading which is a bad thing
-		assert( 0 );
+		assert( 0 ); //[b60011] chrissstrahl - if you get here while loading a savegame you probably forgot to archive a var or poiter that is accsessed after restoring the savegame (but it does not exist or is not inizialised)
 		if ( !ev->info.inuse )
 		{
 			delete ev;

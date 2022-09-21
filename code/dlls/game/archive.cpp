@@ -250,7 +250,7 @@ void Archiver::Close( void )
 			fixup = fixupList.ObjectAt( i );
 			classptr = classpointerList.ObjectAt( fixup->index );
 			
-			// Make sure the ptr isn't screwed up
+			// Make sure the ptr isn't screwed up //[b60011] chrissstrahl - if you get here while loading a savegame a var/pointer is accsessed that was not archived, if vars are accsessed during sp they need to be archived properly
 			assert( !( ( classptr == NULL ) && ( fixup->index != ARCHIVE_NULL_POINTER ) ) );
 			
 			if ( fixup->type == pointer_fixup_normal )
