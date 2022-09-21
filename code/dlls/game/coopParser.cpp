@@ -499,7 +499,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 	//start writing the new file - will be written outside of a pk3
 
 	//make static so we can check if it is already open
-	static fileHandle_t iniFile = 0;
+	static fileHandle_t iniFile = NULL;
 
 	//make sure no file is open from last time
 	if ( iniFile ) {
@@ -637,6 +637,6 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 	//close file
 	gi.FS_Flush( iniFile );
 	gi.FS_FCloseFile( iniFile );
-	iniFile = 0;
+	iniFile = NULL;
 	return true;
 }
