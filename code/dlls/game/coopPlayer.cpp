@@ -1230,8 +1230,9 @@ void coop_playerEnterArena(int entnum, float health)
 	//hzm coop mod chrissstrahl - retore health, armor and ammo to previouse state
 	coop_playerRestore(player);
 
-	//[b60011] chrissstrahl - handle NPC / AI Teammates
-	coopNpcTeam.playerReadyCheck(player);
+//[b60011] chrissstrahl - handle NPC / AI Teammates
+//coopNpcTeam.playerReadyCheck(player);
+//already in think
 
 	//[b60011] chrissstrahl 
 	coopChallenges.playerEntered(player);
@@ -1876,7 +1877,7 @@ void coop_playerThink( Player *player )
 		return;
 	}
 	coop_playerMakeSolidASAPThink( player );
-	coop_playerPlaceableThink(player);	
+	coop_playerPlaceableThink(player);
 
 	//[608] chrissstrahl - moved up here
 	//hzm coop mod chrissstrahl - update objectives every secound in sp
@@ -1894,7 +1895,7 @@ void coop_playerThink( Player *player )
 
 	//[b607] chrissstrahl - moved here to prevent players staying solid in regular Multimatch
 	//hzm coop mod chrissstrahl - exit here if this is not coop
-	if (!game.coop_isActive) {
+	if (!game.coop_isActive) { //GT_SINGLE_PLAYER - see above
 		return;
 	}
 
@@ -1920,7 +1921,6 @@ void coop_playerThink( Player *player )
 				coop_playerPlaceAtSpawn( player );
 			}
 		}
-
 
 		if ( player->health > 1 ){
 			player->coopPlayer.neutralized = false;

@@ -1,5 +1,3 @@
-#pragma once
-
 //-----------------------------------------------------------------------------------
 // Code by:	HaZardModding, Christian Sebastian Strahl, 
 // E-Mail:	chrissstrahl@yahoo.de
