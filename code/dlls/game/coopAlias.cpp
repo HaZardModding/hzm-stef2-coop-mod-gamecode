@@ -19,9 +19,6 @@
 
 #include "_pch_cpp.h"
 
-#include "coopCheck.hpp"
-#include "coopReturn.hpp"
-
 //////////////////////////////////////////////////////////////////
 // CONTAINS ALLIASES TO MAKE FUNCTION NAMES EASIER, because I am
 // so sick and tired of not finding what I am loking for
@@ -32,14 +29,6 @@
 //xx.append(str); //ensures the memory is alocated and if it is already it wil waste no more extra
 //sLine[0] == ';' ? "^8":"^2"
 
-int coop_find(str &sSource, str &sKeyword ){ return coop_returnIntFind( sSource , sKeyword ); }
-
-void coop_trimM( str &sTrim , const str &sTrimMatch ) { coop_manipulateStringTrim( sTrim , sTrimMatch ); }
-str coop_trim( str sTrim , const str &sTrimMatch ) { return coop_returnStringTrim( sTrim , sTrimMatch ); }
-
-str coop_substrToEnd( const str &sString , const int &iStart ) { return coop_returnStringStartingFrom( sString ,iStart );}
-void coop_substrM( str &sString , const int &iStart , int iEnd ) { coop_manipulateStringFromWithLength(sString , iStart , iEnd ); }
-str coop_substr( str sString , const int &iStart , int iEnd ) { return coop_returnStringFromWithLength( sString , iStart , iEnd ); }
-
-str coop_getFileName(const str &sPath) { return coop_returnStringFilenameOnly( sPath ); }
-str coop_getFileExtension(const str &sPath) { return coop_returnStringFileExtensionOnly( sPath ); }
+//see header for INLINE functions
+//see header for INLINE functions
+//see header for INLINE functions

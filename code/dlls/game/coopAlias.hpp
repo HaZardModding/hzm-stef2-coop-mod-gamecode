@@ -2,17 +2,46 @@
 #define __COOPALIAS_HPP__
 
 #include "_pch_cpp.h"
+#include "coopCheck.hpp"
+#include "coopReturn.hpp"
 
-inline int coop_find( str &sSource , str &sKeyword );
+inline int coop_find(str& sSource, str& sKeyword)
+{
+	return coop_returnIntFind(sSource, sKeyword);
+}
 
-inline void coop_trimM( str &sTrim , const str &sTrimMatch );
-inline str coop_trim( str sTrim , const str &sTrimMatch );
+inline void coop_trimM(str& sTrim, const str& sTrimMatch)
+{
+	coop_manipulateStringTrim(sTrim, sTrimMatch);
+}
+inline str coop_trim(str sTrim, const str& sTrimMatch)
+{
+	return coop_returnStringTrim(sTrim, sTrimMatch);
+}
 
-inline str coop_substrToEnd( const str &sString , const int &iStart );
-inline void coop_substrM( str &sString , const int &iStart , int iEnd );
-inline str coop_substr( str sString , const int &iStart , int iEnd );
+inline str coop_substrToEnd(const str& sString, const int& iStart)
+{
+	return coop_returnStringStartingFrom(sString, iStart);
+}
 
-inline str coop_getFileName( const str &sPath );
-inline str coop_getFileExtension( const str &sPath );
+inline void coop_substrM(str& sString, const int& iStart, int iEnd)
+{
+	coop_manipulateStringFromWithLength(sString, iStart, iEnd);
+}
+
+inline str coop_substr( str sString , const int &iStart , int iEnd )
+{
+	return coop_returnStringFromWithLength(sString, iStart, iEnd);
+}
+
+inline str coop_getFileName( const str &sPath )
+{ 
+	return coop_returnStringFilenameOnly(sPath);
+}
+
+inline str coop_getFileExtension( const str &sPath )
+{
+	return coop_returnStringFileExtensionOnly(sPath);
+}
 
 #endif
