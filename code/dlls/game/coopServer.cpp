@@ -1102,6 +1102,10 @@ void coop_serverCoop()
 		gi.Printf( va( "==== %s is included in this coop build! ====\n" , currentMapName.c_str() ) );
 	}
 
+	//[b60011] chrissstrahl - înitzialise
+	coopNpcTeam.init();
+	coopChallenges.init();
+
 	//hzm coop mod chrissstrahl - NO MORE - Gallifrey Falls No More
 	if ( g_gametype->integer != GT_MULTIPLAYER ) {
 		return;
@@ -1147,11 +1151,6 @@ void coop_serverCoop()
 
 	//hzm coop mod chrissstrahl - run server corrections and setup
 	coop_serverSetup();
-
-	//[b60011] chrissstrahl - load data from ini file of this level for NPC Auto Teammates
-	coopNpcTeam.init();
-	coopChallenges.init();
-	upgCircleMenu.init();
 }
 
 //================================================================
