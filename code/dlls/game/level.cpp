@@ -723,15 +723,16 @@ void Level::SpawnEntities( const char *themapname, const char *entities, int lev
 	// is completely ready
 	//
 	
-	if ( game.maxclients == 1 )
-	{
-		//[b607] chrissstrahl - fix ghost player being spawned on a dedicated/multiplayer server
-		if (g_gametype->integer == GT_BOT_SINGLE_PLAYER || g_gametype->integer == GT_SINGLE_PLAYER) {
-			spawn_entnum = 0;
-			spawn_bot = 0; //[b607] daggolin - added to mark this player as human (new botflag)
-			new Player;
-		}
+	//[b60011] chrissstrahl - gamefix - fixing random renderer and fov issues during singleplayer, caused by the fix
+	//[b607] gamefix chrissstrahl - fix ghost player being spawned on a dedicated/multiplayer server
+#ifdef WIN32 //MAC -> _WIN32
+	//if (dedicated->integer == 0) {}
+	if (g_gametype->integer == GT_BOT_SINGLE_PLAYER || g_gametype->integer == GT_SINGLE_PLAYER ) {
+		spawn_entnum = 0;
+		spawn_bot = 0; //[b607] daggolin - added to mark this player as human (new botflag)
+		new Player;
 	}
+#endif
 }
 
 void Level::NewMap( const char *mapname, const char *entities, int levelTime )

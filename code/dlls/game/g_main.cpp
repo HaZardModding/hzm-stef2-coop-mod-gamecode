@@ -2136,6 +2136,7 @@ extern "C" void G_ClientUserinfoChanged( gentity_t *ent, const char *userinfo )
 	char tempName[ MAX_NETNAME ];
 	int i;
 	bool validName;
+
 	
 	try
 	{
@@ -2152,9 +2153,8 @@ extern "C" void G_ClientUserinfoChanged( gentity_t *ent, const char *userinfo )
 		{
 		assert( 0 );
 		return;
-		}
-		*/
-
+		}*/
+		
 		// set name
 		s = Info_ValueForKey( userinfo , "name" );
 		if ( !s )
