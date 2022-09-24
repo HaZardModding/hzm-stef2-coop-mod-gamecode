@@ -66,7 +66,6 @@ void coop_armoryRememberLastUsed( Player *player, str sWeapon )
 //================================================================
 void coop_armoryEquipPlayer(Player *player)
 {
-	gi.Printf("COOPDEBUG: coop_armoryEquipPlayer()\n");
 	if ( !player )return;
 //	bool bGiveSecretWeapons=true;
 	int iWeapons=0;
