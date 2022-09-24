@@ -130,7 +130,7 @@ Item *AmmoEntity::ItemPickup( Entity *other, qboolean add_to_inventory, qboolean
 void AmmoEntity::cacheStrings( void )
 {
 	G_FindConfigstringIndex( va( "$$CouldNotPickUp$$ $$Ammo-%s$$ $$FullAmmo$$", item_name.c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
-	G_FindConfigstringIndex( va( "$$PickedUp$$ %d $$Ammo-%s$$\n", (int)amount, item_name.c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );	
+	G_FindConfigstringIndex( va( "$$PickedUp$$ %d $$Ammo-%s$$", (int)amount, item_name.c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );	
 }
 
 // This is the Class that is used to keep track of ammo in the player's inventory.

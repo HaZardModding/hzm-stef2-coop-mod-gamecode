@@ -998,9 +998,9 @@ void Item::ChangeSkin( int skinNum, qboolean state )
 
 void Item::cacheStrings( void )
 {
-	G_FindConfigstringIndex( va( "$$PickedUp$$ %d $$Item-%s$$\n", (int)getAmount(), getName().c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
-	G_FindConfigstringIndex( va( "$$PickedUp$$ %d $$Item-%s$$s\n", (int)getAmount(), getName().c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
-	G_FindConfigstringIndex( va( "$$PickedUpThe$$ $$Item-%s$$\n", getName().c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
+	G_FindConfigstringIndex( va( "$$PickedUp$$ %d $$Item-%s$$", (int)getAmount(), getName().c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
+	G_FindConfigstringIndex( va( "$$PickedUp$$ %d $$Item-%s$$s", (int)getAmount(), getName().c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
+	G_FindConfigstringIndex( va( "$$PickedUpThe$$ $$Item-%s$$", getName().c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
 }
 
 CLASS_DECLARATION( Item, MultiplayerItem, NULL )

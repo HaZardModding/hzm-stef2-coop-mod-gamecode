@@ -5811,7 +5811,9 @@ void Weapon::setFireOffset( Event *ev )
 
 void Weapon::cacheStrings( void )
 {
-	G_FindConfigstringIndex( va( "$$PickedUpThe$$ $$Weapon-%s$$\n", getName().c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
+	//[b60011] chrissstrahl - changed so it can be debugged
+	str sName = getName();
+	G_FindConfigstringIndex( va( "$$PickedUpThe$$ $$Weapon-%s$$", sName.c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
 }
 
 void Weapon::setAutoReload( Event *ev )
