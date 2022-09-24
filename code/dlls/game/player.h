@@ -367,7 +367,7 @@ class Player : public Sentient
 		// blend
 		float				blend[ 4 ];		// rgba full screen effect
 		float				fov;			// horizontal field of view
-		float				_userFovChoice;
+		//float				_userFovChoice;  //[b60011] chrissstrahl - this was already disabled, disabled it in: inline void Player::Archive( Archiver &arc )
 
 		// vehicle stuff
 		VehiclePtr			vehicle;
@@ -1407,7 +1407,7 @@ inline void Player::Archive( Archiver &arc )
 
 	arc.ArchiveRaw( blend, sizeof( blend ) );
 	arc.ArchiveFloat( &fov );
-	arc.ArchiveFloat( &_userFovChoice );
+	//arc.ArchiveFloat( &_userFovChoice ); //[b60011] chrissstrahl - this var is not used
 
 	arc.ArchiveSafePointer( &vehicle );
 	arc.ArchiveVector( &v_angle );
