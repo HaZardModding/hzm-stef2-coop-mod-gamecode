@@ -16,6 +16,8 @@
 *.lib
 *.exp
 *.pdb
+*.o
+*.so
 Browse.VC.*
 code/linux/debugi386
 code/linux/releasei386
