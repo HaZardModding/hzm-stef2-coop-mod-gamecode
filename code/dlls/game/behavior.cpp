@@ -4574,9 +4574,9 @@ BehaviorReturnCode_t	FlyCloseToPlayer::Evaluate( Actor &self )
 		Entity *currentEnemy;
 		currentEnemy = self.enemyManager->GetCurrentEnemy();
 		if ( currentEnemy->isSubclassOf( Player )){
-			Player * player = (Player*)currentEnemy;
-			if ( !multiplayerManager.isPlayerSpectator( player ) && player->getHealth() > 0 ){
-				if ( !( player->flags & FL_NOTARGET ) ){
+			Player * playerCurrent = (Player*)currentEnemy;
+			if ( !multiplayerManager.isPlayerSpectator(playerCurrent) && playerCurrent->getHealth() > 0 ){
+				if ( !(playerCurrent->flags & FL_NOTARGET ) ){
 					bGetClosest = false;
 				}
 			}
@@ -4590,7 +4590,8 @@ BehaviorReturnCode_t	FlyCloseToPlayer::Evaluate( Actor &self )
 		return BEHAVIOR_SUCCESS;
 	}
 
-	if ( next_goal_time <= level.time )
+	//[b60011] chrissstrahl - this shuts the compiler up
+	if (player && next_goal_time <= level.time )
 	{
 		goal = player->centroid;
 		//goal[0] += G_Random( 30 ) - 15.0;
@@ -11809,7 +11810,7 @@ BehaviorReturnCode_t	HelicopterFlyToPoint::Evaluate
 	float y_offset = 0.0f;
 	//float z_offset = 0.0f;
 
-	Entity *currentEnemy;
+	Entity *currentEnemy = NULL;
 
    if (offsetOrigin)
 		{
