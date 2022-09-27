@@ -622,7 +622,6 @@ void TriggerCoopEntityArchetype::Activate( Event *ev )
 {
 #define REMOVE (1<<0)
 	str sArcheType = "";
-	Entity *master = NULL;
 	ScriptVariable *entityVar1 = entityVars.GetVariable( "uservar1" );
 
 	if ( spawnflags & REMOVE )
@@ -962,12 +961,10 @@ void TriggerCoopEntityRelativemove::Activate( Event *ev )
 	else
 		activator = other;
 
-	int iAnkerNumber = 0;
 	int iIndex = 0;
 	str sTargetname = "";
 	ScriptVariable *entityVar1 = entityVars.GetVariable( "uservar1" );
 	ScriptVariable *entityVar2 = entityVars.GetVariable( "uservar2" );
-	ScriptVariable *entityVar3 = entityVars.GetVariable( "uservar3" );
 	if ( !entityVar1 )
 	{
 		gi.Printf( "TriggerCoopEntityRelativemove::Activate - uservar1 is not set, should contain base-targetname!\n" );
@@ -1606,9 +1603,9 @@ void TriggerCoopEntityTransport::Activate( Event *ev )
 		Event *newEvent4 = new Event( EV_Show );
 		activator->PostEvent( newEvent4 , fBeamTime + 0.1f );
 
-		Event *even = new Event( EV_Warp );
-		even->AddVector( vNew );
-		activator->PostEvent( even , fBeamTime );
+		Event * eventWarp = new Event( EV_Warp );
+		eventWarp->AddVector( vNew );
+		activator->PostEvent(eventWarp, fBeamTime );
 
 		if ( activator->isSubclassOf( Player ) || activator->isSubclassOf( Actor ) )
 		{
@@ -1621,15 +1618,15 @@ void TriggerCoopEntityTransport::Activate( Event *ev )
 				activator->PostEvent( newEventReset2 , fBeamTime + fBeamTime + 0.9f );
 			}
 
-			Event *even = new Event( EV_Warp );
-			even->AddVector( vNew );
-			activator->PostEvent( even , fBeamTime );
+			Event *eventWarp2 = new Event( EV_Warp );
+			eventWarp2->AddVector( vNew );
+			activator->PostEvent(eventWarp2, fBeamTime );
 		}
 		else
 		{
-			Event *even = new Event( EV_SetOrigin );
-			even->AddVector( vNew );
-			activator->PostEvent( even , fBeamTime );
+			Event *eventSetOrigin = new Event( EV_SetOrigin );
+			eventSetOrigin->AddVector( vNew );
+			activator->PostEvent(eventSetOrigin, fBeamTime );
 		}
 
 		//set angle
@@ -1869,8 +1866,8 @@ void TriggerCoopEntityHealth::Activate( Event *ev )
 #define NOT_IMMORTAL (1<<3)
 #define ALL_PLAYERS (1<<4)
 
-	Entity *ent;
-	Actor *actor;
+	Entity *ent = NULL;
+	Actor *actor = NULL;
 	if ( target.length() > 0 )
 	{
 		ent = coop_returnEntity( target );
@@ -3529,8 +3526,6 @@ void TriggerCoopCinematicStart::Activate( Event *ev )
 	else
 		activator = NULL;
 
-	float fFadeTime = 0.1f;
-
 	//start cinematic
 	G_StartCinematic(); //G_StopCinematic();
 
@@ -3998,7 +3993,7 @@ void TriggerCoopMissionTactical::Activate( Event *ev )
 	str sTacDeu;
 	str sTacEng;
 	int iValid = 0;
-	int iItem;
+	short int iItem;
 	for ( iItem = 1; iItem < 4; iItem++ )
 	{
 		ScriptVariable *entityVar, *entityVar2;
@@ -4051,9 +4046,9 @@ void TriggerCoopMissionTactical::Activate( Event *ev )
 		if ( !currentPlayer )
 			continue;
 
-		int short iItem;
-		for ( iItem = 1; iItem < 4; iItem++ ){
-			coop_objectives_tacticalShow( currentPlayer , iItem );
+		int short iItemTac;
+		for (iItemTac = 1; iItemTac < 4; iItemTac++ ){
+			coop_objectives_tacticalShow( currentPlayer , iItemTac);
 		}
 	}
 
@@ -4382,8 +4377,6 @@ void TriggerCoopPlayerHud::Activate( Event *ev )
 	else
 		activator = other;
 
-	int short validItems = 0;
-
 	int iPlayer;
 	Player* currentPlayer;
 	ScriptVariable *entityVar1 = entityVars.GetVariable( "uservar1" );
@@ -4663,8 +4656,6 @@ void TriggerCoopPlayerAmmo::Activate( Event *ev )
 		activator = world;
 	else
 		activator = other;
-
-	int short validItems = 0;
 
 	int iPlayer;
 	Player* currentPlayer;
@@ -4974,9 +4965,8 @@ void TriggerCoopPlayerItem::Activate( Event *ev )
 			}
 		}
 		//use activator
-		else if ( activator != world )
+		else if ( activator != world && activator->isSubclassOf(Player))
 		{
-			Player *player = (Player*)( Entity* )activator;
 			Event *newEvent2 = new Event( EV_Player_UseItem );
 			newEvent2->AddString( sLastValid.c_str() );
 			activator->ProcessEvent( newEvent2 );

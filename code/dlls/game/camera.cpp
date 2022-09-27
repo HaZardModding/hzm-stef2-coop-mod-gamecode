@@ -3830,11 +3830,10 @@ void CameraManager::Load( Event* ev )
 	pathList.AddUniqueObject( name );
 	if ( show )
 	{
-		Event * ev;
-
-		ev = new Event( EV_CameraManager_SetPath );
-		ev->AddString( name );
-		PostEvent( ev, 0.0f );
+		Event * evnt;
+		evnt = new Event( EV_CameraManager_SetPath );
+		evnt->AddString( name );
+		PostEvent(evnt, 0.0f );
 		ShowPath();
 	}
 }

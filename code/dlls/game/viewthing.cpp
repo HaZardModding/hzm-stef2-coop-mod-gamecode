@@ -1557,10 +1557,10 @@ void ViewMaster::Spawn( Event *ev )
 		int pos = g_vt_modelIndex->integer ;
 		if ((pos > 1) && (pos < _modelNamesArray.NumObjects()) && (_modelNamesArray.ObjectAt(pos) != modelName) )
 		{
-			int pos = _modelNamesArray.IndexOfObject(modelName);
-			if (pos)
+			int pos2 = _modelNamesArray.IndexOfObject(modelName);
+			if (pos2)
 			{
-				gi.cvar_set( "g_vt_modelIndex", va("%d", pos) );
+				gi.cvar_set( "g_vt_modelIndex", va("%d", pos2) );
 				DeleteCurrentViewthing();
 				DisplayCurrentModelInSet();
 				return ;

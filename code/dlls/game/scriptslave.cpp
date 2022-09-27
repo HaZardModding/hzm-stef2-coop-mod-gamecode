@@ -2042,20 +2042,20 @@ void ScriptSlave::FollowPath( Event *ev )
 		
 		if ( currentNode->triggertarget != "" )
 		{
-			Entity	*ent;
+			Entity	*entActivate;
 			Event		*event;
 			
-			ent = NULL;
+			entActivate = NULL;
 			do
 			{
-				ent = G_FindTarget( ent, currentNode->triggertarget.c_str() );
-				if ( !ent )
+				entActivate = G_FindTarget( entActivate, currentNode->triggertarget.c_str() );
+				if ( !entActivate )
 				{
 					break;
 				}
 				event = new Event( EV_Activate );
 				event->AddEntity( this );
-				ent->PostEvent( event, 0.0f );
+				entActivate->PostEvent( event, 0.0f );
 			}
 			while ( 1 );
 		}

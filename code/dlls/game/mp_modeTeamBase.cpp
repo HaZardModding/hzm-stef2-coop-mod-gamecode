@@ -1002,7 +1002,7 @@ bool ModeTeamBase::canJoinTeam( Player *player, const str &teamName )
 
 	if ( multiplayerManager.checkFlag( MP_FLAG_AUTO_BALANCE_TEAMS ) )
 	{
-		Team *team;
+		Team *team2;
 		Team *redTeam;
 		Team *blueTeam;
 		int redTeamPlayers;
@@ -1010,7 +1010,7 @@ bool ModeTeamBase::canJoinTeam( Player *player, const str &teamName )
 
 		// Get all of the teams
 
-		team = getTeam( teamName );
+		team2 = getTeam( teamName );
 		redTeam = getTeam( "Red" );
 		blueTeam = getTeam( "Blue" );
 
@@ -1026,12 +1026,12 @@ bool ModeTeamBase::canJoinTeam( Player *player, const str &teamName )
 
 		// Don't allow switch unless it's to the team that has less people
 
-		if ( ( redTeamPlayers > blueTeamPlayers ) && ( team == redTeam ) )
+		if ( ( redTeamPlayers > blueTeamPlayers ) && ( team2 == redTeam ) )
 		{
 			multiplayerManager.centerPrint( player->entnum, "$$CannotJoinAutoBalanceRed$$", CENTERPRINT_IMPORTANCE_HIGH );
 			return false;
 		}
-		else if ( ( blueTeamPlayers > redTeamPlayers ) && ( team == blueTeam ) )
+		else if ( ( blueTeamPlayers > redTeamPlayers ) && ( team2 == blueTeam ) )
 		{
 			multiplayerManager.centerPrint( player->entnum, "$$CannotJoinAutoBalanceBlue$$", CENTERPRINT_IMPORTANCE_HIGH );
 			return false;

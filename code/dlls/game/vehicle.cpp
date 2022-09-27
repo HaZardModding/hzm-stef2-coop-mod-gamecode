@@ -1265,19 +1265,19 @@ void DrivableVehicle::Killed(Event *ev)
 	//
 	if ( driver )
 	{
-		Vector dir;
+		Vector dir2;
 		SentientPtr sent;
-		Event * event;
+		Event * eventUse;
 		
 		velocity = vec_zero;
 		sent = driver;
-		event = new Event( EV_Use );
-		event->AddEntity( sent );
-		ProcessEvent( event );
-		dir = sent->origin - origin;
-		dir[ 2 ] += 64.0f;
-		dir.normalize();
-		sent->Damage( this, this, sent->health * 2.0f, origin, dir, vec_zero, 50, 0, MOD_VEHICLE  );
+		eventUse = new Event( EV_Use );
+		eventUse->AddEntity( sent );
+		ProcessEvent(eventUse);
+		dir2 = sent->origin - origin;
+		dir2[ 2 ] += 64.0f;
+		dir2.normalize();
+		sent->Damage( this, this, sent->health * 2.0f, origin, dir2, vec_zero, 50, 0, MOD_VEHICLE  );
 	}
 	
 	if (flags & FL_DIE_EXPLODE)

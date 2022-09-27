@@ -537,9 +537,9 @@ void AdaptiveArmor::_UpdateAdaption( int MeansOfDeath , float damage )
 				adaption->adapted = true;				
 
 				Actor *act;
-				for ( int i=1; i<=ActiveList.NumObjects(); i++ )
+				for ( int j=1; j<=ActiveList.NumObjects(); j++ )
 				{
-					act = ActiveList.ObjectAt(i);
+					act = ActiveList.ObjectAt(j);
 					if ( !act )
 						continue;
 					

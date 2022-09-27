@@ -919,9 +919,6 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 		delete delCategories;
 	}
 	/////////////////////////////////////////////////////////////////////
-	int i;
-	int iNew;
-
 	//hzm coop mod chrissstrahl - search current map
 	//hzm gameupdate chrissstrahl - just to be sure, and to cupport $ als map var indicator
 	int iVarPos;
@@ -1044,8 +1041,8 @@ bool coop_vote_addbotSet(const str _voteString)
 	//[b607] chrissstrahl - limit for number of bots that can be added via callvote
 	int iNumberOfBots = 0;
 	gclient_t	*cl;
-	for (int i = 0; i < maxclients->integer; i++) {
-		cl = game.clients + i;
+	for (int j = 0; j < maxclients->integer; j++) {
+		cl = game.clients + j;
 		if (!(g_entities[cl->ps.clientNum].svflags & SVF_BOT)) {
 			continue;
 		}

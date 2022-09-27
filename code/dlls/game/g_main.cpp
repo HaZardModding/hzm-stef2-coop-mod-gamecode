@@ -2219,20 +2219,20 @@ extern "C" void G_ClientUserinfoChanged( gentity_t *ent, const char *userinfo )
 		
 		//hzm gamefix daggolin - filter the name
 		static const char	validChars[]  = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789 ~<>?,./'][{}`-=!@#$^&*()_+|";
-		int					i , j;
+		int					k , j;
 		//hzm gamefix chrissstrahl - using it as bool, so we are using now a bool :D, and while we are at it inizialize
 		bool isValidChar=false;
 		
-		for ( i = 0; i < strlen(tempName); i++ )
+		for ( k = 0; k < strlen(tempName); k++ )
 		{
 			isValidChar = false;
 
 			for ( j = 0; validChars[j]; j++ )
 			{
-				if ( tempName[i] == validChars[j] ) isValidChar = true;
+				if ( tempName[k] == validChars[j] ) isValidChar = true;
 			}
 
-			if ( !isValidChar )	tempName[i] = '.';
+			if ( !isValidChar )	tempName[k] = '.';
 		}
 
 		if ( strcmp( ent->client->pers.netname, tempName ) != 0 )

@@ -1078,10 +1078,6 @@ int MultiplayerModeBase::getStat( Player *player, int statNum, int value )
 {
 	if ( statNum == STAT_MP_STATE )
 	{
-		int numPlayers;
-		int i;
-		Player *player;
-
 		if ( _gameStarted )
 		{
 			if ( !value )
@@ -1094,20 +1090,20 @@ int MultiplayerModeBase::getStat( Player *player, int statNum, int value )
 			return _warmUpTextIndex;
 
 		// Make sure we have enough players
+		int numPlayers = 0;
 
-		numPlayers = 0;
-
-		for ( i = 0 ; i < _maxPlayers ; i++ )
+		for (int i = 0 ; i < _maxPlayers ; i++ )
 		{
-			player = multiplayerManager.getPlayer( i );
+			Player *playerCount;
+			playerCount = multiplayerManager.getPlayer( i );
 
-			if ( player && !multiplayerManager.isPlayerSpectatorByChoice( player ) )
+			if (playerCount && !multiplayerManager.isPlayerSpectatorByChoice(playerCount) )
 			{
 				numPlayers++;
 			}
 		}
 
-		//hzm coop mod chrissstrahl - check only whilke not in coop
+		//[b600] coop mod chrissstrahl - check only while not in coop
 		if ( !game.coop_isActive ){
 			if ( numPlayers < mp_minPlayers->integer ){
 				return _waitingForMinPlayersTextIndex;

@@ -2799,14 +2799,14 @@ void ModifierSpecialties::setupSpecialty( Player *player, SpecialtyType specialt
 
 	if ( armorToGive > 0.0f )
 	{
-		Event *armorEvent;
+		Event *armorEvent2;
 
-		armorEvent = new Event( EV_Sentient_GiveArmor );
-		armorEvent->AddString( "BasicArmor" );
-		armorEvent->AddFloat( armorToGive );
-		armorEvent->AddInteger( false );
+		armorEvent2 = new Event( EV_Sentient_GiveArmor );
+		armorEvent2->AddString( "BasicArmor" );
+		armorEvent2->AddFloat( armorToGive );
+		armorEvent2->AddInteger( false );
 
-		player->ProcessEvent( armorEvent );	
+		player->ProcessEvent( armorEvent2 );	
 	}
 
 	// Tell the player his specialty
