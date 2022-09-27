@@ -622,20 +622,20 @@ qboolean PathNode::TestMove( Entity *ent, const Vector &original_start, const Ve
 		// Since we're not doing a full test (full tests are only done when we're connecting nodes to save time),
 		// we test to see if the midpoint of the move would only cause a change in height of STEPSIZE
 		// from the predicted height.  This prevents most cases where a dropoff lies between a actor and a node.
-		Vector pos;
+		Vector pos2;
 		
 		// Since we start and end are already STEPSIZE above the ground, we have to check twice STEPSIZE below
 		// the midpoint to see if the midpoint is on the ground.
 		dir = end - start;
-		pos = start + ( dir * 0.5f );
-		end_trace = pos;
+		pos2 = start + ( dir * 0.5f );
+		end_trace = pos2;
 		end_trace.z -= STEPSIZE * 2.0f;
 		
 		// Check that the midpos is onground.  This may fail on ok moves, but a true test would be too slow
 		// to do in real time.  Also, we may miss cases where a dropoff exists before or after the midpoint.
 		// Once the actor is close enough to the drop off, it will discover the fall and hopefully try
 		// another route.
-		trace = G_Trace( pos, min, max, end_trace, ent, MASK_PATHSOLID, false, "PathNode::TestMove 2" );
+		trace = G_Trace( pos2, min, max, end_trace, ent, MASK_PATHSOLID, false, "PathNode::TestMove 2" );
 		if ( trace.startsolid || ( trace.fraction == 1.0f ) )
 		{
 			// We're not on the ground, so there's a good posibility that we can't make this move without falling.

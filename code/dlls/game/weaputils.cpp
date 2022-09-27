@@ -240,11 +240,11 @@ qboolean MeleeAttack
 						str effect = gpm->getStringValue("Criticals.Use", "tikifx");
 						if ( effect.length() )
 						{
-							Vector pos, pos2, fxpos;
-							weapon->GetActorMuzzlePosition(&pos, NULL, NULL, NULL, "tag_swipe1");
-							weapon->GetActorMuzzlePosition(&pos2, NULL, NULL, NULL, "tag_swipe2");
-							fxpos = (pos + pos2) / 2.0f; // Spark is halfway between the two points
-							weapon->SpawnEffect(effect, fxpos, Vector(0.0f,0.0f,0.0f), 2.0f); 
+							Vector vPos, vPos2, vFxpos;
+							weapon->GetActorMuzzlePosition(&vPos, NULL, NULL, NULL, "tag_swipe1");
+							weapon->GetActorMuzzlePosition(&vPos2, NULL, NULL, NULL, "tag_swipe2");
+							vFxpos = (vPos + vPos2) / 2.0f; // Spark is halfway between the two points
+							weapon->SpawnEffect(effect, vFxpos, Vector(0.0f,0.0f,0.0f), 2.0f);
 						}
 					}
 					
@@ -2427,8 +2427,8 @@ float BulletAttack(
 	{
 		if ( owner && owner->isSubclassOf( Player ) )
 		{
-			Player *player = (Player *)owner;
-			player->shotHit();
+			Player *playerOwner = (Player *)owner;
+			playerOwner->shotHit();
 		}
 		
 		return damage_total;

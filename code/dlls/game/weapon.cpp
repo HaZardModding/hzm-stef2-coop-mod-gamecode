@@ -2182,14 +2182,14 @@ void Weapon::Shoot( Event *ev )
 		
 		if ( owner->isSubclassOf( Player ) )
 		{
-			Vector forward;
+			Vector vForward;
 
 			Player *player = (Player *)owner;
 			melee_pos = player->origin + Vector( 0.0f, 0.0f, player->client->ps.viewheight );
 
-			player->GetVAngles().AngleVectors( &forward );
+			player->GetVAngles().AngleVectors( &vForward);
 
-			melee_end = melee_pos + forward * _meleeLength[ mode ];
+			melee_end = melee_pos + vForward * _meleeLength[ mode ];
 		}
 		else
 		{
@@ -5811,9 +5811,7 @@ void Weapon::setFireOffset( Event *ev )
 
 void Weapon::cacheStrings( void )
 {
-	//[b60011] chrissstrahl - changed so it can be debugged
-	str sName = getName();
-	G_FindConfigstringIndex( va( "$$PickedUpThe$$ $$Weapon-%s$$", sName.c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
+	G_FindConfigstringIndex( va( "$$PickedUpThe$$ $$Weapon-%s$$",  getName().c_str() ), CS_GENERAL_STRINGS, MAX_GENERAL_STRINGS, true );
 }
 
 void Weapon::setAutoReload( Event *ev )
