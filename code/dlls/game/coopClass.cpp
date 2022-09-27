@@ -48,7 +48,7 @@
 //================================================================
 void coop_classCheckApplay( Player *player )
 {
-	//[b60011] chrissstrahl - chaning class disabled feature is located in: G_coopCom_class
+	//[b60011] chrissstrahl - changing class disabled feature, is located in: G_coopCom_class
 	if ( player->coopPlayer.lastTimeChangedClass != player->coopPlayer.lastTimeAppliedClass ){
 		coop_classApplayAttributes( player , false );
 		player->coopPlayer.lastTimeAppliedClass = player->coopPlayer.lastTimeChangedClass;
@@ -285,7 +285,6 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	//hzm coop mod chrissstrahl - definy class setup variables
 	float classMaxHealth = 100.0f;
 	float classStartArmor = 20.0f;
-	float classMaxArmor = 100.0f;
 	int classMaxAmmoPhaser = 1000;
 	int classMaxAmmoFed = 400;
 	int classMaxAmmoPlasma = 400;
@@ -294,16 +293,6 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	int classGiveAmmoFed = 0;
 	int classGiveAmmoPlasma = 0;
 	int classGiveAmmoIdryll = 0;
-	//int classFalldamageResistance = -10;
-	int classResistance = 0;				//add resistance for each weapon damage type,
-
-	//hzm coop mod chrissstrahl - make sure to give NEW ammo only if player is spawning or something like that
-	if ( !changeOnly ){
-		int classGiveAmmoPhaser = classMaxAmmoPhaser;
-		int classGiveAmmoFed = classMaxAmmoFed;
-		int classGiveAmmoPlasma = classMaxAmmoPlasma;
-		int classGiveAmmoIdryll = classMaxAmmoIdryll;
-	}
 
 	if ( !Q_stricmp( currentClass, COOP_CLASS_NAME_MEDIC) ){
 		classMaxHealth		= COOP_CLASS_MEDIC_MAX_HEALTH;

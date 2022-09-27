@@ -203,18 +203,6 @@ void CoopChallenges::playerLeft(Player* player)
 
 void CoopChallenges::update(float frameTime)
 {
-	/*
-
-	//[b60011] chrissstrahl - development protection - do not execute for anyone else
-	//this way untested and unfinished features do not accidently leak and cause issues
-	cvar_t* cvar = gi.cvar_get("username");
-	if (!cvar || coop_returnIntFind(cvar->string, "chrissstrahl") == -1) {
-		return;
-	}
-	//end development protection
-	
-	*/
-
 	//do not update the challenges:
 	// if disabled via script
 	// during cinematic
@@ -439,7 +427,6 @@ bool CoopChallenges::haloShieldRelayDamage(Sentient *sentient,float fDamage)
 {	
 	bool bRelayDamage = true;
 	float fArmor = sentient->GetArmorValue();
-	float fVal = fArmor;
 	if (game.coop_isActive && 0 /* && haloThingActive */ && fArmor > 0) {
 		if (fArmor > 0) {
 			bRelayDamage = false;
@@ -499,7 +486,7 @@ void CThread::challengeDisabledNamed(Event* ev)
 		gi.Printf("challenges that do exist are named:\n");
 		short iChallenge;
 		for (iChallenge = CoopChallengeTypes.NumObjects(); iChallenge > 0;iChallenge--) {
-			gi.Printf(va("%s\n",CoopChallengeTypes.ObjectAt(iChallenge)));
+			gi.Printf(va("%s\n",CoopChallengeTypes.ObjectAt(iChallenge).c_str()));
 		}
 		ev->ReturnInteger(iChallenge); //return 0
 		return;
