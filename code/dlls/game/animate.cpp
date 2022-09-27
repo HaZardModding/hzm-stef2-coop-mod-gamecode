@@ -337,8 +337,8 @@ void Animate::NewAnim( int animnum, bodypart_t part )
 		float length = totaldelta.length();
 		if ( length > MINIMUM_DELTA_MOVEMENT )
 		{
-			int flags = gi.Anim_Flags( self->edict->s.modelindex, animnum );
-			if ( !( flags & MDL_ANIM_DELTA_DRIVEN ) )
+			int flags2 = gi.Anim_Flags( self->edict->s.modelindex, animnum );
+			if ( !( flags2 & MDL_ANIM_DELTA_DRIVEN ) )
             {
 				length /= (float)*numframes;
 				if ( length > MINIMUM_DELTA_MOVEMENT_PER_FRAME )
