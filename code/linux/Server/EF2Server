@@ -1,3 +1,0 @@
-#!/bin/bash
-cd /opt/ef2
-./linuxef2ded +set fs_basepath /opt/ef2/ +set fs_filedir /opt/ef2/base/maps +set dedicated 2 +set developer 1 +set com_printwarnings 1 +set dedicated 2 +exec server.cfg +set net_port 29001
