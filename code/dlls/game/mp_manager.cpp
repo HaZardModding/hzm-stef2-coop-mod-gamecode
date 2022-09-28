@@ -192,9 +192,6 @@ void MultiplayerManager::start( void )
 
 void MultiplayerManager::update( float frameTime )
 {
-	int i;
-
-
 	if ( !_inMultiplayerGame )
 		return;
 
@@ -234,11 +231,10 @@ void MultiplayerManager::update( float frameTime )
 		coop_serverSaveGameVars( "skill" , skill_level );
 
 		//hzm coop mod chrissstrahl - send skill info to all players
-		int i;
 		Player *player = NULL;
-		for ( i = 0; i < maxclients->integer; i++ )
+		for (short int j = 0; j < maxclients->integer; j++ )
 		{
-			player = ( Player* )g_entities[i].entity;
+			player = ( Player* )g_entities[j].entity;
 			if ( player && player->client && player->isSubclassOf( Player ) ){
 				if ( player->coopPlayer.installed ) {
 					DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
@@ -263,7 +259,7 @@ void MultiplayerManager::update( float frameTime )
 	// Update all of the modifiers
 	if ( _multiplayerGame->inMatch() )
 	{
-		for ( i = 1 ; i <= _modifiers.NumObjects() ; i++ )
+		for (int i = 1 ; i <= _modifiers.NumObjects() ; i++ )
 		{
 			MultiplayerModifier *modifier;
 
@@ -305,7 +301,7 @@ void MultiplayerManager::update( float frameTime )
 
 	// Update dialogs
 
-	for ( i = 0 ; i < maxclients->integer ; i++ )
+	for (int i = 0 ; i < maxclients->integer ; i++ )
 	{
 		Player *player;
 
@@ -359,7 +355,7 @@ void MultiplayerManager::update( float frameTime )
 
 	// Update the players
 
-	for ( i = 0 ; i < maxclients->integer ; i++ )
+	for (int i = 0 ; i < maxclients->integer ; i++ )
 	{
 		Player *player;
 		Player *playerFollowing;
@@ -2543,7 +2539,7 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	//check if player accidently typed ^ into console
 	// hzm gameupdate chrissstrahl - check if player used /, thats a bad habbit from older games
 	int startLoc = 0;
-	for ( int i = 0; i < tempText.length();i++ )
+	for (i = 0; i < tempText.length();i++ )
 	{		
 		if ( tempText[i] == '^' || tempText[i] == '/' || tempText[i] == '\\')
 		{
@@ -2620,7 +2616,7 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	else
 	{
 //hzm gamefix chrissstrahl - do not print "Server: score" when a player connects while he has the score still displayed, this can happen when a map changes, and scores are shown
-		if ( !Q_stricmp( "score" , tempText ) || !Q_stricmpn("!class", tempText,6)) //[b60011] chrissstrahl - also filter class command
+		if ( !Q_stricmp( "score" , tempText ) || !Q_stricmpn("!class", tempText,6) || !Q_stricmpn("vote ", tempText, 5)) //[b60011] chrissstrahl - also filter class and vote command
 		{
 			return;
 		}
