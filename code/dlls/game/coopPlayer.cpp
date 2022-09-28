@@ -562,7 +562,6 @@ void coop_playerSetupHost(Player* player)
 		return;
 	}
 
-	bool bGenerateNewId = false;
 	cvar = gi.cvar_get("coop_pId");
 	sCvar = (cvar ? cvar->string : "");
 	coop_manipulateStringTrim(sCvar,"coopcid ");
@@ -1746,7 +1745,7 @@ void coop_playerPlaceableThink(Player* player)
 	if (	(player->getLastDamageTime() + 0.5f) > level.time	||
 			multiplayerManager.isPlayerSpectator(player)		||
 			player->client->ps.jumped							||
-			level.cinematic == qtrue							||
+			level.cinematic == true								||
 			player->health <= 0	) 
 	{
 		player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
@@ -2081,7 +2080,6 @@ int Player::coop_updateStatsCoopHealth(int statNum)
 			target = GetTargetedEntity();
 			if ((target) && target->isSubclassOf(Player))
 			{
-				Player* targetPlayer = (Player*)target;
 				//[b607] chrissstrahl - fix health showing when targeting a different entity that is not a player
 				value = (int)(target->getHealth() + 0.99f);
 			}
