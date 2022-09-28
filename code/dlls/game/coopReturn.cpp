@@ -871,7 +871,6 @@ str coop_returnStringDeathmessagenameForEntity( Entity * entity )
 	//	"uservar1" "name CookieMonster"
 	//
 	//Details in: coop_playerKilled, or contact HaZardModding
-	bool bItemOnList = false;
 
 	//get all items into the list, if they match the primary critiria
 	if ( !Q_stricmpn( entityClass , "ScriptSlave" , 11 ) ) {

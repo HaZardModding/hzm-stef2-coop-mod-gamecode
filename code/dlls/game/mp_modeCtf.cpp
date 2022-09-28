@@ -263,7 +263,6 @@ void ModeCaptureTheFlag::playerKilled( Player *killedPlayer, Player *attackingPl
 		if ( _playerGameData[ killedPlayer->entnum ]._currentTeam != _playerGameData[ attackingPlayer->entnum ]._currentTeam )
 		{
 			CtfFlag *ctfFlag;
-			str printString;
 
 			printString = "$$FlagCarrierKilled$$ ";
 			printString += attackingPlayer->client->pers.netname;

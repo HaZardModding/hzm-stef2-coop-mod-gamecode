@@ -63,7 +63,7 @@ bool coop_parserReadFile( const str sFile , str &buffer )
 	}
 
 	Script bufferInternal;
-	const char *token;
+	//const char *token;
 
 	// Make sure the file exists
 
@@ -203,7 +203,7 @@ void coop_parserGetItemsFromCategory( str sFile , ListenKnoten * &start , Listen
 	ListenKnoten *lastNode = NULL;
 
 	//current node
-	ListenKnoten *current = NULL;
+	//ListenKnoten *current = NULL;
 
 	//check each letter and phrase it line by line
 	for ( int i = 0; i < buffer.length(); i++ )
@@ -513,8 +513,6 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 	if ( !iniFile ) {
 		//[b60011] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
 		throw( va( "HZM-Parser coud not open file to write: %s - Write-protection? Bad-Accsess-rights?\n" , sFile.c_str() ) );
-		//if ( coop_returnCvarInteger( "developer" ) > 0 ) {
-		//}
 		return false;
 	}
 

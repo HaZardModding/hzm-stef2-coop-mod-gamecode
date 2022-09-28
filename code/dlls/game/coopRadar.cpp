@@ -131,7 +131,6 @@ void coop_radarUpdate( Player *player )
 	vRadarCenterPos[1] = ( ( vRadarCenterPos[1] + COOP_RADAR_CIRCLE_START ) - ( COOP_RADAR_BLIP_SIZE / 2 ) );
 
 	Entity	*eMiObjEntity = NULL;
-	Entity	*eMiObjEntityValid = NULL;
 	Vector	vRadarBlipLastPosition( 0.0f , 0.0f , 0.0f );
 	Vector	vRealDistance;
 	Vector	vRadarDistance;
