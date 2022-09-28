@@ -526,7 +526,6 @@ void Player::circleMenuDialogClear(int iOption)
 		circleMenuDialogSet(iOption, "", "", "");
 	}
 	else {
-		int i;
 		for (int i = 0; i < CIRCLEMENU_MAX_OPTIONSDIALOG; i++) {
 			circleMenuDialogSet(i, "", "", "");
 		}
@@ -621,7 +620,6 @@ void Player::circleMenuClear(int iOption)
 		circleMenuSet(iOption, "", "", "", false, 999999, 0, "");
 	}
 	else {
-		int i;
 		for (int i = 0; i < CIRCLEMENU_MAX_OPTIONS; i++) {
 			circleMenuSet(i, "", "", "", false, 999999, 0, "");
 		}

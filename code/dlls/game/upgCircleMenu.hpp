@@ -47,7 +47,7 @@ public:
 	str		optionText				[CIRCLEMENU_MAX_OPTIONS];
 	str		optionIcon				[CIRCLEMENU_MAX_OPTIONS];
 	bool	optionIsScript			[CIRCLEMENU_MAX_OPTIONS];
-	bool	optionAmmount			[CIRCLEMENU_MAX_OPTIONS];
+	int		optionAmmount			[CIRCLEMENU_MAX_OPTIONS];
 	bool	optionCost				[CIRCLEMENU_MAX_OPTIONS];
 	bool	optionCostType			[CIRCLEMENU_MAX_OPTIONS];
 
