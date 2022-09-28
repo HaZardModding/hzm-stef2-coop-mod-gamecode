@@ -1745,7 +1745,7 @@ void coop_playerPlaceableThink(Player* player)
 	if (	(player->getLastDamageTime() + 0.5f) > level.time	||
 			multiplayerManager.isPlayerSpectator(player)		||
 			player->client->ps.jumped							||
-			level.cinematic == true								||
+			level.cinematic == 1								||
 			player->health <= 0	) 
 	{
 		player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
