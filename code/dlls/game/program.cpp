@@ -826,7 +826,7 @@ void Program::Compile( const char *filename )
 			//[b607] chrissstrahl - changed from WPrintf to regular printf to make sure this is always shown not only if com_printwarnings is enabled
 			gi.Printf( "***\n***\n***\n*** Couldn't load %s\n***\n***\n***\n" , filename);
 #ifndef DEBUG
-			assert(0 == "Program::Compile - Couldn't load script file" ); //[b60011] chrissstrahl - added to see what the problem is while debugging
+			assert(0);
 #endif		
 			throw "Error";
 
@@ -835,7 +835,7 @@ void Program::Compile( const char *filename )
 			//[b607] chrissstrahl - changed from WPrintf to regular printf to make sure this is always shown not only if com_printwarnings is enabled
 			gi.Printf( "***\n***\n***\n*** Couldn't load %s\n***\n***\n***\n", filename);
 #ifndef DEBUG
-			assert(0 == "Program::Compile - Couldn't load script file"); //[b60011] chrissstrahl - added to see what the problem is while debugging
+			assert(0);
 #endif	
 			throw "Error";		
 		}
