@@ -648,8 +648,6 @@ void GroupCoordinator::MemberDied( Entity *entity , int ID  )
 		
 		if ( group->GetGroupID() == ID )
 		{
-			//[b607] chrissstrahl - debug test - groupmembers are not removed correctly when they stay and do not deathfade
-			//gi.Printf(va("HZM-Debug ::MemberDied group:%i current members: %i\n",ID, group->CountMembers()));
 			if (group->CountMembers() == 1 )
 			{
 				group->RunGroupDeathThread(entity);
