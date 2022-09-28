@@ -4476,7 +4476,7 @@ void Actor::AttackEntity( Event *ev	)
 
 	//[b60011] chrissstrahl - gamefix - if given entity does not exist, give us at least something man! Don't you just crash
 	if (!target) {
-		gi.Printf(va("Actor::AttackEntity - $%s.attack(entity) failed, entity does not exist\n",this->targetname));
+		gi.Printf(va("Actor::AttackEntity - $%s.attack(entity) failed, entity does not exist\n",this->targetname.c_str()));
 		return;
 	}
 
@@ -7232,6 +7232,11 @@ void Actor::Dead( Event *ev )
 	// Make sure we can walk through this guys corpse
 	edict->clipmask = MASK_DEADSOLID;
 
+	//[b60011] gamefix chrissstrahl - remove this actor instantly from the active list
+	if (ActiveList.ObjectInList((Actor*)this)) {
+		ActiveList.RemoveObject((Actor*)this);
+	}
+
 	//hzm gamefix chrissstrahl - in mp the projectiles go crazy if they are passing trugh CONTENTS_CORPSE
 	//hzm gamefix chrissstrahl - try fixing it that way, so that the players can still target it, but it wont mess with the projectiles
 	if ( g_gametype->integer > GT_SINGLE_PLAYER )
@@ -7239,11 +7244,6 @@ void Actor::Dead( Event *ev )
 		//[b608] Chrissstrahl - changed to not solid, to avoid splashdamage affecting hitboxes reported by MJ(Moritz)
 		//setContents( CONTENTS_SHOOTABLE_ONLY );
 		setSolidType( SOLID_NOT );
-		
-		//hzm gamefix chrissstrahl - remove this actor instantly from the active list
-		if ( ActiveList.ObjectInList( (Actor *)this ) ){
-			ActiveList.RemoveObject( ( Actor * )this );
-		}
 	}
 	else
 	{
@@ -8397,7 +8397,7 @@ void Actor::SetDeathSize( Event *ev	)
 	}
 
 void Actor::FadeEvent( Event *ev	)
-	{
+{
 	SetActorFlag( ACTOR_FLAG_FADING_OUT, true );
 
 	if ( GetActorFlag( ACTOR_FLAG_DEATHFADE ) )
@@ -8405,10 +8405,12 @@ void Actor::FadeEvent( Event *ev	)
 		ProcessEvent( EV_ForceAlpha );
 		ProcessEvent( EV_Fade );
 		}
-	else if ( GetActorFlag( ACTOR_FLAG_DEATHSHRINK ) )
-      ProcessEvent( EV_FadeOut );
-	else if ( GetActorFlag( ACTOR_FLAG_DEATHSINK ) )
-		ProcessEvent( EV_DeathSinkStart );
+	else if (GetActorFlag(ACTOR_FLAG_DEATHSHRINK)) {
+		ProcessEvent(EV_FadeOut);
+	}
+	else if (GetActorFlag(ACTOR_FLAG_DEATHSINK)) {
+		ProcessEvent(EV_DeathSinkStart);
+	}
 	else if ( _deathEffect.length() > 0 )
 	{
 		Event *newEvent;
@@ -8419,9 +8421,10 @@ void Actor::FadeEvent( Event *ev	)
 
 		PostEvent( EV_Remove, 5.0f );
 	}
-	else
+	else {
 		SetActorFlag( ACTOR_FLAG_FADING_OUT, false );
 	}
+}
 
 //***********************************************************************************************
 //
@@ -11478,9 +11481,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		str buffer = "";
 		str value = "";
 		if (coop_parserReadFile("loc/deu/" + sLazyCodingSolutionHack, buffer)) {
-
 			//get string from buffer until first line or end of file/buffer
-			str value = "";
 			for (int i = 0; i < buffer.length(); i++) {
 				value += buffer[i];
 				if (buffer[i] == '\n' || buffer[i] == EOF || i == (buffer.length() - 1)) {
@@ -11496,7 +11497,6 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 //ENGLISH DIALOG
 		//read contents of file into string - the first line contains the dialog length
 		buffer = "";
-		int iLineLength;
 		if (coop_parserReadFile("loc/eng/" + sLazyCodingSolutionHack, buffer)) {
 			//get string from buffer until first line or end of file/buffer
 			for (int i = 0; i < buffer.length(); i++) {
