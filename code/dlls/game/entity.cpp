@@ -2140,9 +2140,8 @@ void Entity::BoosterNearbyPlayer(Event *ev)
 	Entity *eTemp	= NULL;
 	str sBoostType;
 	float amount = 10.0f;
-	float maximum;
+	float maximum = 0;
 	float distance;
-	float returnValue;
 
 	sBoostType	= ev->GetString(1);
 	distance	= ev->GetFloat(2);
@@ -3994,7 +3993,7 @@ void Entity::FadeIn
 
    //[b60011] chrissstrahl - add printout to help with logic errors in scripting
    if (target == 0.0f) {
-	   gi.Printf(va("Entity::FadeIn - $%s.fadeIn(parameter1,parameter2) - Parameter 2 is 0!\nModel will not be visible, set it to 1 if you want it fully visible!\n",this->targetname));
+	   gi.Printf(va("Entity::FadeIn - $%s.fadeIn(parameter1,parameter2) - Parameter 2 is 0!\nModel will not be visible, set it to 1 if you want it fully visible!\n",this->targetname.c_str()));
    }
 
    myalpha = edict->s.alpha;
@@ -10093,6 +10092,12 @@ void Entity::removeAffectingViewModes( unsigned int mask )
 //--------------------------------------------------------------
 void Entity::SetGroupID( Event *ev )
 {
+	//[b60011] chrissstrahl - gamefix make sure dead actors are not added to the group
+	//they are alerady killed, and won't trigger again, getting the game stuck
+	if (this->isSubclassOf(Actor) && this->health <= 0) {
+		gi.Printf(va("Entity::SetGroupID - Could not add dead Actor (%s) to Group %d\n",this->targetname.c_str(), ev->GetInteger(1)));
+		return;
+	}
 	AddToGroup( ev->GetInteger( 1 ) );
 }
 
@@ -10615,7 +10620,6 @@ void Entity::simplePlayDialog( Event *ev )
 	float volume   = DEFAULT_VOL;
 	float min_dist = DEFAULT_MIN_DIST;
 	char localizedDialogName[MAX_QPATH];
-	Player *player;
 
 
 	// Get all of the parms
@@ -10654,7 +10658,7 @@ void Entity::simplePlayDialog( Event *ev )
 
 	//hzm gameupdate chrissstrahl - make sure all players know about the dialog (might display text)
 	if ( g_gametype->integer == GT_SINGLE_PLAYER ){
-		player = GetPlayer( 0 );
+		Player* player = GetPlayer( 0 );
 		if ( player ){
 			player->SetupDialog( NULL , localizedDialogName );
 		}
