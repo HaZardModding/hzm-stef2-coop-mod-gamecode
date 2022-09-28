@@ -25,7 +25,7 @@ Vector		   currentVertex( 0.0f, 0.0f, 0.0f );
 Vector		   vertColor( 1.0f, 1.0f, 1.0f );
 float			   vertAlpha = 1.0f;
 float			   vertexIndex = 0.0f;
-float          linewidth = 10.0f; //[b60011] chrissstrahl - test - fix me back to 1.0
+float          linewidth = 1.0f;
 unsigned short lineStippleFactor = 1;
 unsigned short linePattern = 0xffff;
 
