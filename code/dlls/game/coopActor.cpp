@@ -1,24 +1,9 @@
-//[b607] new - handle actor specific coop stuff 2019.12.15
-
 //-----------------------------------------------------------------------------------
 // Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Based upon code from the HaZardModding Coop Mod Level Scripts created at 2006
-// E-Mail:		chrissstrahl@yahoo.de
+// E-Mail:	chrissstrahl@yahoo.de
 //
-// CONTAINING SERVER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2019 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
-
+// [b607] CONTAINING SERVER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
 
@@ -70,6 +55,11 @@ void coop_actorDeadBodiesRemove()
 //================================================================
 bool coop_actorDeadBodiesHandle(Entity* actor)
 {
+	//[b60011] chrissstrahl - fix this making issues in singleplayer
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		return false;
+	}
+
 	#define COOP_MAX_DEADBODIES 50
 	#define COOP_MAX_DEADBODIES_ARRAY_SIZE 256
 	#define COOP_MIN_DEADBODIES_AREA_DIST_2D 4048
@@ -99,7 +89,6 @@ bool coop_actorDeadBodiesHandle(Entity* actor)
 		*/
 
 		str classname;
-		gentity_t * from;
 		Entity *ent;
 
 		extern Event EV_SelfDetonate;
@@ -140,7 +129,7 @@ bool coop_actorDeadBodiesHandle(Entity* actor)
 					//check horizontal distance
 					Vector v3Dimensional = (actor->origin - ent->origin);
 
-					Actor * a = (Actor *)ent;
+					//Actor * a = (Actor *)ent;
 
 					if (vHorizontal.length() < COOP_MIN_DEADBODIES_VERT_DIST && v3Dimensional.length() < COOP_MIN_DEADBODIES_AREA_DIST_2D /*&& (a->last_time_active + 60) < level.time */) {
 						if (removeArrayIndex < COOP_MAX_DEADBODIES_ARRAY_SIZE) {
