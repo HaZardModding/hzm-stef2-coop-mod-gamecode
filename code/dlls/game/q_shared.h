@@ -55,6 +55,19 @@
 #pragma warning(disable : 4710)     // did not inline this function
 #pragma warning(disable : 4711)		// selected for automatic inline expansion
 
+//[b60011] chrissstrahl - supress warnings
+//I know that is not the best way to do it, but it is really anoying and I don't have the time nor the will to fix them all just yet
+#pragma warning(disable : 4996)
+#pragma warning(disable : 4458)
+#pragma warning(disable : 4389)		//Konflikt zwischen "signed" und "unsigned"
+#pragma warning(disable : 4459)		//Deklaration von "?" blendet globale Deklaration aus
+#pragma warning(disable : 4005)		//makro neudefinition (triggers)
+
+//FIXED
+//#pragma warning(disable : 4456)	//Deklaration von "?" blendet vorherige lokale Deklaration aus
+//#pragma warning(disable : 4840)	//.c_str() missing - this should not be ignored!
+//#pragma warning(disable : 4457)	//Deklaration von "?" blendet Funktionsparameter aus
+
 
 // shut up warnings with Intel Compiler
 /*ARGSUSED*/
