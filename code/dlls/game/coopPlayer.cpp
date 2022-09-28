@@ -1533,9 +1533,11 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 //inflictor is a actor
 	else if ( attacker->isSubclassOf( Actor ) ){
 		Actor *actor = (Actor*)attacker;
-		str sActorResolved = coop_parserIniGet("deathlist.ini", actor->name.c_str(), "actorname");
+		//[b60011] chrissstrahl - added filename to printout
+		str sDeathListFile = "deathlist.ini";
+		str sActorResolved = coop_parserIniGet(sDeathListFile, actor->name.c_str(), "actorname");
 		if ( !sActorResolved.length() ) {
-			printString += va(" # Unhandled actorname: %s\n", actor->name.c_str());
+			printString += va(" # Unhandled (in %s) actorname: %s\n", sDeathListFile.c_str(), actor->name.c_str());
 		}
 		else {
 			printString += sActorResolved;
