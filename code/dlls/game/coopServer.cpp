@@ -5,7 +5,7 @@
 // CONTAINING SERVER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
 
-//>>starts everytime a map is chnaged or a game is closed
+//>>starts everytime a map is changed or a game is closed
 //void MultiplayerManager::cleanup
 
 
@@ -359,7 +359,7 @@ int coop_serverConfigstringRemove(str sRem)
 				//handle deu version of dialog
 				char unlocal[96]; //MAX_QPATH + 5 <- did not work!
 				memset(unlocal, 0, sizeof(unlocal));
-				Q_strncpyz(unlocal, va("loc/deu/%s", sRem + 13), sizeof(unlocal));
+				Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
 				if (strcmpi(ss.c_str(), unlocal)==0) {
 					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
 					gi.setConfigstring(i, "");
@@ -368,7 +368,7 @@ int coop_serverConfigstringRemove(str sRem)
 
 				//handle eng version of dialog
 				memset(unlocal, 0, sizeof(unlocal));
-				Q_strncpyz(unlocal, va("loc/eng/%s", sRem + 13), sizeof(unlocal));
+				Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
 				if (strcmpi(ss.c_str(), unlocal)==0) {
 					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
 					gi.setConfigstring(i, "");
@@ -518,7 +518,6 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 	}
 
 	//[b607] chrissstrahl - allow to adjust the coop reboot feature
-	bool bCoopNoReboot = false;
 	str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
 	if (Q_stricmpn(sCoopRebootState.c_str(), "killserver", 10) && Q_stricmpn(sCoopRebootState.c_str(), "quit", 4)) {
 		return false;
@@ -584,8 +583,8 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 
 	for (int i = 0; i < maxclients->integer; i++ ){
 		if ( &g_entities[i] && g_entities[i].client && g_entities[i].inuse ){
-			Player *player = ( Player * )g_entities[i].entity;
-			if ( player ){
+			Player *playerValid = ( Player * )g_entities[i].entity;
+			if (playerValid){
 				//keep it in two lines
 				gi.SendServerCommand( i , "stufftext \"freeze 2\";stufftext reconnect\n" );
 				gi.SendServerCommand( i , "stufftext \"exec coop_mod/cfg/reconnect\"\n" );	
@@ -777,8 +776,6 @@ void coop_serverSaveGameVars( const str &name , const str &value )
 	if ( !game.coop_isActive )return;
 
 	int iCorrected = -1;
-	float fCorrected = -1.0f;
-
 
 	//keep status of the igm missions up to date
 	if ( !Q_stricmp( name , "skill" ) )
@@ -1102,7 +1099,7 @@ void coop_serverCoop()
 		gi.Printf( va( "==== %s is included in this coop build! ====\n" , currentMapName.c_str() ) );
 	}
 
-	//[b60011] chrissstrahl - înitzialise
+	//[b60011] chrissstrahl - initzialise
 	coopNpcTeam.init();
 	coopChallenges.init();
 
@@ -1364,7 +1361,6 @@ void coop_serverManageAi( void )
 //================================================================
 str coop_serverModifiedFile( str standardPath )
 {
-	bool loadFromCoopDir = false;
 	bool isScriptFile = false;
 
 	//[b60011] Chrissstrahl - clean this up a bit - and while I am at it, fix issues
@@ -1465,9 +1461,7 @@ bool coop_serverError( str sError, bool bFatal )
 	gi.Printf( va("%s\n", sError.c_str()) );
 	gi.Printf( "====================================\n" );
 	
-	//[b60011] chrissstrahl - execute cfg with delayed quit
-	//gi.SendConsoleCommand( "quit\n" );
-	gi.SendConsoleCommand( "coop_mod/cfg/quitServerDelayed.cfg\n" );
+	gi.SendConsoleCommand( "quit\n" );
 	return true;
 }
 
@@ -1492,7 +1486,6 @@ void coop_serverThink( void )
 	//hzm coop mod chrissstrahl - quit server if requested
 	if ( game.coop_reboot && game.coop_restartServerEarliestAt < level.time ){ 
 		//[b607] chrissstrahl - allow to adjust the coop reboot feature
-		bool bCoopNoReboot = false;
 		str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
 		if (!Q_stricmpn(sCoopRebootState.c_str(), "killserver",10)) { //killserver
 			gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver.cfg\n");
