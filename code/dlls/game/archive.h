@@ -486,11 +486,11 @@ inline void Container<Entity>::Archive
 
 #define ArchiveEnum( thing, type )  \
    {                                \
-   int tempInt;                     \
+   int tempIntArchive;                     \
                                     \
-   tempInt = ( int )( thing );      \
-   arc.ArchiveInteger( &tempInt );  \
-   ( thing ) = ( type )tempInt;     \
+   tempIntArchive = ( int )( thing );      \
+   arc.ArchiveInteger( &tempIntArchive );  \
+   ( thing ) = ( type )tempIntArchive;     \
    }
 
 
