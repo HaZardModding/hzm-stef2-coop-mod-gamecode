@@ -671,23 +671,18 @@ void PuzzleObject::useEvent(Event* event)
 			if ( _nextNeedToUseTime < level.time )
 			{
 				//hzm gameupdate chrissstrahl - make this multiplayer compatible
-				if ( g_gametype->integer != GT_SINGLE_PLAYER ) {
-					static float fLastTime = 0.0f;
-					if ( ( fLastTime + 1.5 ) < level.time ) {
-						fLastTime = level.time;
-						Player* player;
-						player = ( Player* )entity;
-						player->hudPrint( va( "$$NeedToUse$$ ^5%s^8\n" , _itemToUse.c_str() ) );
+				if (entity->isSubclassOf(Player)){
+					if ( g_gametype->integer != GT_SINGLE_PLAYER ) {
+						static float fLastTime = 0.0f;
+						if ( ( fLastTime + 1.5 ) < level.time ) {
+							fLastTime = level.time;
+							player->hudPrint( va( "$$NeedToUse$$ ^5%s^8\n" , _itemToUse.c_str() ) );
+						}
 					}
-				}
-				//end of hzm
-				else {
-					gi.centerprintf( entity->edict , CENTERPRINT_IMPORTANCE_NORMAL , "$$NeedToUse$$ %s" , _itemToUse.c_str() );
-				}
-
-				if ( entity->isSubclassOf( Player ) )
-				{
-					player = (Player *)entity;
+					//end of hzm
+					else {
+						gi.centerprintf( entity->edict , CENTERPRINT_IMPORTANCE_NORMAL , "$$NeedToUse$$ %s" , _itemToUse.c_str() );
+					}
 					player->loadUseItem( _itemToUse );
 				}
 
