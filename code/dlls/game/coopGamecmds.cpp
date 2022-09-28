@@ -133,7 +133,6 @@ qboolean G_coopCom_class(const gentity_t* ent)
 		return true;
 	}
 
-	const char* cmd;
 	int   n;
 
 	//NO ARGUMENT GIVEN
@@ -413,7 +412,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	}
 	player->hudPrint(va("^5Coop class^8: %s\n", player->coopPlayer.className.c_str()));
 	player->hudPrint(va("^5Entred this game at^8: %f\n", player->client->pers.enterTime));
-	player->hudPrint(va("^5Your game language is^8: %s\n", player->getLanguage()));
+	player->hudPrint(va("^5Your game language is^8: %s\n", player->getLanguage().c_str()));
 	player->hudPrint(va("^5Your Personal Id (only shown to you) is^8: %s\n", player->coopPlayer.coopId.c_str()));
 	player->hudPrint(va("^5Your Client/Coop number is^8: %d\n", player->entnum));
 	player->hudPrint("===SERVER Informations ===\n");
