@@ -419,7 +419,7 @@ void Interpreter::ThreadCall( const Interpreter *source, dfunction_t *newf, int 
 	CancelEventsOfType( EV_ScriptThread_Execute );
 	PostEvent( EV_ScriptThread_Execute, 0.0f );
 
-	//[b60011] chrissstrahl - allow coop mod to react to funccsalls
+	//[b60011] chrissstrahl - allow coop mod to react to funccalls
 	coopScripting.checkFuncCall(newf->s_name, parameterString);
 }
 
