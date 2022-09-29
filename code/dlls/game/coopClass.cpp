@@ -272,7 +272,8 @@ void coop_classSet( Player *player , str classToSet )
 //================================================================
 void coop_classApplayAttributes( Player *player , bool changeOnly )
 {
-	if ( !player || multiplayerManager.isPlayerSpectator( player ) || level.time < mp_warmUpTime->integer ){
+	//[b60011] chrissstrahl - added prevention of class being executed before player setup is complete
+	if ( !player || multiplayerManager.isPlayerSpectator( player ) || level.time < mp_warmUpTime->integer || !player->coopPlayer.setupComplete){
 		return;
 	}
 	coop_classSet( player , "current" );
