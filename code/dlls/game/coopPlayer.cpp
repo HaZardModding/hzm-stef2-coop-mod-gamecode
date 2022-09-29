@@ -570,12 +570,12 @@ void coop_playerSetupHost(Player* player)
 
 	coop_playerSetupCoop(player);
 
-	if (game.coop_isActive) {
+	/*if (game.coop_isActive) {
 		cvar = gi.cvar_get("coop_class");
 		sCvar = (cvar ? cvar->string : "");
 		coop_manipulateStringTrim(sCvar, "!class "); //remove command prefix
 		coop_classSet(player, sCvar);
-	}
+	}*/
 }
 
 //================================================================
@@ -713,10 +713,11 @@ void coop_playerSetupCoop( Player *player )
 		player->coopPlayer.setupComplete = true;
 		return;
 	}
-
-	coop_classSet( player , "current" );
-
+	
 	player->coopPlayer.setupComplete = true;
+
+	//[b60011] chrissstrahl - setupComplete needs to be true for this to work
+	coop_classSet( player , "current" );
 
 	//[b60011] chrissstrahl 
 	coopChallenges.playerEnteredWarning(player);
@@ -755,9 +756,12 @@ void coop_playerSetupNoncoop( Player *player)
 	}
 
 	//hzm coop mod chrissstrahl - do the regular setup here after coop has or has not been detected
-	coop_classSet( player , "current" );
 	coop_objectivesSetup( player );
+
 	player->coopPlayer.setupComplete = true;
+
+	//[b60011] chrissstrahl - setupComplete needs to be true for this to work
+	coop_classSet(player, "current");
 }
 
 
