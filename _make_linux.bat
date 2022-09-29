@@ -1,8 +1,7 @@
 @echo off
 cd code\linux\
-bash -c "make build_release"
+bash -c "make -j4 build_release"
 pause
 
-
-exit
-bash -c "make -j4 build_release"
+bash -c "make build_release"
+pause
