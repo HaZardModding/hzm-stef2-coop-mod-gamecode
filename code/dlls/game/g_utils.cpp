@@ -19,6 +19,9 @@
 #include "g_utils.h"
 #include "ctype.h"
 
+#include "coopChallenges.hpp"
+extern CoopChallenges coopChallenges;
+
 #include "coopRadar.hpp"
 #include "coopReturn.hpp"
 #include "coopAlias.hpp"
@@ -2595,6 +2598,8 @@ void G_StopCinematic( void )
 				}
 			}
 		}
+		//[b60011] chrissstrahl - reset challenges
+		coopChallenges.reset();
 	}
 
 	// clear out the skip thread
