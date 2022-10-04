@@ -1477,8 +1477,28 @@ out: */
 		//hzm eof
 
 		//hzm coop mod chrissstrahl - check also if the map actually exists
-		if ( level.nextmap.length() == 0 || !gi.FS_Exists( fullMapName.c_str()) )
+		//[b60011] chrissstrahl - fixed maps not loading if their name contained a spawnspot
+		int iVarPos;
+		str sCleanMapname;
+		str sMapRealName = level.nextmap;
+		iVarPos = coop_returnIntFind(sMapRealName, "$");
+		if (iVarPos > 0) {
+			sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
+		}
+		sCleanMapname = "maps/";
+		sCleanMapname += sMapRealName;
+		sCleanMapname += ".bsp";
+
+		if ( level.nextmap.length() == 0 || !gi.FS_Exists(sCleanMapname.c_str()) )
 		{
+			//[b60011] chrissstrahl - let us know whats going on
+			if (level.nextmap.length() == 0) {
+				gi.Printf("G_ExitLevel - No nextmap set, reloading same map.\n");
+			}
+			else {
+				gi.Printf((va("G_ExitLevel - Map cound not be found: %s\n", fullMapName.c_str())));
+			}
+
 			// Stay on the same map since no nextmap was set
 			Com_sprintf( command, sizeof( command ), "gamemap \"%s\"\n", level.mapname.c_str() );
 			gi.SendConsoleCommand( command );
