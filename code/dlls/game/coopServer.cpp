@@ -1308,9 +1308,6 @@ bool coop_serverRunScriptThread( str scriptThread )
 		CThread *gamescript;
 		gamescript = Director.CreateThread( scriptThread );
 
-		//hzm coop mod chrissstrahl - this migth not work with included script files
-		//if ( gamescript->labelExists( "precache" ) )
-
 		//hzm coop mod chrissstrahl - make sure the thread exist and could be started
 		if ( gamescript ){
 			gamescript->Start();
