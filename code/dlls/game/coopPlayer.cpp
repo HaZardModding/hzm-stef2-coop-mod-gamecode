@@ -487,7 +487,10 @@ bool coop_playerSetup(Player* player)
 	if(game.coop_isActive){
 		//hzm coop mod chrissstrahl - run level script threads, used for scriptmod and noscript script
 		coop_serverRunScriptThread("globalCoop_teammate_follow");
-		coop_serverRunScriptThread("coop_newPlayerEntered"); //noscript?
+
+		//[b60011] chrissstrahl - changed: player is now starting the thread, renamed thread
+		//notify level scripts that the player just spawned - this is used on custom map scripts
+		ExecuteThread("coop_justEntered", true, (Entity*)player);
 
 		//[b607] chrissstrahl - add this player to the communicator menu
 		coop_playerCommunicator(player, 1);
@@ -1189,9 +1192,9 @@ void coop_playerEnterArena(int entnum, float health)
 	//_playerSpecialtyData[player->entnum]._specialty == SPECIALTY_HEAVY_WEAPONS;
 	//gi.SendServerCommand( player->entnum , "stufftext \"ui_addhud mp_specialties\"\n" );	
 
-	//hzm coop mod chrissstrahl - notify level scripts that the player just spawned - this is used on custom map scripts
-	//[b608] chrissstrahl - fixed using client id instead of player targetname number which is client-id + 1
-	coop_serverRunScriptThread( va( "coop_justSpawnedplayer%i" , (player->entnum + 1)) );
+	//[b60011] chrissstrahl - changed: player is now starting the thread, player number removed
+	//notify level scripts that the player just spawned - this is used on custom map scripts
+	ExecuteThread("coop_justSpawnedplayer", true, (Entity *)player);
 
 	//hzm coop mod chrissstrahl - add all mission relevant huds to the players interface
 	str sValue;
@@ -1384,8 +1387,10 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	//killedPlayer->removeAttachedModelByTargetname( "globalCoop_playerClassIndicator" );
 
 	coop_hudsKilled((Player *)killedPlayer); //chrissstrahl - added for better managment [b607]
-	//[b608] chrissstrahl - fixed using client id instead of player targetname number which is client-id + 1
-	coop_serverRunScriptThread(va("coop_justDiedplayer%i", (killedPlayer->entnum + 1)));
+
+	//[b60011] chrissstrahl - changed: player is now starting the thread, player number removed
+	//notify level scripts that the player just spawned - this is used on custom map scripts
+	ExecuteThread("coop_justDiedplayer", true, (Entity*)killedPlayer);
 
 //check uservars of inflictor, should we have a custom killmessage ?
 //should we use a custom name for the inflictor ?	
@@ -1595,9 +1600,9 @@ void coop_playerModelChanged( Player *player )
 		player->coopPlayer.injuredSymbolVisible = false;
 		player->removeAttachedModelByTargetname( "globalCoop_playerInjured" );
 
-		//hzm coop mod chrissstrahl - notify level scripts of modelchange - this is used on custom coop maps
-		//[b608] chrissstrahl - fixed using client id instead of player targetname number which is client-id + 1
-		coop_serverRunScriptThread( va( "coop_changedModel%i", (player->entnum + 1) ) );
+		//[b60011] chrissstrahl - changed: player is now starting the thread, player number removed
+		//notify level scripts that the player just spawned - this is used on custom map scripts
+		ExecuteThread("coop_justChangedModel", true, (Entity*)player);
 	}
 }
 
@@ -2017,6 +2022,10 @@ void coop_playerLeft( Player *player )
 	if ( !game.coop_isActive || !player ){
 		return;
 	}
+
+	//[b60011] chrissstrahl - added: player is now starting the thread
+	//notify level scripts that the player just spawned - this is used on custom map scripts
+	ExecuteThread("coop_justLeft", true, (Entity*)player);
 
 	//[b60011] chrissstrahl - moved code here
 	//enable/disable ai
