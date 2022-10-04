@@ -61,6 +61,25 @@ void CoopChallenges::cleanUp(bool restart)
 	//need to reset the current challenge and load it from ini each mapload - maybe have some dedicated function to load all coop settings from ini at once
 }
 
+void CoopChallenges::reset()
+//reset Time and other variables after certain events, like cinematic and so on
+{
+	switch (iCurrentChallenge)
+	{
+	case 1: //stayClose
+		//give the players some time to regroup
+		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+		break;
+	case 2: //halo
+		break;
+	case 3: //collision
+
+		break;
+	default:
+		break;
+	}
+}
+
 void CoopChallenges::playerEnteredWarning(Player* player)
 {
 	//STOP challenges are disabled or just 1 player
@@ -68,15 +87,13 @@ void CoopChallenges::playerEnteredWarning(Player* player)
 		return;
 	}
 
-	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
+	reset();
 
 	switch (iCurrentChallenge)
 	{
 	case 1: //stayClose
-		//give the players some time to regroup
-		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		//inform all players to regroup
-		player->hudPrint(va("^5Challenge ^2%s ^5is active!^8 You have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
+		player->hudPrint(va("^5Challenge ^2%s ^5is active!^8 You have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		break;
 	case 2: //halo
 		break;
@@ -92,20 +109,17 @@ void CoopChallenges::playerLeftWarning(Player* player)
 	//STOP challenges are disabled or just 1 player
 	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
 
-	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
+	reset();
 
 	switch (iCurrentChallenge)
 	{
 	case 1: //stayClose
-		//give the players some time to regroup
-		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		//inform all players to regroup
-		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
+		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		break;
 	case 2: //halo
 		break;
 	case 3: //collision
-
 		break;
 	default:
 		break;
@@ -117,19 +131,18 @@ void CoopChallenges::playerSpectatorWarning(Player* player)
 	//STOP challenges are disabled or just 1 player
 	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
 
-	int iTime = COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME;
+	reset();
 
 	switch (iCurrentChallenge)
 	{
 	case 1: //stayClose
-		//give the players some time to regroup
-		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		//inform all players to regroup
-		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player pauses you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, iTime));
+		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player pauses you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		break;
 	case 2: //halo
 		break;
 	case 3: //collision
+
 		break;
 	default:
 		break;
@@ -141,11 +154,12 @@ void CoopChallenges::playerEntered(Player* player)
 	//STOP challenges are disabled or just 1 player
 	if (challenesAreDisabled || coop_returnPlayerQuantity(2) < 2) { return; }
 
+	reset();
+
 	switch (iCurrentChallenge)
 	{
 	case 1: //sticktogether
 		//give the players some time to regroup
-		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
 		
 		//inform all players to regroup
 		if (player->coopPlayer.setupComplete) {
@@ -163,12 +177,11 @@ void CoopChallenges::playerEntered(Player* player)
 
 void CoopChallenges::playerSpectator(Player* player)
 {
+	reset();
+
 	switch (iCurrentChallenge)
 	{
 	case 1: //stayClose
-		//give the players some time to regroup
-		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
-
 		//inform all players to regroup
 		playerSpectatorWarning(player);	
 		break;
@@ -187,14 +200,16 @@ void CoopChallenges::playerLeft(Player* player)
 	{
 	case 1: //stayClose
 		//give the players some time to regroup
-		fLastDamageTime = (level.time + COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME);
+		reset();
 
 		//inform all players to regroup
-		playerSpectatorWarning(player);
+		playerLeftWarning(player);
 		break;
 	case 2: //halo
+		reset();
 		break;
 	case 3: //collision
+		reset();
 		break;
 	default:
 		break;
@@ -452,7 +467,7 @@ void CoopChallenges::disabled(bool bEnable)
 //allowes to disable/enable the challenge - meant to be used from the scripts
 {
 	challenesAreDisabled = bEnable;
-	gi.Printf(va("Coop Challenge status (0=on/1=off) changed: ",(int)bEnable));
+	gi.Printf(va("Coop Challenge status (0=on/1=off) changed: %d\n",(int)bEnable));
 }
 
 bool CoopChallenges::isDisabled()
@@ -468,7 +483,7 @@ void CThread::challengesDisabled(Event* ev)
 	if (ev->NumArgs() > 0) {
 		bool challenesAreDisabled = (bool)ev->GetInteger(1);
 		coopChallenges.disabled(challenesAreDisabled);
-		gi.Printf(va("challengeDisabled: Challages set to %d (0=on/1=off)\n", challenesAreDisabled));
+		gi.Printf(va("challengeDisabled: Challages set to %d (0=on/1=off)\n", (int)challenesAreDisabled));
 	}
 	ev->ReturnInteger(coopChallenges.isDisabled());
 }

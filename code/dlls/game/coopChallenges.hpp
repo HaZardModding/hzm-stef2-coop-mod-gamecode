@@ -23,6 +23,7 @@ class CoopChallenges : public Class
 public:
 	void		init(void);
 	void		cleanUp(bool restart);
+	void		reset();
 	void		playerEnteredWarning(Player* player);
 	void		playerLeftWarning(Player* player);
 	void		playerSpectatorWarning(Player* player);
