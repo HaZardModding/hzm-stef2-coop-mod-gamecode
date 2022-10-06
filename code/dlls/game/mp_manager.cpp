@@ -2569,23 +2569,22 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 			startAt = 16;
 		}
 	}
-	else if ( !Q_stricmpn( "ServerThreadToRun " , tempText , 18 ) )
+	//[b60011] Chrissstrahl
+	//else if ( !Q_stricmpn( "ServerThreadToRun " , tempText , 18 ) )
+	else if ( !Q_stricmpn( "ServerThreadToRun trirteClick" , tempText , 29 ) )
 	{
-		if (	!Q_stricmpn( "ServerThreadToRun trirteClick" , tempText , 29 )			|| 
-				!Q_stricmpn( "ServerThreadToRun useLibraryTerminal" , tempText , 46 )
-		){
-			threadIsValid = 1;
-			startAt = 18;
-		}
+		threadIsValid = 1;
+		startAt = 18;
 	}
 	else if ( !Q_stricmpn( "script thread " , tempText , 14 ) )
 	{
-		if ( !Q_stricmpn( "script thread globalTricorder" , tempText , 29 ) ||
+		if (!Q_stricmpn( "script thread globalTricorder" , tempText , 29 ) ||
 			!Q_stricmpn( "script thread trirteTT" , tempText , 22 ) ||
 			!Q_stricmpn( "script thread _tricorderRoute_" , tempText , 30 ) ||
-			!Q_stricmpn( "script thread _tricorderBase_" , tempText , 30 ) ||
-			!Q_stricmpn( "script thread libraryTerminal_tooltip" , tempText , 37 )
-			){
+			!Q_stricmpn( "script thread _tricorderBase_" , tempText , 29 ) ||
+			!Q_stricmpn( "script thread useLibraryTerminal" , tempText , 32 )
+			)
+		{
 			threadIsValid = 1;
 			startAt = 14;
 		}
