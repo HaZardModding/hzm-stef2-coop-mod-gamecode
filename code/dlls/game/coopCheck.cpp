@@ -292,7 +292,7 @@ str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId)
 	}
 
 	//client id does not exist on this server
-	str ss = coop_parserIniGet("ini/serverData.ini", sClientId.c_str(), "client");
+	str ss = coop_parserIniGet("serverData.ini", sClientId.c_str(), "client");
 	if (!ss.length()) {
 		coop_playerSaveNewPlayerId(player);
 	}

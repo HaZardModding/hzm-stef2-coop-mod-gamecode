@@ -240,19 +240,19 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 
 		//hzm coop mod chrissstrahl - load error restore map
 		str sStartMap = "blackbox";
-		if (coop_returnBool(coop_parserIniGet("ini/serverData.ini", "errorboot", "server")))
+		if (coop_returnBool(coop_parserIniGet("serverData.ini", "errorboot", "server")))
 		{
-			str sErrorMap = coop_parserIniGet("ini/serverData.ini", "errormap", "server");
+			str sErrorMap = coop_parserIniGet("serverData.ini", "errormap", "server");
 
 			//if not fatal, we can load the map again that did have a error before
 			//because it is feairly save to assume the error does not put the server
 			//in a reboot loop
-			if (!coop_returnBool(coop_parserIniGet("ini/serverData.ini", "errorfatal", "server"))) {
+			if (!coop_returnBool(coop_parserIniGet("serverData.ini", "errorfatal", "server"))) {
 				sStartMap = sErrorMap;
 			}
 
-			coop_parserIniSet("ini/serverData.ini", "errorboot", "false", "server");
-			str sErrorMsg = coop_parserIniGet("ini/serverData.ini", "errortext", "server");
+			coop_parserIniSet("serverData.ini", "errorboot", "false", "server");
+			str sErrorMsg = coop_parserIniGet("serverData.ini", "errortext", "server");
 
 			//if mapto load is not the map that it wants to load, force coop map
 			if (Q_stricmpn(sStartMap.c_str(), level.mapname.tolower(), MAX_QPATH)) {
@@ -264,8 +264,8 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 		}
 		else {
 			//hzm coop mod chrissstrahl - load last coop map if there is any
-			bool bServerHasRebooted = coop_returnBool(coop_parserIniGet("ini/serverData.ini", "rebooting", "server"));
-			//sStartMap = coop_phraserIniGet( "ini/serverData.ini" , "startmap" , "server" );
+			bool bServerHasRebooted = coop_returnBool(coop_parserIniGet("serverData.ini", "rebooting", "server"));
+			//sStartMap = coop_phraserIniGet( "serverData.ini" , "startmap" , "server" );
 
 			if (temp_gametype->integer > 0 &&
 				temp_dedicated->integer > 0 &&
@@ -274,8 +274,8 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 				//gi.FS_Exists( va( "maps/%s.bsp" , sStartMap.c_str() ))
 				)
 			{
-				coop_parserIniSet("ini/serverData.ini", "rebooting", "false", "server");
-				sStartMap = coop_parserIniGet("ini/serverData.ini", "startmap", "server");
+				coop_parserIniSet("serverData.ini", "rebooting", "false", "server");
+				sStartMap = coop_parserIniGet("serverData.ini", "startmap", "server");
 
 				//if map to load is not the map that it wants to load, force coop map
 				if (Q_stricmpn(sStartMap.c_str(), level.mapname.tolower(), MAX_QPATH)) {

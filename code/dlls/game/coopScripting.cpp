@@ -85,11 +85,11 @@ void CoopScripting::checkFuncCall(str sFunctioname,str parameterString[16])
 	}
 	else if (sFunctioname == "globalcoop_server_itemunlockedset_dll") {
 		str sKey = va("unlocked.%s", coop_armoryReturnWeaponName(parameterString[0]).c_str());
-		coop_parserIniSet("ini/serverData.ini", sKey, "true", "server");
+		coop_parserIniSet("serverData.ini", sKey, "true", "server");
 	}
 	else if (sFunctioname == "globalcoop_server_itemlockedset_dll") {
 		str sKey = va("unlocked.%s", coop_armoryReturnWeaponName(parameterString[0]).c_str());
-		coop_parserIniSet("ini/serverData.ini", sKey, "false", "server");
+		coop_parserIniSet("serverData.ini", sKey, "false", "server");
 	}
 	else if (	sFunctioname == "coop_endlevel" ||
 				sFunctioname == "globalcoop_mission_accomplished" ||

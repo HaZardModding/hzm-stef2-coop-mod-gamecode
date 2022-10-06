@@ -189,7 +189,7 @@ str coop_playerGetDataSegment( Player *player , short int iNumber )
 {
 	str sData;
 	str sSegment = "";
-	sData = coop_parserIniGet( "ini/serverData.ini" , player->coopPlayer.coopId , "client" );
+	sData = coop_parserIniGet( "serverData.ini" , player->coopPlayer.coopId , "client" );
 	coop_trimM( sData , " \t\r\n" );
 
 	if ( !Q_stricmp( sData , "" ) )
@@ -323,7 +323,7 @@ void coop_playerRestore( Player *player )
 	if ( game.levelType != MAPTYPE_MISSION && game.levelType != MAPTYPE_CUSTOM )
 		return;
 	
-	str sData = coop_parserIniGet( "ini/serverData.ini" , player->coopPlayer.coopId , "client" );
+	str sData = coop_parserIniGet( "serverData.ini" , player->coopPlayer.coopId , "client" );
 	if ( !Q_stricmp( sData, "") )
 	{
 		return;
@@ -628,7 +628,7 @@ gi.Printf("\n======================\nSAVING NEW PLAYER ID\n=====================
 	}
 
 	//write id of player to server ini
-	coop_parserIniSet("ini/serverData.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
+	coop_parserIniSet("serverData.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
 	
 	//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
 	if (multiplayerManager.inMultiplayer()) {

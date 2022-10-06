@@ -1193,7 +1193,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 	game.coop_lastmanstanding = (bool)atoi(sMultiplier.c_str());
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/serverData.ini", "lastmanstanding", (bool)iStatus, "server");
+	coop_parserIniSet("serverData.ini", "lastmanstanding", (bool)iStatus, "server");
 
 	//hzm coop mod chrissstrahl - send updated data to player UI
 	Player *player = NULL;
@@ -1284,7 +1284,7 @@ bool coop_vote_respawntimeSet(const str _voteString)
 	game.coop_respawnTime = atoi(sMultiplier.c_str());
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/serverData.ini", "respawntime", (int)multiplayerManager.getRespawnTime(), "server");
+	coop_parserIniSet("serverData.ini", "respawntime", (int)multiplayerManager.getRespawnTime(), "server");
 
 	coop_huds_callvoteOptionChangedUI("Respawn Time", sMultiplier.c_str(), "coopGpoRspwt");
 	return true;
@@ -1321,7 +1321,7 @@ bool coop_vote_airaccelerateSet(const str _voteString)
 	world->setPhysicsVar("airAccelerate", (float)iVal);
 
 	//save changes directly to ini
-	coop_parserIniSet("ini/serverData.ini", "airaccelerate", iVal , "server");
+	coop_parserIniSet("serverData.ini", "airaccelerate", iVal , "server");
 
 	//update callvote ui
 	coop_huds_callvoteOptionChangedUI("airaccelerate", sMultiplier.c_str(), "coopGpoAa");
@@ -1363,7 +1363,7 @@ bool coop_vote_stasistimeSet(const str _voteString)
 		game.coop_stasisTime = 30;
 	}
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/serverData.ini", "stasistime", game.coop_stasisTime, "server");
+	coop_parserIniSet("serverData.ini", "stasistime", game.coop_stasisTime, "server");
 
 	//update callvote ui
 	coop_huds_callvoteOptionChangedUI("Stasis Time", sMultiplier.c_str(), "coopGpoSt");
@@ -1405,7 +1405,7 @@ bool coop_vote_awardsSet(const str _voteString)
 	gameVars.SetVariable("awards", game.coop_awardsActive); //[b607] chrissstrahl - fixed wrong var being used
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/serverData.ini", "awards", sValue, "server");
+	coop_parserIniSet("serverData.ini", "awards", sValue, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Awards", sValue.c_str(), "coopGpoAw");
@@ -1445,7 +1445,7 @@ bool coop_vote_friendlyfireSet(const str _voteString)
 	gameVars.SetVariable("friendlyFire", game.coop_friendlyFire);
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/serverData.ini", "friendlyFire", sMultiplier, "server");
+	coop_parserIniSet("serverData.ini", "friendlyFire", sMultiplier, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Friendly Fire", sMultiplier.c_str(), "coopGpoFF");
@@ -1489,7 +1489,7 @@ bool coop_vote_maxspeedSet(const str _voteString)
 	gameVars.SetVariable("maxSpeed", game.coop_maxspeed);
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("ini/serverData.ini", "maxSpeed", game.coop_maxspeed, "server");
+	coop_parserIniSet("serverData.ini", "maxSpeed", game.coop_maxspeed, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Max Speed", speed.c_str(), "coopGpoMvSpd");
@@ -1526,7 +1526,7 @@ bool coop_vote_challengeSet(const str _voteString)
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
 	sChallenge = (short)atoi(sChallenge);
-	coop_parserIniSet("ini/serverData.ini", "challenge", sChallenge.c_str(), "server");
+	coop_parserIniSet("serverData.ini", "challenge", sChallenge.c_str(), "server");
 
 	//hzm coop mod chrissstrahl - set global var
 	coopChallenges.iCurrentChallenge = (bool)atoi(sChallenge);
@@ -1566,7 +1566,7 @@ bool coop_vote_deadbodiesSet(const str _voteString)
 
 	//save to ini
 	icon = atoi(icon);
-	coop_parserIniSet("ini/serverData.ini", "deadbodies", icon.c_str(), "server");
+	coop_parserIniSet("serverData.ini", "deadbodies", icon.c_str(), "server");
 
 	//set to glkobal var
 	game.coop_deadBodiesPerArea = atoi(icon);

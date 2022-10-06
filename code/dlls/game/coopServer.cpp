@@ -518,7 +518,7 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 	}
 
 	//[b607] chrissstrahl - allow to adjust the coop reboot feature
-	str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
+	str sCoopRebootState = coop_parserIniGet("serverData.ini", "rebootType", "server");
 	if (Q_stricmpn(sCoopRebootState.c_str(), "killserver", 10) && Q_stricmpn(sCoopRebootState.c_str(), "quit", 4)) {
 		return false;
 	}
@@ -565,12 +565,12 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 	//you know paranoya isn't real if it is real ;)
 	gi.Printf("REBOOT: SET MAPNAME %s\n", sMapToLoad.c_str());
 	if ( gi.FS_Exists( va( "maps/%s.bsp" , sMapToLoad.c_str() ) ) != -1 ){
-		coop_parserIniSet( "ini/serverData.ini" , "startmap" , sMapToLoad.c_str() , "server" );
+		coop_parserIniSet( "serverData.ini" , "startmap" , sMapToLoad.c_str() , "server" );
 	}else{
-		coop_parserIniSet( "ini/serverData.ini" , "startmap" , level.mapname.c_str() , "server" );
+		coop_parserIniSet( "serverData.ini" , "startmap" , level.mapname.c_str() , "server" );
 	}
 	//set marker that server rebooted
-	coop_parserIniSet( "ini/serverData.ini" , "rebooting" , "true" , "server" );
+	coop_parserIniSet( "serverData.ini" , "rebooting" , "true" , "server" );
 
 	//save client data into serverData.ini
 	coop_serverSaveAllClientData();
@@ -756,7 +756,7 @@ void coop_serverSaveClientDataWrite( Player *player )
 		return;
 
 	player->coopPlayer.coopStatus = sData;
-	coop_parserIniSet( "ini/serverData.ini" , player->coopPlayer.coopId , sData , "client" );
+	coop_parserIniSet( "serverData.ini" , player->coopPlayer.coopId , sData , "client" );
 	//gi.Printf( va( "=============================\nSAVED DATA FOR CLIENT: %s\n=============================\n" , sData.c_str() ) );
 }
 
@@ -874,9 +874,9 @@ void coop_serverSaveGameVars( const str &name , const str &value )
 	
 	//make sure we use the corrected value if there is one
 	if ( iCorrected == -1 ){
-		coop_parserIniSet( "ini/serverData.ini" , name , value , "server" );
+		coop_parserIniSet( "serverData.ini" , name , value , "server" );
 	}else{
-		coop_parserIniSet( "ini/serverData.ini" , name , iCorrected , "server" );
+		coop_parserIniSet( "serverData.ini" , name , iCorrected , "server" );
 	}
 }
 void coop_serverRestoreGameVars()
@@ -889,23 +889,23 @@ void coop_serverRestoreGameVars()
 
 
 	if ( game.isStandardLevel ){
-		gameVars.SetVariable( "globalMissionEnterprise" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalMissionEnterprise" , "server" ) , 1 ) );//game.
-		gameVars.SetVariable( "globalTurboliftRide" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalTurboliftRide" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "globalKleeyaChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalKleeyaChoice" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "globalTelsiaChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalTelsiaChoice" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "globalNoneChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "globalNoneChoice" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "globalMissionEnterprise" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "globalMissionEnterprise" , "server" ) , 1 ) );//game.
+		gameVars.SetVariable( "globalTurboliftRide" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "globalTurboliftRide" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "globalKleeyaChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "globalKleeyaChoice" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "globalTelsiaChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "globalTelsiaChoice" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "globalNoneChoice" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "globalNoneChoice" , "server" ) , 0 ) );//game.
 
-		gameVars.SetVariable( "attrexianWeaponFound" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "attrexianWeaponFound" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "secretWeapon_CompressionRifle" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "secretWeapon_CompressionRifle" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "secretWeapon_IMOD" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "secretWeapon_IMOD" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "secretWeapon_IdryllStaff" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "secretWeapon_IdryllStaff" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "secretWeapon_RomulanExperimental" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "secretWeapon_RomulanExperimental" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "attrexianWeaponFound" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "attrexianWeaponFound" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "secretWeapon_CompressionRifle" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "secretWeapon_CompressionRifle" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "secretWeapon_IMOD" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "secretWeapon_IMOD" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "secretWeapon_IdryllStaff" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "secretWeapon_IdryllStaff" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "secretWeapon_RomulanExperimental" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "secretWeapon_RomulanExperimental" , "server" ) , 0 ) );//game.
 
-		gameVars.SetVariable( "igmRoomsVisited" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "igmRoomsVisited" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "igmHolodeckSpawn" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "igmHolodeckSpawn" , "server" ) , 0 ) );//game.
-		gameVars.SetVariable( "igmTurboliftSpawn" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "igmTurboliftSpawn" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "igmRoomsVisited" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "igmRoomsVisited" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "igmHolodeckSpawn" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "igmHolodeckSpawn" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "igmTurboliftSpawn" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "igmTurboliftSpawn" , "server" ) , 0 ) );//game.
 
-		gameVars.SetVariable( "statusM5L2CUnlocked" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "ini/serverData.ini" , "statusM5L2CUnlocked" , "server" ) , 0 ) );//game.
+		gameVars.SetVariable( "statusM5L2CUnlocked" , ( float )coop_returnIntOrDefaultFromString( coop_parserIniGet( "serverData.ini" , "statusM5L2CUnlocked" , "server" ) , 0 ) );//game.
 	}
 
 	//[b60011] chrissstrah - fixed a few checks that where done to sloppy and did not work right
@@ -913,39 +913,39 @@ void coop_serverRestoreGameVars()
 	int iVal;
 
 	//SKILL
-	iVal = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "skill", "server"), 0, 3, COOP_DEFAULT_SKILL);
+	iVal = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "skill", "server"), 0, 3, COOP_DEFAULT_SKILL);
 	if (skill->integer != iVal) { gi.cvar_set("skill", va("%d", iVal)); }
 
 	//FRIENDLY FIRE
-	game.coop_friendlyFire = coop_returnFloatWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "friendlyfire", "server"),0 ,2, COOP_DEFAULT_FF);
+	game.coop_friendlyFire = coop_returnFloatWithinOrDefault(coop_parserIniGet("serverData.ini", "friendlyfire", "server"),0 ,2, COOP_DEFAULT_FF);
 	gameVars.SetVariable("friendlyFire", game.coop_friendlyFire);
 
 	//MAXSPEED
-	game.coop_maxspeed = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "maxspeed", "server"), 200,1000 , COOP_DEFAULT_MAXSPEED);
+	game.coop_maxspeed = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "maxspeed", "server"), 200,1000 , COOP_DEFAULT_MAXSPEED);
 	world->setPhysicsVar("maxspeed", game.coop_maxspeed);
 
 	//RESPAWN TIME
-	game.coop_respawnTime = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "respawntime", "server"),0 ,60,COOP_DEFAULT_RESPAWNTIME );
+	game.coop_respawnTime = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "respawntime", "server"),0 ,60,COOP_DEFAULT_RESPAWNTIME );
 	multiplayerManager.setRespawnTime( (float)game.coop_respawnTime );
 
 	//AIR ACCELERATE
-	iVal = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "airaccelerate", "server"), 0, 4, COOP_DEFAULT_AIRACCELERATE);
+	iVal = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "airaccelerate", "server"), 0, 4, COOP_DEFAULT_AIRACCELERATE);
 	world->setPhysicsVar("airAccelerate", iVal);
 
 	//AWARDS
-	game.coop_awardsActive = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "awards", "server"), 0, 1, COOP_DEFAULT_AWARDS);
+	game.coop_awardsActive = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "awards", "server"), 0, 1, COOP_DEFAULT_AWARDS);
 	
 	//TEAMICON
-	coopChallenges.iCurrentChallenge = (short)coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "challenge", "server"), 0,1 ,(short)COOP_DEFAULT_CHALLENGE);
+	coopChallenges.iCurrentChallenge = (short)coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "challenge", "server"), 0,1 ,(short)COOP_DEFAULT_CHALLENGE);
 	
 	//LMS - LAST MAN STANDING
-	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "lastmanstanding", "server"), 0,1 ,(int)COOP_DEFAULT_LASTMANSTANDING );
+	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "lastmanstanding", "server"), 0,1 ,(int)COOP_DEFAULT_LASTMANSTANDING );
 	
 	//DEAD BODIES STAYING
-	game.coop_deadBodiesPerArea = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "deadbodies", "server"),0,25 , COOP_DEFAULT_DEADBODIES);
+	game.coop_deadBodiesPerArea = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "deadbodies", "server"),0,25 , COOP_DEFAULT_DEADBODIES);
 	
 	//STASIS TIME
-	game.coop_stasisTime = coop_returnIntWithinOrDefault(coop_parserIniGet("ini/serverData.ini", "stasistime", "server"),7,30 , COOP_DEFAULT_STASISTIME);
+	game.coop_stasisTime = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "stasistime", "server"),7,30 , COOP_DEFAULT_STASISTIME);
 }
 
 
@@ -1004,7 +1004,7 @@ void coop_serverResetClientData( Player *player )
 
 	player->coopPlayer.coopStatus = sData;
 
-	coop_parserIniSet( "ini/serverData.ini" , player->coopPlayer.coopId , sData , "client" );
+	coop_parserIniSet( "serverData.ini" , player->coopPlayer.coopId , sData , "client" );
 }
 
 
@@ -1119,7 +1119,7 @@ void coop_serverCoop()
 	//hzm coop mod chrissstrahl - check if sv_floodprotect should be enabled
 	//if coop is not active
 	if ( !game.coop_isActive ) {
-		int iSvFlood = atoi( coop_parserIniGet( "ini/serverData.ini" , "sv_floodprotect" , "server" ) );
+		int iSvFlood = atoi( coop_parserIniGet( "serverData.ini" , "sv_floodprotect" , "server" ) );
 		if ( iSvFlood ) {
 			gi.SendConsoleCommand( "set sv_floodprotect 1\n" );
 		}
@@ -1134,7 +1134,7 @@ void coop_serverCoop()
 	game.coop_saveClientData = true;
 
 	//hzm coop mod chrissstrahl - dissable native spam protection, but remember its state
-	coop_parserIniSet( "ini/serverData.ini" , "sv_floodprotect" , va("%d",sv_floodprotect->integer) , "server" );
+	coop_parserIniSet( "serverData.ini" , "sv_floodprotect" , va("%d",sv_floodprotect->integer) , "server" );
 	gi.SendConsoleCommand( "set sv_floodprotect 0\n" );
 
 	//hzm coop mod chrissstrahl - enable 3rd person aim
@@ -1257,12 +1257,12 @@ void coop_serverSetup( void )
 
 		//hzm coop mod chrissstrahl - load last coop map if there is any
 		bool bServerHasRebooted = false;
-		bServerHasRebooted = coop_parserIniGet( "ini/serverData.ini" , "rebooting" , "server" );
+		bServerHasRebooted = coop_parserIniGet( "serverData.ini" , "rebooting" , "server" );
 
 		//hzm coop mod chrissstrahl - load the map that we are actually suppose to load
 		if ( bServerHasRebooted ){
-			coop_parserIniSet( "ini/serverData.ini" , "rebooting" , "false" , "server" );
-			str sStartMap = coop_parserIniGet( "ini/serverData.ini" , "startmap" , "server" );
+			coop_parserIniSet( "serverData.ini" , "rebooting" , "false" , "server" );
+			str sStartMap = coop_parserIniGet( "serverData.ini" , "startmap" , "server" );
 
 			if ( gi.FS_Exists( va( "maps/%s.bsp" , sStartMap.c_str() ) ) ){
 				if ( Q_stricmp( sMapToLoad , sStartMap) ){
@@ -1439,16 +1439,16 @@ bool coop_serverError( str sError, bool bFatal )
 	str sLevel = "";
 
 	//Make note into ini, disable reboot
-	coop_parserIniSet( "ini/serverData.ini" , "rebooting" , "false" , "server" );
-	coop_parserIniSet( "ini/serverData.ini" , "errorboot" , "true" , "server" );
-	coop_parserIniSet( "ini/serverData.ini" , "errorfatal" , coop_returnBoolWord( bFatal ) , "server" );
-	coop_parserIniSet( "ini/serverData.ini" , "errormap" , level.mapname , "server" );
-	coop_parserIniSet( "ini/serverData.ini" , "errortext" , sError , "server" );
+	coop_parserIniSet( "serverData.ini" , "rebooting" , "false" , "server" );
+	coop_parserIniSet( "serverData.ini" , "errorboot" , "true" , "server" );
+	coop_parserIniSet( "serverData.ini" , "errorfatal" , coop_returnBoolWord( bFatal ) , "server" );
+	coop_parserIniSet( "serverData.ini" , "errormap" , level.mapname , "server" );
+	coop_parserIniSet( "serverData.ini" , "errortext" , sError , "server" );
 
 	//[b60011] chrissstrahl - this prevents the server from exiting/rebooting if noerrorhalt=true in serverData.ini
 	//Changed from, errorhalt to noerrorhalt, so that a server will not reboot on default
-	//You are REQUIRED now to set noerrorhalt=true in /ini/serverData.ini to allow server to exit on error
-	if ( coop_returnBool( coop_parserIniGet( "ini/serverData.ini" , "noerrorhalt" , "server" ) ) )
+	//You are REQUIRED now to set noerrorhalt=true in /serverData.ini to allow server to exit on error
+	if ( coop_returnBool( coop_parserIniGet( "serverData.ini" , "noerrorhalt" , "server" ) ) )
 		return true;
 
 	//print info to console/logfile
@@ -1483,7 +1483,7 @@ void coop_serverThink( void )
 	//hzm coop mod chrissstrahl - quit server if requested
 	if ( game.coop_reboot && game.coop_restartServerEarliestAt < level.time ){ 
 		//[b607] chrissstrahl - allow to adjust the coop reboot feature
-		str sCoopRebootState = coop_parserIniGet("ini/serverData.ini", "rebootType", "server");
+		str sCoopRebootState = coop_parserIniGet("serverData.ini", "rebootType", "server");
 		if (!Q_stricmpn(sCoopRebootState.c_str(), "killserver",10)) { //killserver
 			gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver.cfg\n");
 		}
