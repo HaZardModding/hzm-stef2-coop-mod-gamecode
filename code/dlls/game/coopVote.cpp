@@ -465,7 +465,7 @@ int coop_vote_stasistimeValidate(Player* player, const str &command, const str &
 // Name:        coop_vote_challengeValidate
 // Class:       -
 //              
-// Description: Validates team-icon vote string before it becomes a vote
+// Description: Validates Challenge vote string before it becomes a vote
 //              
 // Parameters:	Player* player, const str &command, const str &arg
 //              
@@ -481,6 +481,11 @@ int coop_vote_challengeValidate(Player* player, const str &command, const str &a
 	if (!stricmp(arg.c_str(), "")) {
 		multiplayerManager.HUDPrint(player->entnum,va("^2$$Usage$$:^8 coop_challenge 0 - 3, current: %i\n", (short)coopChallenges.iCurrentChallenge));
 		return 1;
+	}
+
+	if (game.levelType >= MAPTYPE_MISSION) {
+		multiplayerManager.HUDPrint(player->entnum, va("^2$$c#127$$\n"));
+		return 0;
 	}
 
 	int iChallenge = atoi(arg.c_str());
