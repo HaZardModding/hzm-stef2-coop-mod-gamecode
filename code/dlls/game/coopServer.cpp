@@ -1099,10 +1099,6 @@ void coop_serverCoop()
 		gi.Printf( va( "==== %s is included in this coop build! ====\n" , currentMapName.c_str() ) );
 	}
 
-	//[b60011] chrissstrahl - initzialise
-	coopNpcTeam.init();
-	coopChallenges.init();
-
 	//hzm coop mod chrissstrahl - NO MORE - Gallifrey Falls No More
 	if ( g_gametype->integer != GT_MULTIPLAYER ) {
 		return;
@@ -1115,6 +1111,9 @@ void coop_serverCoop()
 		//let the level scripts know that this is coop
 		levelVars.SetVariable("isCoopActive", 1.0f);
 	}
+
+	//[b60011] chrissstrahl - initzialise
+	coopChallenges.init();
 
 	//hzm coop mod chrissstrahl - check if sv_floodprotect should be enabled
 	//if coop is not active
