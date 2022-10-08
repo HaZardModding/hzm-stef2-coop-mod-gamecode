@@ -40,7 +40,7 @@ public:
 	bool		isDisabled();
 	
 	float		fLastDamageTime			= 0.0f;
-	bool		challenesAreDisabled	= false;
+	bool		challenesAreDisabled	= true;
 	short		iCurrentChallenge		= 0;
 };
 

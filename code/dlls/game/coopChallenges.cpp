@@ -29,12 +29,6 @@ Container<str> CoopChallengeTypesDisabled;
 void CoopChallenges::init(void)
 //on level start, init all challenges
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		fLastDamageTime = 0;
-		challenesAreDisabled = true;
-		return;
-	}
-
 	fLastDamageTime					= (level.time + COOP_CHALLENGE_STICKTOGETHER_CYCLE);
 	challenesAreDisabled			= false;
 
