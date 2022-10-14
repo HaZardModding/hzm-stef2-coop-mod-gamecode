@@ -16,7 +16,7 @@
 //
 #include "_pch_cpp.h"
 
-#define SAVEGAME_VERSION 8
+#define SAVEGAME_VERSION 60011 //[b60011] chrissstrahl - test if this prevents issues by printing out a warning
 #define PERSISTANT_VERSION 1
 
 #include "coopPlayer.hpp"
