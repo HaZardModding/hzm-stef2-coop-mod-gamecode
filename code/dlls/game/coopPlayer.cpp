@@ -2036,7 +2036,7 @@ void coop_playerLeft( Player *player )
 	//hzm coop mod chrissstrahl - save current status when player leaves the game (unless he is spec)
 	if ( !multiplayerManager.isPlayerSpectator( player ) ){
 		coop_serverSaveClientDataWrite( player );
-		
+
 		//[b60011] chrissstrahl - handle NPC / AI Teammates
 		coopNpcTeam.playerLeft(player);
 	}

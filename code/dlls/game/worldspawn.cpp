@@ -540,7 +540,7 @@ CLASS_DECLARATION( Entity, World, "worldspawn" )
 void World::autoFailure(Event *ev)
 {
 	game.coop_autoFailPending = false;
-	G_MissionFailed("PlayerKilled");
+	G_MissionFailed("$$PlayerKilled$$"); //[b60011] chrissstrahl - added $$
 }
 
 //hzm coop mod chrissstrahl - allow delayed loading of map (post event with delay)

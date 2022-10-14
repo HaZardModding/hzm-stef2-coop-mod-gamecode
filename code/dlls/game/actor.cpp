@@ -7597,7 +7597,7 @@ void Actor::Killed( Event *ev )
 	
 	 //If the MissionFailed keeps coming up, make sure the tiki file is set correctly,
 	if ( !GetActorFlag( ACTOR_FLAG_ALLOWED_TO_KILL ) && attacker && attacker->isSubclassOf( Player ) )
-		G_MissionFailed( "CivilianKilled" ); 
+		G_MissionFailed( "$$CivilianKilled$$" ); //[b60011] chrissstrahl - added $$
 
 	// don't allow them to fly or swim anymore
 	flags &= ~( FL_SWIM | FL_FLY );
