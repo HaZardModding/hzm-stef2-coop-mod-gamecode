@@ -3864,7 +3864,8 @@ Player::Player()
 	actor_camera = NULL;
 	cool_camera = NULL;
 
-
+	//[b60011] gameupdate chrissstrahl - used to detect when cl_maxpackets is checked
+	checkingClMaxPackets = false;
 
 	//HaZardModding Coop Mod
 	//HaZardModding Coop Mod

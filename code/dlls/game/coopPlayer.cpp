@@ -442,11 +442,24 @@ bool coop_playerSetup(Player* player)
 	//[b60011] chrissstrahl - what happned to this ? I readded this as I can't find it
 	player->coopPlayer.timeEntered = level.time;
 
-	//[b607] chrissstrahl - make sure we do not handle bots
+	//[b60011] chrissstrahl - make sure we do not handle bots
 	if (ent->svflags & SVF_BOT) {
+		
 		cvar_t* cvar = gi.cvar_get("local_language");
 		str sCvar = (cvar ? cvar->string : "Eng");
 		player->setLanguage(sCvar);
+
+		cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
+		int iCvar2 = (cvar2 ? cvar2->integer : 0);
+		if (iCvar2 < 60) {
+			gi.cvar_set("cl_maxpackets","60");
+		}
+
+		cvar_t* cvar3 = gi.cvar_get("cl_packetdup");
+		int iCvar3 = (cvar3 ? cvar3->integer : 0);
+		if (iCvar3 > 0) {
+			gi.cvar_set("cl_packetdup", "0");
+		}
 
 //player->coopPlayer.setupComplete = true;
 		coop_classSet(player, "HeavyWeapon");
@@ -522,6 +535,10 @@ void coop_playerSetupClient(Player* player)
 {
 	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
 	DelayedServerCommand(player->entnum, "vstr local_language");
+	
+	player->checkingClMaxPackets = true;
+	DelayedServerCommand(player->entnum, "vstr cl_maxpackets");
+
 	DelayedServerCommand(player->entnum, "vstr coop_pId");
 	DelayedServerCommand(player->entnum, "vstr coop_verInf"); //[b60011] chrissstrahl - changed to avoid command being shown as text on older servers
 
@@ -1076,6 +1093,18 @@ bool coop_playerSay( Player *player , str sayString)
 			player->setLanguage("Eng");
 		}
 		return true;
+	}
+
+	//hzm gameupdate chrissstrahl - detect player cl_maxpackets
+	if (player->checkingClMaxPackets) {		
+		int iClMaxPack = atoi(sayString.c_str());
+		if (iClMaxPack >= 15) {
+			if (iClMaxPack < 60) {
+				DelayedServerCommand(player->entnum, "set cl_maxpackets 60");
+				player->checkingClMaxPackets = false;
+			}
+			return true;
+		}
 	}
 
 	//SPAM - FILTER - this is our sv_floodprotect replacement, since flood protect also blocks multiplayer specific commands which we are in need of to work

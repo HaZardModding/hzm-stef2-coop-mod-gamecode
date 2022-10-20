@@ -185,6 +185,8 @@ inline void WeaponSetItem::Archive( Archiver &arc )
 class Player : public Sentient
 	{
 	public:
+		//hzm gameupdate chrissstrahl [b60011]  - remember if we are checking cl_maxpackets
+		bool				checkingClMaxPackets;
 		//hzm gamefix daggolin - new function to handle enviromental influences (like drowning)
 		void				gamefix_WorldEffects(void);
 		//hzm gameupdate chrissstrahl - we want to access them anywhere (they used to be private)
@@ -1776,6 +1778,7 @@ inline void Player::Archive( Archiver &arc )
 	// Always load and save these - some vars are also used in singleplayer
 	// the coop mod does not seperate multiplayer and singleplayer quite clearly	
 	//coopPlayer.lastTargetedEntity
+	//arc.ArchiveInteger(&checkingClMaxPackets);					//used in multiplayer only - not relevant for zingleplaya
 //arc.ArchiveBool(&branchdialog_active);					//this needs review, this might not be used at all - will check after commit
 //arc.ArchiveFloat(coopPlayer.lastTimeModulatingPuzzle);	//this needs review, this might not be used at all - will check after commit
 	//arc.ArchiveBool(&messageOfTheDaySend);						//used in multiplayer only - not relevant for zingleplaya
