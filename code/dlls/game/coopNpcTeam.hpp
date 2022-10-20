@@ -20,7 +20,9 @@
 class CoopNpcTeam
 {
 private:
+	bool teamMateInitDone = false;
 	bool teamMateAvailable = false;
+	short teamMatesFillUntil = 5;
 	short teamMateClientEquivilent[COOP_NPC_TEAM_MATE_MAX]{-1,-1,-1,-1};
 	str teamMateModel[COOP_NPC_TEAM_MATE_MAX]{ "","","",""};
 	str teamMateName[COOP_NPC_TEAM_MATE_MAX]{ "","","","" };

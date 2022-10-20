@@ -15,8 +15,11 @@ CoopNpcTeam coopNpcTeam;
 
 void	CoopNpcTeam::init()
 {
-	if (!game.coop_isActive) { return; }
-	//npcLoadData();
+	if (!game.coop_isActive || teamMateInitDone) {
+		return;
+	}
+return;
+	npcLoadData();
 }
 
 
@@ -33,23 +36,22 @@ void	CoopNpcTeam::npcLoadData()
 	//hazardteam_picard.tik
 	//hazardteam_chang-voyager.tik
 
-//teamMateModel[0] = "models/char/hazardteam_picard.tik";
-//teamMateModel[1] = "models/char/hazardteam_jurot.tik";
-//teamMateModel[2] = "hazardteam_chang-voyager.tik";
-//teamMateModel[3] = "models/char/hazardteam_chang-voyager.tik";
+
+teamMateModel[0] = "models/char/hazardteam_picard.tik";
+teamMateModel[1] = "models/char/hazardteam_jurot.tik";
+teamMateModel[2] = "hazardteam_chang-voyager.tik";
+teamMateModel[3] = "models/char/hazardteam_chang-voyager.tik";
 
 	if (teamMateModel[0].length() || teamMateModel[1].length() || teamMateModel[2].length() || teamMateModel[3].length() ) {
 		//set teammates are avialable
 		teamMateAvailable = true;
-
-		return;
 
 		//grab info_player_deathmatch spawnlocations and place ai there.
 		//start in reverse 1 goest to spawn 8, 2 goes on spawn 7 and so on
 		//making sure the models that stay will be removed at the very last
 		Entity * ent;
 		ent = npcGetSpawnPos();
-		Vector vOrigin(0,0,0);
+		Vector vOrigin(-432, - 48, 0);
 		Vector vAngles(0,0,0);
 		if (ent) {
 			vOrigin	= ent->origin;
@@ -65,10 +67,13 @@ Entity*	CoopNpcTeam::npcGetSpawnPos()
 	int iMaxPlayers = 8;
 	int iSpawnPosition = (iMaxPlayers - teamMatesOnLevel);
 
-	Entity* ent;
 	TargetList* tlist;
-	tlist = world->GetTargetList(va("ipd%i", iSpawnPosition), false);
+	str sTargetname = va("ipd%i", iSpawnPosition);
+	tlist = world->GetTargetList(sTargetname.c_str(), false);
+	tlist = world->GetTargetList("player0", false);
+	
 	if (tlist) {
+		Entity* ent;
 		ent = tlist->GetNextEntity(NULL);
 		return ent;
 	}
@@ -78,7 +83,9 @@ Entity*	CoopNpcTeam::npcGetSpawnPos()
 void	CoopNpcTeam::playerLeft(Player* player)
 //A player left, replace player with ai
 {
-	if ( !player || !teamMateAvailable) { return; }
+	if ( !player || !teamMateAvailable) {
+		return;
+	}
 	npcAdd(player);
 }
 
@@ -97,19 +104,24 @@ void	CoopNpcTeam::playerReadyCheck(Player* player)
 			return;
 		}
 	}
+
 	npcRemove(player);
 }
 
 void	CoopNpcTeam::playerSpectator(Player* player)
 //A player is now spectating
 {
-	if (!player || !teamMateAvailable) { return; }
+	if (!player || !teamMateAvailable) {
+		return;
+	}
 	npcAdd(player);
 }
 
 void	CoopNpcTeam::npcAdd(Player* player)
 {
-	if (!player || !teamMateAvailable) { return; }
+	if (!player || !teamMateAvailable) {
+		return;
+	}
 	player->coopPlayer.coopNpcTeamHandled = false;
 	CoopNpcTeam::npcAdd(player->origin,player->GetVAngles());
 }
@@ -117,8 +129,14 @@ void	CoopNpcTeam::npcAdd(Player* player)
 void	CoopNpcTeam::npcAdd(Vector vOrigin,Vector vAngles)
 //A player left, replace player with ai
 {
+return;
 	if(teamMatesOnLevel >= COOP_NPC_TEAM_MATE_MAX){
 		gi.Printf(va("CoopNpcTeam::npcAdd - Maximum number of Teammates reached\n"));
+		return;
+	}
+	
+	if((coop_returnPlayerQuantityInArena() + teamMatesOnLevel) >= teamMatesFillUntil){
+		gi.Printf(va("CoopNpcTeam::npcAdd - Teammate Player Fill Ratio Limit reached\n"));
 		return;
 	}
 
@@ -140,6 +158,7 @@ void	CoopNpcTeam::npcAdd(Vector vOrigin,Vector vAngles)
 void	CoopNpcTeam::npcRemove(Player* player)
 //A player left, replace player with ai
 {
+return;
 	if (!player || !teamMateAvailable) { return; }
 	short int iTeammmate;
 	for (iTeammmate = (COOP_NPC_TEAM_MATE_MAX - 1); iTeammmate >= 0; iTeammmate--) {
@@ -162,5 +181,18 @@ void	CoopNpcTeam::npcRemove(Player* player)
 void	CoopNpcTeam::cleanUp(bool restart)
 //A player left, replace player with ai
 {
+	teamMateAvailable = false;
+	teamMatesOnLevel = 0;
 
+	int iIndex;
+	iIndex = 0;
+	while (COOP_NPC_TEAM_MATE_MAX > iIndex) {
+		teamMateModel[iIndex] = "";
+		teamMateName[iIndex] = "";
+		teamMateActive[iIndex] = false;
+		teamMateClientEquivilent[iIndex] = -1;
+		teamMateEntity[iIndex] = NULL;
+		teamMatePlayer[iIndex] = NULL;
+		iIndex++;
+	}
 }
