@@ -4056,7 +4056,28 @@ void LeapToEnemy::Begin
 	)
 
 	{
-	Entity* ent = self.enemyManager->GetCurrentEnemy();	
+
+	//[b60011] chrissstrahl - test if we can use leap to enemy to make npc jump
+	//using scripts helpernodes and this gamecode
+	Entity* ent = NULL;
+	Entity* eActor = (Entity*)&self;
+	if (eActor) {
+		ScriptVariable* var = NULL;
+		var = eActor->entityVars.GetVariable("npcTeamForcedTarget");
+		if (var) {
+			TargetList* tlist;
+			tlist = world->GetTargetList(var->stringValue(), false);
+			if (tlist){
+				ent = tlist->GetNextEntity(NULL);
+			}
+		}
+	}
+
+	if(ent == NULL) {
+		ent = self.enemyManager->GetCurrentEnemy();
+	}
+	//end
+
 	jump.SetEntity(ent);
 	jump.Begin(self);
 	}
