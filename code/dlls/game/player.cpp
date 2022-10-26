@@ -2336,6 +2336,11 @@ qboolean Player::checkattackleft( Conditional &condition )
 	if ( client->ps.leanDelta != 0 )
 		return false;
 
+	//[b60011] Chrissstrahl - do not fire if we are in circle menu
+	if ((circleMenuLastTimeActive() + 0.35) > level.time) {
+		return false;
+	}
+
 	if ( last_ucmd.buttons & BUTTON_ATTACKLEFT )
 	{
 		Weapon *weapon;
@@ -2407,6 +2412,11 @@ qboolean Player::checkattackright( Conditional &condition )
 
 	if ( client->ps.leanDelta != 0 )
 		return false;
+
+	//[b60011] Chrissstrahl - do not fire if we are in circle menu
+	if ((circleMenuLastTimeActive() + 0.35) > level.time) {
+		return false;
+	}
 
 	// If we're in the middle of a reload, we're not done attacking
 	/*	weapon = GetActiveWeapon( WEAPON_RIGHT );
