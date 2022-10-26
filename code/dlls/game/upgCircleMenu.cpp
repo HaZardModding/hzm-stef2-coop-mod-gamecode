@@ -90,7 +90,7 @@ void Player::switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2
 // Name:        circleMenuIsActive
 // Class:       -
 //              
-// Description: Checks if circleMenu is actuivate on player
+// Description: Checks if circleMenu is active for player
 //              
 // Parameters:  -
 //              
@@ -104,6 +104,26 @@ bool Player::circleMenuIsActive()
 	}
 
 	return false;
+}
+
+//[b60011] chrissstrahl
+//================================================================
+// Name:        circleMenuLastTimeActive
+// Class:       -
+//              
+// Description: Returns level time at which the menus was last active
+//              
+// Parameters:  -
+//              
+// Returns:     float
+//              
+//================================================================
+float Player::circleMenuLastTimeActive()
+{
+	if (upgCircleMenu.activatingTime > upgCircleMenu.thinkTime) {
+		return upgCircleMenu.activatingTime;
+	}
+	return upgCircleMenu.thinkTime;
 }
 
 //[b60011] chrissstrahl
@@ -130,6 +150,9 @@ void Player::circleMenu(int iType)
 		gi.Printf("player::circleMenu( %i ) <- unsupported Menu Type number in parameter 1\n", iType);
 		return;
 	}
+
+	DelayedServerCommand(entnum, "-attackLeft");
+	DelayedServerCommand(entnum, "-attackRight");
 
 	Event* StopFireEvent;
 	StopFireEvent = new Event(EV_Sentient_StopFire);
@@ -301,10 +324,10 @@ void Player::circleMenuThink()
 		return;
 	}
 	
-gi.Printf(va("Player::circleMenuThink()->circleMenuGetWidgetName %i - %f\n", upgCircleMenu.active, upgCircleMenu.thinkTime));
+//gi.Printf(va("Player::circleMenuThink()->circleMenuGetWidgetName %i - %f\n", upgCircleMenu.active, upgCircleMenu.thinkTime));
 
 	//make sure it can not be abused by spec
-	if (this->getHealth() <= 0 || multiplayerManager.inMultiplayer() && !multiplayerManager.isFightingAllowed() || multiplayerManager.isPlayerSpectator(this)) {
+	if (this->getHealth() <= 0 || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this)) {
 		if (upgCircleMenu.active) {
 			circleMenuHud(false);
 			upgCircleMenu.active = 0;
@@ -313,7 +336,7 @@ gi.Printf(va("Player::circleMenuThink()->circleMenuGetWidgetName %i - %f\n", upg
 	}
 
 	//player is clicking fire
-	if (last_ucmd.buttons & BUTTON_ATTACKLEFT) {
+	if (last_ucmd.buttons & BUTTON_ATTACKLEFT || last_ucmd.buttons & BUTTON_ATTACKRIGHT) {
 		upgCircleMenu.thinkTime = level.time;
 		circleMenuSelect(upgCircleMenu.lastSegment);
 		return;
@@ -325,7 +348,10 @@ gi.Printf(va("Player::circleMenuThink()->circleMenuGetWidgetName %i - %f\n", upg
 	GetPlayerView(NULL, &vViewangle);
 
 	//if all the same, we can abbort ?
-	if (vViewangle == upgCircleMenu.lastViewangle) { return; }
+	if (vViewangle == upgCircleMenu.lastViewangle) {
+		upgCircleMenu.thinkTime = level.time;
+		return;
+	}
 
 	//get difference - remember last viewangle
 	vDifference = (upgCircleMenu.lastViewangle - vViewangle);
@@ -348,7 +374,7 @@ gi.Printf(va("Player::circleMenuThink()->circleMenuGetWidgetName %i - %f\n", upg
 	float fSegmentNum;
 	str sWidgetName;
 	fSegmentNum = getSegmentNumForAngle(fAngle);
-gi.Printf("Player::circleMenuThink()->circleMenuGetWidgetName\n");
+//gi.Printf("Player::circleMenuThink()->circleMenuGetWidgetName\n");
 	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
 
 	//reset
@@ -401,7 +427,24 @@ void Player::circleMenuSelect(int iOption)
 
 	//make sure player has items
 	if (upgCircleMenu.optionAmmount[iOption] < 1) {
-		gi.Printf(va("circleMenuSelect: Given Option %d ammount < 1 for Client[%d]\n", iOption, entnum));
+		float fMessageSilenceTime = 0.5f;
+		if ((upgCircleMenu.lastMessageTime + fMessageSilenceTime) < level.time){
+			gi.Printf(va("circleMenuSelect: Given Option %d ammount < 1 for Client[%d]\n", iOption, entnum));
+		}
+
+		//close menu if no options are set
+		int iValidOptions = 0;
+		for (int iOptionCheck = (CIRCLEMENU_MAX_OPTIONS - 1); iOptionCheck >= 0; iOptionCheck--) {
+			if (upgCircleMenu.optionAmmount[iOptionCheck] > 0) {
+				iValidOptions++;
+			}		
+		}
+		if (iValidOptions == 0 && (upgCircleMenu.lastMessageTime + fMessageSilenceTime) < level.time) {
+			//Close Menu
+			circleMenu(upgCircleMenu.active);
+			hudPrint("Circle Menu - No options set by script, abborting.\n");
+			upgCircleMenu.lastMessageTime = level.time;
+		}
 		return;
 	}
 

@@ -36,6 +36,10 @@ public:
 	float	thinkTime = 0.0f;
 	//time when the menu was activated - used to prevent premature opening/closeing
 	float	activatingTime = 0.0f;
+//time when the circlemenu was last active - used to prevent weapon fireing in next frame on menu closing
+//float	lastTimeActive = 0.0f;
+	//time a message was last send to player
+	float	lastMessageTime = 0.0f;
 	//remember stuff so we can compare
 	Vector	lastViewangle = Vector(0, 0, 0);
 	Vector	longtimeViewangle = Vector(0, 0, 0);
@@ -79,6 +83,7 @@ public:
 	private:
 		void				circleMenu(int iType);
 		bool				circleMenuIsActive(void);
+		float				circleMenuLastTimeActive();
 		str					circleMenuGetWidgetName(int iDirection);
 		int					getSegmentNumForAngle(float fAngle);
 		void				circleMenuThink(void);

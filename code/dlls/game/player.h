@@ -246,6 +246,7 @@ class Player : public Sentient
 		friend class		UpgCircleMenu;
 		void				circleMenu(int iType);
 		bool				circleMenuIsActive(void);
+		float				circleMenuLastTimeActive();
 	private:
 		str					circleMenuGetWidgetName(int iDirection);
 		int					getSegmentNumForAngle(float fAngle);
