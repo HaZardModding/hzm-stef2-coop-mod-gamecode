@@ -1832,7 +1832,7 @@ void coop_playerPlaceableThink(Player* player)
 			player->coopPlayer.ePlacable->ProcessEvent(event);
 
 			//wait after the placable is shown to player before the click counts at placing it
-			if (player->upgCircleMenu.thinkTime + (0.45) < level.time && player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
+			if (player->circleMenuLastTimeActive() + (0.45) < level.time && player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
 				//perevent weapon firing
 				Event* StopFireEvent;
 				StopFireEvent = new Event(EV_Sentient_StopFire);
