@@ -4574,9 +4574,7 @@ void Player::Dead( Event *ev )
 	{
 		//pick random player killed string.
 		int i = ( rand() % 10 ) + 1;
-		str playerKilled = "$$PlayerKilled"; //[b60011] chrissstrahl - added $$
-		playerKilled += i;
-		playerKilled += "$$";
+		str playerKilled = va("PlayerKilled%d",i); //[b60011] chrissstrahl - added $$
 		G_MissionFailed( playerKilled );
 	}
 

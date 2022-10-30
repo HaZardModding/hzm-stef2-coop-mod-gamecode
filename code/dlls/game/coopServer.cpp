@@ -466,9 +466,7 @@ gi.Printf("COOPDEBUG coop_serverLmsCheckFailure: all[%i] vs active[%i]\n", iAll,
 	if ( iAll > 0 && iActive == 0 )
 	{
 		//[b607] needs to be exactly this to trigger playerDeathThread
-		//[b610] chrissstrahl - changed string to include $$ to fix issue
-		//select a random player suicide kill message range 1 to 10
-		G_MissionFailed(va("$$PlayerKilled%i$$", ((int)G_Random(9.0f) + 1)));
+		G_MissionFailed(va("PlayerKilled%i", ((int)G_Random(9.0f) + 1)));
 		return true;
 	}
 	return false;
