@@ -14,6 +14,7 @@
 CoopScripting coopScripting;
 
 
+#define COOP_SCRIPTING_FILENAME_COOPMODMAIN "coop_mod/matrix/main.scr"
 #define COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU_4 "mom4_coopInput.scr"
 #define COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU "multioptions.scr"
 #define COOP_SCRIPTING_FILENAME_NOSCRIPT "noscript.scr"
@@ -21,6 +22,7 @@ CoopScripting coopScripting;
 #define COOP_SCRIPTING_ENTITYVAR_MISSIONRESOURCEMENU_PLAYER_DONE "mrmLoadOutComplete"
 
 
+bool CoopScripting::getIncludedCoop() { return includedCoop; }
 bool CoopScripting::getIncludedMrm() { return includedMrm; }
 bool CoopScripting::getIncludedMom4() { return includedMom4; }
 bool CoopScripting::getIncludedMom() { return includedMom; }
@@ -29,6 +31,7 @@ bool CoopScripting::getIncludedNoscript() { return includedNoscript; }
 str CoopScripting::checkIncludedFiles(str sLex)
 {
 	//[b60011] chrissstrahl - check and remember if special scripts are used
+	checkIncludedCoop(sLex);
 	checkIncludedMom(sLex);
 	checkIncludedMom4(sLex);
 	checkIncludedMrm(sLex);
@@ -38,6 +41,14 @@ str CoopScripting::checkIncludedFiles(str sLex)
 	sLex = checkReplaceInclude(sLex);
 	//[b60011] chrissstrahl - return replaced script files
 	return sLex;
+}
+
+bool CoopScripting::checkIncludedCoop(str sLex)
+{
+	if (coop_returnIntFind(sLex, COOP_SCRIPTING_FILENAME_COOPMODMAIN) != -1) {
+		includedCoop = true;
+	}
+	return includedCoop;
 }
 
 bool CoopScripting::checkIncludedMrm(str sLex)
@@ -104,7 +115,7 @@ str CoopScripting::checkReplaceInclude(str sLex)
 //will load coop optimized global files
 //global scripts will be switched by the mod and scripters don't have to worry
 {
-	if (g_gametype->integer != GT_SINGLE_PLAYER) {
+	if (g_gametype->integer != GT_SINGLE_PLAYER && getIncludedCoop()) { //[b60011] chrissstrahl - also check if we are really using the coop mod or not - fix this destaster once and for all
 		if (!Q_stricmp(sLex, "maps/global_scripts/global_acceleratedmovement.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_archetype.scr") ||
 			!Q_stricmp(sLex, "maps/global_scripts/global_common.scr") ||

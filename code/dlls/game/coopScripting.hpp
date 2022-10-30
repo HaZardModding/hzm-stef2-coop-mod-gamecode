@@ -17,16 +17,19 @@ extern CoopChallenges coopChallenges;
 class CoopScripting
 {
 private:
+	bool includedCoop = false;
 	bool includedMrm = false;
 	bool includedMom4 = false;
 	bool includedMom = false;
 	bool includedNoscript = false;
 public:
+	bool getIncludedCoop();
 	bool getIncludedMrm();
 	bool getIncludedMom4();
 	bool getIncludedMom();
 	bool getIncludedNoscript();
 	str checkIncludedFiles(str sLex);
+	bool checkIncludedCoop(str sLex);
 	bool checkIncludedMrm(str sLex);
 	bool checkIncludedMom4(str sLex);
 	bool checkIncludedMom(str sLex);
