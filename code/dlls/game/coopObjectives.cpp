@@ -630,8 +630,8 @@ void coop_objectivesUpdate( str sObjectiveState, str sObjectiveItem, str sObject
 	if ( !game.isStandardLevel ){
 		sLocalString = "";
 	}
-	//do not localize if it already is
-	else if ( sObjective[0] == '$' && sObjective[1] == '$' ){
+	//do not localize if it already is //[b60011] chrissstrahl - update checking alternatively for space
+	else if (sObjective[0] == '$' && sObjective[1] == '$' || coop_returnIntFind(sObjective.c_str(), " ") != -1){
 		sLocalString = "";
 	}
 
@@ -731,8 +731,8 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 			sObjective = program.getStringVariableValue( sVariableName.c_str() );
 		}
 		if ( sObjective.length() > 1 ){
-		//make sure it is not localized twiche...
-			if ( sObjective[0] == '$' && sObjective[1] == '$' ){
+		//make sure it is not localized twiche... //[b60011] chrissstrahl - update checking alternatively for space
+			if (sObjective[0] == '$' && sObjective[1] == '$' || coop_returnIntFind(sObjective.c_str(), " ") != -1) {
 				sLocalString = "";
 			}
 
@@ -755,7 +755,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 						if ( ( game.coop_objectiveLastUpdate + 3 ) < level.time || player->coopPlayer.lastTimeUpdatedObjectives < 0 ){
 							//make sure the objectives of player is sync
 							//player->hudPrint( va( "\n^0=^5-^0=^5-^0=^5-^0=^5-^5^5Co-Op Mod %i ^0-^5 $$MissionObjectives$$ ^0=^5-^0=^5-^0=^5-^0=\n" , COOP_BUILD ) );
-							player->hudPrint( "\n^8======^5 $$MissionObjectives$$ ^8======\n" );
+							player->hudPrint( "\n\n^8======^5 $$MissionObjectives$$ ^8======\n" );
 						}
 						player->hudPrint( va( "%s:^8 %s%s%s\n" , sStatusName.c_str() , sLocalString.c_str() , sObjective.c_str() , sLocalString.c_str() ) );
 					}
