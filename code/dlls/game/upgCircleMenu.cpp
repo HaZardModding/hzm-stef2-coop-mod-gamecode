@@ -422,30 +422,36 @@ void Player::circleMenuSelect(int iOption)
 		return;
 	}
 
-	bool bIsScript = upgCircleMenu.optionIsScript[iOption];
-	str sThread		= upgCircleMenu.optionThreadOrCommand[iOption];
+	bool	bIsScript = true;
+	str		sThread;
 
-	//make sure player has items
-	if (upgCircleMenu.optionAmmount[iOption] < 1) {
-		float fMessageSilenceTime = 0.5f;
-		if ((upgCircleMenu.lastMessageTime + fMessageSilenceTime) < level.time){
-			gi.Printf(va("circleMenuSelect: Given Option %d ammount < 1 for Client[%d]\n", iOption, entnum));
-		}
+	if (upgCircleMenu.active != 2) {
+		 bIsScript	= upgCircleMenu.optionIsScript[iOption];
+		 sThread	= upgCircleMenu.optionThreadOrCommand[iOption];
+		 if (upgCircleMenu.optionAmmount[iOption] < 1) {
+			float fMessageSilenceTime = 0.5f;
+			if ((upgCircleMenu.lastMessageTime + fMessageSilenceTime) < level.time){
+				gi.Printf(va("circleMenuSelect: Given Option %d ammount < 1 for Client[%d]\n", iOption, entnum));
+			}
 
-		//close menu if no options are set
-		int iValidOptions = 0;
-		for (int iOptionCheck = (CIRCLEMENU_MAX_OPTIONS - 1); iOptionCheck >= 0; iOptionCheck--) {
-			if (upgCircleMenu.optionAmmount[iOptionCheck] > 0) {
-				iValidOptions++;
-			}		
+			//close menu if no options are set
+			int iValidOptions = 0;
+			for (int iOptionCheck = (CIRCLEMENU_MAX_OPTIONS - 1); iOptionCheck >= 0; iOptionCheck--) {
+				if (upgCircleMenu.optionAmmount[iOptionCheck] > 0) {
+					iValidOptions++;
+				}		
+			}
+			if (iValidOptions == 0 && (upgCircleMenu.lastMessageTime + fMessageSilenceTime) < level.time) {
+				//Close Menu
+				circleMenu(upgCircleMenu.active);
+				hudPrint("Circle Menu - No options set by script, abborting.\n");
+				upgCircleMenu.lastMessageTime = level.time;
+			}
+			return;
 		}
-		if (iValidOptions == 0 && (upgCircleMenu.lastMessageTime + fMessageSilenceTime) < level.time) {
-			//Close Menu
-			circleMenu(upgCircleMenu.active);
-			hudPrint("Circle Menu - No options set by script, abborting.\n");
-			upgCircleMenu.lastMessageTime = level.time;
-		}
-		return;
+	}
+	else {
+		sThread = upgCircleMenu.optionDialogThread[iOption];
 	}
 
 //gi.Printf(va("circleMenuSelect: %i selected\n", (iOption + 1)));
@@ -522,22 +528,26 @@ void Player::circleMenuDialogSetEvent(Event* ev)
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
 void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage)
 {
-	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONSDIALOG) {
-		gi.Printf(va("circleMenuDialogSet: Given Option %i is out of Range\n"));
+	//range 1 to CIRCLEMENU_MAX_OPTIONSDIALOG
+	if (iOption < 1 || iOption > CIRCLEMENU_MAX_OPTIONSDIALOG) {
+		gi.Printf(va("circleMenuDialogSet: Given Option %i is out of Range\n", iOption));
 		return;
 	}
-	if (upgCircleMenu.active <= 0) {
-		gi.Printf(va("%s.circleMenuDialogSet() - Can only be used while menu active.\n", targetname.c_str()));
-	}
-	upgCircleMenu.optionDialogThread[iOption] = sThread;
-	upgCircleMenu.optionDialogText[iOption] = sText;
-	upgCircleMenu.optionDialogIcon[iOption] = sImage;
+	
+	//if (upgCircleMenu.active <= 0) {
+		//gi.Printf(va("%s.circleMenuDialogSet() - Can only be used while menu active.\n", targetname.c_str()));
+	//}
+
+	int iOptionToArrayNum = (iOption - 1); //make it so that players can start with 1 instead of 0, substract 1
+	upgCircleMenu.optionDialogThread[iOptionToArrayNum] = sThread;
+	upgCircleMenu.optionDialogText[iOptionToArrayNum] = sText;
+	upgCircleMenu.optionDialogIcon[iOptionToArrayNum] = sImage;
 
 	if (!sImage.length()) { sImage = "weapons/empty"; }
 	if (!sText.length()) { sText = "^"; }
 
-gi.Printf("Player::circleMenuDialogSet()->circleMenuGetWidgetName\n");
-	str sWidgetName = circleMenuGetWidgetName(iOption);
+	//gi.Printf("Player::circleMenuDialogSet()->circleMenuGetWidgetName\n");
+	str sWidgetName = circleMenuGetWidgetName(iOptionToArrayNum);
 
 	//send commands to menu
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
@@ -560,16 +570,19 @@ void Player::circleMenuDialogClear(int iOption)
 		return;
 	}
 
+	//range 1 to CIRCLEMENU_MAX_OPTIONSDIALOG
 	if (iOption < 0 || iOption > CIRCLEMENU_MAX_OPTIONSDIALOG) {
 		gi.Printf(va("%s.circleMenuDialogClear() - Out of range: %d.\n", targetname.c_str(), iOption));
 		return;
 	}
 
 	if (iOption != 0) {
+		//reset specific
 		circleMenuDialogSet(iOption, "", "", "");
 	}
 	else {
-		for (int i = 0; i < CIRCLEMENU_MAX_OPTIONSDIALOG; i++) {
+		//reset all
+		for (int i = 1; i <= CIRCLEMENU_MAX_OPTIONSDIALOG; i++) {
 			circleMenuDialogSet(i, "", "", "");
 		}
 	}
@@ -599,17 +612,14 @@ void Player::circleMenuSetEvent(Event* ev)
 		iCost = ev->GetInteger(7);
 		sCostType = ev->GetInteger(8);
 	}
-
 	circleMenuSet(iOption, sText, sThread, sImage, bIsThread, iAmmount, iCost, sCostType);
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
 void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType)
 {
-	//correct offset
-	iOption = (iOption - 1);
-
-	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONS) {
+	//range 1 to CIRCLEMENU_MAX_OPTIONS
+	if (iOption < 1 || iOption > CIRCLEMENU_MAX_OPTIONS) {
 		gi.Printf(va("circleMenuSet: Given Option %i is out of Range\n", iOption));
 		return;
 	}
@@ -621,16 +631,18 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 	if (!sText.length()) { sText = "^"; }
 	if (iAmmount == -1) { iAmmount = 999999; }
 
-	upgCircleMenu.optionThreadOrCommand[iOption] = sThread;
-	upgCircleMenu.optionText[iOption] = sText;
-	upgCircleMenu.optionIcon[iOption] = sImage;
-	upgCircleMenu.optionIsScript[iOption] = bThread;
-	upgCircleMenu.optionAmmount[iOption] = iAmmount;
-	upgCircleMenu.optionCost[iOption] = iCost;
-	upgCircleMenu.optionCostType[iOption] = sCostType;
+	int iOptionToArrayNum = (iOption - 1); //make it so that players can start with 1 instead of 0, substract 1
 
-gi.Printf("Player::circleMenuSet()->circleMenuGetWidgetName\n");
-	str sWidgetName = circleMenuGetWidgetName(iOption);
+	upgCircleMenu.optionThreadOrCommand[iOptionToArrayNum] = sThread;
+	upgCircleMenu.optionText[iOptionToArrayNum] = sText;
+	upgCircleMenu.optionIcon[iOptionToArrayNum] = sImage;
+	upgCircleMenu.optionIsScript[iOptionToArrayNum] = bThread;
+	upgCircleMenu.optionAmmount[iOptionToArrayNum] = iAmmount;
+	upgCircleMenu.optionCost[iOptionToArrayNum] = iCost;
+	upgCircleMenu.optionCostType[iOptionToArrayNum] = sCostType;
+
+	//gi.Printf("Player::circleMenuSet()->circleMenuGetWidgetName\n");
+	str sWidgetName = circleMenuGetWidgetName(iOptionToArrayNum);
 
 	//send commands to menu
 	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
@@ -654,16 +666,19 @@ void Player::circleMenuClear(int iOption)
 		return;
 	}
 
+	//ramnge 0 to CIRCLEMENU_MAX_OPTIONS
 	if (iOption < 0 || iOption > CIRCLEMENU_MAX_OPTIONS) {
 		gi.Printf(va("%s.circleMenuClear() - Out of range: %d.\n", targetname.c_str(), iOption));
 		return;
 	}
 
 	if (iOption != 0) {
+		//reset specific
 		circleMenuSet(iOption, "", "", "", false, 999999, 0, "");
 	}
 	else {
-		for (int i = 0; i < CIRCLEMENU_MAX_OPTIONS; i++) {
+		//reset all
+		for (int i = 1; i <= CIRCLEMENU_MAX_OPTIONS; i++) {
 			circleMenuSet(i, "", "", "", false, 999999, 0, "");
 		}
 	}
