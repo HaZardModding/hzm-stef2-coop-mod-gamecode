@@ -2396,12 +2396,15 @@ void G_MissionFailed( const str& reason )
 
 	//hzm coop mod chrissstrahl - if # is used it means set string without $$
 	str ss;
+
+
 	if ( reason[0] == '#' ) {
 		ss = coop_returnStringStartingFrom( reason , 1 );
 		// Set our failure reason in the config string
 		gi.failedcondition( va( "\n\n  %s^0" , ss.c_str() ) );
 	}
 	else {
+		//[b60011] chrissstrahl - fixed issue possibly destroying user config file - don't use $$ here
 		// Set our failure reason in the config string
 		gi.failedcondition( reason.c_str() );
 	}
@@ -2437,12 +2440,18 @@ void G_MissionFailed( const str& reason )
 			if ( player )
 			{
 				str sReason = reason;
-				if ( reason.length() && reason[0] == '#' ) {
-					sReason = coop_substrToEnd( sReason , 1 );
+				//Intentionally no $$ wanted
+				if (reason.length() && reason[0] == '#') {
+					sReason = coop_substrToEnd(sReason, 1);
+				}
+				//If it is just a single word and has no $$ it is extreemly likley a local string, so add $$
+				else if (coop_returnIntFind(sReason.c_str(),"$$") == -1 && coop_returnIntFind(sReason.c_str(), " ") == -1) {
+					sReason = va("$$%s$$", sReason.c_str());
 				}
 				
 				//hzm coop mod chrissstrahl - show hud for coop clients and text for others
 				if ( player->coopPlayer.installed ){
+
 					DelayedServerCommand( player->entnum , va( "set ui_failureReason %s\n", sReason.c_str() ) );
 					DelayedServerCommand( player->entnum , "pushmenu coop_failure" );
 				}
