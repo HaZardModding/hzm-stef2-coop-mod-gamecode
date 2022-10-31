@@ -752,11 +752,10 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 				float fAge = game.coop_objectiveItemCompletedAt[( iObjectiveItem - 1 )];
 				if ( ( fAge + 5 ) > level.time || fAge < 0 ){
 					if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 ){
-						if ( ( game.coop_objectiveLastUpdate + 3 ) < level.time || player->coopPlayer.lastTimeUpdatedObjectives < 0 ){
-							//make sure the objectives of player is sync
-							//player->hudPrint( va( "\n^0=^5-^0=^5-^0=^5-^0=^5-^5^5Co-Op Mod %i ^0-^5 $$MissionObjectives$$ ^0=^5-^0=^5-^0=^5-^0=\n" , COOP_BUILD ) );
+						if ((player->coopPlayer.lastTimePrintedObjectivesTitle + 3) < level.time){
 							player->hudPrint( "\n\n^8======^5 $$MissionObjectives$$ ^8======\n" );
 						}
+						player->coopPlayer.lastTimePrintedObjectivesTitle = level.time;
 						player->hudPrint( va( "%s:^8 %s%s%s\n" , sStatusName.c_str() , sLocalString.c_str() , sObjective.c_str() , sLocalString.c_str() ) );
 					}
 				}
