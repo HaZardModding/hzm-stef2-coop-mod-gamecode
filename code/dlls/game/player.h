@@ -223,6 +223,7 @@ class Player : public Sentient
 		void				getNameEvent(Event* ev);
 		//hzm gameupdate chrissstrhal [b60011] - allow to set widgettext with SPACE and NEWLINE
 		void				widgetCommandEvent(Event* ev);
+		void				widgetCommand(str sWidget, str sParameters);
 		//hzm gameupdate chrissstrahl - sets specific camera for this player
 		void				setCameraEvent(Event *ev);
 		//hzm gameupdate chrissstrahl - make sure we handle the branchdialog stuff right
@@ -1813,6 +1814,7 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveBool(&coopPlayer.updateHudDisplayed);				//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lastScanSend);					//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveBool(&coopPlayer.clickFireHudActive);				//used in multiplayer only - not relevant for zingleplaya
+	//arc.ArchiveFloat(&coopPlayer.lmsDeaths);						//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.);								//used in multiplayer only - not relevant for zingleplaya
 	arc.ArchiveSafePointer(&last_entityTargeted);
 	arc.ArchiveString(&kill_thread);
@@ -1827,6 +1829,7 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveBool(&coopPlayer.scanHudActive);
 	arc.ArchiveFloat(&coopPlayer.lastTimeThink);
 	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
+	arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
 	arc.ArchiveFloat(&coopPlayer.lastTimeChangedClass);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);

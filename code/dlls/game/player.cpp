@@ -2013,22 +2013,26 @@ void Player::widgetCommandEvent(Event* ev)
 	}
 
 	str sData;
-	str sParameters = ev->GetString(1);	//widgetname
-	sParameters += " "; //spacer
-	sParameters += ev->GetString(2);	//widgetcommandparameter
+	str sParameters = ev->GetString(2);	//widgetcommandparameter
 
 	if (ev->NumArgs() > 2) {
 		sParameters += " "; //spacer
 		str sTemp = ev->GetString(3);
-
-		//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
-		if (coop_returnIntFind(sParameters.c_str(), "labeltext") != -1) {
-			sTemp = coop_replaceForLabelText(sTemp);
-		}
-
 		sParameters += sTemp;
 	}
-	sData += "stufftext \"globalwidgetcommand ";
+	widgetCommand(ev->GetString(1), sParameters);
+}
+
+//[b60011] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
+//Internal code usage
+void Player::widgetCommand(str sWidget,str sParameters)
+{
+	//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
+	str sTemp;
+	if (coop_returnIntFind(sParameters.c_str(), "labeltext") != -1) {
+		sTemp = coop_replaceForLabelText(sTemp);
+	}
+	str sData = "stufftext \"globalwidgetcommand ";
 	sData += sParameters;
 	sData += "\"\n";
 	gi.SendServerCommand(edict - g_entities, sData.c_str());

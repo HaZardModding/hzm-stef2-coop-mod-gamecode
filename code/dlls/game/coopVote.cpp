@@ -69,7 +69,8 @@ bool coop_vote_checkvalid(const str &command)
 		stricmp(command.c_str(), "coop_next") == 0 ||
 		stricmp(command.c_str(), "coop_prev") == 0 ||
 		stricmp(command.c_str(), "coop_awards") == 0 ||
-		stricmp(command.c_str(), "coop_ff") == 0
+		stricmp(command.c_str(), "coop_ff") == 0 ||
+		stricmp(command.c_str(), "coop_quit") == 0 //added [b60011]
 		)
 	{
 		return true;
@@ -94,7 +95,7 @@ void coop_vote_printcommands(Player *player)
 		return;
 	}
 	multiplayerManager.HUDPrint(player->entnum, "coop_skill <0-3>, coop_ff <0.0-2.0>, coop_maxspeed <200-1000>,coop_awards <0-1>\n");
-	multiplayerManager.HUDPrint(player->entnum, "coop_respawntime <0-60>, coop_lms <0-1>,coop_challenge <0-3>, coop_next, coop_prev\n"); //[b607] added coop_teamIcon
+	multiplayerManager.HUDPrint(player->entnum, "coop_respawntime <0-60>, coop_lms <0-10>,coop_challenge <0-3>, coop_next, coop_prev\n"); //[b607] added coop_teamIcon
 	multiplayerManager.HUDPrint(player->entnum, "coop_deadbodies <0-25>,coop_airaccelerate <0-4>,coop_stasisTime <5-60>\n"); //[b607] added
 }
 
@@ -134,6 +135,41 @@ int coop_vote_skipcinematicValidate(Player* player, const str &command, const st
 	return 3; //votestring was not altred
 }
 
+//========================================================= [b60011]
+// Name:        coop_vote_quitserverValidate
+// Class:       -
+//              
+// Description: Validates server quit vote string before it becomes a vote
+//              
+// Parameters:	Player* player, const str &command, const str &arg
+//              
+// Returns:     INTEGER
+//              
+//================================================================
+int coop_vote_quitserverValidate(Player* player, const str& command, const str& arg, str& _voteString)
+{
+	if (Q_stricmp(command.c_str(), "coop_quit") != 0) {
+		return 0;
+	}
+
+	//[b60011] chrissstrahl - save changes directly to ini
+	int iDisallowQuit = atoi(coop_parserIniGet("serverData.ini", "votedisallowserverquit", "server"));
+	iDisallowQuit = coop_returnIntWithinOrDefault(iDisallowQuit, 0, 1, 0);
+
+	if (iDisallowQuit) {
+		multiplayerManager.HUDPrint(player->entnum,"Coop Server Quit by vote is disabled on this server\n");
+		return 1;		
+	}
+
+	if (dedicated->integer == 0) {
+		multiplayerManager.HUDPrint(player->entnum, "Coop Server Quit only works on a dedicated server\n");
+		return 1;
+	}
+
+	_voteString = "coop_quit";
+	return 2; //votestring could have been changed (args)
+}
+
 //========================================================= [b607]
 // Name:        coop_vote_lastmanstandingValidate
 // Class:       -
@@ -150,20 +186,19 @@ int coop_vote_lastmanstandingValidate(Player* player, const str &command, const 
 	if (Q_stricmp(command.c_str(), "coop_lms") != 0) {
 		return 0;
 	}
-	int iTime; //[b607] chrissstrahl - changed because time is alreday reserved
-	iTime = (int)multiplayerManager.getRespawnTime();
+	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "lastmanstanding", "server"), 0, 10, (int)COOP_DEFAULT_LASTMANSTANDING);
 	if (!stricmp(arg.c_str(), "")) {
-		multiplayerManager.HUDPrint(player->entnum, va("Current LMS Status: %d\nRange: 0 - 1\n", iTime));
+		multiplayerManager.HUDPrint(player->entnum, va("Current LMS Status: %d\nRange: 0 - 10\n", game.coop_lastmanstanding));
 		return 1;
 	}
-	iTime = atoi(arg.c_str());
-	if (iTime > 60) {
-		iTime = 60;
+	int iLms = atoi(arg.c_str());
+	if (iLms > 60) {
+		iLms = 60;
 	}
-	else if (time < 0) {
-		iTime = 0;
+	else if (iLms < 0) {
+		iLms = 0;
 	}
-	_voteString = va("coop_lms %i",iTime);
+	_voteString = va("coop_lms %i",iLms);
 	return 2; //votestring could have been changed (args)
 }
 
@@ -1151,8 +1186,37 @@ bool coop_vote_mpmodifierSet(const str  _voteString)
 }
 
 
+//========================================================= [b611]
+// Name:        coop_vote_quitserverSet
+// Class:       -
+//              
+// Description: Handles server quit vote
+//              
+// Parameters:	str _voteString
+//              
+// Returns:     BOOL
+//              
+//================================================================
+bool coop_vote_quitserverSet(const str _voteString)
+{
+	int iLength = 9;
+	if (Q_stricmpn(_voteString, "coop_quit", iLength) != 0) {
+		return false;
+	}
 
-//========================================================= [b607]
+	//[b60011] chrissstrahl - save changes directly to ini
+	int iDisallowQuit = atoi(coop_parserIniGet("serverData.ini", "votedisallowserverquit", "server"));
+	iDisallowQuit = coop_returnIntWithinOrDefault(iDisallowQuit, 0, 1, 0);
+	
+	if (iDisallowQuit == 0) {
+		game.coop_rebootForced = true;
+		coop_serverManageReboot(level.mapname.tolower(), NULL);
+		return true;
+	}
+	return false;
+}
+
+//========================================================= [b611]
 // Name:        coop_vote_lastmanstandingSet
 // Class:       -
 //              
@@ -1165,49 +1229,63 @@ bool coop_vote_mpmodifierSet(const str  _voteString)
 //================================================================
 bool coop_vote_lastmanstandingSet(const str _voteString)
 {
-	if (Q_stricmpn(_voteString, "coop_lms ", 9) != 0) {
+	int iLength = 9;
+	if (Q_stricmpn(_voteString, "coop_lms ", iLength) != 0) {
 		return false;
 	}
-	str sMultiplier;
-	int iStatus;
-	int i;
-	int iPrevStatus = 0;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
-		
-	if (_voteString.length() > (iStart + 1)) { iStart++; }
-	else { return true; }
-
-	for (i = iStart; i < _voteString.length(); i++){
-		sMultiplier += _voteString[i];
+	//Make sure there is actually a value
+	if (_voteString.length() <= iLength) {
+		return true;
 	}
 
-	iStatus = atoi(sMultiplier.c_str());
+	//get value from votestring
+	str sValueNew = "";
+	for (int i = iLength; i < _voteString.length(); i++){
+		sValueNew += _voteString[i];
+	}
 
-	//hzm coop mod chrissstrahl - make sure there is eigther 0/1
-	if (iStatus <= 0)
-		iStatus = 0;
-	else
-		iStatus = 1;
+	int iValueOld = game.coop_lastmanstanding;
+	int iValueNew = atoi(sValueNew);
+	iValueNew =	coop_returnIntWithinOrDefault(iValueNew,0,10,0);
 
-	//hzm coop mod chrissstrahl - get previouse status
-	if (game.coop_lastmanstanding)
-		iPrevStatus = 1;
+	//[b60011] chrissstrahl - save changes directly to ini
+	coop_parserIniSet("serverData.ini", "lastmanstanding", (str)iValueNew, "server");
+	game.coop_lastmanstanding = iValueNew;
 
-	//hzm coop mod chrissstrahl - set global var
-	game.coop_lastmanstanding = (bool)atoi(sMultiplier.c_str());
-
-	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("serverData.ini", "lastmanstanding", (bool)iStatus, "server");
-
-	//hzm coop mod chrissstrahl - send updated data to player UI
 	Player *player = NULL;
-	for (i = 0; i < maxclients->integer; i++){
-		player = (Player*)g_entities[i].entity;
-		if (player && player->client && player->isSubclassOf(Player)) {
 
-			//hzm coop mod chrissstrahl - lms has been turned off, reset player death time (will make them respawn)
-			if (iStatus == 0 || iPrevStatus == 0) {
+	//[b60011] chrissstrahl - send updated data to player UI
+	for (int i = 0; i < maxclients->integer; i++) {
+		player = (Player*)g_entities[i].entity;
+		if (player && player->client && player->isSubclassOf(Player) && player->coopPlayer.installed) {
+			player->widgetCommand("coopGpoLms", va("title %d", iValueNew));
+		}
+	}
+
+	//[b60011] chrissstrahl - check if player is allowed back in
+	if (game.coop_lastmanstanding == 0 || iValueOld == 0) {
+		for (int i = 0; i < maxclients->integer; i++) {
+			player = (Player*)g_entities[i].entity;
+			if (player && player->client && player->isSubclassOf(Player)) {
+
+				//[b60011] chrissstrahl - inform players of change
+				if (game.levelType < MAPTYPE_MISSION) {
+					if (coop_checkPlayerLanguageGerman(player)) {
+						multiplayerManager.HUDPrint(player->entnum, "^5INFO^8: Last Man Standing nur auf Missionskarten aktiv!\n");
+					}
+					else {
+						multiplayerManager.HUDPrint(player->entnum, "^5INFO^8: Last Man Standing is only active on Missionmaps!\n");
+					}
+				}else{
+					if (coop_checkPlayerLanguageGerman(player)) {
+						multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: Last Man Standing gesetzet auf:^5 %d\n", iValueNew));
+					}
+					else {
+						multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: Last Man Standing set to:^5 %d\n", iValueNew));
+					}
+				}
+
 				if (player->coopPlayer.deathTime > game.coop_levelStartTime) {
 					player->coopPlayer.deathTime = 0;
 					if (multiplayerManager.isPlayerSpectator(player) &&
@@ -1217,38 +1295,6 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 						multiplayerManager.respawnPlayer(player, true);
 					}
 				}
-			}
-
-			//hzm coop mod chrissstrahl - inform players of change
-			if (coop_checkPlayerLanguageGerman(player)) {
-				multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: Last Man Standing gesetzet auf:^5 %d\n", iStatus));
-			}
-			else {
-				multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: Last Man Standing set to:^5 %d\n", iStatus));
-			}
-
-			//hzm coop mod chrissstrahl - if activated print some messages
-			if (iStatus == 1){
-				if (game.levelType < MAPTYPE_MISSION){
-					if (coop_checkPlayerLanguageGerman(player)) {
-						multiplayerManager.HUDPrint(player->entnum, "^5INFO^8: Last Man Standing ist nur auf Missionskarten aktiviert!\n");
-					}
-					else {
-						multiplayerManager.HUDPrint(player->entnum, "^5INFO^8: Last Man Standing is only active on Missionmaps!\n");
-					}
-				}
-				else{
-					if (coop_checkPlayerLanguageGerman(player)) {
-						multiplayerManager.HUDPrint(player->entnum, "^3=!= ^8Wenn Sie ausgeschaltet werden bleiben Sie ausgeschaltet ^3=!=\n");
-					}
-					else {
-						multiplayerManager.HUDPrint(player->entnum, "^3=!= ^8If you are neutralised you will stay neutralised ^3=!=\n");
-					}
-				}
-			}
-
-			if (player->coopPlayer.installed) {
-				DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoLms title %d", iStatus));
 			}
 		}
 	}

@@ -105,7 +105,7 @@ class Game : public Class
 //hzm coop mod chrissstrahl - stores the gametype
 	   int			coop_gametype;
 //hzm coop mod chrissstrahl - stores status of Last Man Standing Modifier 
-	   bool			coop_lastmanstanding;
+	   int			coop_lastmanstanding;
 //hzm coop mod chrissstrahl - stores the maxspeed
 	   int			coop_maxspeed;
 //hzm coop mod chrissstrahl - stores the respawntime

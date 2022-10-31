@@ -434,7 +434,7 @@ bool coop_serverCheckEndMatch(void) //added [b607]
 bool coop_serverLmsCheckFailure( void )
 {
 	if ( !game.coop_isActive ||
-		!game.coop_lastmanstanding ||
+		game.coop_lastmanstanding <= 0 ||
 		level.mission_failed ||
 		game.levelType < MAPTYPE_MISSION )
 	{
@@ -453,10 +453,9 @@ bool coop_serverLmsCheckFailure( void )
 		if ( player && player->client && player->isSubclassOf( Player ) )
 		{
 			iAll++;
-			if ( player->coopPlayer.deathTime < game.coop_levelStartTime ) {
+			if (player->coopPlayer.lmsDeaths < game.coop_lastmanstanding) {
 				iActive++;
 			}
-gi.Printf(va("COOPDEBUG coop_serverLmsCheckFailure: %s death[%d] vs startlms[%d]\n", multiplayerManager._playerData[player->entnum]._name.c_str(), player->coopPlayer.deathTime, game.coop_levelStartTime));
 		}
 	}
 
@@ -512,12 +511,6 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 		if (player != NULL && dedicated->integer == 0) {
 			player->hudPrint("^5Info^8: Only dedicated Servers are meant to be rebooted.\n");
 		}
-		return false;
-	}
-
-	//[b607] chrissstrahl - allow to adjust the coop reboot feature
-	str sCoopRebootState = coop_parserIniGet("serverData.ini", "rebootType", "server");
-	if (Q_stricmpn(sCoopRebootState.c_str(), "killserver", 10) && Q_stricmpn(sCoopRebootState.c_str(), "quit", 4)) {
 		return false;
 	}
 
@@ -937,7 +930,7 @@ void coop_serverRestoreGameVars()
 	coopChallenges.iCurrentChallenge = (short)coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "challenge", "server"), 0,1 ,(short)COOP_DEFAULT_CHALLENGE);
 	
 	//LMS - LAST MAN STANDING
-	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "lastmanstanding", "server"), 0,1 ,(int)COOP_DEFAULT_LASTMANSTANDING );
+	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "lastmanstanding", "server"), 0,10 ,(int)COOP_DEFAULT_LASTMANSTANDING );
 	
 	//DEAD BODIES STAYING
 	game.coop_deadBodiesPerArea = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "deadbodies", "server"),0,25 , COOP_DEFAULT_DEADBODIES);
@@ -1484,11 +1477,8 @@ void coop_serverThink( void )
 		if (!Q_stricmpn(sCoopRebootState.c_str(), "killserver",10)) { //killserver
 			gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver.cfg\n");
 		}
-		else if(!Q_stricmpn(sCoopRebootState.c_str(), "quit",4)){
-			gi.SendConsoleCommand("quit\n");
-		}
 		else{
-			return;
+			gi.SendConsoleCommand("quit\n");
 		}
 		//chrissstrahl - we need to clear the variable now
 		//because with kill server the game vars stay intact

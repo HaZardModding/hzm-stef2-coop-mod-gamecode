@@ -390,7 +390,7 @@ void MultiplayerManager::update( float frameTime )
 		}
 
 		//hzm coop mod chrissstrahl - if lms (last man standing) is active
-		if ( game.coop_lastmanstanding && game.levelType >= MAPTYPE_MISSION )
+		if ( game.coop_lastmanstanding > 0 && game.levelType >= MAPTYPE_MISSION )
 		{
 			if ( player->coopPlayer.deathTime < game.coop_levelStartTime && multiplayerManager.isPlayerSpectator( player ) && !multiplayerManager.isPlayerSpectatorByChoice( player ) )
 			{
@@ -2117,7 +2117,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 		//hzm gameupdate chrissstrahl - added new vote types
 		stricmp(command.c_str(), "exec") == 0 ||
 		stricmp(command.c_str(), "skipcinematic") == 0 ||
-		stricmp(command.c_str(), "addbot") == 0)
+		stricmp(command.c_str(), "addbot") == 0 )
 	{
 		validVoteCommand = true;
 	}
@@ -2167,6 +2167,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 	if (iVoteValid == 0) { iVoteValid = coop_vote_execValidate(player, command, arg, _voteString); }
 	if (iVoteValid == 0) { iVoteValid = coop_vote_skillValidate(player, command, arg, _voteString); }
 	if (iVoteValid == 0) { iVoteValid = coop_vote_addbotValidate(player, command, arg, _voteString); }
+	if (iVoteValid == 0) { iVoteValid = coop_vote_quitserverValidate(player, command, arg, _voteString); }
 	//use the string as command exactly like provided
 
 	//[b607] chrissstrahl - no valid vote (a coop vote was called but with wrong or bad parameters)
@@ -2401,7 +2402,7 @@ gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes,
 			//[b607] chrissstrahl - try to handle the coop vote stuff a little more ellegant
 			bool bCoopVote = false;
 			bCoopVote = coop_vote_skipcinematicSet(_voteString.c_str());
-			if (!bCoopVote)		 { bCoopVote = coop_vote_lastmanstandingSet(_voteString.c_str()); }
+			if (!bCoopVote)	{ bCoopVote = coop_vote_lastmanstandingSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_respawntimeSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_awardsSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_friendlyfireSet(_voteString.c_str()); }
@@ -2415,6 +2416,7 @@ gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes,
 			if (!bCoopVote) { bCoopVote = coop_vote_deadbodiesSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_kickbotsSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_execSet(_voteString.c_str()); }
+			if (!bCoopVote) { bCoopVote = coop_vote_quitserverSet(_voteString.c_str()); }
 
 			//use the string as command exactly like provided
 			if(!bCoopVote){
@@ -3412,7 +3414,7 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	//hzm gameupdate chrissstrahl - prevent player from going into spec when dead and then reentering the game without waiting
 	if ( getRespawnTime() > 0.0f )
 	{
-		if ( !game.coop_lastmanstanding && _playerData[player->entnum]._waitingForRespawn )
+		if ( game.coop_lastmanstanding <= 0 && _playerData[player->entnum]._waitingForRespawn )
 		{
 			makePlayerSpectator( player , SPECTATOR_TYPE_FOLLOW , false );
 			return;

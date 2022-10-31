@@ -253,11 +253,16 @@ void coop_manageIntervalTransmit( Player* player , str sData , float fInterval ,
 bool coop_playerSpawnLms( Player *player )
 {
 	//no coop or lms
-	if ( !game.coop_isActive || !game.coop_lastmanstanding || game.levelType < MAPTYPE_MISSION )
+	if ( !game.coop_isActive || game.coop_lastmanstanding == 0 || game.levelType < MAPTYPE_MISSION )
 		return true;
 
-	//player died after this map was started
-	if ( player->coopPlayer.deathTime > game.coop_levelStartTime &&  ( player->coopPlayer.timeEntered + 3 ) < level.time){
+	//player died after this map was started and
+	//player is more than 3 sec on level and
+	//player dies more often than allowed
+	if (	player->coopPlayer.deathTime > game.coop_levelStartTime &&
+			(player->coopPlayer.timeEntered + 3 ) < level.time &&
+			player->coopPlayer.lmsDeaths >= game.coop_lastmanstanding
+	){
 		multiplayerManager.makePlayerSpectator(player, SPECTATOR_TYPE_FOLLOW, false);
 
 		if ( !level.mission_failed && ( player->coopPlayer.lastTimeHudMessage + 3 ) < level.time ){
@@ -698,7 +703,7 @@ void coop_playerSetupCoop( Player *player )
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname(skill->integer).c_str() ));
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoMvSpd title %d" , game.coop_maxspeed ) );
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoRspwt title %d" , game.coop_respawnTime ) );
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoLms title %d" , (int)game.coop_lastmanstanding ) );
+	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoLms title %d" , game.coop_lastmanstanding ) );
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoAw title %d" , (int)game.coop_awardsActive ) );
 
 	//[b607] chrissstrahl - deadbodies option
@@ -1303,6 +1308,12 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	playerPrey->coopPlayer.deathTime = ( int )result;
 	//[b607] chrissstrahl - remember when this player died last in this level
 	playerPrey->coopPlayer.diedLast = level.time;
+
+	//[b60011] chrissstrahl - count up deaths
+	playerPrey->coopPlayer.lmsDeaths++;
+	if (playerPrey->coopPlayer.lmsDeaths > game.coop_lastmanstanding) {
+		playerPrey->coopPlayer.lmsDeaths = game.coop_lastmanstanding;
+	}
 
 	//hzm coop mod chrissstrahl - remember where the player was alive the last time
 	playerPrey->coopPlayer.lastAliveLocation = killedPlayer->origin;

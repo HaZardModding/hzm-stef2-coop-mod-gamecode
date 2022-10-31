@@ -13,6 +13,7 @@ void coop_vote_printcommands(Player *player);
 
 int coop_vote_skipcinematicValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_lastmanstandingValidate(Player* player, const str &command, const str &arg, str &_voteString);
+int coop_vote_quitserverValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_respawntimeValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_awardsValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_friendlyfireValidate(Player* player, const str &command, const str &arg, str &_voteString);
@@ -32,6 +33,7 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 //associated with ::MultiplayerManager::checkVote
 bool coop_vote_skipcinematicSet(const str  _voteString);
 bool coop_vote_mpmodifierSet(const str  _voteString);
+bool coop_vote_quitserverSet(const str _voteString);
 bool coop_vote_lastmanstandingSet(const str  _voteString);
 bool coop_vote_respawntimeSet(const str  _voteString);
 bool coop_vote_airaccelerateSet(const str _voteString);
