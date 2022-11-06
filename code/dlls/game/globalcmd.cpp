@@ -1244,7 +1244,27 @@ Event EV_ScriptThread_MissionFailed
 	"S" ,
 	"reason" ,
 	"Displays the mission failed screen on the client side"
-	);
+);
+//[b60011] chrissstrahl
+Event EV_ScriptThread_getScreenWidth
+(
+	"getScreenWidth",
+	EV_SCRIPTONLY,
+	"@i",
+	"returnWidth",
+	"Returns current screen res WIDTH read from Operating System works only on windows and for host"
+);
+
+//[b60011] chrissstrahl
+Event EV_ScriptThread_getScreenHeight
+(
+	"getScreenHeight",
+	EV_SCRIPTONLY,
+	"@i",
+	"returnHeight",
+	"Returns current screen res HEIGHT read from Operating System works only on windows and for host"
+);
+
 Event EV_ScriptThread_setIniDataPlayer
 (
 	"setIniDataPlayer",
@@ -1449,6 +1469,9 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_ConnectPathnodes,			&CThread::connectPathnodes },
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
+	//[b60011] chrissstral - allow to retrive real screen resolution
+	{ &EV_ScriptThread_getScreenWidth,				&CThread::getScreenWidth },
+	{ &EV_ScriptThread_getScreenHeight,				&CThread::getScreenHeight },
 	//[b60011] chrissstral - allow read write to map specific ini files
 	{ &EV_ScriptThread_setIniDataPlayer,			&CThread::setIniDataPlayer },
 	{ &EV_ScriptThread_getIniDataPlayer,			&CThread::getIniDataPlayer },
@@ -1501,6 +1524,54 @@ void CThread::checkAchivment(Event* ev)
 
 }
 */
+
+#ifdef WIN32
+	#include "wtypes.h"
+#endif
+
+//[b60011] chrissstrahl - add command allow reading player specific data from ini
+void CThread::getScreenWidth(Event* ev)
+{
+#ifdef WIN32
+	int iVal = -1;
+	if (dedicated->integer == 0 && g_gametype->integer == GT_MULTIPLAYER) {
+		RECT desktop;
+		// Get a handle to the desktop window
+		const HWND hDesktop = GetDesktopWindow();
+		// Get the size of screen to the variable desktop
+		GetWindowRect(hDesktop, &desktop);
+		// The top left corner will have coordinates (0,0)
+		// and the bottom right corner will have coordinates
+		// (horizontal, vertical)
+		iVal = desktop.right;
+	}
+	ev->ReturnFloat(iVal);
+#else
+	ev->ReturnInteger(-1);
+#endif
+}
+
+//[b60011] chrissstrahl - add command allow reading player specific data from ini
+void CThread::getScreenHeight(Event* ev)
+{
+#ifdef WIN32
+	int iVal = -1;
+	if (dedicated->integer == 0 && g_gametype->integer == GT_MULTIPLAYER) {
+		RECT desktop;
+		// Get a handle to the desktop window
+		const HWND hDesktop = GetDesktopWindow();
+		// Get the size of screen to the variable desktop
+		GetWindowRect(hDesktop, &desktop);
+		// The top left corner will have coordinates (0,0)
+		// and the bottom right corner will have coordinates
+		// (horizontal, vertical)
+		iVal = desktop.bottom;
+	}
+	ev->ReturnFloat(iVal);
+#else
+	ev->ReturnInteger(-1);
+#endif
+}
 
 //[b60011] chrissstrahl - add command allow reading player specific data from ini
 str CThread::getIniData(str sFilename,str sKeyname,str sCategoryname)

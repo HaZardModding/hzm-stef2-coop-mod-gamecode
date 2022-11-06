@@ -117,6 +117,9 @@ class CThread : public Interpreter
 		CLASS_PROTOTYPE( CThread );
 
 		CThread();
+		//[b60011] chrissstrahl - add command allow reading player specific data from ini
+		void getScreenWidth(Event* ev);
+		void getScreenHeight(Event* ev);
 		//[b60011] chrissstrahl - read and write mapspecific ini data - allowing levels to hold thair own database
 		str getIniData(str sFilename, str sKeyname, str sCategoryname);
 		void getIniDataPlayer(Event* ev);
