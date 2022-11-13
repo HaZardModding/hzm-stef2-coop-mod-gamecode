@@ -1246,13 +1246,22 @@ Event EV_ScriptThread_MissionFailed
 	"Displays the mission failed screen on the client side"
 );
 //[b60011] chrissstrahl
+Event EV_ScriptThread_isDpiScaled
+(
+	"getDpiScale",
+	EV_SCRIPTONLY,
+	"@i",
+	"returnInt",
+	"Returns dpi scale value of the system - works only on windows client host"
+);
+//[b60011] chrissstrahl
 Event EV_ScriptThread_getScreenWidth
 (
 	"getScreenWidth",
 	EV_SCRIPTONLY,
 	"@i",
 	"returnWidth",
-	"Returns current screen res WIDTH read from Operating System works only on windows and for host"
+	"Returns current screen res WIDTH - works only on windows client host"
 );
 
 //[b60011] chrissstrahl
@@ -1262,7 +1271,7 @@ Event EV_ScriptThread_getScreenHeight
 	EV_SCRIPTONLY,
 	"@i",
 	"returnHeight",
-	"Returns current screen res HEIGHT read from Operating System works only on windows and for host"
+	"Returns current screen res HEIGHT - works only on windows client host"
 );
 
 Event EV_ScriptThread_setIniDataPlayer
@@ -1470,6 +1479,7 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
 	//[b60011] chrissstral - allow to retrive real screen resolution
+	{ &EV_ScriptThread_isDpiScaled,					&CThread::getDpiScale },
 	{ &EV_ScriptThread_getScreenWidth,				&CThread::getScreenWidth },
 	{ &EV_ScriptThread_getScreenHeight,				&CThread::getScreenHeight },
 	//[b60011] chrissstral - allow read write to map specific ini files
@@ -1527,48 +1537,192 @@ void CThread::checkAchivment(Event* ev)
 
 #ifdef WIN32
 	#include "wtypes.h"
+	#include <cstdio>
+	#include <tlhelp32.h>
+
+	void GetDesktopSize(int& vertical, int& horizontal);
+	bool isProcessRunning(const char* processName);
+	bool hasDpiScaleException(str sFilePath);
+
+	void GetDesktopSize(int &vertical, int &horizontal)
+	{
+		/*
+		horizontal = GetSystemMetrics(SM_CXSCREEN);
+		vertical = GetSystemMetrics(SM_CYSCREEN);
+		*/
+
+		RECT desktop;
+		// Get a handle to the desktop window
+		const HWND hDesktop = GetDesktopWindow();
+		// Get the size of screen to the variable desktop
+		GetWindowRect(hDesktop, &desktop);
+		// The top left corner will have coordinates (0,0)
+		// and the bottom right corner will have coordinates
+		// (horizontal, vertical)
+		horizontal	= desktop.right;
+		vertical	= desktop.bottom;
+		gi.Printf(va("GetDesktopSize detected: %d x %d\n", horizontal, vertical));
+	}
+	
+	bool isProcessRunning(const char* processName)
+	//https://stackoverflow.com/questions/1591342/c-how-to-determine-if-a-windows-process-is-running
+	{
+		bool exists = false;
+		PROCESSENTRY32 entry;
+		entry.dwSize = sizeof(PROCESSENTRY32);
+
+		HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, NULL);
+
+		if (Process32First(snapshot, &entry)) {
+			while (Process32Next(snapshot, &entry)) {
+				//if (!_wcsicmp((wchar_t*), (wchar_t*))) {
+				//gi.Printf(va("comparing: '%s' to '%s'\n", entry.szExeFile, processName));
+				if (!_stricmp(entry.szExeFile, processName)) {
+					gi.Printf(va("isProcessRunning detected: %s == %s\n",entry.szExeFile, processName));
+					exists = true;
+				}
+			}
+		}
+
+		CloseHandle(snapshot);
+		return exists;
+	}
+
+	//after a week of trying I give up on it
+	//could not manage to read string from regestry
+	//to much time wasted
+	//[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers]
+	//[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers]
+	//"~ PERPROCESSSYSTEMDPIFORCEOFF HIGHDPIAWARE"
+	//"~ HIGHDPIAWARE"
+	bool hasDpiScaleException(str sFilePath)
+	{
+		DWORD val = NULL;
+		DWORD dataSize = sizeof(val);
+		DWORD reTurn = RegGetValue(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", "xxx", RRF_RT_ANY, nullptr /*type not required*/, &val, &dataSize);
+		//DWORD reTurn = RegGetValueA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", "xxx", RRF_RT_ANY, nullptr /*type not required*/, &val, &dataSize);
+		//DWORD reTurn = RegGetValueW(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", L"xxx", RRF_RT_ANY, nullptr /*type not required*/, &val, &dataSize);
+		
+		if (ERROR_SUCCESS == reTurn) {
+			auto xxx = val; //3435973836
+			return true;
+		}
+		return false;
+	}
 #endif
 
-//[b60011] chrissstrahl - add command allow reading player specific data from ini
+//[b60011] chrissstrahl - get dpi scaling
+void CThread::getDpiScale(Event* ev)
+{
+#ifdef WIN32
+	int iScale = -1;
+	if (dedicated->integer == 0 && g_gametype->integer == GT_MULTIPLAYER) {
+		DWORD val;
+		DWORD dataSize = sizeof(val);
+
+		if (ERROR_SUCCESS == RegGetValueA(HKEY_CURRENT_USER, "Control Panel\\Desktop\\WindowMetrics", "AppliedDPI", RRF_RT_DWORD, nullptr /*type not required*/, &val, &dataSize)) {
+			switch (val)
+			{
+			case 96:
+				iScale = 100;
+				break;
+			case 120:
+				iScale = 125;
+				break;
+			case 144:
+				iScale = 150;
+				break;
+			case 192:
+				iScale = 200;
+				break;
+			default:
+				iScale = -2;
+			}
+			gi.Printf(va("getDpiScale %i\n", iScale));
+			// no CloseKey needed because it is a predefined registry key
+		}
+
+		if (iScale > 100) {
+			ev->ReturnFloat(iScale);
+			return;
+		}
+
+		//if dpi scaling is active, check
+		//could not figure out how to read sz from registry
+		if (0 == 1 && iScale > 100) {
+			int			numdirs;
+			char		filename[128];
+			char		dirlist[1024];
+			char* dirptr;
+			int			i, n;
+			int			dirlen;
+			numdirs = gi.FS_GetFileList("../", ".exe", dirlist, 1024);
+			dirptr = dirlist;
+			for (i = 0; i < numdirs; i++, dirptr += dirlen + 1) {
+				dirlen = strlen(dirptr);
+				strcpy(filename, "");
+				strcat(filename, dirptr);
+
+				//files to skip, uninstaller,seperate game-server
+				if (strcmp("unins000.exe", filename) == 0 ||
+					strcmp("server.exe", filename) == 0)
+				{
+					continue;
+				}
+				gi.Printf(va("executable in ef2 folder: %s\n", filename));
+
+				if (isProcessRunning(filename)) {
+					gi.Printf(va("%s is running\n", filename));
+					str sFilePath = va("%s/\\%s", coop_returnCvarString("fs_basepath").c_str(), filename);
+					//not working - could not figure it out, giving up after a week wasted
+					//if (hasDpiScaleException("")) { gi.Printf("Entry in Registry\n"); }
+				}
+			}
+		}
+	}
+#else
+	gi.Printf("isDpiScaled - works only on windows when a mp map is loaded"));
+#endif
+	ev->ReturnFloat(iScale);
+}
+
+//[b60011] chrissstrahl - get screen width
 void CThread::getScreenWidth(Event* ev)
 {
 #ifdef WIN32
 	int iVal = -1;
 	if (dedicated->integer == 0 && g_gametype->integer == GT_MULTIPLAYER) {
-		RECT desktop;
-		// Get a handle to the desktop window
-		const HWND hDesktop = GetDesktopWindow();
-		// Get the size of screen to the variable desktop
-		GetWindowRect(hDesktop, &desktop);
-		// The top left corner will have coordinates (0,0)
-		// and the bottom right corner will have coordinates
-		// (horizontal, vertical)
-		iVal = desktop.right;
+		//make sure we get the correct size, not the virual scaled size
+		SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+
+		int iVert;
+		int iHorz;
+		GetDesktopSize(iVert, iHorz);
+		iVal = iHorz;
 	}
 	ev->ReturnFloat(iVal);
 #else
+	gi.Printf("getScreenWidth - works only on windows when a mp map is loaded"));
 	ev->ReturnInteger(-1);
 #endif
 }
 
-//[b60011] chrissstrahl - add command allow reading player specific data from ini
+//[b60011] chrissstrahl - get screen height
 void CThread::getScreenHeight(Event* ev)
 {
 #ifdef WIN32
 	int iVal = -1;
 	if (dedicated->integer == 0 && g_gametype->integer == GT_MULTIPLAYER) {
-		RECT desktop;
-		// Get a handle to the desktop window
-		const HWND hDesktop = GetDesktopWindow();
-		// Get the size of screen to the variable desktop
-		GetWindowRect(hDesktop, &desktop);
-		// The top left corner will have coordinates (0,0)
-		// and the bottom right corner will have coordinates
-		// (horizontal, vertical)
-		iVal = desktop.bottom;
+		//make sure we get the correct size, not the virual scaled size
+		SetThreadDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
+		int iVert;
+		int iHorz;
+		GetDesktopSize(iVert, iHorz);
+		iVal = iVert;
 	}
 	ev->ReturnFloat(iVal);
 #else
+	gi.Printf("getScreenHeight - works only on windows when a mp map is loaded"));
 	ev->ReturnInteger(-1);
 #endif
 }

@@ -118,6 +118,7 @@ class CThread : public Interpreter
 
 		CThread();
 		//[b60011] chrissstrahl - add command allow reading player specific data from ini
+		void getDpiScale(Event* ev);
 		void getScreenWidth(Event* ev);
 		void getScreenHeight(Event* ev);
 		//[b60011] chrissstrahl - read and write mapspecific ini data - allowing levels to hold thair own database
