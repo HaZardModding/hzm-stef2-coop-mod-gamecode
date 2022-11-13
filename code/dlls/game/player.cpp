@@ -2033,6 +2033,8 @@ void Player::widgetCommand(str sWidget,str sParameters)
 		sTemp = coop_replaceForLabelText(sTemp);
 	}
 	str sData = "stufftext \"globalwidgetcommand ";
+	sData += sWidget;
+	sData += " ";
 	sData += sParameters;
 	sData += "\"\n";
 	gi.SendServerCommand(edict - g_entities, sData.c_str());
