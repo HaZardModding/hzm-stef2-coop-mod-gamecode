@@ -1106,8 +1106,8 @@ bool coop_playerSay( Player *player , str sayString)
 		if (iClMaxPack >= 15) {
 			if (iClMaxPack < 60) {
 				DelayedServerCommand(player->entnum, "set cl_maxpackets 60");
-				player->checkingClMaxPackets = false;
 			}
+			player->checkingClMaxPackets = false;
 			return true;
 		}
 	}

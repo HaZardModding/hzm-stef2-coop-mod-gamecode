@@ -1614,8 +1614,8 @@ void CThread::checkAchivment(Event* ev)
 //[b60011] chrissstrahl - get dpi scaling
 void CThread::getDpiScale(Event* ev)
 {
-#ifdef WIN32
 	int iScale = -1;
+#ifdef WIN32
 	if (dedicated->integer == 0 && g_gametype->integer == GT_MULTIPLAYER) {
 		DWORD val;
 		DWORD dataSize = sizeof(val);
@@ -1681,7 +1681,7 @@ void CThread::getDpiScale(Event* ev)
 		}
 	}
 #else
-	gi.Printf("isDpiScaled - works only on windows when a mp map is loaded"));
+	gi.Printf("isDpiScaled - works only on windows when a mp map is loaded");
 #endif
 	ev->ReturnFloat(iScale);
 }
@@ -1702,7 +1702,7 @@ void CThread::getScreenWidth(Event* ev)
 	}
 	ev->ReturnFloat(iVal);
 #else
-	gi.Printf("getScreenWidth - works only on windows when a mp map is loaded"));
+	gi.Printf("getScreenWidth - works only on windows when a mp map is loaded");
 	ev->ReturnInteger(-1);
 #endif
 }
@@ -1722,7 +1722,7 @@ void CThread::getScreenHeight(Event* ev)
 	}
 	ev->ReturnFloat(iVal);
 #else
-	gi.Printf("getScreenHeight - works only on windows when a mp map is loaded"));
+	gi.Printf("getScreenHeight - works only on windows when a mp map is loaded");
 	ev->ReturnInteger(-1);
 #endif
 }
