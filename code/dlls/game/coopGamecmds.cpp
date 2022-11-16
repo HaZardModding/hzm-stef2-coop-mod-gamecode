@@ -375,6 +375,9 @@ qboolean G_coopCom_help(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_leader(const gentity_t* ent)
 {
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return true;
+	}
 	Player* player = (Player*)ent->entity;
 	multiplayerManager.callVote(player, "leader", va("%i",player->entnum));
 	return true;
@@ -463,6 +466,10 @@ qboolean G_coopCom_info(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_kickbots(const gentity_t* ent)
 {
+	if (g_gametype->integer == GT_MULTIPLAYER) {
+		return true;
+	}
+
 	Player* player = (Player*)ent->entity;
 	if (!coop_playerCheckAdmin(player)) {
 		multiplayerManager.callVote(player, "kick", "kickbots");
@@ -1188,7 +1195,7 @@ qboolean G_coopItem(const gentity_t* ent)
 	//do not allow spawning if certain criteria are not meet
 	if ((player->getLastDamageTime() + 0.5f) > level.time ||
 		level.cinematic != qfalse ||
-		multiplayerManager.isPlayerSpectator(player) ||
+		multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player) ||
 		player->health <= 0)
 	{
 		player->hudPrint("coopitem - critaria for spawning are not meet\n");
