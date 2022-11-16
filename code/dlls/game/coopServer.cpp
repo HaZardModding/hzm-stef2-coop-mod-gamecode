@@ -545,7 +545,7 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 		if (Q_stricmp("m11l1a-drull_ruins3", sMapToLoad) && Q_stricmp("m11l1a-drull_ruins3", level.mapname)){
 			if (iTIKIS < COOP_MAX_SAFE_TIKI_LOAD &&
 				iSKAS < COOP_MAX_SAFE_SKA_LOAD &&
-				(COOP_MAX_SAFE_SKA_LOAD + COOP_MAX_SAFE_SKA_LOAD) < COOP_MAX_SAFE_COMBINED_LOAD)
+				(iTIKIS + iSKAS) < COOP_MAX_SAFE_COMBINED_LOAD)
 			{
 				return false;
 			}
@@ -577,7 +577,7 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 			Player *playerValid = ( Player * )g_entities[i].entity;
 			if (playerValid){
 				//keep it in two lines
-				gi.SendServerCommand( i , "stufftext \"freeze 2\";stufftext reconnect\n" );
+				gi.SendServerCommand( i , "stufftext disconnect;freeze 3;stufftext reconnect\n" );
 				gi.SendServerCommand( i , "stufftext \"exec coop_mod/cfg/reconnect\"\n" );	
 			}
 		}
