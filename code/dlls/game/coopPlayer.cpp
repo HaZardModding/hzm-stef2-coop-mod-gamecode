@@ -1042,7 +1042,24 @@ bool coop_playerPlaceAtSpawn( Player *player )
 			//when he is pushed while dieing, which is more than just likley to happen
 			//and if I might add, it does happen quite frequently
 			player->origin = player->coopPlayer.lastAliveLocation;
-			return true;
+
+			//[b60011] chrissstrahl - show !stuck command if we have reson to belive the player might be stuck inside a scriptobject or solid trigger or door
+			int i;
+			Entity* entity2 = NULL;
+			for (i = 0; i < maxentities->integer; i++) {
+				entity2 = g_entities[i].entity;
+				//check if not exist, world, equal/player
+				if (!entity2 || entity2 == world || entity2->isSubclassOf(Player)) { continue; }
+				//check for valid classes
+				if (!entity2->isSubclassOf(Actor) && !entity2->isSubclassOf(ScriptSlave) && !entity2->isSubclassOf(Trigger) && !entity2->isSubclassOf(Door)) { continue; }
+				//ignore notsolid triggers - ignore notsolid doors
+				if (entity2->isSubclassOf(Trigger) && entity2->edict->solid == SOLID_NOT || entity2->isSubclassOf(Door) && entity2->edict->solid == SOLID_NOT) { continue; }
+				//player is for sure stuck somewhere - set respawn parameter and call func again
+				if (coop_checkIsEntityInBoundingBox(player, entity2)) {
+					player->coopPlayer.respawnAtRespawnpoint = true;
+					return coop_playerPlaceAtSpawn(player);
+				}
+			}
 		}
 	}
 	return bSpawnedSucessfull;
