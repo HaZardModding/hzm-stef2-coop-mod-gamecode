@@ -10,6 +10,11 @@ inline int coop_find(str& sSource, str& sKeyword)
 	return coop_returnIntFind(sSource, sKeyword);
 }
 
+inline int coop_contains(str& sSource, str& sKeyword)
+{
+	return coop_returnIntFind(sSource, sKeyword);
+}
+
 inline void coop_trimM(str& sTrim, const str& sTrimMatch)
 {
 	coop_manipulateStringTrim(sTrim, sTrimMatch);
