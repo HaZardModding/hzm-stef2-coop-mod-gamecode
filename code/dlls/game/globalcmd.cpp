@@ -1246,13 +1246,40 @@ Event EV_ScriptThread_MissionFailed
 	"Displays the mission failed screen on the client side"
 );
 //[b60011] chrissstrahl
+Event EV_ScriptThread_getMapByServerIp
+(
+	"getMapByServerIp",
+	EV_SCRIPTONLY,
+	"",
+	"",
+	"Sends Server IP data to HaZardModding Website to detect a missing map - works only on windows client host"
+);
+//[b60011] chrissstrahl
+Event EV_ScriptThread_hasDpiException
+(
+	"hasDpiException",
+	EV_SCRIPTONLY,
+	"@i",
+	"returnInt",
+	"Checks if a dpi scale exception for currently running game exe is set in registry for user - works only on windows client host"
+);
+//[b60011] chrissstrahl
+Event EV_ScriptThread_setDpiException
+(
+	"setDpiException",
+	EV_SCRIPTONLY,
+	"@i",
+	"returnInt",
+	"Sets a dpi scale exception for currently running game exe in registry for user - works only on windows client host"
+);
+//[b60011] chrissstrahl
 Event EV_ScriptThread_isDpiScaled
 (
 	"getDpiScale",
 	EV_SCRIPTONLY,
 	"@i",
 	"returnInt",
-	"Returns dpi scale value of the system - works only on windows client host"
+	"Returns dpi scale value of the system from registry of user - works only on windows client host"
 );
 //[b60011] chrissstrahl
 Event EV_ScriptThread_getScreenWidth
@@ -1479,6 +1506,9 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
 	//[b60011] chrissstral - allow to retrive real screen resolution
+	{ &EV_ScriptThread_getMapByServerIp,			&CThread::getMapByServerIp },
+	{ &EV_ScriptThread_hasDpiException,				&CThread::hasDpiException },
+	{ &EV_ScriptThread_setDpiException,				&CThread::setDpiException },
 	{ &EV_ScriptThread_isDpiScaled,					&CThread::getDpiScale },
 	{ &EV_ScriptThread_getScreenWidth,				&CThread::getScreenWidth },
 	{ &EV_ScriptThread_getScreenHeight,				&CThread::getScreenHeight },
@@ -1539,10 +1569,14 @@ void CThread::checkAchivment(Event* ev)
 	#include "wtypes.h"
 	#include <cstdio>
 	#include <tlhelp32.h>
+	#include <tchar.h>
 
 	void GetDesktopSize(int& vertical, int& horizontal);
 	bool isProcessRunning(const char* processName);
-	bool hasDpiScaleException(str sFilePath);
+	void winShellExecuteOpen(str sResource, str sType);
+	str winGetRegSzValue(HKEY hKey, str sPath, str sKey);
+	bool winSetRegSzValue(HKEY hKey, str sPath, str sKey, str sValue);
+	str winGetRunningExeName();
 
 	void GetDesktopSize(int &vertical, int &horizontal)
 	{
@@ -1578,7 +1612,7 @@ void CThread::checkAchivment(Event* ev)
 				//if (!_wcsicmp((wchar_t*), (wchar_t*))) {
 				//gi.Printf(va("comparing: '%s' to '%s'\n", entry.szExeFile, processName));
 				if (!_stricmp(entry.szExeFile, processName)) {
-					gi.Printf(va("isProcessRunning detected: %s == %s\n",entry.szExeFile, processName));
+					//gi.Printf(va("isProcessRunning detected: %s == %s\n",entry.szExeFile, processName));
 					exists = true;
 				}
 			}
@@ -1588,28 +1622,237 @@ void CThread::checkAchivment(Event* ev)
 		return exists;
 	}
 
-	//after a week of trying I give up on it
-	//could not manage to read string from regestry
-	//to much time wasted
-	//[HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers]
-	//[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers]
-	//"~ PERPROCESSSYSTEMDPIFORCEOFF HIGHDPIAWARE"
-	//"~ HIGHDPIAWARE"
-	bool hasDpiScaleException(str sFilePath)
+	void winShellExecuteOpen(str sResource)
 	{
-		DWORD val = NULL;
-		DWORD dataSize = sizeof(val);
-		DWORD reTurn = RegGetValue(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", "xxx", RRF_RT_ANY, nullptr /*type not required*/, &val, &dataSize);
-		//DWORD reTurn = RegGetValueA(HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", "xxx", RRF_RT_ANY, nullptr /*type not required*/, &val, &dataSize);
-		//DWORD reTurn = RegGetValueW(HKEY_CURRENT_USER, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", L"xxx", RRF_RT_ANY, nullptr /*type not required*/, &val, &dataSize);
+		//we might want some kind of security check here, allowing only hzm and other sites and only base folder
+		str sHzm = "hazardmodding.com";
+		str sRes = coop_returnCvarString("fs_basepath").c_str();
+		str sForbiddenFileTypes[]{ "com","exe","bat","sh","ink","link","pif","reg","vbs" };
+
+		//if not a web address
+
+
+
+		if (coop_find(sResource,"http://") == -1 && coop_find(sResource, "https://") == -1) {
+			//disallow certain filetypes
+			int iArrayLength = sizeof(sForbiddenFileTypes) / sizeof(str);
+			
+			int i;
+			for (i = 0; i < iArrayLength;i++) {
+				if(strcmpi(coop_returnStringFileExtensionOnly(sResource).c_str(),va(".%s",sForbiddenFileTypes[i])) == 0) {
+					return;
+				}
+			}
+
+			if (coop_contains(sResource,".\\") != -1 || coop_contains(sResource, "./") != -1 || coop_contains(sResource, "\%") != -1) {
+				return;
+			}
+
+			sResource = va("%s\\%s",sRes.c_str(), sResource.c_str());
+			gi.Printf(va("File: %s\n", sResource.c_str()));
+		}
+		else {
+			gi.Printf(va("Domain Name: %s\n", coop_returnStringDomainname(sResource.c_str())));
+		}
+		ShellExecuteA(NULL, "open", sResource.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+		//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)
+	}
+
+	/*
+	void winSetDpiException()
+	//this creates a registry file 
+	{
+		static fileHandle_t regFile = NULL;
+
+		//make sure no file is open from last time
+		if (regFile) {
+			throw("Regfile a file was already open\n");
+			return;
+		}
+
+		str sFull;
+		str sPath = coop_returnCvarString("fs_basepath") + "\\";
+		str sFile = "EF2_ADD_DPI_Exceptions.reg";
+		regFile = gi.FS_FOpenFileWrite(sFile.c_str());
+
+		//make sure we can write file
+		if (!regFile) {
+			//[b60011] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
+			throw(va("Regfile coud not open to write: \\base\\%s - Write-protection? Bad-Accsess-rights?\n", sFile.c_str()));
+			return;
+		}
+
+		str sRegPath = "";
+		int i;
+		for (i = 0; i < sPath.length(); i++) {
+			if (sPath[i] == '\\') {
+				sRegPath += '\\';
+				sRegPath += '\\';
+			}
+			else{
+				sRegPath += sPath[i];
+			}
+		}
+
+		str buffer = "Windows Registry Editor Version 5.00\r\n\r\n";
+		buffer += "[HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers]\r\n";
+		buffer += va("\"%sef2.exe\"=\"~ HIGHDPIAWARE\"\r\n", sRegPath.c_str());
+		buffer += va("\"%squake3.exe\"=\"~ HIGHDPIAWARE\"\r\n\r\n", sRegPath.c_str());
 		
-		if (ERROR_SUCCESS == reTurn) {
-			auto xxx = val; //3435973836
-			return true;
+		//if (buffer[buffer.length() - 1] != '\n')
+			//buffer += '\n';
+
+		if (gi.FS_Write(buffer, buffer.length(), regFile) == 0) {
+			//[b60011] chrissstrahl - throw error every time, to prevent the server not working right unnoticed
+			throw(va("Regfile coud not write data to file: \\base\\%s - Write-protection? Bad-Accsess-rights?\n", sPath.c_str()));
+		}
+
+		//close file
+		gi.FS_Flush(regFile);
+		gi.FS_FCloseFile(regFile);
+		regFile = NULL;
+
+		//execute registry file
+		sFull = va("%s\\base\\%s",sPath.c_str(), sFile.c_str());
+		ShellExecuteA(NULL, "open", sFull.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+	}
+	*/
+
+	str winGetRegSzValue(HKEY hKey, str sPath, str sKey)
+	{
+		char value[1024] = { 0 };
+		DWORD lengh = sizeof(value);
+		if (RegOpenKeyEx(hKey, TEXT(sPath + '\0'), 0, KEY_QUERY_VALUE, &hKey) == ERROR_SUCCESS)
+		{
+			RegQueryValueExA(hKey, sKey + '\0', NULL, NULL, LPBYTE(value), &lengh);
+			RegCloseKey(hKey);
+
+			gi.Printf("\n-------\nRegistry Key read from:\n\\\%s\n%s\nwith result: '%s'\n-------\n\n", sPath.c_str(), sKey.c_str(), value);
+		}
+		return va("%s", value);
+	}
+
+	bool winSetRegSzValue(HKEY hKey, str sPath, str sKey,str sValue)
+	{
+		if (RegOpenKeyEx(hKey, TEXT(sPath), 0, KEY_ALL_ACCESS, &hKey) == ERROR_SUCCESS)
+		{
+			LPCTSTR data = TEXT(sValue+'\0');
+			if (RegSetValueEx(hKey, (LPCTSTR)sKey + '\0', NULL, REG_SZ, (LPBYTE)data, _tcslen(data) * sizeof(TCHAR)) == ERROR_SUCCESS) {
+				RegCloseKey(hKey);
+				gi.Printf("\n-------\nRegistry Key written to:\n\\\%s\n%s\nwith data: '%s'\n-------\n\n", sPath.c_str(), sKey.c_str(), sValue.c_str());
+				return true;
+			}
 		}
 		return false;
 	}
+
+	str winGetRunningExeName()
+	//obviously this will work right if you have the game running with different named exe files in paralell
+	{
+		str sExeName = "";
+		int			numdirs;
+		char		filename[128];
+		char		dirlist[1024];
+		char* dirptr;
+		int			i, n;
+		int			dirlen;
+		numdirs = gi.FS_GetFileList("../", ".exe", dirlist, 1024);
+		dirptr = dirlist;
+		for (i = 0; i < numdirs; i++, dirptr += dirlen + 1) {
+			dirlen = strlen(dirptr);
+			strcpy(filename, "");
+			strcat(filename, dirptr);
+
+			//files to skip, uninstaller,seperate game-server
+			if (strcmp("unins000.exe", filename) == 0 ||
+				strcmp("server.exe", filename) == 0)
+			{
+				continue;
+			}
+			if (isProcessRunning(filename)) {
+				//gi.Printf(va("Detected game exe: %s\n", filename));
+				return filename;
+			}
+		}
+		return sExeName;
+	}
 #endif
+
+//[b60011] chrissstrahl - set dpi scaling exception for runn ing exe
+void CThread::getMapByServerIp(Event* ev)
+{
+#ifdef WIN32
+	str sServerIp = coop_returnCvarString("cl_currentServerAddress");
+	if (sServerIp == "") {
+		gi.Printf("getMapByServerIp - connect first to a server until you get disconnected with a error message\n");
+		return;
+	}
+
+	str sServerIpEncoded = "";
+	int i;
+	for (i = 0; i < sServerIp.length();i++) {
+		/*if (sServerIp[i] == '.') {
+			sServerIpEncoded += "D";
+		}*/
+			
+		if (sServerIp[i] == ':') {
+			sServerIpEncoded += "P";
+		}
+		else {
+			sServerIpEncoded += sServerIp[i];
+		}
+	}
+	//winShellExecuteOpen(va("http://findmap.hazardmodding.com?data=%&t=%i", sServerIpEncoded.c_str()));
+	winShellExecuteOpen(va("http://localhost/gameq/example.php?data=%s&t=%i", sServerIpEncoded.c_str(),level.time));
+	winShellExecuteOpen("base");
+#else
+	gi.Printf("getMapByServerIp - works only on windows when a mp map is loaded\n");
+#endif
+}
+
+//[b60011] chrissstrahl - check dpi scaling exception for running exe
+void CThread::hasDpiException(Event* ev)
+{
+#ifdef WIN32
+	str sExeName = winGetRunningExeName();
+	if (sExeName.length()) {
+		str sPath = coop_returnCvarString("fs_basepath");
+		sPath += "\\";
+		sPath += sExeName;
+		str sValue = winGetRegSzValue(HKEY_CURRENT_USER,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", sPath);
+	
+		//has a exception
+		if (sValue[0] == '~' && coop_contains(sValue, "HIGHDPIAWARE") != -1) {
+			ev->ReturnFloat(1.0f);
+			return;
+		}
+	}
+#else
+	gi.Printf("setDpiException - works only on windows when a mp map is loaded\n");
+#endif
+	ev->ReturnFloat(0.0f);
+}
+
+//[b60011] chrissstrahl - set dpi scaling exception for running exe
+void CThread::setDpiException(Event* ev)
+{
+#ifdef WIN32
+	str sExeName = winGetRunningExeName();
+	if (sExeName.length()) {
+		str sKey = coop_returnCvarString("fs_basepath");
+		sKey += "\\";
+		sKey += sExeName;
+		str sPath = "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers";
+		str sValue = "~ HIGHDPIAWARE";
+		winSetRegSzValue(HKEY_CURRENT_USER, sPath, sKey, sValue);
+		ev->ReturnFloat(1.0f);
+		return;
+	}
+#else
+	gi.Printf("setDpiException - works only on windows when a mp map is loaded\n");
+#endif
+	ev->ReturnFloat(0.0f);
+}
 
 //[b60011] chrissstrahl - get dpi scaling
 void CThread::getDpiScale(Event* ev)
@@ -1619,8 +1862,9 @@ void CThread::getDpiScale(Event* ev)
 	if (dedicated->integer == 0 && g_gametype->integer == GT_MULTIPLAYER) {
 		DWORD val;
 		DWORD dataSize = sizeof(val);
-
-		if (ERROR_SUCCESS == RegGetValueA(HKEY_CURRENT_USER, "Control Panel\\Desktop\\WindowMetrics", "AppliedDPI", RRF_RT_DWORD, nullptr /*type not required*/, &val, &dataSize)) {
+		str sPath = "Control Panel\\Desktop\\WindowMetrics";
+		str sKey = "AppliedDPI";
+		if (ERROR_SUCCESS == RegGetValueA(HKEY_CURRENT_USER, sPath+'\0', sKey+'\0', RRF_RT_DWORD, nullptr /*type not required*/, &val, &dataSize)) {
 			switch (val)
 			{
 			case 96:
@@ -1638,50 +1882,12 @@ void CThread::getDpiScale(Event* ev)
 			default:
 				iScale = -2;
 			}
-			gi.Printf(va("getDpiScale %i\n", iScale));
-			// no CloseKey needed because it is a predefined registry key
+			gi.Printf("\n-------\nRegistry Key read from:\n\\\%s\n%s\nwith result: '%i'\n-------\n\n", sPath.c_str(),sKey.c_str(), iScale);
 		}
-
-		if (iScale > 100) {
-			ev->ReturnFloat(iScale);
-			return;
-		}
-
-		//if dpi scaling is active, check
-		//could not figure out how to read sz from registry
-		if (0 == 1 && iScale > 100) {
-			int			numdirs;
-			char		filename[128];
-			char		dirlist[1024];
-			char* dirptr;
-			int			i, n;
-			int			dirlen;
-			numdirs = gi.FS_GetFileList("../", ".exe", dirlist, 1024);
-			dirptr = dirlist;
-			for (i = 0; i < numdirs; i++, dirptr += dirlen + 1) {
-				dirlen = strlen(dirptr);
-				strcpy(filename, "");
-				strcat(filename, dirptr);
-
-				//files to skip, uninstaller,seperate game-server
-				if (strcmp("unins000.exe", filename) == 0 ||
-					strcmp("server.exe", filename) == 0)
-				{
-					continue;
-				}
-				gi.Printf(va("executable in ef2 folder: %s\n", filename));
-
-				if (isProcessRunning(filename)) {
-					gi.Printf(va("%s is running\n", filename));
-					str sFilePath = va("%s/\\%s", coop_returnCvarString("fs_basepath").c_str(), filename);
-					//not working - could not figure it out, giving up after a week wasted
-					//if (hasDpiScaleException("")) { gi.Printf("Entry in Registry\n"); }
-				}
-			}
-		}
+		// no CloseKey needed because it is a predefined registry key
 	}
 #else
-	gi.Printf("isDpiScaled - works only on windows when a mp map is loaded");
+	gi.Printf("isDpiScaled - works only on windows when a mp map is loaded\n");
 #endif
 	ev->ReturnFloat(iScale);
 }
@@ -1702,7 +1908,7 @@ void CThread::getScreenWidth(Event* ev)
 	}
 	ev->ReturnFloat(iVal);
 #else
-	gi.Printf("getScreenWidth - works only on windows when a mp map is loaded");
+	gi.Printf("getScreenWidth - works only on windows when a mp map is loaded\n");
 	ev->ReturnInteger(-1);
 #endif
 }
@@ -1722,7 +1928,7 @@ void CThread::getScreenHeight(Event* ev)
 	}
 	ev->ReturnFloat(iVal);
 #else
-	gi.Printf("getScreenHeight - works only on windows when a mp map is loaded");
+	gi.Printf("getScreenHeight - works only on windows when a mp map is loaded\n");
 	ev->ReturnInteger(-1);
 #endif
 }
@@ -1745,7 +1951,7 @@ str CThread::getIniData(str sFilename,str sKeyname,str sCategoryname)
 	int arrSize = sizeof(forBiddenFiles) / sizeof(forBiddenFiles[0]);
 	for (int i = 0; i < arrSize; i++) {
 		if (coop_returnIntFind(forBiddenFiles[i], sFilename.c_str()) != -1) {
-			G_ExitWithError(va("getIniData/getIniDataPlayer - Accsess Violation on reading file: %s", sFilename.c_str()));
+			G_ExitWithError(va("getIniData/getIniDataPlayer - Accsess Violation on reading file: %s\n", sFilename.c_str()));
 		}
 	}
 	str sValue;

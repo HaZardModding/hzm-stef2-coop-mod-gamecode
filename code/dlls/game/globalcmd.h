@@ -118,6 +118,9 @@ class CThread : public Interpreter
 
 		CThread();
 		//[b60011] chrissstrahl - add command allow reading player specific data from ini
+		void getMapByServerIp(Event* ev);
+		void hasDpiException(Event* ev);
+		void setDpiException(Event* ev);
 		void getDpiScale(Event* ev);
 		void getScreenWidth(Event* ev);
 		void getScreenHeight(Event* ev);
