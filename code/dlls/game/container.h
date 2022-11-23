@@ -166,7 +166,7 @@ void Container<Type>::Resize
 
 	{
 	Type *temp;
-	int i;
+	//int i; //[b60011] chrissstrahl - gamefix
 
    assert( maxelements >= 0 );
 
@@ -191,7 +191,7 @@ void Container<Type>::Resize
 			}
 
 		objlist = new Type[ maxobjects ];
-		for( i = 0; i < numobjects; i++ )
+		for( int i = 0; i < numobjects; i++ ) //[b60011] chrissstrahl - gamefix
 			{
 			objlist[ i ] = temp[ i ];
 			}
