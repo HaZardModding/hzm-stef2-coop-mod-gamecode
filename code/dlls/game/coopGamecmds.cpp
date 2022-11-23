@@ -897,6 +897,7 @@ qboolean G_coopCom_reboot(const gentity_t* ent)
 		player->hudPrint("^5Info^8: Server will reboot.\n");
 	}
 	else {
+		game.coop_rebootForced = false;
 		player->hudPrint("^5Info^8: Server rejected reboot command.\n");
 	}
 	return true;
