@@ -51,6 +51,7 @@ str coop_returnStringUntilWhithspace( str sChain );
 str coop_returnStringUntilNewline( str sChain ); //[b607] chrissstrahl
 str coop_returnStringPathFileNoExtension(const str &sPath);//[b607] chrissstrahl
 str coop_returnStringFilenameOnly( const str &sPath );
+str coop_returnStringDomainname(const str& sPath);
 str coop_returnStringFileExtensionOnly( const str &sPath );
 str coop_returnStringDeathmessagenameForEntity( Entity * entity );
 str coop_returnStringDeathmessagenameForActor( Actor * actor );
