@@ -2282,13 +2282,6 @@ void TriggerChangeLevel::ChangeLevel( Event *ev )
 		ExecuteThread( changethread , true , this );
 	}
 
-	//hzm coop mod chrissstrahl - check for server reboot
-	//if server shall reboot, don't load the next map now, but do reboot!
-	if ( coop_serverManageReboot( map ) )
-	{
-		return;
-	}
-
 	if ( spawnspot.length() )
 	{
 		G_BeginIntermission( ( map + "$" + spawnspot ).c_str() );
