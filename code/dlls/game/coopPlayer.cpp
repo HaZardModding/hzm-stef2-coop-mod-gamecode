@@ -110,8 +110,8 @@ gi.Printf(va("COOPDEBUG [%s] Leaving Player skipped: %s\n", currentPlayer->clien
 				sListName = coop_textReplaceWhithespace(sListName);
 			}
 
-			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTrans%i title %s",j, sListName.c_str()));
-gi.Printf(va("COOPDEBUG [%s] coop_comTrans%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
+			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTrans%i title %s\necho coop_comTrans%i title %s",j, sListName.c_str(), j, sListName.c_str()));
+			gi.Printf(va("COOPDEBUG [%s] coop_comTrans%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
 		}
 	}
 }
@@ -2080,13 +2080,9 @@ void coop_playerLeft( Player *player )
 		return;
 	}
 
-	//[b60011] chrissstrahl - added: player is now starting the thread
-	//notify level scripts that the player just spawned - this is used on custom map scripts
-	ExecuteThread("coop_justLeft", true, (Entity*)player);
-
+	//[b60011] chrissstrahl -notify level scripts that the player left - this is used on custom map scripts
 	//[b60011] chrissstrahl - moved code here
-	//enable/disable ai
-	//check if mission failed
+	ExecuteThread("coop_justLeft", true, (Entity*)player);
 	coop_serverManageAi();
 	coop_serverLmsCheckFailure();	
 
@@ -2100,7 +2096,7 @@ void coop_playerLeft( Player *player )
 
 	//chrissstrahl - make sure server is restarted if it really needs to
 	//no player on the server left, see if server should be rebooted
-	if (coop_returnPlayerQuantityInArena() <= 1) { //[b607] chrissstrahl - fixed, because this counts leaving player as well
+	if (coop_returnPlayerQuantity(3) <= 1) { //[b607] chrissstrahl - fixed, because this counts leaving player as well
 		if (coop_serverManageReboot(level.mapname.c_str())) {
 			return; //[b607] chrissstrahl - if server is going to reboot we don't need to continue
 		}
