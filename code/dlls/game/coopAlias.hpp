@@ -5,12 +5,12 @@
 #include "coopCheck.hpp"
 #include "coopReturn.hpp"
 
-inline int coop_find(str& sSource, str& sKeyword)
+inline int coop_find(str sSource, str sKeyword)
 {
 	return coop_returnIntFind(sSource, sKeyword);
 }
 
-inline int coop_contains(str& sSource, str& sKeyword)
+inline int coop_contains(str sSource, str sKeyword)
 {
 	return coop_returnIntFind(sSource, sKeyword);
 }
