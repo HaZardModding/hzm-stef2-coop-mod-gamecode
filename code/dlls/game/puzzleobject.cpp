@@ -608,55 +608,60 @@ void PuzzleObject::useEvent(Event* event)
 	}
 
 	//hzm coop mod chrissstrahl - makes puzzles respond only to a specific class
-	if ( game.coop_isActive && sCoopClass.length() > 0){
-		sCoopClass = sCoopClass.tolower();
-		float fLastMsgTime;
-		uservar = NULL;
-		uservar = player->entityVars.GetVariable( "_puzzleLastMessage" );
-		if ( !uservar ){
-			fLastMsgTime = -1.0f;
-		}else{
-			fLastMsgTime = uservar->floatValue();
-		}
-		if ( !Q_stricmpn( "class m" , sCoopClass , 7 ) ){
-			if ( player->coopPlayer.className != COOP_CLASS_NAME_MEDIC){
-				if ( ( fLastMsgTime + 3 ) < level.time ){
-					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
-					if (coop_checkPlayerLanguageGerman(player)) {
-						player->hudPrint(COOP_TEXT_CLASS_MEDIC_ONLY_DEU);
-					}else{
-						player->hudPrint(COOP_TEXT_CLASS_MEDIC_ONLY_ENG);
-					}
-					
-				}
-				return;
+	if ( game.coop_isActive){
+		if (sCoopClass.length() > 0) {
+			sCoopClass = sCoopClass.tolower();
+			float fLastMsgTime;
+			uservar = NULL;
+			uservar = player->entityVars.GetVariable("_puzzleLastMessage");
+			if (!uservar) {
+				fLastMsgTime = -1.0f;
 			}
-		}
-		else if ( !Q_stricmpn( "class t" , sCoopClass , 7 ) ){
-			if ( player->coopPlayer.className != COOP_CLASS_NAME_TECHNICIAN){
-				if ( ( fLastMsgTime + 3 ) < level.time ){
-					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
-					if (coop_checkPlayerLanguageGerman(player)) {
-						player->hudPrint(COOP_TEXT_CLASS_TECHNICIAN_ONLY_DEU);
-					}else {
-						player->hudPrint(COOP_TEXT_CLASS_TECHNICIAN_ONLY_ENG);
-					}
-				}
-				return;
+			else {
+				fLastMsgTime = uservar->floatValue();
 			}
-		}
-		else if ( !Q_stricmpn( "class h" , sCoopClass , 7 ) ){
-			if ( player->coopPlayer.className != COOP_CLASS_NAME_HEAVYWEAPONS){
-				if ( ( fLastMsgTime + 3 ) < level.time ){
-					player->entityVars.SetVariable( "_puzzleLastMessage" , level.time );
-					if (coop_checkPlayerLanguageGerman(player)) {
-						player->hudPrint(COOP_TEXT_CLASS_HEAVYWEAPONS_ONLY_DEU);
+			if (!Q_stricmpn("class m", sCoopClass, 7)) {
+				if (player->coopPlayer.className != COOP_CLASS_NAME_MEDIC) {
+					if ((fLastMsgTime + 3) < level.time) {
+						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
+						if (coop_checkPlayerLanguageGerman(player)) {
+							player->hudPrint(COOP_TEXT_CLASS_MEDIC_ONLY_DEU);
+						}
+						else {
+							player->hudPrint(COOP_TEXT_CLASS_MEDIC_ONLY_ENG);
+						}
+
 					}
-					else {
-						player->hudPrint(COOP_TEXT_CLASS_HEAVYWEAPONS_ONLY_ENG);
-					}
+					return;
 				}
-				return;
+			}
+			else if (!Q_stricmpn("class t", sCoopClass, 7)) {
+				if (player->coopPlayer.className != COOP_CLASS_NAME_TECHNICIAN) {
+					if ((fLastMsgTime + 3) < level.time) {
+						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
+						if (coop_checkPlayerLanguageGerman(player)) {
+							player->hudPrint(COOP_TEXT_CLASS_TECHNICIAN_ONLY_DEU);
+						}
+						else {
+							player->hudPrint(COOP_TEXT_CLASS_TECHNICIAN_ONLY_ENG);
+						}
+					}
+					return;
+				}
+			}
+			else if (!Q_stricmpn("class h", sCoopClass, 7)) {
+				if (player->coopPlayer.className != COOP_CLASS_NAME_HEAVYWEAPONS) {
+					if ((fLastMsgTime + 3) < level.time) {
+						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
+						if (coop_checkPlayerLanguageGerman(player)) {
+							player->hudPrint(COOP_TEXT_CLASS_HEAVYWEAPONS_ONLY_DEU);
+						}
+						else {
+							player->hudPrint(COOP_TEXT_CLASS_HEAVYWEAPONS_ONLY_ENG);
+						}
+					}
+					return;
+				}
 			}
 		}
 	}
@@ -777,6 +782,14 @@ void PuzzleObject::timedUse( Event* event )
 
 	if ( !player )
 		return;
+	
+	//[b60011]chrissstrahl - if player gets hurt abbort modulation
+	if (coop_returnPlayerQuantityInArena() >= 2 && (player->getLastDamageTime() + 0.75) > level.time) {
+		if (_hudOn) {
+			hideTimerHud(player);
+		}
+		return;
+	}
 
 	activator = (Entity *)player;
 	entityVars.SetVariable( "_activator" , (float)player->entnum );
