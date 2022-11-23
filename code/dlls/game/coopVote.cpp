@@ -67,6 +67,7 @@ bool coop_vote_checkvalid(const str &command)
 		stricmp(command.c_str(), "coop_deadbodies") == 0 || //added in [b607]
 		stricmp(command.c_str(), "coop_stasistime") == 0 || //added in [b607]
 		stricmp(command.c_str(), "coop_next") == 0 ||
+		stricmp(command.c_str(), "nextmap") == 0 ||
 		stricmp(command.c_str(), "coop_prev") == 0 ||
 		stricmp(command.c_str(), "coop_awards") == 0 ||
 		stricmp(command.c_str(), "coop_ff") == 0 ||
@@ -95,8 +96,8 @@ void coop_vote_printcommands(Player *player)
 		return;
 	}
 	multiplayerManager.HUDPrint(player->entnum, "coop_skill <0-3>, coop_ff <0.0-2.0>, coop_maxspeed <200-1000>,coop_awards <0-1>\n");
-	multiplayerManager.HUDPrint(player->entnum, "coop_respawntime <0-60>, coop_lms <0-10>,coop_challenge <0-3>, coop_next, coop_prev\n"); //[b607] added coop_teamIcon
-	multiplayerManager.HUDPrint(player->entnum, "coop_deadbodies <0-25>,coop_airaccelerate <0-4>,coop_stasisTime <5-60>\n"); //[b607] added
+	multiplayerManager.HUDPrint(player->entnum, "coop_respawntime <0-60>, coop_lms <0-10>,coop_challenge <0-3>, coop_next, coop_prev\n");
+	multiplayerManager.HUDPrint(player->entnum, "coop_deadbodies <0-25>,coop_airaccelerate <0-4>,coop_stasisTime <5-60>, nextmap\n");
 }
 
 //========================================================= [b607]
@@ -350,12 +351,12 @@ int coop_vote_maxspeedValidate(Player* player, const str &command, const str &ar
 //================================================================
 int coop_vote_mapValidate(Player* player, const str &command, const str &arg, str &_voteString)
 {
-	if (Q_stricmp(command.c_str(), "map") != 0 && Q_stricmp(command.c_str(), "nextmap") != 0) {
+	if (Q_stricmp(command.c_str(), "map") != 0) {
 		return 0;
 	}
 	// If a map command, make sure the map actually exists
 	//hzm gamefix chrissstrahl - make also sure the next map exist, or the game crashes!
-	if (stricmp(command.c_str(), "map") == 0 || stricmp(command.c_str(), "nextmap") == 0)
+	if (stricmp(command.c_str(), "map") == 0)
 	{
 		str fullMapName;
 
@@ -783,7 +784,7 @@ int coop_vote_addbotValidate(Player* player, const str &command, const str &arg,
 //================================================================
 int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &arg, str &_voteString)
 {
-	if (Q_stricmp(command.c_str(), "coop_next") != 0 && Q_stricmp(command.c_str(), "coop_prev") != 0) {
+	if (Q_stricmp(command.c_str(), "nextmap") != 0 && Q_stricmp(command.c_str(), "coop_next") != 0 && Q_stricmp(command.c_str(), "coop_prev") != 0) {
 		str sVt = va("%s %s", command.c_str(), arg.c_str());
 		return 0;
 	}
@@ -981,7 +982,7 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 			//gi.Printf( va( "found m: %s\n" , currentMaplist->value.c_str() ) );
 
 			//get next or previouse map
-			if (stricmp(command.c_str(), "coop_next") == 0) {
+			if (stricmp(command.c_str(), "coop_next") == 0 || stricmp(command.c_str(), "nextmap") == 0) {
 				if (currentMaplist->next) {
 					currentMaplist = currentMaplist->next;
 					//gi.Printf( "next\n" );
@@ -1660,11 +1661,6 @@ bool coop_vote_mapSet(const str _voteString)
 	for (i = 4; i < _voteString.length(); i++){
 		temp += _voteString[i];
 		temp2 += _voteString[i];
-	}
-
-	//[b607] only reboot here if we are running the coop mod
-	if (game.coop_isActive) {
-		coop_serverManageReboot(temp2);
 	}
 
 	//[b607] end cinematic if it is running

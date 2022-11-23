@@ -2106,20 +2106,23 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 			validVoteCommand = true;
 		}
 	}
-	if (stricmp(command.c_str(), "restart") == 0 ||
-		stricmp(command.c_str(), "nextmap") == 0 ||
-		stricmp(command.c_str(), "map") == 0 ||
-		stricmp(command.c_str(), "kick") == 0 ||
-		//[b607] chrissstrahl - added kickbots as valid vote
-		stricmp(command.c_str(), "kickbots") == 0 ||
-		//hzm gamefix chrissstrahl - fixed bad vote type
-		stricmp(command.c_str(), "mp_gametype") == 0 ||
-		//hzm gameupdate chrissstrahl - added new vote types
-		stricmp(command.c_str(), "exec") == 0 ||
-		stricmp(command.c_str(), "skipcinematic") == 0 ||
-		stricmp(command.c_str(), "addbot") == 0 )
-	{
-		validVoteCommand = true;
+
+	if (validVoteCommand == false) {
+		if (stricmp(command.c_str(), "restart") == 0 ||
+			stricmp(command.c_str(), "nextmap") == 0 ||
+			stricmp(command.c_str(), "map") == 0 ||
+			stricmp(command.c_str(), "kick") == 0 ||
+			//[b607] chrissstrahl - added kickbots as valid vote
+			stricmp(command.c_str(), "kickbots") == 0 ||
+			//hzm gamefix chrissstrahl - fixed bad vote type
+			stricmp(command.c_str(), "mp_gametype") == 0 ||
+			//hzm gameupdate chrissstrahl - added new vote types
+			stricmp(command.c_str(), "exec") == 0 ||
+			stricmp(command.c_str(), "skipcinematic") == 0 ||
+			stricmp(command.c_str(), "addbot") == 0)
+		{
+			validVoteCommand = true;
+		}
 	}
 
 	//hzm gameupdate chrissstrahl check if vote command is valid
