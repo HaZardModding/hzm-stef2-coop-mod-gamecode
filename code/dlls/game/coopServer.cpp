@@ -402,8 +402,10 @@ bool coop_serverCheckEndMatch(void) //added [b607]
 {
 	//hzm gamefix chrissstrahl - prevent crash on or after 23 days on the same map
 	//load new map after before we reach 2'000'000 on the same map, have some buffer time to make sure no other setting will delay that over the magical 2
-	if (multiplayerManager.getTime() > 172800.0f) {//259200 3days  //172800 2days //1500000.0f  //1999000.0f
+	if (multiplayerManager.getTime() > 172800.0f && coop_returnPlayerQuantityInArena() <= 0) {//259200 3days  //172800 2days //1500000.0f  //1999000.0f
 		multiplayerManager.centerPrintAllClients("^5Coop:^8 The Server needs to reboot now!\n", CENTERPRINT_IMPORTANCE_CRITICAL);
+
+		gi.Printf(va("\ncoop_serverCheckEndMatch: multiplayerManager.getTime() > 172800.0f\n"));
 
 		//[b60011] chrissstrahl - using now dedicated function
 		coop_serverWarningBadSetting(va("HZM Coop Mod: The Server needs to reboot now! (%f)\n", multiplayerManager.getTime()));
@@ -537,19 +539,6 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 		coop_serverSaveGameVars( "igmRoomsVisited" , "0" );
 		coop_serverSaveGameVars( "igmHolodeckSpawn" , "0" );
 		coop_serverSaveGameVars( "igmTurboliftSpawn" , "0" );	
-	}
-
-	//check for reboot conditions
-	if (!game.coop_rebootForced) { //chrissstrahl - allow forced reboot [b607]
-		//if current map is m11l1a or it is about to be loaded we need a reboot 
-		if (Q_stricmp("m11l1a-drull_ruins3", sMapToLoad) && Q_stricmp("m11l1a-drull_ruins3", level.mapname)){
-			if (iTIKIS < COOP_MAX_SAFE_TIKI_LOAD &&
-				iSKAS < COOP_MAX_SAFE_SKA_LOAD &&
-				(iTIKIS + iSKAS) < COOP_MAX_SAFE_COMBINED_LOAD)
-			{
-				return false;
-			}
-		}
 	}
 
 	//okays, make sure the map we want to load does really exist if it doesn't reload current map.
