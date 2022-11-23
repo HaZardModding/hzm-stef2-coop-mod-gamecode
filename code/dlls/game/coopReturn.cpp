@@ -583,6 +583,52 @@ str coop_returnStringFromWithLength( str sString , const int &iStart , int const
 	return sString;
 }
 
+//========================================================[b60011]
+// Name:        coop_returnStringDomainname
+// Class:       -
+//              
+// Description:  returns the filename of a given path string
+//              
+// Parameters:  str sPath
+//              
+// Returns:     str
+//              
+//================================================================
+str coop_returnStringDomainname( const str &sPath )
+{
+	int i = 0;
+	str domainName	= "";
+	str construct	= "";
+
+	//if it starts with http or https - reject all else
+	if (coop_contains(sPath, "http://") == 0) {
+		i  = 7;
+	}
+	else if(coop_contains(sPath, "https://") == 0) {
+		i  = 8;
+	}
+	else if (coop_contains(sPath, "://") != -1) {
+		return "";
+	}
+
+	while (1) {
+		if (i >= sPath.length() || sPath[i] == '/' || sPath[i] == '?' || sPath[i] == '\\' || sPath[i] == '#') {
+			break;
+		}
+		construct += sPath[i];
+
+		if (sPath[i] == '.') {
+			domainName = construct;
+			construct = "";
+		}
+		else if (sPath[i] == '@') {
+			construct = "";
+		}
+		i++;
+	}
+	return (domainName += construct);
+}
+
 //================================================================
 // Name:        coop_returnStringFilenameOnly
 // Class:       -
@@ -648,13 +694,15 @@ str coop_returnStringPathFileNoExtension(const str &sPath)
 str coop_returnStringFileExtensionOnly( const str &sPath )
 {
 	str fileName = "";
-	for ( int i = 0; i < strlen( sPath ); i++ )
+	str sPath2 = sPath;
+	sPath2 = sPath2.tolower();
+	for ( int i = 0; i < strlen(sPath2); i++ )
 	{
-		if ( sPath[i] == '/' || sPath[i] == '\\' || sPath[i] == ':' || sPath[i] == ' ' ) {
+		if (sPath2[i] == '/' || sPath2[i] == '\\' || sPath2[i] == ':' || sPath2[i] == ' ' ) {
 			fileName = "";
 		}
 		else {
-			fileName += sPath[i];
+			fileName += sPath2[i];
 		}		
 	}
 
