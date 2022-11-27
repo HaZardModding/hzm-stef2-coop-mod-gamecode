@@ -32,6 +32,7 @@ bool coop_checkStringInUservarsOf( Entity * ent , str sStringPart );
 bool coop_checkIsEntityInBoundingBox( Entity *eIntruder , Entity *eTheBox );
 bool coop_checkEntityInsideDoor( Entity *entity1 );
 bool coop_checkIsPlayerActiveAliveInBoundingBox( Player *player , Entity *eTheBox );
+bool coop_checkCanPickUpItem(Entity *entity, str sModel );
 #endif
 
 

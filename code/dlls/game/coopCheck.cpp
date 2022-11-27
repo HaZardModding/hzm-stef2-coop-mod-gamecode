@@ -257,13 +257,13 @@ void coop_checkDoesPlayerHaveCoopId(Player* player)
 
 	//have some time delay and also make sure the player is even able to process any commands
 	if (player->coopPlayer.setupTriesCidCheckTime < level.time) {
-		player->coopPlayer.setupTriesCidCheckTime = (level.time + 0.25f);
+		player->coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
 			player->coopPlayer.setupTriesCid++;
 		}
 	}
 	//player does not have coop mod - give up at this point
-	if (player->coopPlayer.setupTriesCid == 11) {
+	if (player->coopPlayer.setupTriesCid == 30) {
 		coop_playerSaveNewPlayerId(player);
 		player->coopPlayer.setupTriesCid++;
 		return;
@@ -284,23 +284,31 @@ void coop_checkDoesPlayerHaveCoopId(Player* player)
 //================================================================
 str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId)
 {
-	//client has none - create one
+	player->coopPlayer.coopId = "";
+
+	//client has none given - create new one
 	if (!sClientId.length()) {
-		player->coopPlayer.coopId = sClientId;
+		//player->hudPrint("COOPDEBUG coop_checkPlayerCoopIdExistInIni -> givenId == !length\n");
 		coop_playerSaveNewPlayerId(player);
 		return sClientId;
 	}
 
-	//client id does not exist on this server
+	//client id was provided
 	str ss = coop_parserIniGet("serverData.ini", sClientId.c_str(), "client");
+	//client id is not known on the server
 	if (!ss.length()) {
+		//if it could be a valid id - acceept it on this server
+		if (sClientId.length() <= 11 && IsNumeric(sClientId)) {
+			player->coopPlayer.coopId = sClientId;
+		}
 		coop_playerSaveNewPlayerId(player);
 	}
+	//client known, restore
 	else {
 		player->coopPlayer.coopId = sClientId.c_str();
 		coop_playerRestore(player);
 	}
-	return sClientId;
+	return player->coopPlayer.coopId;
 }
 
 //================================================================
@@ -391,6 +399,29 @@ bool coop_checkIsPlayerActiveAliveInBoundingBox( Player *player , Entity *eTheBo
 		return false;
 	}
 
+	return true;
+}
+
+//========================================================[b60011]
+// Name:        coop_checkCanPickUpItem
+// Class:       -
+//              
+// Description: prevent Sentient from picking up all the items in coop if he already has em
+//              
+// Parameters:  Entity *entity , str sModel
+//              
+// Returns:     bool
+//              
+//================================================================
+bool coop_checkCanPickUpItem(Entity* entity, str sModel)
+{
+	if (game.coop_isActive && sModel.length() && entity->isSubclassOf(Sentient)) {
+		Sentient* sentient = (Sentient*)entity;
+		if (sentient->HasItem(sModel.c_str())) {
+			//gi.Printf(va("Sentient already has: %s\n", this->model.c_str()));
+			return false;
+		}
+	}
 	return true;
 }
 
