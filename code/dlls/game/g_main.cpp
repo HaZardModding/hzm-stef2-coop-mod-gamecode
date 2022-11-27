@@ -2331,7 +2331,7 @@ extern "C" void G_ClientUserinfoChanged( gentity_t *ent, const char *userinfo )
 			fov = (float)atof( Info_ValueForKey( userinfo, "userFov" ) );
 			if ( fov < 1.0f )
             {
-				fov = sv_defaultFov->value;
+				fov = atof(coop_returnCvarString("sv_defaultFov"));
             }
 			else if ( fov > 160.0f )
             {
