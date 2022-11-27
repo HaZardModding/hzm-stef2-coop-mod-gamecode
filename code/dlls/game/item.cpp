@@ -488,6 +488,11 @@ void Item::ItemTouch( Event *ev )
 	}
 	
 	other = ev->GetEntity( 1 );
+
+	//[b60011] chrissstrahl - prevent player from picking up all the items in coop if he already has em
+	if (!coop_checkCanPickUpItem(other,this->model)) {
+		return;
+	}
 	
 	e = new Event( EV_Item_Pickup );
 	e->AddEntity( other );
