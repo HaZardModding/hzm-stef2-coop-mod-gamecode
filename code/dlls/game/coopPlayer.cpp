@@ -89,11 +89,13 @@ void coop_playerCommunicator(Player* player, int iAdd)
 		currentPlayer = (Player *)g_entities[i].entity;
 
 		//don't send update info to player without mod menu or if it is bot
-		if (!currentPlayer || !currentPlayer->coopPlayer.installed || currentPlayer->edict->svflags & SVF_BOT) { continue; }
+		if (!currentPlayer || currentPlayer->edict->svflags & SVF_BOT) { //[b60011]Chrissstrahl - disabled coop check as a quick fix cuz entering player has not yet ccoop detected - !currentPlayer->coopPlayer.installed 
+			continue;
+		}
 
 		//don't send update info to leaving player
 		if (iAdd <= 0 && i == player->entnum) {
-gi.Printf(va("COOPDEBUG [%s] Leaving Player skipped: %s\n", currentPlayer->client->pers.netname, player->client->pers.netname));
+			//gi.Printf(va("COOPDEBUG [%s] Leaving Player skipped: %s\n", currentPlayer->client->pers.netname, player->client->pers.netname));
 			continue;
 		}
 
@@ -110,8 +112,9 @@ gi.Printf(va("COOPDEBUG [%s] Leaving Player skipped: %s\n", currentPlayer->clien
 				sListName = coop_textReplaceWhithespace(sListName);
 			}
 
-			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTrans%i title %s\necho coop_comTrans%i title %s",j, sListName.c_str(), j, sListName.c_str()));
-			gi.Printf(va("COOPDEBUG [%s] coop_comTrans%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
+			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTrans%i title %s\n",j, sListName.c_str()));
+			//multiplayerManager.HUDPrint(player->entnum, va("\nCOOPDEBUG coop_comTrans%i title %s\n",j, sListName.c_str()));
+			//gi.Printf(va("COOPDEBUG [%s] coop_comTrans%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
 		}
 	}
 }
@@ -521,7 +524,7 @@ bool coop_playerSetup(Player* player)
 	coop_playerPlaceAtSpawn( player );
 
 	//hzm coop mod chrissstrahl - enable ai again, if it was disabled, as there is now a player on the server again
-	coop_serverManageAi();
+	coop_serverManageAi(true);
 
 	return true;
 }
@@ -539,13 +542,12 @@ bool coop_playerSetup(Player* player)
 void coop_playerSetupClient(Player* player)
 {
 	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
+	DelayedServerCommand(player->entnum, "vstr coop_id");
 	DelayedServerCommand(player->entnum, "vstr local_language");
-	
+	//[b60011] chrissstrahl - changed to avoid command being shown as text on older servers	
+	DelayedServerCommand(player->entnum, "vstr coop_verInf");
 	player->checkingClMaxPackets = true;
 	DelayedServerCommand(player->entnum, "vstr cl_maxpackets");
-
-	DelayedServerCommand(player->entnum, "vstr coop_pId");
-	DelayedServerCommand(player->entnum, "vstr coop_verInf"); //[b60011] chrissstrahl - changed to avoid command being shown as text on older servers
 
 	//Do this only during a active coop game
 	if (game.coop_isActive) {
@@ -587,7 +589,7 @@ void coop_playerSetupHost(Player* player)
 		return;
 	}
 
-	cvar = gi.cvar_get("coop_pId");
+	cvar = gi.cvar_get("coop_cId");
 	sCvar = (cvar ? cvar->string : "");
 	coop_manipulateStringTrim(sCvar,"coopcid ");
 	player->coopPlayer.coopId = coop_checkPlayerCoopIdExistInIni(player, sCvar);
@@ -620,13 +622,14 @@ void coop_playerGenerateNewPlayerId(Player* player)
 	time_t curTime;
 	time(&curTime);
 	str sPlayerId = va("%d%d", (int)curTime, player->entnum);
-	gi.Printf("\n======================\nSENDING NEW ID TO PLAYER\n======================\n");
+gi.Printf(va("\n======================\nSENDING NEW ID TO PLAYER\n%s\n======================\n", player->client->pers.netname));
 	gi.Printf(va("%s\n", sPlayerId.c_str()));
 	//add current client number to make sure we add a absolute uniqe player id
 	//even if two players join at the same instance
 	player->coopPlayer.coopId = sPlayerId.c_str();
 	//make sure the cvar is created and saved with seta first before using set - set used because it accepts commands with space
-	DelayedServerCommand(player->entnum, va("seta coop_pId 0;set coop_pId coopcid %s", sPlayerId.c_str()));
+	DelayedServerCommand(player->entnum, va("seta coop_cId 0;set coop_cId coopcid %s", sPlayerId.c_str()));
+//multiplayerManager.HUDPrint(player->entnum, va("COOPDEBUG you got a new id by server: %s\n", sPlayerId.c_str()));
 }
 
 //================================================================
@@ -945,6 +948,9 @@ bool coop_playerSpawnTrySpSpawn( Player *player , bool bRespawning )
 		return false;
 	}
 
+	player->_makeSolidASAP = true;
+	player->_makeSolidASAPTime = 0.25f;
+
 	Vector vSpawnOrigin , vAngles;
 	vSpawnOrigin[0] = 0.0f;
 	vSpawnOrigin[1] = 0.0f;
@@ -975,8 +981,6 @@ bool coop_playerSpawnTrySpSpawn( Player *player , bool bRespawning )
 			return false;		
 		}
 	}
-	player->_makeSolidASAP = true;
-	player->_makeSolidASAPTime = 0.0f;
 }
 
 //================================================================
@@ -995,6 +999,7 @@ bool coop_playerPlaceAtSpawn( Player *player )
 	bool bSpawnedSucessfull = false;
 	if ( game.coop_isActive && player )
 	{
+		player->setSolidType(SOLID_NOT);
 		player->_makeSolidASAP = true;
 		player->_makeSolidASAPTime = 0.25f;
 
@@ -1043,7 +1048,7 @@ bool coop_playerPlaceAtSpawn( Player *player )
 			//and if I might add, it does happen quite frequently
 			player->origin = player->coopPlayer.lastAliveLocation;
 
-			//[b60011] chrissstrahl - show !stuck command if we have reson to belive the player might be stuck inside a scriptobject or solid trigger or door
+			//[b60011] chrissstrahl - show !stuck command if we have reason to belive the player might be stuck inside a scriptobject or solid trigger or door
 			int i;
 			Entity* entity2 = NULL;
 			for (i = 0; i < maxentities->integer; i++) {
@@ -1101,6 +1106,7 @@ bool coop_playerSay( Player *player , str sayString)
 
 	//[b60011] chrissstrahl - clientid backwardscompatibility - create new id
 	if (!Q_stricmpn(sayString.c_str(), "cid.", 4)) {
+//player->hudPrint("COOPDEBUG coop_playerSay -> cid.\n");
 		coop_playerSaveNewPlayerId(player);
 		return true;
 	}
@@ -1218,9 +1224,6 @@ void coop_playerEnterArena(int entnum, float health)
 	//hzm coop mod chrissstrahl - update statistics of how many active players of each class are
 	coop_classUpdateClassStats();
 	//coop_classUpdateHealthStatFor( player->entnum );
-
-	//hzm coop mod chrissstrahl - manages ai on/off
-	coop_serverManageAi();
 
 	//hzm coop mod chrissstrahl - this clears the notargetflag and makes player valid target for ai
 	if ((player->flags & FL_NOTARGET))
@@ -1759,9 +1762,6 @@ void coop_playerSpectator( Player *player )
 
 	//hzm coop mod chrissstrahl - update statistics of how many active players of each class are
 	coop_classUpdateClassStats();
-
-	//hzm coop mod chrissstrahl - chek if we should disable the ai
-	coop_serverManageAi();
 }
 
 //================================================================
@@ -1840,7 +1840,7 @@ void coop_playerPlaceableThink(Player* player)
 	//player->coopPlayer.ePlacable->setOrigin(trace.endpos);
 	trace.endpos[2] = vPlayer[2];
 	vPlayerAngle[1] = player->client->ps.viewangles[1];
-	if (player->coopPlayer.ePlacable) {
+	if (player->coopPlayer.ePlacable && trace.endpos) {
 		player->coopPlayer.ePlacable->setOrigin(trace.endpos);
 		player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
 
@@ -2058,9 +2058,6 @@ void coop_playerConnect(Entity *ePlayer)
 	if ( level.time > 30.0f ) {
 		coop_serverConfigstringRemoveNonCoopStrings();
 	}
-
-	if (ePlayer) {
-	}
 }
 
 //================================================================
@@ -2083,7 +2080,6 @@ void coop_playerLeft( Player *player )
 	//[b60011] chrissstrahl -notify level scripts that the player left - this is used on custom map scripts
 	//[b60011] chrissstrahl - moved code here
 	ExecuteThread("coop_justLeft", true, (Entity*)player);
-	coop_serverManageAi();
 	coop_serverLmsCheckFailure();	
 
 	//hzm coop mod chrissstrahl - save current status when player leaves the game (unless he is spec)
@@ -2097,9 +2093,9 @@ void coop_playerLeft( Player *player )
 	//chrissstrahl - make sure server is restarted if it really needs to
 	//no player on the server left, see if server should be rebooted
 	if (coop_returnPlayerQuantity(3) <= 1) { //[b607] chrissstrahl - fixed, because this counts leaving player as well
-		if (coop_serverManageReboot(level.mapname.c_str())) {
-			return; //[b607] chrissstrahl - if server is going to reboot we don't need to continue
-		}
+		//if (coop_serverManageReboot(level.mapname.c_str())) {
+		//return; //[b607] chrissstrahl - if server is going to reboot we don't need to continue
+		//}
 
 		//[b607] chrissstrahl - fail mission (delayed) so the server can reload the map (this prevents certain overload issues caused by ongoing mission scripts (spawning etc))
 		int iFailtime = coop_returnCvarInteger("coop_autoFailtime");
@@ -2128,6 +2124,9 @@ void coop_playerLeft( Player *player )
 		game.coop_autoFailPending = true;
 		Event *newEvent2 = new Event(EV_World_AutoFailure);
 		world->PostEvent(newEvent2, (iFailtime * 60));
+
+		coop_serverManageAi(false);
+
 		return;
 	}
 

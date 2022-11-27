@@ -153,7 +153,8 @@ public:
 	str lastScanSendData = "";
 	//[b607] chrissstrahl - used to store last if a certain hud is active
 	bool clickFireHudActive = false;
-	//[b607] chrissstrahl - used to manage transmitting of scanning data to coop tricorder hud
+	//[b60011][b607] chrissstrahl - used to manage transmitting of scanning data to coop tricorder hud
+	str scanData0 = ""; //[b60011]
 	str scanData1 = "";
 	str scanData2 = "";
 	//[b607] chrissstrahl - addad coop admin check var
