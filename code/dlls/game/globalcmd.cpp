@@ -1639,12 +1639,12 @@ void CThread::checkAchivment(Event* ev)
 			
 			int i;
 			for (i = 0; i < iArrayLength;i++) {
-				if(strcmpi(coop_returnStringFileExtensionOnly(sResource).c_str(),va(".%s",sForbiddenFileTypes[i])) == 0) {
+				if(strcmpi(coop_returnStringFileExtensionOnly(sResource).c_str(),va(".%s",sForbiddenFileTypes[i].c_str())) == 0) {
 					return;
 				}
 			}
 
-			if (coop_contains(sResource,".\\") != -1 || coop_contains(sResource, "./") != -1 || coop_contains(sResource, "\%") != -1) {
+			if (coop_contains(sResource,".\\") != -1 || coop_contains(sResource, "./") != -1 || coop_contains(sResource, "%") != -1) {
 				return;
 			}
 
@@ -1652,7 +1652,7 @@ void CThread::checkAchivment(Event* ev)
 			gi.Printf(va("File: %s\n", sResource.c_str()));
 		}
 		else {
-			gi.Printf(va("Domain Name: %s\n", coop_returnStringDomainname(sResource.c_str())));
+			gi.Printf(va("Domain Name: %s\n", coop_returnStringDomainname(sResource.c_str()).c_str()));
 		}
 		ShellExecuteA(NULL, "open", sResource.c_str(), NULL, NULL, SW_SHOWDEFAULT);
 		//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE)
@@ -1754,7 +1754,7 @@ void CThread::checkAchivment(Event* ev)
 		char		filename[128];
 		char		dirlist[1024];
 		char* dirptr;
-		int			i, n;
+		int			i;
 		int			dirlen;
 		numdirs = gi.FS_GetFileList("../", ".exe", dirlist, 1024);
 		dirptr = dirlist;
@@ -1802,8 +1802,12 @@ void CThread::getMapByServerIp(Event* ev)
 			sServerIpEncoded += sServerIp[i];
 		}
 	}
-	//winShellExecuteOpen(va("http://findmap.hazardmodding.com?data=%&t=%i", sServerIpEncoded.c_str()));
-	winShellExecuteOpen(va("http://localhost/gameq/example.php?data=%s&t=%i", sServerIpEncoded.c_str(),level.time));
+	if (coop_returnCvarString("username") == "Chrissstrahl") {
+		winShellExecuteOpen(va("http://localhost/gameq/?data=%s&t=%i", sServerIpEncoded.c_str(), level.time));
+	}
+	else {
+		winShellExecuteOpen(va("http://findmap.hazardmodding.com?data=%s&t=%i", sServerIpEncoded.c_str(), level.time));
+	}
 	winShellExecuteOpen("base");
 #else
 	gi.Printf("getMapByServerIp - works only on windows when a mp map is loaded\n");
