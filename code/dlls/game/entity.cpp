@@ -2108,24 +2108,16 @@ void Entity::GetSubclassName(Event* ev)
 //--------------------------------------------------------------
 void Entity::HasItemEvent(Event* ev)
 {
-	if (!isSubclassOf(Sentient)) {
-		ev->ReturnFloat(0.0f);
-		return;
-	}
-
-	Sentient* Senti = (Sentient*)(Entity*)this;
 	str sName;
 	sName = ev->GetString(1);
-
-	if (strlen(sName) > 0) {
+	if (isSubclassOf(Sentient) && sName.length()) {
+		Sentient* Senti = (Sentient*)(Entity*)this;
 		Item* item;
-			item = Senti->FindItem(sName);
+		item = Senti->FindItem(sName.c_str());
 		if (item) {
 			ev->ReturnFloat(1.0f);
-			return;
 		}
 	}
-
 	ev->ReturnFloat(0.0f);
 }
 
