@@ -1194,6 +1194,11 @@ Item *Sentient::FindItemByExternalName( const char *itemname, Item *current )
 //--------------------------------------------------------------
 Item *Sentient::FindItemByModelname( const char *mdl, Item *current )
 {
+	//[b60011]gamefix chrissstrahl - do not add models/ if it is actually not a model
+	if (coop_contains(mdl, ".tik") == -1) {
+		return NULL;
+	}
+
 	int i, num;
 	bool seeking;
 	Item *item;
@@ -1204,7 +1209,7 @@ Item *Sentient::FindItemByModelname( const char *mdl, Item *current )
 	else
 		seeking = false;
 	
-	if ( strnicmp( "models/", mdl, 7 ) )
+	if (strnicmp("models/", mdl, 7))
 		tmpmdl = "models/";
 	
 	tmpmdl += mdl;
@@ -1222,7 +1227,7 @@ Item *Sentient::FindItemByModelname( const char *mdl, Item *current )
 		
 		if ( seeking )
 			continue;
-		
+
 		if ( !Q_stricmp( item->model, tmpmdl ) )
 			return item;
 	}
@@ -1305,6 +1310,22 @@ Item *Sentient::FindItem( const char *itemname, Item *current )
 		if ( !item )
 		{
 			item = FindItemByClassName( itemname, current );
+			//[b60011] gameudate chrissstrahl - also find holable crap and rune and powerup
+			if (this->isSubclassOf(Player)) {
+				Player* player = (Player*)this;
+				if (player->getHoldableItem() && player->getHoldableModel() == itemname) {
+					//gi.Printf(va("HOLDABLE: %s\n", player->getHoldableName().c_str()));
+					return (Item*)player->getHoldableItem();
+				}
+				if (player->hasRune() && player->getRuneModel() == itemname) {
+					//gi.Printf(va("RUNE: %s\n", player->getRuneName().c_str()));
+					return (Item*)player->getRuneItem();
+				}
+				if (player->getRuneItem() && player->getPowerupModel() == itemname) {
+					//gi.Printf(va("POWERUP: %s\n", player->getPowerupName().c_str()));
+					return (Item*)player->getPowerupItem();
+				}
+			}
 		}
 	}
 	
