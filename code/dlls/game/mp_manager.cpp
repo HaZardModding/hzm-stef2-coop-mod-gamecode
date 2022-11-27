@@ -2065,6 +2065,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 	}
 
 	bool validVoteCommand = false;
+	str _voteStringCompare = _voteString;
 
 	//[b607] chrissstrahl - votecommands that are only valid during coop
 	if ( game.coop_isActive ) {
@@ -2149,33 +2150,58 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 		return;
 	}
 
+	if (Q_stricmpn(command.c_str(), "nextmap", 7) == 0 && !stricmp(arg.c_str(), "")) {
+		HUDPrint(player->entnum, "$$InvalidVote$$ - $$MapName$$ $$Empty$$\n");
+		return;
+		/* Could not get it to work right, to much time wasted
+		if (mp_useMapList->integer != 1) {
+			HUDPrint(player->entnum, "$$ServerInfo$$: $$MapList$$ $$Off$$ - CVar: mp_useMapList\n");
+			return;
+		}
+		str nextMapName = gi.cvar_get("mp_mapList")->string;
+		if (nextMapName.length()) {
+			setNextMap();
+			
+			nextMapName = gi.cvar_get("nextmap")->string;
+			_voteString = va("callvote map %s", nextMapName.c_str());
+		}
+		else {
+			if (!nextMapName.length()) {
+				HUDPrint(player->entnum, "$$ServerInfo$$: $$MapList$$ $$Empty$$ - CVar: mp_mapList\n");
+			}
+			return;
+		}
+		*/
+	}
+
 	//allow vote for skipping cinematics
 	//[b607] chrissstrahl - try to handle the coop vote stuff a little more ellegant
-	str _voteStringCompare = _voteString;
-	int iVoteValid = 0;
-	iVoteValid = coop_vote_skipcinematicValidate(player, command, arg, _voteString);
-	if (iVoteValid == 0) { iVoteValid = coop_vote_lastmanstandingValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_respawntimeValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_awardsValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_friendlyfireValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_maxspeedValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_mapValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_mapNxtPrevValidate(player, command, arg, _voteString); }
-	//if (iVoteValid == 0) { iVoteValid = coop_vote_mpmodifierValidate(player, command, arg, _voteString); } //handled above
-	if (iVoteValid == 0) { iVoteValid = coop_vote_airaccelerateValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_stasistimeValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_challengeValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_deadbodiesValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_kickValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_execValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_skillValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_addbotValidate(player, command, arg, _voteString); }
-	if (iVoteValid == 0) { iVoteValid = coop_vote_quitserverValidate(player, command, arg, _voteString); }
-	//use the string as command exactly like provided
+	if (game.coop_isActive) {
+		int iVoteValid = 0;
+		iVoteValid = coop_vote_skipcinematicValidate(player, command, arg, _voteString);
+		if (iVoteValid == 0) { iVoteValid = coop_vote_lastmanstandingValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_respawntimeValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_awardsValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_friendlyfireValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_maxspeedValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_mapValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_mapNxtPrevValidate(player, command, arg, _voteString); }
+		//if (iVoteValid == 0) { iVoteValid = coop_vote_mpmodifierValidate(player, command, arg, _voteString); } //handled above
+		if (iVoteValid == 0) { iVoteValid = coop_vote_airaccelerateValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_stasistimeValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_challengeValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_deadbodiesValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_kickValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_execValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_skillValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_addbotValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_quitserverValidate(player, command, arg, _voteString); }
+		//use the string as command exactly like provided
 
-	//[b607] chrissstrahl - no valid vote (a coop vote was called but with wrong or bad parameters)
-	if (iVoteValid == 1) {
-		return;
+		//[b607] chrissstrahl - no valid vote (a coop vote was called but with wrong or bad parameters)
+		if (iVoteValid == 1) {
+			return;
+		}
 	}
 
 	//[b607] chrissstrahl - the votestring was not altred
