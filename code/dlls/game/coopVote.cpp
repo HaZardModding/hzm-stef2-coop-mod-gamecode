@@ -154,7 +154,7 @@ int coop_vote_quitserverValidate(Player* player, const str& command, const str& 
 	}
 
 	//[b60011] chrissstrahl - save changes directly to ini
-	int iDisallowQuit = atoi(coop_parserIniGet("serverData.ini", "votedisallowserverquit", "server"));
+	int iDisallowQuit = coop_returnBool(coop_parserIniGet("serverData.ini", "votedisallowserverquit", "server"));
 	iDisallowQuit = coop_returnIntWithinOrDefault(iDisallowQuit, 0, 1, 0);
 
 	if (iDisallowQuit) {
