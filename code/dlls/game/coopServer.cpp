@@ -1098,8 +1098,7 @@ void coop_serverCoop()
 	//hzm coop mod chrissstrahl - check if sv_floodprotect should be enabled
 	//if coop is not active
 	if ( !game.coop_isActive ) {
-		int iSvFlood = atoi( coop_parserIniGet( "serverData.ini" , "sv_floodprotect" , "server" ) );
-		if ( iSvFlood ) {
+		if ( coop_returnBool( coop_parserIniGet( "serverData.ini" , "sv_floodprotect" , "server" )) ) {
 			gi.SendConsoleCommand( "set sv_floodprotect 1\n" );
 		}
 
@@ -1236,7 +1235,7 @@ void coop_serverSetup( void )
 
 		//hzm coop mod chrissstrahl - load last coop map if there is any
 		bool bServerHasRebooted = false;
-		bServerHasRebooted = coop_parserIniGet( "serverData.ini" , "rebooting" , "server" );
+		bServerHasRebooted = coop_returnBool(coop_parserIniGet( "serverData.ini" , "rebooting" , "server" ));
 
 		//hzm coop mod chrissstrahl - load the map that we are actually suppose to load
 		if ( bServerHasRebooted ){
@@ -1307,19 +1306,9 @@ bool coop_serverRunScriptThread( str scriptThread )
 // Returns:     bool
 //              
 //================================================================
-void coop_serverManageAi( void )
+void coop_serverManageAi(bool aiOn)
 {
-	if ( game.coop_isActive ) {
-		if ( mp_warmUpTime->integer > level.time )
-			return;
-
-		if ( coop_returnPlayerQuantityInArena() > 0 ) {
-			level.ai_on = true;
-		}
-		else {
-			level.ai_on = false;
-		}
-	}
+	level.ai_on = aiOn;
 }
 
 //================================================================

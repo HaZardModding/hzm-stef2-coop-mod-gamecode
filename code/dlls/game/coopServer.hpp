@@ -84,7 +84,7 @@ void coop_afterChristmasEvent_deleteTrees( void );
 void coop_serverCoop();
 void coop_serverSetup( void );
 bool coop_serverRunScriptThread( str scriptThread );
-void coop_serverManageAi( void );
+void coop_serverManageAi( bool aiOn );
 str coop_serverModifiedFile( str standardPath );
 void coop_serverThink( void );
 void coop_serverCleanup(bool restart); //[b610] chrissstrahl - used to reset vars and clean up stuff
