@@ -132,7 +132,7 @@ void coop_armoryEquipPlayer(Player *player)
 	}
 
 	//[b610] chrissstrahl - print out how many weapons player got at start
-	gi.Printf(va("INFO COOP: %i script-specified Weapons given to %s\n", iWeapons, player->client->pers.netname));
+	//gi.Printf(va("INFO COOP: %i script-specified Weapons given to %s\n", iWeapons, player->client->pers.netname));
 
 	//hzm coop mod chrissstrahl - exit here if there are no weapons to handle
 	if ( iWeapons == 0 ){
