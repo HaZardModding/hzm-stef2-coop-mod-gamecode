@@ -280,6 +280,17 @@ class Player : public Sentient
 		//[b60011] chrissstrahl - prevent/allow player from switching class - script command
 		void				setClassLocked(Event* ev);
 	public:
+		//[b60011] chrissstrahl - allow to get Holdable/Rune/Powerup/Item Model/Name from outside class
+		//already existing:	getHoldableItem()
+		str					getHoldableName(void);
+		str					getHoldableModel(void);
+		Rune*				getRuneItem(void);
+		str					getRuneModel(void);
+		str					getRuneName(void);
+		Powerup*			getPowerupItem(void);
+		str					getPowerupModel(void);
+		str					getPowerupName(void);
+
 		//[b60011] chrissstrahl - return if player is pressing use or not
 		void				checkUsePressing(Event* ev);
 		//[b60011] chrissstrahl - checks if player is pressing fire button
@@ -1836,6 +1847,7 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveFloat(&coopPlayer.diedLast);
 	arc.ArchiveFloat(&coopPlayer.timeEntered);
 	arc.ArchiveInteger(&coopPlayer.deathTime);
+	arc.ArchiveString(&coopPlayer.scanData0);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.className);			//Not quite Clean implemented, so also accsessed in singleplayer

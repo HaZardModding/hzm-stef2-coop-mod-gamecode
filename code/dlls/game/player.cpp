@@ -1903,6 +1903,78 @@ void Player::setClassLocked(Event* ev)
 	coopPlayer.classChangingDisabled = (bool)ev->GetInteger(1);
 }
 
+//[b60011] chrissstrahl - allow to get Holdable Item Name from outside class
+str Player::getHoldableName(void)
+{
+	if (_holdableItem) {
+		return _holdableItem->getName();
+	}
+	return "";
+}
+
+//[b60011] chrissstrahl - allow to get Holdable Item Model from outside class
+str Player::getHoldableModel(void)
+{
+	if (_holdableItem) {
+		return _holdableItem->model;
+	}
+	return "";
+}
+
+//[b60011] chrissstrahl - allow to get Rune Item from outside class
+Rune* Player::getRuneItem(void)
+{
+	if (_rune) {
+		return _rune;
+	}
+	return NULL;
+}
+
+//[b60011] chrissstrahl - allow to get Rune Model from outside class
+str Player::getRuneModel(void)
+{
+	if (_rune) {
+		return _rune->model;
+	}
+	return "";
+}
+
+//[b60011] chrissstrahl - allow to get Rune Name from outside class
+str Player::getRuneName(void)
+{
+	if (_rune) {
+		return _rune->getName();
+	}
+	return "";
+}
+
+//[b60011] chrissstrahl - allow to get Rune Item from outside class
+Powerup* Player::getPowerupItem(void)
+{
+	if (_powerup) {
+		return _powerup;
+	}
+	return NULL;
+}
+
+//[b60011] chrissstrahl - allow to get Rune Model from outside class
+str Player::getPowerupModel(void)
+{
+	if (_powerup) {
+		return _powerup->model;
+	}
+	return "";
+}
+
+//[b60011] chrissstrahl - allow to get Rune Name from outside class
+str Player::getPowerupName(void)
+{
+	if (_powerup) {
+		return _powerup->getName();
+	}
+	return "";
+}
+
 void Player::getScore(Event* ev)
 {
 	ev->ReturnFloat(multiplayerManager.getPoints(this));
