@@ -783,11 +783,12 @@ void PuzzleObject::timedUse( Event* event )
 	if ( !player )
 		return;
 	
-	//[b60011]chrissstrahl - if player gets hurt abbort modulation
+	//[b60011]chrissstrahl - if player gets hurt abbort modulation and reset
 	if (coop_returnPlayerQuantityInArena() >= 2 && (player->getLastDamageTime() + 0.75) > level.time) {
 		if (_hudOn) {
 			hideTimerHud(player);
 		}
+		_usedTime = 0.0f;
 		return;
 	}
 
