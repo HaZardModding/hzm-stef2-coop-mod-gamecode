@@ -80,7 +80,7 @@ void coop_armoryEquipPlayer(Player *player)
 				event->AddString( sTikiName );
 				player->ProcessEvent( event );
 			}
-			gi.Printf(va("COOPDEBUG: Equiping %s with %s\n", player->client->pers.netname, sTikiName.c_str()));
+//gi.Printf(va("COOPDEBUG: Equiping %s with %s\n", player->client->pers.netname, sTikiName.c_str()));
 
 			str sTempName = coop_armoryReturnWeaponName( sTikiName );
 			sTikiName = sTikiName.tolower();
