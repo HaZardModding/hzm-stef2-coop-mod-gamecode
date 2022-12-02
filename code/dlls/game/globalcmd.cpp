@@ -4009,7 +4009,7 @@ void CThread::SetFloatVar( Event *ev )
 		real_var_name = var_name.c_str() + 5;
 		gameVars.SetVariable( real_var_name, value );
 
-		//hzm coop mod chrissstrahl - make sure we chatch the values to save them in case of restart
+		//hzm coop mod chrissstrahl - make sure we catch the values to save them in case of restart
 		//save it in ini cuz cvars don't work if clients hosts a dedicated server and starts another instance from the same directory
 		coop_serverSaveGameVars( real_var_name , ( int )value );
 	}
