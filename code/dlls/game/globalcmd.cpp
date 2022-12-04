@@ -2146,8 +2146,7 @@ void CThread::configstringRemoveCombatSounds(Event *ev)
 //hzm coop mod chrissstrahl - add new script commands
 void CThread::getStringScriptVariable( Event *ev )
 {
-	str s;
-	s = coop_getStringScriptVariable( ev->GetString( 1 ) );
+	str s = coop_getStringScriptVariable( ev->GetString(1) );
 	ev->ReturnString( s.c_str() );
 }
 void CThread::getVectorScriptVariable( Event *ev )
