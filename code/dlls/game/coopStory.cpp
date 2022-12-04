@@ -56,23 +56,23 @@ void coop_storySet( Player *player )
 	}
 
 	//send story if it is set by script
-	if ( game.coop_story.length() < 1 ){
+	if ( !game.coop_story.length() ){
 		game.coop_story = program.getStringVariableValue( "coop_string_story" );
 	}
-	if ( game.coop_story_deu.length() < 1 ){
+	if ( !game.coop_story_deu.length() ){
 		game.coop_story_deu = program.getStringVariableValue( "coop_string_story_deu" );
 	}
 	//get localized story
 	str sStory = "";
-	if ( coop_checkPlayerLanguageGerman(player) ){
+	if (coop_checkPlayerLanguageGerman(player) && game.coop_story_deu.length()){
 		sStory = game.coop_story_deu;
 	}
 	//if that failed or player has not a german version, set english story
-	if ( sStory.length() < 1 ){
+	if ( !sStory.length() && game.coop_story.length()){
 		sStory = game.coop_story;
 	}
 	//if that failed set empty
-	if ( sStory.length() < 1 ){
+	if ( !sStory.length() ){
 		sStory = "$$Empty$$";
 	}
 	//send story
