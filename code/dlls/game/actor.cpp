@@ -11489,9 +11489,10 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 				}
 			}
 		}
-		else {
-			gi.Printf(va("ERROR: loc/deu/%s NOT FOUND FOR DIALOG\n", sLazyCodingSolutionHack.c_str()));
-		}
+		//else {
+			//gi.Printf(va("ERROR: loc/deu/%s NOT FOUND FOR DIALOG\n", sLazyCodingSolutionHack.c_str()));
+		//}
+		// 
 		//convert string to float
 		fDialogDeuLength = atof(value.c_str());
 //ENGLISH DIALOG
