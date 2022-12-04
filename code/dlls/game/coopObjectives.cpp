@@ -209,10 +209,10 @@ void coop_objectivesSetup( Player *player)
 		game.coop_author = "Ritual Entertainment";
 	}
 	else {
-		if (game.coop_author.length() < 1) {
+		if (!game.coop_author.length()) {
 			game.coop_author = program.getStringVariableValue( "coop_string_levelAuthor" );
 		}
-		if ( game.coop_author.length() < 1 ){
+		if (!game.coop_author.length()){
 			game.coop_author = "$$Empty$$";
 		}
 	}
@@ -330,8 +330,10 @@ void coop_objectivesUpdatePlayer( Player* player )
 		return;
 
 	if ( player->coopPlayer.setupComplete ){
-		if (player->coopPlayer.lastTimeUpdatedObjectives != game.coop_objectiveLastUpdate && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
-			player->coopPlayer.lastTimeUpdatedObjectives = game.coop_objectiveLastUpdate;
+		//if (player->coopPlayer.lastTimeUpdatedObjectives != game.coop_objectiveLastUpdate && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
+			//player->coopPlayer.lastTimeUpdatedObjectives = game.coop_objectiveLastUpdate;
+		if (player->coopPlayer.objectivesCycle != game.coop_objectiveCycle && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
+			player->coopPlayer.objectivesCycle = game.coop_objectiveCycle;
 
 			coop_objectivesNotify( player );
 			
@@ -576,7 +578,8 @@ void coop_objectivesUpdate( str sObjectiveState, str sObjectiveItem, str sObject
 	int iObjectiveNumber;
 	iObjectiveNumber = atoi( sObjectiveItem );
 	str sVariableName = "coop_string_objectiveItem";
-	game.coop_objectiveLastUpdate = level.time;
+	//game.coop_objectiveLastUpdate = level.time;
+	game.coop_objectiveCycle++;
 
 //get the mission objective string from script variable, make sure the item range is valid 1-8 (-11 since we gravtactical info here as well)
 	if ( iObjectiveNumber < 2 ){
@@ -619,8 +622,8 @@ void coop_objectivesUpdate( str sObjectiveState, str sObjectiveItem, str sObject
 	sObjective = program.getStringVariableValue( sVariableName.c_str());
 
 //check is it a valid string
-	if ( sObjective.length() < 2 ){
-		gi.Printf( va( "CO-OP OBJECTIVE ERROR: script variable %s is empty or to short!" , sVariableName.c_str() ) );
+	if ( !sObjective.length() ){
+		gi.Printf( va( "CO-OP OBJECTIVE ERROR: script variable %s is empty or to short!\n" , sVariableName.c_str() ) );
 		return;
 	}
 

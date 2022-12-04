@@ -1856,6 +1856,7 @@ inline void Player::Archive( Archiver &arc )
 	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
 	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);
 	arc.ArchiveSafePointer(&coopPlayer.ePlacable);
+	arc.ArchiveInteger(&coopPlayer.objectivesCycle);
 	}
 
 inline Camera *Player::CurrentCamera()

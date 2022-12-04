@@ -128,6 +128,7 @@ void coop_serverInizializeGameVars(void)
 	game.coop_story = "";
 	game.coop_story_deu = "";
 	game.coop_objectiveLastUpdate = -1.0f;
+	game.coop_objectiveCycle = -1;
 	game.coop_classInfoSendAt = -1.0f;
 	game.coop_isActive = false;
 	game.coop_awardsActive = false;

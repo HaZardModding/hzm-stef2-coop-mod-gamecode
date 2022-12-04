@@ -84,6 +84,7 @@ class Game : public Class
 	   bool			coop_saveClientData;
 //hzm coop mod chrissstrahl - store which objective items are set, and should be send to player
 	   float		coop_objectiveLastUpdate;
+	   int			coop_objectiveCycle;
 //hzm coop mod chrissstrahl - store objective items status
 	   int			coop_objectiveItemState[8];
 //hzm coop mod chrissstrahl - store which objective items are completed when

@@ -99,6 +99,7 @@ public:
 	float	lastTimeUpdatedClassStat = -999.0f;
 	//hzm coop mod chrissstrahl - used to save when the player has recived the last time the mission objectives
 	float	lastTimeUpdatedObjectives = -1.0f;
+	int		objectivesCycle = -999;
 	//[b60011] chrissstrahl - when the Missionobjectives Title text was last printed
 	float	lastTimePrintedObjectivesTitle = -1.0f;
 	//hzm coop mod chrissstrahl - used to save when the player was used the last time by another player
