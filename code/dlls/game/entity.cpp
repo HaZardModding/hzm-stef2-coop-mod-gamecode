@@ -1771,7 +1771,6 @@ Event EV_NetworkDetail
 	NULL,
 	"Sets this entity as detail that doesn't get sent across the network of set as low bandwidth by the client"
 );
-
 //[b60011] chrissstrahl - add boster script entity event
 Event EV_BoosterNearbyPlayer
 (
@@ -1817,9 +1816,31 @@ Event EV_Entity_MakeSolidAsap
 	"",
 	"Makes actors and players solid as soon as saftly possible"
 );
+//[b60012] chrissstrahl - moved here from Player - make sure
+Event EV_IsSpectator
+(
+	"isSpectator",
+	EV_SCRIPTONLY,
+	"@f",
+	"float-bool",
+	"Returns if entity is a Player and is in Spectator"
+);
+//[b60012] chrissstrahl - returns Player his id, based on entity id
+Event EV_GetEntNum
+(
+	"getEntNum",
+	EV_SCRIPTONLY,
+	"@f",
+	"float-bool",
+	"Returns entity number of a player"
+);
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
+		//[b60012] chrissstrahl - allow to check entities if they are a Player and Spectator
+		{ &EV_IsSpectator,					&Entity::isSpectator },
+		//[b60012] chrissstrahl - allow to check entities if they are a Player and Spectator
+		{ &EV_GetEntNum,					&Entity::getEntNum },
 		//[b60011] chrissstrahl - add boster script entity event
 		{ &EV_BoosterNearbyPlayer ,			&Entity::BoosterNearbyPlayer } ,
 		//hzm coop mod chrissstrahl - new event to set a idle animation, used for the new coop triggers
@@ -2035,6 +2056,44 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	
 		{ NULL, NULL }
 	};
+
+//-------------------------------------------------------[b60012]
+//
+// Name:			getEntNum
+// Class:			Entity
+//
+// Description:		Checks if entity is Player and in Spectator
+//
+// Parameters:		Event *ev
+//
+// Returns:			float true/false
+//
+//--------------------------------------------------------------
+void Entity::getEntNum(Event* ev)
+{
+	ev->ReturnFloat((float)this->entnum);
+}
+
+//-------------------------------------------------------[b60012]
+//
+// Name:			isSpectator
+// Class:			Entity
+//
+// Description:		Checks if entity is Player and in Spectator
+//
+// Parameters:		Event *ev
+//
+// Returns:			float true/false
+//
+//--------------------------------------------------------------
+void Entity::isSpectator(Event* ev)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !this->isSubclassOf(Player)) {
+		ev->ReturnFloat(0.0f);
+		return;
+	}
+	ev->ReturnFloat((int)multiplayerManager.isPlayerSpectator((Player*)this));
+}
 
 //--------------------------------------------------------------
 //

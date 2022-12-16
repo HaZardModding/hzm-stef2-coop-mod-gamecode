@@ -462,7 +462,10 @@ class Entity : public Listener
 		void				SetUserVar8(Event* ev);
 		void				SetUserVar9(Event* ev);
 		void				SetUserVar10(Event* ev);
-
+		//[b60012] chrissstrahl - check if entity is Player and is Spectator
+		void				isSpectator(Event* ev);
+		//[b60012] chrissstrahl - return entity number
+		void				getEntNum(Event* ev);
 		//[b60011] chrissstrahl - add boster script entity event
 		void				BoosterNearbyPlayer( Event *ev );
 		//hzm gameupdate chrissstrahl - check if entity is inside other entity
