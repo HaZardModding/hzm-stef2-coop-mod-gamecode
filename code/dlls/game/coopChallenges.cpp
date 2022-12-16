@@ -19,7 +19,7 @@ Container<str> CoopChallengeTypesDisabled;
 
 #define COOP_CHALLENGE_STICKTOGETHER_DAMAGE 5.0f
 #define COOP_CHALLENGE_STICKTOGETHER_CYCLE 5.0f
-#define COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME 30.0f
+#define COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME 30
 #define COOP_CHALLENGE_STICKTOGETHER_DISTANCE 600.0f
 #define COOP_CHALLENGE_STICKTOGETHER_NAME "Stick together"
 #define COOP_CHALLENGE_HALO_NAME "Halo"
@@ -87,7 +87,7 @@ void CoopChallenges::playerEnteredWarning(Player* player)
 	{
 	case 1: //stayClose
 		//inform all players to regroup
-		player->hudPrint(va("^5Challenge ^2%s ^5is active!^8 You have %d sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		player->hudPrint(va("^5Challenge ^2%s ^5is active!^8 You have %i sec to get close to the Team!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		break;
 	case 2: //halo
 		break;
@@ -109,7 +109,7 @@ void CoopChallenges::playerLeftWarning(Player* player)
 	{
 	case 1: //stayClose
 		//inform all players to regroup
-		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player left you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player left you have %i sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		break;
 	case 2: //halo
 		break;
@@ -131,7 +131,7 @@ void CoopChallenges::playerSpectatorWarning(Player* player)
 	{
 	case 1: //stayClose
 		//inform all players to regroup
-		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player pauses you have %d sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
+		coop_textHudprintAll(va("^5Challenge^2 %s:^8 A Player pauses you have %i sec to regroup!\n", COOP_CHALLENGE_STICKTOGETHER_NAME, COOP_CHALLENGE_STICKTOGETHER_REGROUPTIME));
 		break;
 	case 2: //halo
 		break;
