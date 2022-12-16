@@ -1459,15 +1459,6 @@ Event EV_Player_getName
 	"retunedString string-replace-space-with",
 	"Returns multiplayer name of given player-entity"
 );
-//hzm gameupdate chrissstrahl - get player name
-Event EV_Player_IsSpectator
-(
-	"isSpectator",
-	EV_SCRIPTONLY,
-	"@f",
-	"float-bool",
-	"Returns if player is spectator or not"
-);
 //hzm gameupdate chrissstrahl - gets score
 Event EV_Player_getScore
 (
@@ -1820,8 +1811,6 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getName ,						&Player::getNameEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use
-	{ &EV_Player_IsSpectator ,					&Player::isSpectator },
-	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_WidgetCommand ,				&Player::widgetCommandEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getScore,						&Player::getScore },
@@ -2031,16 +2020,6 @@ void Player::getCoopVersion(Event* ev)
 	}
 	ev->ReturnFloat((float)i);
 }
-
-void Player::isSpectator(Event* ev)
-{
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		ev->ReturnFloat(0.0f);
-		return;
-	}
-	ev->ReturnFloat((int)multiplayerManager.isPlayerSpectator(this));
-}
-
 //hzm gameupdate chrissstrahl - get player name
 void Player::getNameEvent(Event* ev)
 {

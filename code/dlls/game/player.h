@@ -217,8 +217,6 @@ class Player : public Sentient
 		//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
 		void				hasLanguageGerman(Event* ev);
 		void				hasLanguageEnglish(Event* ev);
-		//hzm gameupdate chrissstrahl - check if player is spectator
-		void				isSpectator(Event* ev);
 		//hzm gameupdate chrissstrahl - get player name
 		void				getNameEvent(Event* ev);
 		//hzm gameupdate chrissstrhal [b60011] - allow to set widgettext with SPACE and NEWLINE
