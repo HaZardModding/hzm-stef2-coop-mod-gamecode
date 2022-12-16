@@ -246,15 +246,17 @@ void Dispenser::Think( void )
 
 		// See if the player is nearby
 
-		//hzm coop mod chrissstrahl - added check so that dispenser will no longer react to a player that is alone and in spectator on the server
-		if ( player && g_gametype->integer != GT_SINGLE_PLAYER && !multiplayerManager.isPlayerSpectator( player ) )
-		{
-			dir = player->origin - origin;
-			distance = dir.length();
-
-			if ( distance < _openDistance )
+		if (player) {
+			//[b60012] chrissstrahl - fix dispenser not opening in Singleplayer anymore - also don't open for a spectator
+			if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.isPlayerSpectator(player))
 			{
-				playerNearby = true;
+				dir = player->origin - origin;
+				distance = dir.length();
+
+				if (distance < _openDistance)
+				{
+					playerNearby = true;
+				}
 			}
 		}
 	}
