@@ -2722,7 +2722,8 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	}
 
 	// Send the say to appropriate clients
-	if ( player && isPlayerSpectator( player ) )
+	//[b60012] chrissstrahl - allow spectators to send messages in coop
+	if ( player && isPlayerSpectator( player ) && !game.coop_isActive)
 		HUDPrintSpectators( player, realText, team );
 	else if ( player && team )
 		HUDPrintTeamClients( player, realText );
@@ -2770,7 +2771,7 @@ void MultiplayerManager::tell( Player *player, const str &text, int entnum )
 	realText += "\n";
 
 	// Don't let text be too long for malicious reasons
-
+	
 	if ( realText.length() > _maxSayStringLength )
 	{
 		HUDPrint( player->entnum, "$$SayTooLong$$\n" );
@@ -2786,8 +2787,8 @@ void MultiplayerManager::tell( Player *player, const str &text, int entnum )
 
 
 	// Send the say to appropriate clients
-
-	if ( isPlayerSpectator( player ) && !isPlayerSpectator( otherPlayer ) )
+	//[b60012] chrisssttrahl - allow spectators to chat to others in spec in coop
+	if ( isPlayerSpectator( player ) && !isPlayerSpectator( otherPlayer ) && !game.coop_isActive )
 		return;
 
 	HUDSay( otherPlayer->entnum, realText );
@@ -4019,14 +4020,24 @@ void MultiplayerManager::playerInput( Player *player, int newButtons )
 		if ( newButtons & BUTTON_USE )
 		{
 			// Change spectator type
-
-			if ( isPlayerSpectator( player, SPECTATOR_TYPE_FOLLOW ) )
-				makePlayerSpectator( player, SPECTATOR_TYPE_NORMAL );
-			//hzm coop mod chrissstrahl - do not allow free form on story/coop maps
-			else if ( isPlayerSpectator( player, SPECTATOR_TYPE_NORMAL ) && game.coop_isActive == false )
-				makePlayerSpectator( player, SPECTATOR_TYPE_FREEFORM );
-			else 
-				makePlayerSpectator( player, SPECTATOR_TYPE_FOLLOW );
+			//[b60012] chrissstrahl - we don't want freeform in coop
+			if (game.coop_isActive) {
+				if (isPlayerSpectator(player, SPECTATOR_TYPE_FOLLOW)) {
+					makePlayerSpectator(player, SPECTATOR_TYPE_NORMAL);
+				}
+				else {
+					makePlayerSpectator(player, SPECTATOR_TYPE_FOLLOW);
+				}
+			}
+			else {
+				if (isPlayerSpectator(player, SPECTATOR_TYPE_FOLLOW))
+					makePlayerSpectator(player, SPECTATOR_TYPE_NORMAL);
+				//hzm coop mod chrissstrahl - do not allow free form on story/coop maps
+				else if (isPlayerSpectator(player, SPECTATOR_TYPE_NORMAL))
+					makePlayerSpectator(player, SPECTATOR_TYPE_FREEFORM);
+				else
+					makePlayerSpectator(player, SPECTATOR_TYPE_FOLLOW);
+			}
 		}
 
 		if ( isPlayerSpectator( player, SPECTATOR_TYPE_FOLLOW ) && ( _playerData[ player->entnum ]._spectatorTime != getTime() ) )
@@ -4266,38 +4277,50 @@ void MultiplayerManager::setNextMap( void )
 {
 	str nextMapName;
 	str fullMapName;
+	bool bMapFound = false;
+	short iRounds = 0;
 
-	if ( ( strlen( sv_nextmap->string ) == 0 ) && ( mp_useMapList->integer ) && ( strlen( mp_mapList->string ) > 0 ) )
-	{
-		nextMapName = getNextMap();
-
-		fullMapName = "maps/";
-		fullMapName += nextMapName;
-		fullMapName += ".bsp";
-
-		if ( gi.FS_Exists( fullMapName ) )
+	//[b60012] chrissstrahl - don't load twice the same map - at start or if a map is not found in maplist
+	while (!bMapFound && iRounds < 5) {
+		iRounds++;
+		if ((strlen(sv_nextmap->string) == 0) && (mp_useMapList->integer) && (strlen(mp_mapList->string) > 0))
 		{
-			gi.cvar_set( "nextmap", nextMapName.c_str() );
-		}
-		else
-		{
-			gi.Printf( "%s map not found\n", fullMapName.c_str() );
-		}
+			nextMapName = getNextMap();
 
-		gi.cvar_set( "mp_currentPosInMapList", va( "%d", mp_currentPosInMapList->integer + 1 ) );
+			fullMapName = "maps/";
+			fullMapName += nextMapName;
+			fullMapName += ".bsp";			
+
+			if (gi.FS_Exists(fullMapName))
+			{
+				gi.cvar_set("nextmap", nextMapName.c_str());
+				bMapFound = true;
+			}
+			else
+			{
+				gi.Printf("%s map not found\n", fullMapName.c_str());
+				
+				//[b60012] chrissstrahl - inform players
+				multiplayerManager.HUDPrintAllClients(va("$$ServerInformation$$: Level in mp_maplist '%s' $$NotFoundOnServer$$\n", nextMapName.c_str()));
+			}
+			gi.cvar_set("mp_currentPosInMapList", va("%d", mp_currentPosInMapList->integer + 1));
+		}
+		else if (strlen(sv_nextmap->string)) {
+			bMapFound = true;
+		}
 	}
 }
 
-str MultiplayerManager::getNextMap( void )
+str MultiplayerManager::getNextMap(void)
 {
 	str nextMapName;
 	str mapList;
 	int numMaps;
-	const char *currentPlaceInMapList;
+	const char* currentPlaceInMapList;
 	int realCurrentPos;
 	int i;
 	str tempString;
-	const char *nextSpace;
+	const char* nextSpace;
 	int diff;
 
 
@@ -4308,11 +4331,11 @@ str MultiplayerManager::getNextMap( void )
 	numMaps = 0;
 	currentPlaceInMapList = mapList.c_str();
 
-	while( 1 )
+	while (1)
 	{
-		currentPlaceInMapList = strstr( currentPlaceInMapList, ";" );
+		currentPlaceInMapList = strstr(currentPlaceInMapList, ";");
 
-		if ( currentPlaceInMapList )
+		if (currentPlaceInMapList)
 			numMaps++;
 		else
 			break;
@@ -4320,40 +4343,40 @@ str MultiplayerManager::getNextMap( void )
 		currentPlaceInMapList++;
 	}
 
-	if ( mapList.length() && ( mapList[ mapList.length() - 1 ] != ';' ) )
+	if (mapList.length() && (mapList[mapList.length() - 1] != ';'))
 		numMaps++;
 
-	if ( numMaps == 0 )
+	if (numMaps == 0)
 		return "";
 
 	// Get the position in the list
-
-	realCurrentPos = mp_currentPosInMapList->integer % numMaps;
+	//[b60012] chrissstrahl - fix repeating of first map on linux
+	realCurrentPos = mp_currentPosInMapList->integer;
+	if (realCurrentPos >= numMaps) {
+		realCurrentPos = mp_currentPosInMapList->integer % numMaps;
+	}
 
 	// Get the next map string
 
 	currentPlaceInMapList = mapList.c_str();
 
-	for ( i = 0 ; i < realCurrentPos ; i++ )
+	for (i = 0; i < realCurrentPos; i++)
 	{
-		currentPlaceInMapList = strstr( currentPlaceInMapList, ";" );
+		currentPlaceInMapList = strstr(currentPlaceInMapList, ";");
 		currentPlaceInMapList++;
 	}
 
 	nextMapName = currentPlaceInMapList;
-
 	currentPlaceInMapList = nextMapName.c_str();
-
-	currentPlaceInMapList = strstr( currentPlaceInMapList, ";" );
-
-	if ( currentPlaceInMapList )
+	currentPlaceInMapList = strstr(currentPlaceInMapList, ";");
+	if (currentPlaceInMapList)
 	{
-		nextMapName.CapLength( currentPlaceInMapList - nextMapName.c_str() );
+		nextMapName.CapLength(currentPlaceInMapList - nextMapName.c_str());
 	}
 
 	// Remove spaces from the beginning of the map name
 
-	while ( ( nextMapName.length() > 0 ) && ( nextMapName[ 0 ] == ' ' ) )
+	while ((nextMapName.length() > 0) && (nextMapName[0] == ' '))
 	{
 		tempString = nextMapName.c_str() + 1;
 		nextMapName = tempString;
@@ -4361,12 +4384,12 @@ str MultiplayerManager::getNextMap( void )
 
 	// Remove spaces from the end of the map name
 
-	nextSpace = strstr( nextMapName.c_str(), " " );
+	nextSpace = strstr(nextMapName.c_str(), " ");
 
-	if ( nextSpace )
+	if (nextSpace)
 	{
 		diff = nextSpace - nextMapName.c_str();
-		nextMapName.CapLength( diff );
+		nextMapName.CapLength(diff);
 	}
 
 	return nextMapName;
