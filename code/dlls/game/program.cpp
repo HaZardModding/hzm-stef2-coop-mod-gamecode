@@ -676,7 +676,7 @@ int Program::AllocString()
 {
 	int i;
 
-	for ( i = 0; i < MAX_STRINGS; i++ )
+	for ( i = RESERVED_OFS; i < MAX_STRINGS; i++ )
 	{
 		if ( !strings[i].inuse ) {
 			strings[i].inuse = true;
@@ -1142,8 +1142,16 @@ void Program::setTargetList( int offset, const TargetList *list )
 
 void Program::setString( int offset, const char *text )
 {
-	strings[ offset ].s = text;
-	*( int * )&pr_globals[ offset ] = offset;
+	//[b60012] Chrissstrahl / Daggo - workaround for incorrect assumption that offset equals stringid 
+	if (offset < RESERVED_OFS)
+	{ // Reserved ops are a bit problematic, so we reserve a string for each of them leading to offset == stringid...
+		strings[offset].s = text;
+		*(int*)&pr_globals[offset] = offset;
+	}
+	else
+	{ // Update existing value using stringid retrieved from offset
+		strings[*(int*)&pr_globals[offset]].s = text;
+	}
 }
 
 void Program::setFloat( int offset, float value )
