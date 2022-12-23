@@ -1402,10 +1402,11 @@ str coop_serverModifiedFile( str standardPath )
 //================================================================
 bool coop_serverError( str sError, bool bFatal )
 {
-	if ( g_gametype->integer != 1 || dedicated->integer < 1 )
+	//[b60012] chrissstrahl - terminate only on Linux server
+	//if ( g_gametype->integer != 1 || dedicated->integer < 1 )
+	#ifndef __linux__
 		return false;
-
-	str sLevel = "";
+	#endif
 
 	//Make note into ini, disable reboot
 	coop_parserIniSet( "serverData.ini" , "rebooting" , "false" , "server" );
