@@ -1964,6 +1964,7 @@ str Player::getPowerupName(void)
 	return "";
 }
 
+//hzm gameupdate chrissstrahl - add new commands for script use
 void Player::getScore(Event* ev)
 {
 	ev->ReturnFloat(multiplayerManager.getPoints(this));
@@ -2006,7 +2007,8 @@ void Player::getTeamScore(Event* ev)
 	Team* team;
 	team = multiplayerManager.getPlayersTeam(this);
 	if (team == NULL) {
-		ev->ReturnFloat(0.0f);
+		//[b60012] chrissstrahl - return player score if not in a team
+		ev->ReturnFloat(multiplayerManager.getPoints(this));
 		return;
 	}
 	ev->ReturnFloat(multiplayerManager.getTeamPoints(this));
