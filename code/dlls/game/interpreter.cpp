@@ -548,6 +548,9 @@ int Interpreter::LeaveFunction( void )
 	localstack_used -= c;
 	if ( localstack_used < 0 )
 	{
+		//[b60012] chrissstrahl - make sure this is always printed
+		gi.Printf("LeaveFunction: locals stack underflow\n(Function call attempted with to few parameters ?)\n");
+		gi.Printf("Debug with: scr_printfunccalls 1;developer 1;com_printwarnings 1\n");
 		RunError( "LeaveFunction: locals stack underflow\n" );
 	}
 	
@@ -732,6 +735,8 @@ void Interpreter::Execute( Event *e )
 		
 		if ( !--runaway )
 		{
+			//[b60012] chrissstrahl - make sure this is always printed
+			gi.Printf("runaway loop error\n");
 			RunError( "runaway loop error" );
 		}
 		
@@ -958,15 +963,16 @@ void Interpreter::Execute( Event *e )
 			break;
 			
 		case OP_STORE_S:
-            if ( st->b == OFS_RETURN )
+		{
+			if (st->b == OFS_RETURN)
 			{
 				// always use a static string for return values so that we
 				// don't have to worry about freeing it up
 				b->string = 0;
 			}
-            program->strings[ b->string ] = program->strings[ a->string ];
+			program->strings[b->string] = program->strings[a->string];
 			break;
-			
+		}
 			
 		case OP_STORE_V:
             VectorCopy( a->vector, b->vector );
@@ -1015,6 +1021,8 @@ void Interpreter::Execute( Event *e )
 			
 			if ( !a->function )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("NULL function\n");
 				RunError( "NULL function" );
 			}
 			
@@ -1033,6 +1041,8 @@ void Interpreter::Execute( Event *e )
             localstack_used -= st->b;
 			if ( localstack_used < 0 )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Execute: locals stack underflow\n");
 				RunError( "Execute: locals stack underflow\n" );
 			}
 			
@@ -1043,6 +1053,8 @@ void Interpreter::Execute( Event *e )
 			
 			if ( !a->function )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("NULL function\n");
 				RunError( "NULL function" );
 			}
 			
@@ -1064,6 +1076,8 @@ void Interpreter::Execute( Event *e )
 				localstack_used -= st->b;
 				if ( localstack_used < 0 )
 				{
+					//[b60012] chrissstrahl - make sure this is always printed
+					gi.Printf("Execute: locals stack underflow\n");
 					RunError( "Execute: locals stack underflow\n" );
 				}
 				
@@ -1078,6 +1092,8 @@ void Interpreter::Execute( Event *e )
 			
 			if ( !a->function )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("NULL function\n");
 				RunError( "NULL function" );
 			}
 			
@@ -1094,6 +1110,8 @@ void Interpreter::Execute( Event *e )
 					
 				default :
 					obj = NULL;  // shutup compiler
+					//[b60012] chrissstrahl - make sure this is always printed
+					gi.Printf("Execute: Invalid object call\n");
 					RunError( "Execute: Invalid object call\n" );
 					break;
 				}
@@ -1208,6 +1226,8 @@ void Interpreter::Execute( Event *e )
             localstack_used -= st->c;
 			if ( localstack_used < 0 )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Execute: locals stack underflow\n");
 				RunError( "Execute: locals stack underflow\n" );
 			}
 			
@@ -1217,6 +1237,8 @@ void Interpreter::Execute( Event *e )
 		case OP_PUSH_F :
 			if ( localstack_used >= LOCALSTACK_SIZE )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Execute: locals stack overflow\n");
 				RunError( "Execute: locals stack overflow\n" );
 			}
 
@@ -1227,6 +1249,8 @@ void Interpreter::Execute( Event *e )
 		case OP_PUSH_FTOS :
 			if ( localstack_used >= LOCALSTACK_SIZE )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Execute: locals stack overflow\n");
 				RunError( "Execute: locals stack overflow\n" );
 			}
 
@@ -1247,6 +1271,8 @@ void Interpreter::Execute( Event *e )
 		case OP_PUSH_ENT :
 			if ( localstack_used >= LOCALSTACK_SIZE )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Execute: locals stack overflow\n");
 				RunError( "Execute: locals stack overflow\n" );
 			}
 
@@ -1257,6 +1283,8 @@ void Interpreter::Execute( Event *e )
 		case OP_PUSH_FNC :
 			if ( localstack_used >= LOCALSTACK_SIZE )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Execute: locals stack overflow\n");
 				RunError( "Execute: locals stack overflow\n" );
 			}
 
@@ -1267,6 +1295,8 @@ void Interpreter::Execute( Event *e )
 		case OP_PUSH_S :
 			if ( localstack_used >= LOCALSTACK_SIZE )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Execute: locals stack overflow\n");
 				RunError( "Execute: locals stack overflow\n" );
 			}
 
@@ -1279,6 +1309,8 @@ void Interpreter::Execute( Event *e )
 		case OP_PUSH_V :
 			if ( localstack_used + 3 > LOCALSTACK_SIZE )
 			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Execute: locals stack overflow\n");
 				RunError( "Execute: locals stack overflow\n" );
 			}
 
@@ -1330,7 +1362,11 @@ void Interpreter::Execute( Event *e )
 			break;
 			 
 		default:
-			RunError( "Bad opcode %i", st->op );
+			{
+				//[b60012] chrissstrahl - make sure this is always printed
+				gi.Printf("Bad opcode %i\n",st->op);
+				RunError("Bad opcode %i", st->op);
+			}
 		}
 	}
 }
