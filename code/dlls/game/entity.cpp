@@ -1771,6 +1771,15 @@ Event EV_NetworkDetail
 	NULL,
 	"Sets this entity as detail that doesn't get sent across the network of set as low bandwidth by the client"
 );
+//[b60012] chrissstrahl - allow to remove viewmode from entity
+Event EV_RemoveViewMode
+(
+	"removeviewmode",
+	EV_DEFAULT,
+	"s",
+	"viewModeName",
+	"Removes entity useing the specified view mode - opposite of .viewmode() ."
+);
 //[b60011] chrissstrahl - add boster script entity event
 Event EV_BoosterNearbyPlayer
 (
@@ -1837,6 +1846,8 @@ Event EV_GetEntNum
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
+		//[b60012] chrissstrahl - allow to remove a vewmode from a entity
+		{ &EV_RemoveViewMode,				&Entity::removeAffectingViewMode },
 		//[b60012] chrissstrahl - allow to check entities if they are a Player and Spectator
 		{ &EV_IsSpectator,					&Entity::isSpectator },
 		//[b60012] chrissstrahl - allow to check entities if they are a Player and Spectator
@@ -2056,6 +2067,23 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	
 		{ NULL, NULL }
 	};
+
+
+//--------------------------------------------------------[b60012]
+// Name:			removeAffectingViewMode
+// Class:			Entity
+//
+// Description:		Removes a viewmode  from the entities applicable viewmodes
+//
+// Parameters:		Event *ev								- event (name of the view mode)
+//
+// Returns:			None
+//----------------------------------------------------------------
+
+void Entity::removeAffectingViewMode( Event *ev )
+{
+	removeAffectingViewModes(gi.GetViewModeMask(ev->GetString( 1 )));
+}
 
 //-------------------------------------------------------[b60012]
 //

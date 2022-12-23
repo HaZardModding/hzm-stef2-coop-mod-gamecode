@@ -464,6 +464,8 @@ class Entity : public Listener
 		void				SetUserVar10(Event* ev);
 		//[b60012] chrissstrahl - check if entity is Player and is Spectator
 		void				isSpectator(Event* ev);
+		//[b60012] chrissstrahl - allow to remove a viewmode from a entity
+		void				removeAffectingViewMode(Event* ev);
 		//[b60012] chrissstrahl - return entity number
 		void				getEntNum(Event* ev);
 		//[b60011] chrissstrahl - add boster script entity event
