@@ -24,6 +24,7 @@
 #include "coopText.hpp"
 #include "coopReturn.hpp"
 #include "upgCircleMenu.hpp"
+#include "puzzleobject.hpp"
 
 #include "worldspawn.h"
 #include "weapon.h"
@@ -1849,6 +1850,21 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_HasLanguageEnglish ,				&Player::hasLanguageEnglish },
 	{ NULL , NULL }
 };
+
+//[b60012] chrissstrahl - cancel player modulating event - if player gets hurt or so
+void Player::cancelPuzzle()
+{
+	Entity* puzzle;
+	puzzle = G_FindClass(NULL, "puzzle_object");
+	while (puzzle) {
+		PuzzleObject* puzObj = (PuzzleObject*)puzzle;
+		if (puzObj->GetLastActivatingEntity() == this) {
+			puzObj->cancelPlayer(this);
+			return;
+		}
+		puzzle = G_FindClass(puzzle, "puzzle_object");
+	}
+}
 
 //[b60011] chrissstrahl - get coop class name
 void Player::getCoopClass(Event* ev)
@@ -3933,6 +3949,9 @@ Player::Player()
 	actor_camera = NULL;
 	cool_camera = NULL;
 
+	//[b60012] chrissstrahl - well, I guess we should not have this uninitialised
+	language = "";
+
 	//[b60011] gameupdate chrissstrahl - used to detect when cl_maxpackets is checked
 	checkingClMaxPackets = false;
 
@@ -4849,6 +4868,11 @@ void Player::Pain( Event *ev )
 			_lastDamagedTimeRight = level.time;
 		else
 			_lastDamagedTimeBack = level.time;
+	}
+
+	//[b60012] chrissstrahl - cancel player modulating event if player gets hit by a Sentient
+	if (attacker && g_gametype->integer == GT_MULTIPLAYER && coop_returnPlayerQuantityInArena() >= 2 && attacker->isSubclassOf(Sentient)) {
+		this->cancelPuzzle();
 	}
 }
 

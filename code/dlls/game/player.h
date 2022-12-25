@@ -185,6 +185,7 @@ inline void WeaponSetItem::Archive( Archiver &arc )
 class Player : public Sentient
 	{
 	public:
+		void				cancelPuzzle(); //[b60012] chrissstrahl - allow cancellation of puzzles (used when player recives damade from sentients while modulating)
 		//hzm gameupdate chrissstrahl [b60011]  - remember if we are checking cl_maxpackets
 		bool				checkingClMaxPackets;
 		//hzm gamefix daggolin - new function to handle enviromental influences (like drowning)
