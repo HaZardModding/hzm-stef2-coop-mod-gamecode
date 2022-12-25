@@ -1825,7 +1825,7 @@ Event EV_Entity_MakeSolidAsap
 	"",
 	"Makes actors and players solid as soon as saftly possible"
 );
-//[b60012] chrissstrahl - moved here from Player - make sure
+//[b60012] chrissstrahl - moved here from Player - make sure it works with all entities
 Event EV_IsSpectator
 (
 	"isSpectator",
@@ -1834,18 +1834,29 @@ Event EV_IsSpectator
 	"float-bool",
 	"Returns if entity is a Player and is in Spectator"
 );
-//[b60012] chrissstrahl - returns Player his id, based on entity id
+//[b60012] chrissstrahl - returns nuber of this entity
 Event EV_GetEntNum
 (
 	"getEntNum",
 	EV_SCRIPTONLY,
 	"@f",
 	"float-bool",
-	"Returns entity number of a player"
+	"Returns number this entity usually within 0-1023"
+);
+//[b60012] chrissstrahl - Returns entity that did last attack or inflicted damage on this entity
+Event EV_GetLastAttacker
+(
+	"getLastAttacker",
+	EV_SCRIPTONLY,
+	"@e",
+	"entity",
+	"Returns entity that did last attack or inflicted damage"
 );
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
+	//[b60012] chrissstrahl - Returns entity that did last attack or inflicted damage on this entity
+		{ &EV_GetLastAttacker,				&Entity::getLastAttacker },
 		//[b60012] chrissstrahl - allow to remove a vewmode from a entity
 		{ &EV_RemoveViewMode,				&Entity::removeAffectingViewMode },
 		//[b60012] chrissstrahl - allow to check entities if they are a Player and Spectator
@@ -2068,6 +2079,25 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 		{ NULL, NULL }
 	};
 
+//--------------------------------------------------------[b60012]
+// Name:			getLastAttacker
+// Class:			Entity
+//
+// Description:		Returns last attacker/inflictor entity
+//
+// Parameters:		Event *ev
+//
+// Returns:			None
+//----------------------------------------------------------------
+
+void Entity::getLastAttacker( Event *ev )
+{
+	ev->ReturnEntity(getLastAttacker());
+}
+Entity* Entity::getLastAttacker()
+{
+	return this->lastInflictor;
+}
 
 //--------------------------------------------------------[b60012]
 // Name:			removeAffectingViewMode
@@ -2342,6 +2372,9 @@ Entity::Entity( int create_flag )
 
 void Entity::Setup()
 	{
+	//[b60012] chrissstrahl - 
+	lastInflictor = NULL;
+
 	//hzm gamefix chrissstrahl - make sure this dosen't cause us any troubles - used for drowning (health to recover)
 	damageByWater = 0;
 	//end of hzm
@@ -3727,6 +3760,17 @@ void Entity::Damage
 		{
 		inflictor = world;
 		}
+
+	//[b60012] chrissstrahl - set last attacker/inflictor
+	if (attacker != world)	{
+		lastInflictor = attacker;
+	}
+	else if(inflictor != world){
+		lastInflictor = inflictor;
+	}
+	else{
+		lastInflictor = inflictor;
+	}
 
 	ev = new Event( EV_Damage );
 	ev->AddFloat( damage );
@@ -7387,6 +7431,10 @@ inline void Entity::Archive( Archiver &arc )
 	if (arc.Loading()) {}
 	// Always load and save these - some vars are also used in singleplayer
 	// the coop mod does not seperate multiplayer and singleplayer quite clearly 
+
+	//[b60011] chrissstrahl - safe last attacker/inflictor
+	arc.ArchiveSafePointer(&lastInflictor);
+
 	arc.ArchiveFloat(&bubbleSplashMax);
 	arc.ArchiveFloat(&bubbleNextThink);
 	arc.ArchiveFloat(&bubbleMaxLife);

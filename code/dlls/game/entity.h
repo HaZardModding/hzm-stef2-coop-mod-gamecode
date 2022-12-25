@@ -462,6 +462,11 @@ class Entity : public Listener
 		void				SetUserVar8(Event* ev);
 		void				SetUserVar9(Event* ev);
 		void				SetUserVar10(Event* ev);
+
+		//[b60012] chrissstrahl - allow to keep track of last inflictor
+		EntityPtr			lastInflictor;
+		void				getLastAttacker(Event* ev);
+		Entity*				getLastAttacker();
 		//[b60012] chrissstrahl - check if entity is Player and is Spectator
 		void				isSpectator(Event* ev);
 		//[b60012] chrissstrahl - allow to remove a viewmode from a entity
