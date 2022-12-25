@@ -161,6 +161,16 @@ Event EV_PuzzleObject_SetUsedStartThread
 	"The thread to call when the puzzle is used, works on any puzzle type"
 );
 
+//[b60012] chrissstrahl - get last activating entity for this puzzle
+Event EV_PuzzleObject_GetLastActivatingEntity
+(
+	"getLastActivatingEntity",
+	EV_DEFAULT,
+	"@e",
+	"entity",
+	"Returns last entity activating this puzzle"
+);
+
 //---------------------------------------------------------
 //             PUZZLE OBJECT
 //---------------------------------------------------------
@@ -194,6 +204,7 @@ CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 	{ &EV_PuzzleObject_SetItemToUse,		&PuzzleObject::setItemToUse		},
 	{ &EV_PuzzleObject_SetItemUsedThread,	&PuzzleObject::setItemUsedThread	}, //Chrissstrahl - This only works if there is no time set on the puzzle, since we do not want to change the behaviour we added new functionality below
 	{ &EV_PuzzleObject_SetUsedStartThread,	&PuzzleObject::setUsedStartThread	}, //[b60011] chrissstrahl - thread called when puzzle is started to be used
+	{ &EV_PuzzleObject_GetLastActivatingEntity,		&PuzzleObject::GetLastActivatingEntity }, //[b60012] chrissstrahl - return last activator
 	{ &EV_PuzzleObject_SetFailedThread,		&PuzzleObject::setFailedThread		},
 	{ &EV_PuzzleObject_SetSolvedThread,		&PuzzleObject::setSolvedThread		},
 	{ &EV_PuzzleObject_SetCanceledThread,	&PuzzleObject::setCanceledThread	},
@@ -209,6 +220,40 @@ CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 	{ &EV_PuzzleObject_BecomeModBarInSkill, &PuzzleObject::becomeModBarInSkill },
 	{NULL, NULL}
 };
+
+//[b60012] chrissstrahl - I was so FUCKING tempted to call this cancelculture
+//-----------------------------------------------------
+void PuzzleObject::cancelPlayer(Player* player)
+{
+	if (!player) {
+		return;
+	}
+	if (_hudOn) {
+		hideTimerHud(player);
+		_usedTime = 0.0f;
+
+		//switch to any weapon, avoids the issue that the player might start to modulate to early again
+		Weapon* weap = player->BestWeapon();
+		if (weap) {
+			//player->useWeapon(weap, WEAPON_ANY);
+			player->useWeapon(weap, WEAPON_DUAL);
+		}
+	}
+}
+
+//[b60012] chrissstrahl - return last activator
+//-----------------------------------------------------
+void PuzzleObject::GetLastActivatingEntity(Event *ev)
+{
+	ev->ReturnEntity(activator);
+}
+
+//[b60012] chrissstrahl - return last activator
+//-----------------------------------------------------
+EntityPtr PuzzleObject::GetLastActivatingEntity()
+{
+	return activator;
+}
 
 //[b60011] chrissstrahl - thread called when puzzle is started to be used
 //-----------------------------------------------------
@@ -783,15 +828,6 @@ void PuzzleObject::timedUse( Event* event )
 	if ( !player )
 		return;
 	
-	//[b60011]chrissstrahl - if player gets hurt abbort modulation and reset
-	if (coop_returnPlayerQuantityInArena() >= 2 && (player->getLastDamageTime() + 0.75) > level.time) {
-		if (_hudOn) {
-			hideTimerHud(player);
-		}
-		_usedTime = 0.0f;
-		return;
-	}
-
 	activator = (Entity *)player;
 	entityVars.SetVariable( "_activator" , (float)player->entnum );
 

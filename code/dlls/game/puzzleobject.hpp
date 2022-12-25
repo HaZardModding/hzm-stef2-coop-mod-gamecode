@@ -90,12 +90,13 @@ class PuzzleObject : public Entity
 
 		/*virtual*/ void	Archive(Archiver &arc);
 		/*virutal*/ void	Think( void );
+		void				cancelPlayer(Player* player); //[b60012] chrissstrahl - allow camncellation of current puzzle
+		EntityPtr			GetLastActivatingEntity(); //[b60012] chrissstrahl - return last activator
 	private:
 		str					_itemToUse;
 		//Animations to use based up the state.
-
+		void				GetLastActivatingEntity(Event* ev); //[b60012] chrissstrahl - return last activator
 		str					_usedStartThread;  //[b60011] chrissstrahl - thread called when puzzle is started to be used
-
 		str					_itemUsedThread;
 		str					_failedThread;
 		str					_solvedThread;
