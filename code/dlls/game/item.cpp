@@ -629,7 +629,8 @@ Item * Item::ItemPickup( Entity *other, qboolean add_to_inventory, qboolean chec
 	// fire off any pickup_thread's
 	if ( pickup_thread.length() )
 	{
-		ExecuteThread( pickup_thread );
+		//[b60012] chrissstrahl - upgraded so it can be grabbed from script
+		ExecuteThread( pickup_thread, true, this );
 	}
 	
 	
