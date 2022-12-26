@@ -567,7 +567,7 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 			Player *playerValid = ( Player * )g_entities[i].entity;
 			if (playerValid){
 				//keep it in two lines
-				gi.SendServerCommand( i , "stufftext disconnect;freeze 3;stufftext reconnect\n" );
+				gi.SendServerCommand( i , "stufftext \"disconnect;freeze 4;reconnect\"\n" );
 				gi.SendServerCommand( i , "stufftext \"exec coop_mod/cfg/reconnect\"\n" );	
 			}
 		}
@@ -732,13 +732,25 @@ void coop_serverSaveClientDataWrite( Player *player )
 		( int )player->coopPlayer.deathTime
 		);
 
-	//data already saved, or coopId is empty, we have no use for data that belongs to no id
-	if ( player->coopPlayer.coopStatus == sData || player->coopPlayer.coopId == "" )
+	//[b60012] chrissstrahl - have a printout
+	if (player->coopPlayer.coopId == "") {
+		if ((player->coopPlayer.timeEntered + 10) < level.time) {
+			str sDataz = va("Your Data was REJECTED! INVALID_ID: (%s) '%s'\n", player->coopPlayer.coopId.c_str(), sData.c_str());
+			player->hudPrint(sDataz.c_str());
+			gi.Printf(sDataz.c_str());
+		}
 		return;
+	}
+
+	//data already saved, or coopId is empty, we have no use for data that belongs to no id
+	if (player->coopPlayer.coopStatus == sData) {
+		return;
+	}
 
 	player->coopPlayer.coopStatus = sData;
+
 	coop_parserIniSet( "serverData.ini" , player->coopPlayer.coopId , sData , "client" );
-	//gi.Printf( va( "=============================\nSAVED DATA FOR CLIENT: %s\n=============================\n" , sData.c_str() ) );
+	gi.Printf( va( "=============================\nSAVED DATA FOR CLIENT: %s\n=============================\n" , sData.c_str() ) );
 }
 
 //================================================================
