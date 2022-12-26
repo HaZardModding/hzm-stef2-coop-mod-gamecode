@@ -465,7 +465,6 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 //================================================================
 bool coop_parserIniSet( str sFile , const str &key , const str &value , const str section )
 {
-	
 	//if someone tries to open files with wrong extension
 	str sFileExt = coop_getFileExtension( sFile );
 	if (	stricmp( sFileExt.c_str() , ".ini" ) != 0 &&

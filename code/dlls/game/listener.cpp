@@ -2475,11 +2475,11 @@ qboolean Listener::ProcessEvent( Event *event )
 			// only process the event if we allow it
 			if ( CheckEventFlags( event ) )
 			{
-				// Very dirty hack to dump event names to a text file
-				// as they are posted
-				//FILE *edata = fopen("edataclient.txt", "a");
-				//fprintf(edata,"%s\n",event->getName());
-				//fclose(edata);
+// Very dirty hack to dump event names to a text file
+// as they are posted
+//FILE *edata = fopen("edataclient.txt", "a");
+//fprintf(edata,"%s\n",event->getName());
+//fclose(edata);
 				( this->**c->responseLookup[ ev ] )( event );
 			}
 		}
