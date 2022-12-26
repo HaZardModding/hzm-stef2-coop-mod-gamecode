@@ -542,7 +542,7 @@ bool coop_playerSetup(Player* player)
 void coop_playerSetupClient(Player* player)
 {
 	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
-	DelayedServerCommand(player->entnum, "vstr coop_id");
+	DelayedServerCommand(player->entnum, "vstr coop_cId"); //[b60012] chrissstrahl - fixed missing letter c
 	DelayedServerCommand(player->entnum, "vstr local_language");
 	//[b60011] chrissstrahl - changed to avoid command being shown as text on older servers	
 	DelayedServerCommand(player->entnum, "vstr coop_verInf");
@@ -645,8 +645,7 @@ gi.Printf(va("\n======================\nSENDING NEW ID TO PLAYER\n%s\n==========
 //================================================================
 void coop_playerSaveNewPlayerId(Player *player)
 {
-gi.Printf("\n======================\nSAVING NEW PLAYER ID\n======================\n");
-
+	gi.Printf("\n======================\nSAVING NEW PLAYER ID\n======================\n");
 	//if player has no id send from his config, generate one
 	if (!player->coopPlayer.coopId.length()) {
 		coop_playerGenerateNewPlayerId(player);
@@ -1104,10 +1103,10 @@ bool coop_playerSay( Player *player , str sayString)
 		return true;
 	}
 
-	//[b60011] chrissstrahl - clientid backwardscompatibility - create new id
+	//[b60011] chrissstrahl - clientid backwardscompatibility - supress text
 	if (!Q_stricmpn(sayString.c_str(), "cid.", 4)) {
 //player->hudPrint("COOPDEBUG coop_playerSay -> cid.\n");
-		coop_playerSaveNewPlayerId(player);
+//coop_playerSaveNewPlayerId(player); //[b60012] chrissstrahl - better not cause overlapping managment
 		return true;
 	}
 
