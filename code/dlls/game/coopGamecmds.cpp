@@ -30,16 +30,24 @@ qboolean G_coopClientId(const gentity_t* ent)
 
 	Player* player = (Player*)ent->entity;
 
-	const char* cCClientId = (str)gi.argv(1);
+	const char* cCClientId = gi.argv(1);
+	str sId = va("%s", cCClientId);
 
 	str sClientId;
-	if (!strlen(cCClientId)) {
+	if (!sId.length()) {
+		//[b60012] chrissstrahl - have a printout
+		player->hudPrint("coop_cId - Bad or Empty: Rejected!\n");
+		gi.Printf("coop_cId - Bad or Empty: Rejected!\n");
 		return qtrue;
 	}
 
 	if ((player->coopPlayer.timeEntered + 10) > level.time) {
-		sClientId = coop_returnStringTrim(cCClientId, " \t\r\n;[]=");
+		sClientId = coop_returnStringTrim(sId, " \t\r\n;[]=");
 		coop_checkPlayerCoopIdExistInIni(player, sClientId);
+	}
+	else {
+		player->hudPrint("coop_cId - Timed Out: Rejected!\n");
+		gi.Printf("coop_cId - Timed Out: Rejected!\n");
 	}
 	return qtrue;
 }
@@ -1164,6 +1172,7 @@ qboolean G_coopInstalled(const gentity_t* ent)
 
 	Player* player = (Player*)ent->entity;
 	const char* coopVer = gi.argv(1);
+
 	if (strlen(coopVer)) { //[b60011] Chrissstrahl - fixed bad check
 		player->coopPlayer.installedVersion = atoi(coopVer);
 	}
