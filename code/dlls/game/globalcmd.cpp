@@ -4868,7 +4868,6 @@ void CThread::vectorToString( Event *ev )
 	stringResult += " ";
 	stringResult += vectorToConvert.z;
 	stringResult += "\"";
-	
 	ev->ReturnString( stringResult );
 }
 
@@ -5105,10 +5104,13 @@ void CThread::SetGameplayString( Event *ev )
 // Returns:		None
 // 
 //===============================================================
+//[b60012] Chrisstrahl - This function was so often the cause of issues
+//fix it useing coop_returnFloatFromString
 void CThread::GetIntegerFromString( Event *ev )
 {
-	assert( ev );
-	
+	assert(ev);
+	ev->ReturnInteger((int)coop_returnFloatFromString(ev->GetString(1)));
+	/*	
 	const char  *valueText	= 0 ;
 	char		*text		= 0 ;
 	char		 buffer[256] ;
@@ -5135,9 +5137,9 @@ void CThread::GetIntegerFromString( Event *ev )
 		}
 		break ;
 	}
-	
-	int value = atoi( valueText );
+	int value = atoi(valueText);
 	ev->ReturnInteger( value );
+	*/
 }
 
 //===============================================================
