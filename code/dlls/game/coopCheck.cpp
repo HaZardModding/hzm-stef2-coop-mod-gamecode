@@ -250,8 +250,10 @@ void coop_checkDoesPlayerHaveCoopMod( Player *player )
 //================================================================
 void coop_checkDoesPlayerHaveCoopId(Player* player)
 {
+	#define COOP_MAX_ID_CHECK_TRIES 15
+
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (player->coopPlayer.coopId.length() || player->coopPlayer.setupTriesCid == 12) {
+	if (player->coopPlayer.setupTriesCid == (COOP_MAX_ID_CHECK_TRIES + 1) || player->coopPlayer.coopId.length()) {
 		return;
 	}
 
@@ -263,9 +265,9 @@ void coop_checkDoesPlayerHaveCoopId(Player* player)
 		}
 	}
 	//player does not have coop mod - give up at this point
-	if (player->coopPlayer.setupTriesCid == 30) {
-		coop_playerSaveNewPlayerId(player);
+	if (player->coopPlayer.setupTriesCid == COOP_MAX_ID_CHECK_TRIES) {
 		player->coopPlayer.setupTriesCid++;
+		coop_playerSaveNewPlayerId(player);
 		return;
 	}
 }
@@ -284,26 +286,29 @@ void coop_checkDoesPlayerHaveCoopId(Player* player)
 //================================================================
 str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId)
 {
-	player->coopPlayer.coopId = "";
-
 	//client has none given - create new one
 	if (!sClientId.length()) {
-		//player->hudPrint("COOPDEBUG coop_checkPlayerCoopIdExistInIni -> givenId == !length\n");
 		coop_playerSaveNewPlayerId(player);
 		return sClientId;
 	}
+	
+	//if it could be a valid id - acceept it on this server
+	if (sClientId.length() <= 11 && sClientId.length() > 5 && IsNumeric(sClientId)) {
+		player->coopPlayer.coopId = sClientId;
+	}
+	//make sure it is empty
+	else {
+		player->coopPlayer.coopId = "";
+	}
 
+	//check if it is in ini
 	//client id was provided
 	str ss = coop_parserIniGet("serverData.ini", sClientId.c_str(), "client");
 	//client id is not known on the server
 	if (!ss.length()) {
-		//if it could be a valid id - acceept it on this server
-		if (sClientId.length() <= 11 && IsNumeric(sClientId)) {
-			player->coopPlayer.coopId = sClientId;
-		}
-		coop_playerSaveNewPlayerId(player);
+		coop_playerSaveNewPlayerId(player);		
 	}
-	//client known, restore
+	//client is in ini, restore
 	else {
 		player->coopPlayer.coopId = sClientId.c_str();
 		coop_playerRestore(player);
