@@ -1245,6 +1245,15 @@ Event EV_ScriptThread_MissionFailed
 	"reason" ,
 	"Displays the mission failed screen on the client side"
 );
+//[b60012] chrissstrahl
+Event EV_ScriptThread_getTimeStamp
+(
+	"getTime",
+	EV_SCRIPTONLY,
+	"@s",
+	"returnString",
+	"Grabs the real time from server and returns it as string"
+);
 //[b60011] chrissstrahl
 Event EV_ScriptThread_getMapByServerIp
 (
@@ -1506,6 +1515,7 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
 	//[b60011] chrissstral - allow to retrive real screen resolution
+	{ &EV_ScriptThread_getTimeStamp,				&CThread::getTime },
 	{ &EV_ScriptThread_getMapByServerIp,			&CThread::getMapByServerIp },
 	{ &EV_ScriptThread_hasDpiException,				&CThread::hasDpiException },
 	{ &EV_ScriptThread_setDpiException,				&CThread::setDpiException },
@@ -1777,6 +1787,15 @@ void CThread::checkAchivment(Event* ev)
 		return sExeName;
 	}
 #endif
+
+//[b60012] chrissstrahl - get real time
+void CThread::getTime(Event* ev)
+{
+	time_t curTime;
+	time(&curTime);
+	str s = va("%d", (int)curTime);
+	ev->ReturnString(s.c_str());
+}
 
 //[b60011] chrissstrahl - set dpi scaling exception for runn ing exe
 void CThread::getMapByServerIp(Event* ev)
