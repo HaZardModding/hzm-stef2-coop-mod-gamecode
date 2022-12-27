@@ -126,7 +126,7 @@ bool coop_checkInsidePlayerOrActor( Entity *entity1 )
 		}else if( entity2->isSubclassOf( Actor ) ){
 			a = ( Actor * )entity2;
 		}
-		if ( a && a->isSubclassOf( Actor) && !a->GetActorFlag( ACTOR_FLAG_AI_ON ) && a->hidden() ) {
+		if ( a && a->isSubclassOf( Actor) && (!a->GetActorFlag( ACTOR_FLAG_AI_ON ) /* && a->hidden() && a->edict->svflags & SVF_NOCLIENT*/)) {
 			continue;
 		}
 
