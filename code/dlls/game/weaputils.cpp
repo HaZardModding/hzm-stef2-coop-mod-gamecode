@@ -1980,10 +1980,13 @@ Projectile *ProjectileAttack( const Vector &start, Vector &dir, Entity *owner, c
 			//args.setArg("ai_off", "1");
 			obj2 = args.Spawn();
 		}
-		obj2->CancelEventsOfType(EV_ProcessInitCommands);
-		obj2->ProcessInitCommands(obj2->edict->s.modelindex);
-		obj2->setAngles(owner->angles);
-		obj2->setOrigin(trace.endpos );
+		//[b60012] chrissstrahl - fixed random crash on projectile attacks
+		if (obj2) {
+			obj2->CancelEventsOfType(EV_ProcessInitCommands);
+			obj2->ProcessInitCommands(obj2->edict->s.modelindex);
+			obj2->setAngles(owner->angles);
+			obj2->setOrigin(trace.endpos);
+		}
 		return NULL;
 	}
 	
