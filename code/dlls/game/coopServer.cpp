@@ -89,7 +89,7 @@ void CoopServer::mapLoadEnforce()
 
 //coop_parserIniSet("serverData.ini", "rebooting", "false", "server"); //[b60012][cleanup]
 
-					//if map to load is not the map that it wants to load, force coop map
+		//if map to load is not the map that it wants to load, force coop map
 		if (Q_stricmpn(sStartMap.c_str(), level.mapname, MAX_QPATH) != 0) {
 			gi.Printf(va("COOP MOD - MAP WITH ERROR FOUND:\n%s\n", sErrorMap.c_str()));
 			gi.Printf(va("ERROR MESSAGE READS:\n%s\n", sErrorMsg.c_str()));
@@ -141,9 +141,9 @@ void CoopServer::enforceLevelSpecificSettings()
 //[b60011] chrissstrahl - enforce variouse settings in levels to ensure the game working correctly
 {
 	//make sure the physics is correct - this can happen due to a coop mod voting option
-	if (	_stricmp(level.mapname,"m6-exterior") == 0 ||
-			_stricmp(level.mapname,"m3l1a-forever") == 0 ||
-			_stricmp(level.mapname,"m5l1b-drull_ruins1") == 0)
+	if (	Q_stricmpn(level.mapname,"m6-exterior", MAX_QPATH) == 0 ||
+			Q_stricmpn(level.mapname,"m3l1a-forever", MAX_QPATH) == 0 ||
+			Q_stricmpn(level.mapname,"m5l1b-drull_ruins1", MAX_QPATH) == 0)
 	{
 		//this can have a delay - com_maxfps force can not, to work right
 		if (level.time > 12) {
@@ -159,7 +159,7 @@ void CoopServer::enforceLevelSpecificSettings()
 		//this is a listen server - the host is also playing on the same instance - there is no seperate server running
 		//this is a default game bug, where fps higher 80 can cause player to get stuck floating above in low grav
 		//this is apperently only happening to the host (SP/MP)
-		if (_stricmp(level.mapname, "m6-exterior") == 0) {
+		if (Q_stricmpn(level.mapname, "m6-exterior", MAX_QPATH) == 0) {
 			if (dedicated->integer == 0 && multiplayerManager.inMultiplayer() || g_gametype->integer == GT_SINGLE_PLAYER) {
 				int iFps = coop_returnCvarInteger("com_maxFps");
 				if (iFps > COOP_SERVER_PHYSICS_BUG_MAX_FPS) {
@@ -168,13 +168,14 @@ void CoopServer::enforceLevelSpecificSettings()
 					if (player != NULL) {
 						gi.cvar_set("com_maxFps", va("%d", COOP_SERVER_PHYSICS_BUG_MAX_FPS));
 						//inform player why the fps keeps resetting
-						if(level.time > 12){
-						if (g_gametype->integer == GT_SINGLE_PLAYER) {
-							gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_CRITICAL, COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
-						}
-						else {
-							if (level.time > (mp_warmUpTime->integer + 10)) {
-								player->hudPrint(COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+						if (level.time > 12) {
+							if (g_gametype->integer == GT_SINGLE_PLAYER) {
+								gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_CRITICAL, COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+							}
+							else {
+								if (level.time > (mp_warmUpTime->integer + 10)) {
+									player->hudPrint(COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+								}
 							}
 						}
 					}
@@ -1114,6 +1115,18 @@ void coop_serverResetAllClientData( void )
 //================================================================
 void coop_serverCoop()
 {
+	//hzm coop mod chrissstrahl - determin maptype
+	//game.isStandardLevel
+	//game.isMissionLevel
+	//game.isSecretLevel
+	//game.isIGMLevel
+	//game.isCoopLevel
+
+	//SETS SOME OF THE ABOVE LISTED COOP GAME VARS
+	//if the map is included in the game or the coop mod it will return true
+	//there is no >>extra<< var that will be set if it is a coop custom map
+	game.isCoopIncludedLevel = coop_returnLevelType(level.mapname, game.isStandardLevel, game.levelType);
+
 //[b610] chrissstrahl - moved here from main.scr
 //this removes the level end triggers from mission maps, so they can't be accidentially triggered by a player in coop
 	if (game.isStandardLevel) {

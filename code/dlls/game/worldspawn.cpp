@@ -646,17 +646,6 @@ World::World()
 
 	level.nextmap = "";
 	level.level_name = level.mapname;
-	
-//hzm coop mod chrissstrahl - determin maptype
-	//game.isStandardLevel
-	//game.isMissionLevel
-	//game.isSecretLevel
-	//game.isIGMLevel
-	//game.isCoopLevel
-
-	//if the map is included in teh game or the coop mod it will return true
-	//there is no >>extra<< var that will be set if it is a coop custom map
-	game.isCoopIncludedLevel = coop_returnLevelType( level.mapname , game.isStandardLevel , game.levelType );
 
 //hzm coop mod chrissstrahl - remove viewmodes (standard maps keep it because of singleplayer compatibility)
 	_availableViewModes.ClearObjectList();
@@ -669,6 +658,7 @@ World::World()
 	}
 
 //hzm coop mod chrissstrahl - run coop related server stuff
+//determind maptype and other stuff
 	coop_serverCoop();
 
 //hzm coop mod - try loading coop version if needed, try loading default if coop fails, try coop if default fails, display warnings accordingly
