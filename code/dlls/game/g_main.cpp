@@ -1347,15 +1347,14 @@ void G_ExitLevel( void )
 		gi.SendConsoleCommand( command );
 	}
 	
+	//[b60012][cleanup] - This code could be further splitup in other functions, maybe put into upgradeserver functions or something
 	if ( multiplayerManager.inMultiplayer() )
 	{
 		if ( strlen(sv_nextmap->string) )
 		{
 			// The nextmap cvar was set (possibly by a vote - so go ahead and use it)
 			//hzm gamefix chrissstrahl - make sure the map we want to load actually exists, or the game crashes
-			str fullMapName = "maps/";
-			fullMapName += sv_nextmap->string;
-			fullMapName += ".bsp";
+			str fullMapName = va("maps/%s.bsp",sv_nextmap->string);
 			if ( !gi.FS_Exists( fullMapName.c_str() ) ){
 				gi.Printf( va("%s $$NotFoundOnServer$$ !!!\n",fullMapName.c_str()) );
 			}else{
@@ -1363,54 +1362,9 @@ void G_ExitLevel( void )
 				gi.cvar_set( "nextmap", "" );			
 			}
 		}
-		/* if ( strlen( sv_maplist->string ) ) // Use the next map in the maplist
-		{
-			char *s,*f,*t;
-			
-			f = NULL;
-			s = strdup( sv_maplist->string );
-			t = strtok( s, seps );
-			while ( t != NULL )
-            {
-				if ( !stricmp( t, level.mapname.c_str() ) )
-				{
-					// it's in the list, go to the next one
-					t = strtok( NULL, seps );
-					if ( t == NULL ) // end of list, go to first one
-					{
-						if ( f == NULL ) // there isn't a first one, same level
-						{
-							level.nextmap = level.mapname;
-						}
-						else
-						{
-							level.nextmap = f;
-						}
-					}
-					else
-					{
-						level.nextmap = t;
-					}
-					free( s );
-					goto out;
-				}
-				
-				// set the first map
-				if (!f)
-				{
-					f = t;
-				}
-				t = strtok(NULL, seps);
-            }
-			free( s );
-		} 
-out: */
-		// level.nextmap should be set now, but if it isn't use the same map
 
 		//hzm coop mod chrissstrahl - make sure the map exist here, if nextmap was set elese where, or it will chrash
-		str fullMapName = "maps/";
-		fullMapName += level.nextmap;
-		fullMapName += ".bsp";
+		str fullMapName2 = va("maps/%s.bsp", level.nextmap.c_str());
 
 		//hzm coop mod chrissstrahl - do not load next map if the server is rebooting
 		//this would interrupt the reboot and just load the next map, which could also
@@ -1431,9 +1385,7 @@ out: */
 		if (iVarPos > 0) {
 			sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
 		}
-		sCleanMapname = "maps/";
-		sCleanMapname += sMapRealName;
-		sCleanMapname += ".bsp";
+		sCleanMapname = va("maps/%s.bsp",sMapRealName.c_str());
 
 		if ( level.nextmap.length() == 0 || !gi.FS_Exists(sCleanMapname.c_str()) )
 		{
@@ -1442,7 +1394,7 @@ out: */
 				gi.Printf("G_ExitLevel - No nextmap set, reloading same map.\n");
 			}
 			else {
-				gi.Printf((va("G_ExitLevel - Map cound not be found: %s\n", fullMapName.c_str())));
+				gi.Printf((va("G_ExitLevel - Map cound not be found: %s\n", fullMapName2.c_str())));
 			}
 
 			// Stay on the same map since no nextmap was set
