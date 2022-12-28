@@ -1064,7 +1064,7 @@ Event EV_ScriptThread_GetIntegerFromString
 (
 	"getintfromstring",
 	EV_SCRIPTONLY,
-	"@fs",
+	"@is",
 	"returned_int string",
 	"Returns the integer found in a string.  Can be called with strings "
 	"that contain text, such as enemy12."
@@ -1316,7 +1316,7 @@ Event EV_ScriptThread_setIniDataPlayer
 	EV_SCRIPTONLY,
 	"@iesss",
 	"returnsuccsess player category keyname value",
-	"sets data for player from current map ini or given inifile"
+	"sets data for player from current map ini"
 );
 Event EV_ScriptThread_getIniDataPlayer
 (
@@ -1791,6 +1791,7 @@ void CThread::checkAchivment(Event* ev)
 //[b60012] chrissstrahl - get real time
 void CThread::getTime(Event* ev)
 {
+	assert(ev);
 	time_t curTime;
 	time(&curTime);
 	str s = va("%d", (int)curTime);
@@ -1960,7 +1961,7 @@ void CThread::getScreenHeight(Event* ev)
 str CThread::getIniData(str sFilename,str sKeyname,str sCategoryname)
 {
 	if (!sFilename.length()) {
-		sFilename = va("ini/%s.ini", level.mapname.tolower());
+		sFilename = va("ini/%s.ini", level.mapname);
 	}
 
 	//prevent certain ini files to be accsessed
@@ -2029,7 +2030,7 @@ void CThread::getIniDataPlayer(Event* ev)
 		sFilename = ev->GetString(4);
 	}
 	else {
-		sFilename = va("ini/%s.ini", level.mapname.tolower());
+		sFilename = va("ini/%s.ini", level.mapname);
 	}
 
 	sValue = getIniData(sFilename, sKeyname, sCategoryname);
@@ -2043,7 +2044,7 @@ void CThread::setIniDataPlayer(Event* ev)
 {
 	bool bScuccsess = false;
 	Entity* entity;
-	str sFilename = va("ini/%s.ini", level.mapname.tolower());
+	str sFilename = va("ini/%s.ini", level.mapname);
 	str sKeyname;
 	str sCategoryname;
 	str sValue;
@@ -2112,7 +2113,7 @@ void CThread::getIniData(Event *ev)
 		sFilename = ev->GetString(3);
 	}
 	else {
-		sFilename = va("ini/%s.ini",level.mapname.tolower());
+		sFilename = va("ini/%s.ini",level.mapname);
 	}
 
 	sValue = getIniData(sFilename,sKeyname,sCategoryname);
@@ -2127,7 +2128,7 @@ void CThread::setIniData(Event *ev)
 		return;
 	}
 	bool bScuccsess;
-	str sFilename	= va("ini/%s.ini",level.mapname.tolower());
+	str sFilename	= va("ini/%s.ini",level.mapname);
 	str sKeyname;
 	str sCategoryname;
 	str sValue;
@@ -2266,7 +2267,14 @@ void CThread::getLevelParamaterValue( Event *ev )
 
 void CThread::getFloatFromString( Event *ev )
 {
-	ev->ReturnFloat( coop_returnFloatFromString( ev->GetString( 1 ) ) );
+	assert(ev);
+	str s = ev->GetString(1);
+	if (s.length() > 8) {
+		gi.Printf("getFloatFromString() - To many digits (Max 8)! Returned integer might be incomplete. Suggestion: Grab as string\n");
+		coop_manipulateStringFromWithLength(s, 0, 8);
+	}
+	float f = coop_returnFloatFromString(s.c_str());
+	ev->ReturnFloat( f );
 }
 void CThread::isDigit( Event *ev )
 {
@@ -5128,7 +5136,14 @@ void CThread::SetGameplayString( Event *ev )
 void CThread::GetIntegerFromString( Event *ev )
 {
 	assert(ev);
-	ev->ReturnInteger((int)coop_returnFloatFromString(ev->GetString(1)));
+	str s = ev->GetString(1);
+	if (s.length() > 8) {
+		gi.Printf("getIntFromString() - To many digits (Max 8)! Returned integer might be incomplete. Suggestion: Grab as string\n");
+		coop_manipulateStringFromWithLength(s, 0, 8);
+
+	}
+	int i = coop_returnFloatFromString(s.c_str());
+	ev->ReturnFloat(i);
 	/*	
 	const char  *valueText	= 0 ;
 	char		*text		= 0 ;
