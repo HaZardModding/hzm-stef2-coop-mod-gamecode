@@ -145,7 +145,9 @@ void CoopServer::enforceLevelSpecificSettings()
 	//make sure the physics is correct - this can happen due to a coop mod voting option
 	if (	Q_stricmpn(level.mapname,"m6-exterior", MAX_QPATH) == 0 ||
 			Q_stricmpn(level.mapname,"m3l1a-forever", MAX_QPATH) == 0 ||
-			Q_stricmpn(level.mapname,"m5l1b-drull_ruins1", MAX_QPATH) == 0)
+			Q_stricmpn(level.mapname,"ent-training1", MAX_QPATH) == 0||			//[b60012] chrissstrahl - added exception
+			Q_stricmpn(level.mapname,"m5l1b-drull_ruins1", MAX_QPATH) == 0||
+			Q_stricmpn(level.mapname,"m5l2b-drull_ruins1", MAX_QPATH) == 0)		//[b60012] chrissstrahl - added exception
 	{
 		//this can have a delay - com_maxfps force can not, to work right
 		if (level.time > 12) {
@@ -830,7 +832,7 @@ void coop_serverSaveClientDataWrite( Player *player )
 	player->coopPlayer.coopStatus = sData;
 
 	coop_parserIniSet( "serverData.ini" , player->coopPlayer.coopId , sData , "client" );
-	gi.Printf( va( "=============================\nSAVED DATA FOR CLIENT: %s\n=============================\n" , sData.c_str() ) );
+	//gi.Printf( va( "=============================\nSAVED DATA FOR CLIENT: %s\n=============================\n" , sData.c_str() ) );
 }
 
 //================================================================
