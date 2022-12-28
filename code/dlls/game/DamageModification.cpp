@@ -444,13 +444,19 @@ void DamageModifierTargetName::resolveDamage(Damage &damage)
 {
 	//hzm coop mod chrissstrahl - handle targetname player for all players
 	//this will prevent players from hurting ingame actors that they should not, like in sp
+	//[b60012] chrissstrahl - updated to check for player class
 	if ( g_gametype->integer != GT_SINGLE_PLAYER ) {
-		if ( damage.attacker->targetname.length() < 8 && _targetname == "player" ){
-			if ( !Q_stricmpn( damage.attacker->targetname , _targetname , 6 ) ){
+		if (damage.attacker && damage.attacker->isSubclassOf(Player)) {
+			damage.damage *= getMultiplier();
+			return;
+
+		}
+		/*if ( damage.attacker->targetname.length() < 8 && _targetname == "player" ){
+			if ( Q_stricmpn( damage.attacker->targetname , _targetname , 6) == 0 ){
 				damage.damage *= getMultiplier();
 				return;
 			}
-		}
+		}*/
 	}
 	//end of hzm
 
