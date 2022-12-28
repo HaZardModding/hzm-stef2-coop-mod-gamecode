@@ -133,6 +133,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 
 	//[b60011] chrissstrahl - if chaning classes is disabled for this player, abbort
 	if (player->coopPlayer.classChangingDisabled) {
+		//[b60012][cleanup] chrissstrahl - this could be put into a func
 		if (coop_checkPlayerLanguageGerman(player)) {
 			player->hudPrint(COOP_TEXT_CLASS_CANT_CHANGE_ANYMORE_DEU);
 		}else{
@@ -146,6 +147,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 	//NO ARGUMENT GIVEN
 	n = gi.argc();
 	if (n == 1){
+		//[b60012][cleanup] chrissstrahl - this could be put into a func
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32){
 			if (coop_checkPlayerLanguageGerman(player)) {
 				player->hudPrint(va("%s %s\n", COOP_TEXT_CLASS_YOUR_CLASS_IS_DEU, player->coopPlayer.className.c_str()));
@@ -162,26 +164,30 @@ qboolean G_coopCom_class(const gentity_t* ent)
 
 	//grab intended class
 	str classSelected = gi.argv(1);
-	classSelected = classSelected.tolower();
-	
-	if (Q_stricmpn("h", classSelected.c_str(), 1) == 0) {
+	classSelected.tolower();
+
+	//[b60012] chrissstrahl - improved comparison	
+	switch (classSelected[0]) {
+	case 'h':
 		classSelected = COOP_CLASS_NAME_HEAVYWEAPONS;
-	}
-	else if (Q_stricmpn("m", classSelected.c_str(), 1) == 0) {
+		break;
+	case 'm':
 		classSelected = COOP_CLASS_NAME_MEDIC;
-	}
-	else {
-		if (Q_stricmpn("t", classSelected.c_str(), 1) != 0) {
-			if (gi.GetNumFreeReliableServerCommands(player->entnum) >= 32) {
-				if (coop_checkPlayerLanguageGerman(player)) {
-					player->hudPrint(COOP_TEXT_CLASS_INVALID_CLASSNAME_DEU);
-				}
-				else {
-					player->hudPrint(COOP_TEXT_CLASS_INVALID_CLASSNAME_ENG);
-				}
+		break;
+	case 't':
+		classSelected = COOP_CLASS_NAME_TECHNICIAN;
+		break;
+	default:
+		classSelected = COOP_CLASS_NAME_TECHNICIAN;
+		//[b60012][cleanup] chrissstrahl - this could be put into a func
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) >= 32) {
+			if (coop_checkPlayerLanguageGerman(player)) {
+				player->hudPrint(COOP_TEXT_CLASS_INVALID_CLASSNAME_DEU);
+			}
+			else {
+				player->hudPrint(COOP_TEXT_CLASS_INVALID_CLASSNAME_ENG);
 			}
 		}
-		classSelected = COOP_CLASS_NAME_TECHNICIAN;
 	}
 
 	//hzm coop mod chrissstrahl - set new class on player
@@ -234,8 +240,9 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 			player->getActiveWeaponName(WEAPON_ANY, weaponName);
 
 			//hzm coop mod chrissstrahl - check if the weapon can be dropped
-			if (!Q_stricmpn("None", weaponName, 4) || !Q_stricmpn("EnterpriseCannon", weaponName, 4) || !Q_stricmpn("Batleth", weaponName, 4) || !Q_stricmpn("Phaser", weaponName, 6) || !Q_stricmpn("Tricorder", weaponName, 9))
+			if (Q_stricmpn("None", weaponName, 4) == 0 || Q_stricmpn("EnterpriseCannon", weaponName, 4) == 0 || Q_stricmpn("Batleth", weaponName, 4) == 0 || Q_stricmpn("Phaser", weaponName, 6) == 0 || Q_stricmpn("Tricorder", weaponName, 9) == 0)
 			{
+				//[b60012][cleanup] chrissstrahl - this could be put into a func
 				if (coop_checkPlayerLanguageGerman(player)) {
 					player->hudPrint(COOP_TEXT_WEAPON_CANT_DROP_DEU);
 				}
@@ -266,6 +273,7 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 				//hzm coop mod chrissstrahl - resets the empty hands of the player
 				player->animate->ClearTorsoAnim();
 
+				//[b60012][cleanup] chrissstrahl - this could be put into a func
 				if (coop_checkPlayerLanguageGerman(player)) {
 					player->hudPrint(COOP_TEXT_WEAPON_WAS_DROPPED_DEU);
 				}
@@ -1228,13 +1236,13 @@ qboolean G_coopItem(const gentity_t* ent)
 	Entity* obj = NULL;
 
 	//placable explosive/mine
-	if (!Q_stricmpn("mine", coopItem, 4)) {
+	if ( Q_stricmpn("mine", coopItem, 4) == 0) {
 		bValid = true;
 		args.setArg("classname", "script_model");
 		args.setArg("model", "models/item/alien_actor_explosive.tik");
 	}
 	//placable explosive/mine
-	else if (!Q_stricmpn("medic", coopItem, 5)) {
+	else if (Q_stricmpn("medic", coopItem, 5) == 0) {
 		bValid = true;
 		args.setArg("classname", "script_model");
 		args.setArg("model", "models/item/mp_weapon-spawn.tik");
