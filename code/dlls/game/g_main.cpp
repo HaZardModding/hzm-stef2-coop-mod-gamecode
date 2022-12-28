@@ -19,6 +19,10 @@
 #define SAVEGAME_VERSION 60011 //[b60011] chrissstrahl - test if this prevents issues by printing out a warning
 #define PERSISTANT_VERSION 1
 
+//[b60012] chrissstrahl
+#include "coopServer.hpp"
+extern CoopServer coopServer;
+
 #include "coopPlayer.hpp"
 #include "coopReturn.hpp"
 #include "coopParser.hpp"
@@ -224,66 +228,8 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 		G_AllocGameData();
 
 		//[b607] chrissstrahl - moved code down here used to be after CVAR_Init(); 
-		//but it will not load the map in linux since we use the killserver method
-		//instead of the actual quit, but creating a error, so maybe this fixes it
-		//ERROR READS:
-		// Error in `./linuxef2ded': malloc(): smallbin double linked list corrupted: 0x0956cde0 
-		// Aborted
-		//
-		//hzm coop mod chrissstrahl - restore map to continue coop on
-		//cvar_t *temp_startmap;
-		cvar_t *temp_dedicated;
-		cvar_t *temp_gametype;
-		temp_dedicated = gi.cvar_get("dedicated");
-		temp_gametype = gi.cvar_get("g_gametype");
-
-
-		//hzm coop mod chrissstrahl - load error restore map
-		str sStartMap = "blackbox";
-		if (coop_returnBool(coop_parserIniGet("serverData.ini", "errorboot", "server")))
-		{
-			str sErrorMap = coop_parserIniGet("serverData.ini", "errormap", "server");
-
-			//if not fatal, we can load the map again that did have a error before
-			//because it is feairly save to assume the error does not put the server
-			//in a reboot loop
-			if (!coop_returnBool(coop_parserIniGet("serverData.ini", "errorfatal", "server"))) {
-				sStartMap = sErrorMap;
-			}
-
-			coop_parserIniSet("serverData.ini", "errorboot", "false", "server");
-			str sErrorMsg = coop_parserIniGet("serverData.ini", "errortext", "server");
-
-			//if mapto load is not the map that it wants to load, force coop map
-			if (Q_stricmpn(sStartMap.c_str(), level.mapname.tolower(), MAX_QPATH)) {
-				gi.Printf(va("COOP MOD - MAP WITH ERROR FOUND:\n%s\n", sErrorMap.c_str()));
-				gi.Printf(va("ERROR MESSAGE READS:\n%s\n", sErrorMsg.c_str()));
-				//load the error map or if fatal, load blackbox map, which has no scripts and no ai
-				gi.SendConsoleCommand(va("map %s\n", sStartMap.c_str()));
-			}
-		}
-		else {
-			//hzm coop mod chrissstrahl - load last coop map if there is any
-			bool bServerHasRebooted = coop_returnBool(coop_parserIniGet("serverData.ini", "rebooting", "server"));
-			//sStartMap = coop_phraserIniGet( "serverData.ini" , "startmap" , "server" );
-
-			if (temp_gametype->integer > 0 &&
-				temp_dedicated->integer > 0 &&
-				temp_dedicated->integer < 3 &&
-				bServerHasRebooted == true //&&
-				//gi.FS_Exists( va( "maps/%s.bsp" , sStartMap.c_str() ))
-				)
-			{
-				coop_parserIniSet("serverData.ini", "rebooting", "false", "server");
-				sStartMap = coop_parserIniGet("serverData.ini", "startmap", "server");
-
-				//if map to load is not the map that it wants to load, force coop map
-				if (Q_stricmpn(sStartMap.c_str(), level.mapname.tolower(), MAX_QPATH)) {
-					gi.Printf( va( "COOP MOD - RESTORING MAP:\n%s\n" , sStartMap.c_str() ) );
-					gi.SendConsoleCommand( va( "map %s\n" , sStartMap.c_str() ) );
-				}
-			}
-		}
+		//[b60012] chrissstrahl - moved to server code
+		coopServer.mapLoadEnforce();
 	}
 	
 	catch( const char *error )
