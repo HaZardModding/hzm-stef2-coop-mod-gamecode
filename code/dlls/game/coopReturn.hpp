@@ -54,7 +54,6 @@ str coop_returnStringFilenameOnly( const str &sPath );
 str coop_returnStringDomainname(const str& sPath);
 str coop_returnStringFileExtensionOnly( const str &sPath );
 str coop_returnStringDeathmessagenameForEntity( Entity * entity );
-str coop_returnStringDeathmessagenameForActor( Actor * actor );
 Entity* coop_returnEntityPlayerFavored( void );
 Player* coop_returnPlayerNotFavored( void );
 Player* coop_returnPlayerFavored( void );
