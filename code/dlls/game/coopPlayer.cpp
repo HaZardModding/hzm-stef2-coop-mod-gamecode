@@ -700,7 +700,7 @@ void coop_playerSetupCoop( Player *player )
 	//DelayedServerCommand( player->entnum , va( "set coop_svB %i" , COOP_BUILD ) );
 
 	//hzm coop mod chrissstrahl - update mission objective hud and callvote, once
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMap title %s" , level.mapname.tolower() ) );
+	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMap title %s" , level.mapname ) );
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesSkillValue title %s" , coop_returnStringSkillname(skill->integer).c_str() ) );
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname(skill->integer).c_str() ));
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoMvSpd title %d" , game.coop_maxspeed ) );
