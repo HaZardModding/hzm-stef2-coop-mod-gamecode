@@ -34,8 +34,9 @@
 //================================================================
 bool coop_modelValidPlayer( str sModel )
 {
-	//[b607] chrissstrahl - allow illia model on gbs maps
-	if (sModel == "models/char/gbs_dm_illia.tik" && !Q_stricmpn("coop_gbs", level.mapname, 8)) {
+	//[b60012] chrissstrahl - allow illia model on included coop custom coop maps
+	sModel.tolower();
+	if (/*game.isCoopIncludedLevel && */ !game.isStandardLevel && sModel == "models/char/gbs_dm_illia.tik") {
 		return true;
 	}
 
