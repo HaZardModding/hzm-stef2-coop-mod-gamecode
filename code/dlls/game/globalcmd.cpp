@@ -1961,7 +1961,7 @@ void CThread::getScreenHeight(Event* ev)
 str CThread::getIniData(str sFilename,str sKeyname,str sCategoryname)
 {
 	if (!sFilename.length()) {
-		sFilename = va("ini/%s.ini", level.mapname);
+		sFilename = va("ini/%s.ini", level.mapname.c_str()); //[b60012] chrissstrahl - fixed missing .c_str() causing issues on linux
 	}
 
 	//prevent certain ini files to be accsessed
@@ -2030,7 +2030,7 @@ void CThread::getIniDataPlayer(Event* ev)
 		sFilename = ev->GetString(4);
 	}
 	else {
-		sFilename = va("ini/%s.ini", level.mapname);
+		sFilename = va("ini/%s.ini", level.mapname.c_str());  //[b60012] chrissstrahl - fixed missing .c_str() causing issues on linux
 	}
 
 	sValue = getIniData(sFilename, sKeyname, sCategoryname);
@@ -2044,7 +2044,7 @@ void CThread::setIniDataPlayer(Event* ev)
 {
 	bool bScuccsess = false;
 	Entity* entity;
-	str sFilename = va("ini/%s.ini", level.mapname);
+	str sFilename = va("ini/%s.ini", level.mapname.c_str()); //[b60012] chrissstrahl - fixed missing .c_str() causing issues on linux
 	str sKeyname;
 	str sCategoryname;
 	str sValue;
@@ -2113,7 +2113,7 @@ void CThread::getIniData(Event *ev)
 		sFilename = ev->GetString(3);
 	}
 	else {
-		sFilename = va("ini/%s.ini",level.mapname);
+		sFilename = va("ini/%s.ini",level.mapname.c_str()); //[b60012] chrissstrahl - fixed missing .c_str() causing issues on linux
 	}
 
 	sValue = getIniData(sFilename,sKeyname,sCategoryname);
@@ -2128,7 +2128,7 @@ void CThread::setIniData(Event *ev)
 		return;
 	}
 	bool bScuccsess;
-	str sFilename	= va("ini/%s.ini",level.mapname);
+	str sFilename	= va("ini/%s.ini",level.mapname.c_str()); //[b60012] chrissstrahl - fixed missing .c_str() causing issues on linux
 	str sKeyname;
 	str sCategoryname;
 	str sValue;
