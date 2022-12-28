@@ -648,7 +648,6 @@ World::World()
 	level.level_name = level.mapname;
 	
 //hzm coop mod chrissstrahl - determin maptype
-	str currentMapName = level.mapname;
 	//game.isStandardLevel
 	//game.isMissionLevel
 	//game.isSecretLevel
