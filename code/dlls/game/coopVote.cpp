@@ -963,17 +963,16 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 	//hzm coop mod chrissstrahl - search current map
 	//hzm gameupdate chrissstrahl - just to be sure, and to cupport $ als map var indicator
 	int iVarPos;
+	str sMapRealName = level.mapname;
 
-	str sMapRealName = "";
-	sMapRealName += level.mapname;
+	//strip $ level parameter
 	iVarPos = coop_returnIntFind(sMapRealName, "$");
 	if (iVarPos > 0) {
 		sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
-		sMapRealName = sMapRealName.tolower();
 	}
 
 	//find current map in the list
-	gi.Printf(va("searching m: %s\n", sMapRealName.c_str()));
+	gi.Printf(va("searching map: %s\n", sMapRealName.c_str()));
 
 	str sMapToLoad = "";
 	currentMaplist = startMaplist;
@@ -1211,7 +1210,7 @@ bool coop_vote_quitserverSet(const str _voteString)
 	
 	if (iDisallowQuit == 0) {
 		game.coop_rebootForced = true;
-		coop_serverManageReboot(level.mapname.tolower(), NULL);
+		coop_serverManageReboot(level.mapname, NULL);
 		return true;
 	}
 	return false;
