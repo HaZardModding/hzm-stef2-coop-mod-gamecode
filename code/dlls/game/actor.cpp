@@ -10592,7 +10592,7 @@ qboolean Actor::checkPlayerValid( Conditional &condition )
 qboolean Actor::checkInAbsoluteRange( Conditional &condition )
 {
 //hzm coop mod chrissstrahl - make this work in multiplayer
-	if ( !Q_stricmpn( condition.getParm( 1 ) , "player" , 5 ) ){
+	if ( Q_stricmpn( condition.getParm( 1 ) , "player" , 6 ) == 0){
 		Vector dist;
 		float length;
 		Entity *enemy = NULL;
@@ -11431,7 +11431,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 	str sLazyCodingSolutionHack;
 	
 	//hzm gameupdate daggolin - let the client localize the dialog...
-	if ( dialog_name != NULL && strlen(dialog_name) && !Q_stricmpn(dialog_name, "localization/", 13) )
+	if ( dialog_name != NULL && strlen(dialog_name) && Q_stricmpn(dialog_name, "localization/", 13) == 0)
 	{
 		sLazyCodingSolutionHack = dialog_name;//[b607] chrissstrahl - lazy hack
 		Sound( str( dialog_name ), CHAN_DIALOG, volume, min_dist );
@@ -11441,7 +11441,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		//remember the current dialog so we can remove it from the configstrings on stop
 		dialogCurrentPlaying += dialog_name;
 	}
-	else if ( localizedDialogName != NULL && strlen(localizedDialogName) > 8 && !Q_stricmpn(localizedDialogName, "loc/", 4) )
+	else if ( localizedDialogName != NULL && strlen(localizedDialogName) > 8 && Q_stricmpn(localizedDialogName, "loc/", 4) == 0 )
 	{
 		//hzm gameupdate chrissstrahl - if not localized yet it can exceed the maxpath limit...
 		char unlocal[96]; //MAX_QPATH + 5 <- did not work!
@@ -16821,8 +16821,7 @@ void Actor::SetHeadWatchTarget( Event *ev )
       }
    
 //hzm gameupdate chrissstrahl - get the correct player in multiplayer
-	if ( !Q_stricmpn( "player" , watchTarget.c_str(), 6 ) )
-	{
+	if ( Q_stricmpn( "player" , watchTarget.c_str(), 6 ) == 0 ){
 		Player *player = NULL;
 		if ( g_gametype->integer == GT_SINGLE_PLAYER ){
 			player = GetPlayer( 0 );

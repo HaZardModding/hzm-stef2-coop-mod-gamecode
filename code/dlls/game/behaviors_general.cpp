@@ -2866,7 +2866,7 @@ Entity* CircleStrafeEntity::_getStrafeTarget( Actor &self, const str &target )
 	Entity *ent = NULL;
 
 //hzm gameupdate chrissstrahl make this work in multiplayer
-	if ( !Q_stricmpn( "player" , target.c_str() , 6 ) ){
+	if ( Q_stricmpn( "player" , target.c_str() , 6 ) == 0 ){
 		if ( g_gametype->integer == GT_SINGLE_PLAYER ){
 			ent = GetPlayer( 0 );
 		}else{

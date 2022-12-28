@@ -85,7 +85,7 @@ void HeadWatcher::SetWatchTarget( const str &targetName )
 		//hzm gameupdate chrissstrahl - if there is no player on the server
 		//there is no need to tell anyone that no player could be found
 		//only spams the console
-		if ( !Q_stricmpn( targetName.c_str(), "player",6 ) && coop_returnPlayerQuantity(3) < 1 ){ //[b607] chrissstrahl - excluding bots
+		if ( Q_stricmpn( targetName.c_str(), "player",6 ) == 0 && coop_returnPlayerQuantity(3) < 1 ){ //[b607] chrissstrahl - excluding bots
 			return;
 		}
 

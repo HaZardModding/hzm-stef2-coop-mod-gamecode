@@ -59,6 +59,8 @@ extern Event EV_ScriptThread_StuffCommand;
 //================================================================
 void CoopServer::mapLoadEnforce()
 {
+	//[b60012][cleanup] chrissstrahl - pretty sure this could be done better
+	// 
 	//[b607] chrissstrahl - moved code down here used to be after CVAR_Init(); 
 	//but it will not load the map in linux since we use the killserver method
 	//instead of the actual quit, but creating a error, so maybe this fixes it
@@ -111,7 +113,7 @@ void CoopServer::mapLoadEnforce()
 //coop_parserIniSet("serverData.ini", "rebooting", "false", "server"); //[b60012][cleanup]
 
 			//if map to load is not the map that it wants to load, force coop map
-			if (Q_stricmpn(sStartMap.c_str(), level.mapname, MAX_QPATH)) {
+			if (Q_stricmpn(sStartMap.c_str(), level.mapname, MAX_QPATH) != 0) {
 				gi.Printf(va("COOP MOD - RESTORING MAP:\n%s\n", sStartMap.c_str()));
 				gi.SendConsoleCommand(va("map %s\n", sStartMap.c_str()));
 			}
@@ -1433,7 +1435,7 @@ str coop_serverModifiedFile( str standardPath )
 	str sFileExt = coop_returnStringFileExtensionOnly(standardPath);
 
 	//we handle alternative script file extension, so we need to know
-	if (!Q_stricmpn(sFileExt, ".scr", 4)){
+	if (Q_stricmpn(sFileExt, ".scr", 4) == 0){
 		isScriptFile = true;
 	}
 
@@ -1554,7 +1556,7 @@ void coop_serverThink( void )
 	if ( game.coop_reboot && game.coop_restartServerEarliestAt < level.time ){ 
 		//[b607] chrissstrahl - allow to adjust the coop reboot feature
 		str sCoopRebootState = coop_parserIniGet("serverData.ini", "rebootType", "server");
-		if (!Q_stricmpn(sCoopRebootState.c_str(), "killserver",10)) { //killserver
+		if (Q_stricmpn(sCoopRebootState.c_str(), "killserver",10) == 0) {
 			gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver.cfg\n");
 		}
 		else{

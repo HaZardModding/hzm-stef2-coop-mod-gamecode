@@ -1104,16 +1104,15 @@ bool coop_playerSay( Player *player , str sayString)
 	}
 
 	//[b60011] chrissstrahl - clientid backwardscompatibility - supress text
-	if (!Q_stricmpn(sayString.c_str(), "cid.", 4)) {
-//player->hudPrint("COOPDEBUG coop_playerSay -> cid.\n");
+	if (Q_stricmpn(sayString.c_str(), "cid.", 4) == 0) {
 //coop_playerSaveNewPlayerId(player); //[b60012] chrissstrahl - better not cause overlapping managment
 		return true;
 	}
 
 	//hzm coop mod chrissstrahl - detect player language
-	if (!Q_stricmpn(sayString.c_str(), "deu", 3) || !Q_stricmpn(sayString.c_str(), "eng", 3)) {
+	if (Q_stricmpn(sayString.c_str(), "deu", 3) == 0 || Q_stricmpn(sayString.c_str(), "eng", 3) == 0) {
 		//make sure player has now setup his language correctly
-		if (!Q_stricmpn(sayString.c_str(), "deu", 3)) {
+		if (Q_stricmpn(sayString.c_str(), "deu", 3) == 0) {
 			player->setLanguage("Deu");
 		}
 		else {
@@ -1144,6 +1143,7 @@ bool coop_playerSay( Player *player , str sayString)
 		//display info that the player was spamming
 		if ((player->coopPlayer.lastTimeSpamInfo + 3.0f) < level.time) {
 			player->coopPlayer.lastTimeSpamInfo = level.time;
+			//[b60012][cleanup] chrissstrahl - this could be put into a func
 			if (coop_checkPlayerLanguageGerman(player)) {
 				player->hudPrint("Sie chatten zu schnell, Nachricht blockiert durch Spamschutz!\nNutzen Sie die Pfeil nach oben Taste in chat um Nachricht zu wiederholen.\n");
 			}
@@ -1200,6 +1200,7 @@ void coop_playerEnterArena(int entnum, float health)
 	if (multiplayerManager.getPlayersTeam(player) != NULL && multiplayerManager.getPlayersTeam(player)->getName() != "Blue") {
 		multiplayerManager.joinTeam(player, "Blue");
 		if ((player->coopPlayer.timeEntered + 2) < level.time && !multiplayerManager.isPlayerSpectator(player)) {
+			//[b60012][cleanup] chrissstrahl - this could be put into a func
 			if (coop_checkPlayerLanguageGerman(player)) {
 				player->hudPrint("^5INFO:^2 Coop erlaubt nur blaues Team.\n");
 			}
@@ -1511,7 +1512,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 			}
 			sEntityName = entityData->stringValue();
 
-			if (!Q_stricmpn("killmessage", sEntityName, 11)) {
+			if (Q_stricmpn("killmessage", sEntityName, 11) == 0) {
 				if (sEntityName.length() > 12) {
 					str tempName = sEntityName;
 					sEntityName = NULL;
@@ -1523,7 +1524,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 					break;
 				}
 			}
-			else if (!Q_stricmpn("name", sEntityName, 4)) {
+			else if (Q_stricmpn("name", sEntityName, 4) == 0) {
 				if (sEntityName.length() > 5) {
 					str tempName = sEntityName;
 					sEntityName = "";
@@ -1546,12 +1547,12 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		return true;
 	}
 //check if the inflictor is a player
-	if ( attacker->isSubclassOf( Player ) || !Q_stricmp(sModel,"fx-sml-exp.tik") || !Q_stricmpn( entityInflictor->getClassname(), "MultiExploder", 13) || !Q_stricmpn( entityInflictor->getClassname() , "ExplodeObject" , 13 ) ){
+	if ( attacker->isSubclassOf( Player ) || Q_stricmp(sModel,"fx-sml-exp.tik") == 0 || Q_stricmpn( entityInflictor->getClassname(), "MultiExploder", 13) == 0 || Q_stricmpn( entityInflictor->getClassname() , "ExplodeObject" , 13 ) == 0){
 		if ( attacker != killedPlayer && attacker->isSubclassOf( Player ) ){
 			printString += va(" was neutralized by their Teammate: %s",attacker->client->pers.netname );
-		}else if (	!Q_stricmp( sModel, "fx-sml-exp.tik") ||
-					!Q_stricmpn( entityInflictor->getClassname() ,  "MultiExploder", 13 ) ||
-					!Q_stricmpn( entityInflictor->getClassname() , "ExplodeObject" , 13 ))
+		}else if (	Q_stricmp( sModel, "fx-sml-exp.tik") == 0 ||
+					Q_stricmpn( entityInflictor->getClassname(),  "MultiExploder", 13 ) == 0 ||
+					Q_stricmpn( entityInflictor->getClassname(), "ExplodeObject" , 13 ) == 0)
 		{
 			printString += "^8 was neutralized by a ^2Explosion";
 		}

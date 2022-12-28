@@ -289,11 +289,11 @@ qboolean G_ProcessClientCommand( gentity_t *ent )
 			ev->AddToken( gi.argv( i ) );
 		}
 		
-		if ( !Q_stricmpn( cmd, "ai_", 2 ) )
+		if ( Q_stricmpn( cmd, "ai_", 2 ) == 0 )
 		{
 			return thePathManager.ProcessEvent( ev );
 		}
-		else if ( !Q_stricmpn( cmd, "view", 4 ) )
+		else if ( Q_stricmpn( cmd, "view", 4 ) == 0 )
 		{
 			return Viewmodel.ProcessEvent( ev );
 		}

@@ -86,9 +86,9 @@ void coop_armoryEquipPlayer(Player *player)
 			sTikiName = sTikiName.tolower();
 			sTempName = sTempName.tolower();
 
-			if (	!strcmpi( sTikiName , "models/weapons/worldmodel-tricorder-stx.tik" ) ||
-					!strcmpi( sTikiName , "models/weapons/worldmodel-rom-datapad.tik" ) ||
-					!strcmpi( sTikiName , "models/weapons/worldmodel-tricorder.tik" ) )
+			if (Q_stricmp( sTikiName , "models/weapons/worldmodel-tricorder-stx.tik" ) == 0||
+				Q_stricmp( sTikiName , "models/weapons/worldmodel-rom-datapad.tik" ) == 0||
+				Q_stricmp( sTikiName , "models/weapons/worldmodel-tricorder.tik" ) == 0)
 			{
 				sTricorderName = sTikiName;
 			}
@@ -106,7 +106,7 @@ void coop_armoryEquipPlayer(Player *player)
 						multiplayerManager.givePlayerItem( player->entnum , "models/weapons/worldmodel-drull-staff.tik" );
 					
 					//if it is the romulan secret mission give romulan hand textured rad, otherwise, give normal
-					if ( !Q_stricmpn( level.mapname,"m10l",4)  )
+					if ( Q_stricmpn( level.mapname,"m10l",4) == 0 )
 					{
 						if ( coop_returnBool( coop_phraserIniGet( "serverData.ini" , "secretWeapon_RomulanExperimental" , "server" ) ) )
 							multiplayerManager.givePlayerItem( player->entnum , "models/weapons/worldmodel-rom-radgun-romhands.tik" );
@@ -118,9 +118,8 @@ void coop_armoryEquipPlayer(Player *player)
 					}
 				}
 				*/
-
-				if ( !strcmpi( sTikiName , "models/weapons/worldmodel-phaser.tik" ) ||
-					!strcmpi( sTikiName , "models/weapons/worldmodel-phaser-stx.tik" ) )
+				if (Q_stricmp( sTikiName , "models/weapons/worldmodel-phaser.tik" ) == 0 ||
+					Q_stricmp( sTikiName , "models/weapons/worldmodel-phaser-stx.tik" ) == 0)
 				{
 					sPhaserName = sTikiName;
 				}
@@ -185,83 +184,83 @@ str coop_armoryReturnWeaponTiki( str sWeaponName )
 	if ( sWeaponName.length() )
 	{
 		sWeaponName = sWeaponName.tolower();
-		if ( !Q_stricmpn( "federationsniperrifle" , sWeaponName , 21 ) )
+		if ( Q_stricmpn( "federationsniperrifle" , sWeaponName , 21 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-Sniperrifle.tik";
 		}
-		else if ( !Q_stricmpn( "fieldassaultrifle" , sWeaponName , 17 ) )
+		else if ( Q_stricmpn( "fieldassaultrifle" , sWeaponName , 17 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-fieldassaultrifle.tik";
 		}
-		else if ( !Q_stricmpn( "compressionrifle" , sWeaponName , 16 ) )
+		else if ( Q_stricmpn( "compressionrifle" , sWeaponName , 16 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-compressionrifle.tik";
 		}
-		else if ( !Q_stricmpn( "burstrifle" , sWeaponName , 10 ) )
+		else if ( Q_stricmpn( "burstrifle" , sWeaponName , 10 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-burstrifle.tik";
 		}
-		else if ( !Q_stricmpn( "batleth" , sWeaponName , 7 ) )
+		else if ( Q_stricmpn( "batleth" , sWeaponName , 7 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-batleth.tik";
 		}
-		else if ( !Q_stricmpn( "i-mod" , sWeaponName , 5 ) )
+		else if ( Q_stricmpn( "i-mod" , sWeaponName , 5 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-IMod.tik";
 		}
-		else if ( !Q_stricmpn( "phaser" , sWeaponName , 6 ) )
+		else if ( Q_stricmpn( "phaser" , sWeaponName , 6 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-phaser.tik";
 		}
-		else if ( !Q_stricmpn( "phaser-stx" , sWeaponName , 10 ) )
+		else if ( Q_stricmpn( "phaser-stx" , sWeaponName , 10 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-phaser-STX.tik";
 		}
-		else if ( !Q_stricmpn( "tricorder-stx" , sWeaponName , 13 ) )
+		else if ( Q_stricmpn( "tricorder-stx" , sWeaponName , 13 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-tricorder-STX.tik";
 		}
-		else if ( !Q_stricmpn( "tricorder" , sWeaponName , 9 ) )
+		else if ( Q_stricmpn( "tricorder" , sWeaponName , 9 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-tricorder.tik";
 		}
-		else if ( !Q_stricmpn( "tricorder-rom" , sWeaponName , 13 ) )
+		else if ( Q_stricmpn( "tricorder-rom" , sWeaponName , 13 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-rom-datapad.tik";
 		}
-		else if ( !Q_stricmpn( "romulandisruptor" , sWeaponName , 16 ) )
+		else if ( Q_stricmpn( "romulandisruptor" , sWeaponName , 16 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-rom-disruptor.tik";
 		}
-		else if ( !Q_stricmpn( "tetryongatlinggun" , sWeaponName , 17 ) )
+		else if ( Q_stricmpn( "tetryongatlinggun" , sWeaponName , 17 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-tetryon.tik";
 		}
-		else if ( !Q_stricmpn( "attrexianrifle" , sWeaponName , 14 ) )
+		else if ( Q_stricmpn( "attrexianrifle" , sWeaponName , 14 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-attrex-rifle.tik";
 		}
-		else if ( !Q_stricmpn( "drullstaff" , sWeaponName , 10 ) )
+		else if ( Q_stricmpn( "drullstaff" , sWeaponName , 10 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-drull-staff.tik";
 		}
-		else if ( !Q_stricmpn( "grenadelauncher" , sWeaponName , 15 ) )
+		else if ( Q_stricmpn( "grenadelauncher" , sWeaponName , 15 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-grenadelauncher.tik";
 		}
-		else if ( !Q_stricmpn( "photonburst" , sWeaponName , 11 ) )
+		else if ( Q_stricmpn( "photonburst" , sWeaponName , 11 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-photon.tik";
 		}
-		else if ( !Q_stricmpn( "romulanradgun" , sWeaponName , 13 ) )
+		else if ( Q_stricmpn( "romulanradgun" , sWeaponName , 13 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-rom-radgun.tik";
 		}
-		else if ( !Q_stricmpn( "knife" , sWeaponName , 5 ) )
+		else if ( Q_stricmpn( "knife" , sWeaponName , 5 ) == 0)
 		{
 			sTikiName = "models/weapons/worldmodel-knife.tik";
 		}
-		else if ( !Q_stricmpn( "enterprisecannon" , sWeaponName , 16 ) )
+		else if ( Q_stricmpn( "enterprisecannon" , sWeaponName , 16 ) == 0 )
 		{
 			sTikiName = "models/weapons/worldmodel-enterprise.tik";
 		}
@@ -294,91 +293,91 @@ str coop_armoryReturnWeaponName( str sTikiName )
 			sTikiName += "models/" + sTikiName;
 		}//coop_armoryReturnWeaponName( str sTikiName )
 
-		if ( !Q_stricmpn( "models/weapons/worldmodel-sniperrifle.tik" , sTikiName , 41 ) )
+		if ( Q_stricmpn( "models/weapons/worldmodel-sniperrifle.tik" , sTikiName , 41 ) == 0 )
 		{
 			sWeaponName = "FederationSniperRifle";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-fieldassaultrifle.tik" , sTikiName , 47 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-fieldassaultrifle.tik" , sTikiName , 47 ) == 0)
 		{
 			sWeaponName = "FieldAssaultRifle";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-compressionrifle.tik" , sTikiName , 46 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-compressionrifle.tik" , sTikiName , 46 ) == 0)
 		{
 			sWeaponName = "CompressionRifle";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-burstrifle.tik" , sTikiName , 40 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-burstrifle.tik" , sTikiName , 40 ) == 0 )
 		{
 			sWeaponName = "BurstRifle";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-batleth.tik" , sTikiName , 37 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-batleth.tik" , sTikiName , 37 ) == 0 )
 		{
 			sWeaponName = "Batleth";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-imod.tik" , sTikiName , 34 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-imod.tik" , sTikiName , 34 ) == 0)
 		{
 			sWeaponName = "I-Mod";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-phaser.tik" , sTikiName , 36 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-phaser.tik" , sTikiName , 36 ) == 0)
 		{
 			sWeaponName = "Phaser";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-phaser-stx.tik" , sTikiName , 40 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-phaser-stx.tik" , sTikiName , 40 ) == 0)
 		{
 			sWeaponName = "Phaser-stx";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-tricorder-stx.tik" , sTikiName , 43 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-tricorder-stx.tik" , sTikiName , 43 ) == 0 )
 		{
 			sWeaponName = "Tricorder-stx";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-tricorder.tik" , sTikiName , 39 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-tricorder.tik" , sTikiName , 39 ) == 0 )
 		{
 			sWeaponName = "Tricorder";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-rom-datapad.tik" , sTikiName , 41 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-rom-datapad.tik" , sTikiName , 41 ) == 0 )
 		{
 			sWeaponName = "Tricorder-rom";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-rom-disruptor.tik" , sTikiName , 43 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-rom-disruptor.tik" , sTikiName , 43 ) == 0 )
 		{
 			sWeaponName = "RomulanDisruptor";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-rom-disruptor-romhands.tik" , sTikiName , 52 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-rom-disruptor-romhands.tik" , sTikiName , 52 ) == 0 )
 		{
 			sWeaponName = "RomulanDisruptor";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-tetryon.tik" , sTikiName , 37 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-tetryon.tik" , sTikiName , 37 ) == 0)
 		{
 			sWeaponName = "TetryonGatlingGun";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-attrex-rifle.tik" , sTikiName , 42 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-attrex-rifle.tik" , sTikiName , 42 ) == 0 )
 		{
 			sWeaponName = "AttrexianRifle";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-drull-staff.tik" , sTikiName , 41 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-drull-staff.tik" , sTikiName , 41 ) == 0 )
 		{
 			sWeaponName = "DrullStaff";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-grenadelauncher.tik" , sTikiName , 45 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-grenadelauncher.tik" , sTikiName , 45 ) == 0)
 		{
 			sWeaponName = "GrenadeLauncher";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-photon.tik" , sTikiName , 36 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-photon.tik" , sTikiName , 36 ) == 0)
 		{
 			sWeaponName = "PhotonBurst";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-rom-radgun.tik" , sTikiName , 40 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-rom-radgun.tik" , sTikiName , 40 ) == 0)
 		{
 			sWeaponName = "RomulanRadGun";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-rom-radgun-romhands.tik" , sTikiName , 49 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-rom-radgun-romhands.tik" , sTikiName , 49 ) == 0)
 		{
 			sWeaponName = "RomulanRadGun";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-knife.tik" , sTikiName , 35 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-knife.tik" , sTikiName , 35 ) == 0)
 		{
 			sWeaponName = "Knife";
 		}
-		else if ( !Q_stricmpn( "models/weapons/worldmodel-enterprise.tik" , sTikiName , 40 ) )
+		else if ( Q_stricmpn( "models/weapons/worldmodel-enterprise.tik" , sTikiName , 40 ) == 0)
 		{
 			sWeaponName = "EnterpriseCannon";
 		}

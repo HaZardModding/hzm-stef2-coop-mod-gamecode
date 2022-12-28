@@ -2075,19 +2075,19 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 	}
 	//[b607] chrissstrahl - NO COOP - allow modifier voteing
 	else {
-		if (stricmp(command.c_str(), "mp_modifier_actionhero") == 0 ||
-			stricmp(command.c_str(), "mp_modifier_autohandicap") == 0 ||
-			stricmp(command.c_str(), "mp_modifier_controlpoints") == 0 ||
-			stricmp(command.c_str(), "mp_modifier_destruction") == 0 ||
-			stricmp(command.c_str(), "mp_modifier_elimination") == 0 ||
-			stricmp(command.c_str(), "mp_modifier_instantkill") == 0 ||
-			stricmp(command.c_str(), "mp_modifier_oneflag") == 0 ||
-			stricmp(command.c_str(), "mp_modifier_pointsperweapon") == 0 ||
-			stricmp(command.c_str(), "mp_modifier_specialties") == 0
+		if (Q_stricmp(command.c_str(), "mp_modifier_actionhero") == 0 ||
+			Q_stricmp(command.c_str(), "mp_modifier_autohandicap") == 0 ||
+			Q_stricmp(command.c_str(), "mp_modifier_controlpoints") == 0 ||
+			Q_stricmp(command.c_str(), "mp_modifier_destruction") == 0 ||
+			Q_stricmp(command.c_str(), "mp_modifier_elimination") == 0 ||
+			Q_stricmp(command.c_str(), "mp_modifier_instantkill") == 0 ||
+			Q_stricmp(command.c_str(), "mp_modifier_oneflag") == 0 ||
+			Q_stricmp(command.c_str(), "mp_modifier_pointsperweapon") == 0 ||
+			Q_stricmp(command.c_str(), "mp_modifier_specialties") == 0
 			)
 		{
 			//empty value
-			if (!stricmp(arg.c_str(), "")) {
+			if (!Q_stricmp(arg.c_str(), "")) {
 				//printout info
 				HUDPrint(player->entnum, va("%s 0-1 - $$ObjectiveIncomplete$$:\n", command.c_str()));
 				int iModifiersActive = 0;
@@ -2150,7 +2150,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 		return;
 	}
 
-	if (Q_stricmpn(command.c_str(), "nextmap", 7) == 0 && !stricmp(arg.c_str(), "")) {
+	if (Q_stricmpn(command.c_str(), "nextmap", 7) == 0 && stricmp(arg.c_str(), "") == 0) {
 		HUDPrint(player->entnum, "$$InvalidVote$$ - $$MapName$$ $$Empty$$\n");
 		return;
 		/* Could not get it to work right, to much time wasted
@@ -2387,7 +2387,7 @@ void MultiplayerManager::checkVote( void )
 	}
 
 	//hzm gameupdate chrissstrahl - when there is a skipcinematic vote, but cinematic is over, end the vote automatically
-	if ( level.cinematic == false && !Q_stricmpn( _voteString , "skipcinematic" , 13 ) )
+	if ( level.cinematic == false && Q_stricmpn( _voteString , "skipcinematic" , 13 ) == 0)
 	{
 		_voteTime = 0.0f;
 	}
@@ -2584,37 +2584,36 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	// hzm gameupdate chrissstrahl - remove useless ^ from text
 	tempText = coop_returnStringStartingFrom( tempText , startLoc );
 
-	if ( !stricmp( tempText.c_str() , "" ) ) { return; }
+	if (Q_stricmp( tempText.c_str() , "" ) == 0) { return; }
 
 	//hzm gameupdate chrissstrahl - make tricorderpuzzels an other default gamplay components from singleplayer work
-	if ( !Q_stricmpn( "clientrunthread " , tempText , 16 ) )
+	if ( Q_stricmpn( "clientrunthread " , tempText , 16 ) == 0 )
 	{
-		if ( !Q_stricmpn( "clientrunthread exitRoutine" , tempText , 27 )			||
-				!Q_stricmpn( "clientrunthread tricorderMod_" , tempText , 29 )		||
-				!Q_stricmpn( "clientrunthread tricorderKeypad_" , tempText , 32 )	||
-				!Q_stricmpn( "clientrunthread useLibraryTerminal" , tempText , 34 )	||
-				!Q_stricmpn( "clientrunthread trirteClick" , tempText , 27 )		||
-				!Q_stricmpn( "clientrunthread tricorderBaseCancel" , tempText , 35 )
-		){
+		if(		Q_stricmpn( "clientrunthread exitRoutine" , tempText , 27 ) == 0		||
+				Q_stricmpn( "clientrunthread tricorderMod_" , tempText , 29 ) == 0		||
+				Q_stricmpn( "clientrunthread tricorderKeypad_" , tempText , 32 ) == 0	||
+				Q_stricmpn( "clientrunthread useLibraryTerminal" , tempText , 34 ) == 0 ||
+				Q_stricmpn( "clientrunthread trirteClick" , tempText , 27 ) == 0		||
+				Q_stricmpn( "clientrunthread tricorderBaseCancel" , tempText , 35 ) == 0)
+		{
 			threadIsValid = 1;
 			startAt = 16;
 		}
 	}
 	//[b60011] Chrissstrahl
 	//else if ( !Q_stricmpn( "ServerThreadToRun " , tempText , 18 ) )
-	else if ( !Q_stricmpn( "ServerThreadToRun trirteClick" , tempText , 29 ) )
+	else if ( Q_stricmpn( "ServerThreadToRun trirteClick" , tempText , 29 ) == 0 )
 	{
 		threadIsValid = 1;
 		startAt = 18;
 	}
-	else if ( !Q_stricmpn( "script thread " , tempText , 14 ) )
+	else if ( Q_stricmpn( "script thread " , tempText , 14 ) == 0 )
 	{
-		if (!Q_stricmpn( "script thread globalTricorder" , tempText , 29 ) ||
-			!Q_stricmpn( "script thread trirteTT" , tempText , 22 ) ||
-			!Q_stricmpn( "script thread _tricorderRoute_" , tempText , 30 ) ||
-			!Q_stricmpn( "script thread _tricorderBase_" , tempText , 29 ) ||
-			!Q_stricmpn( "script thread useLibraryTerminal" , tempText , 32 )
-			)
+		if (Q_stricmpn( "script thread globalTricorder" , tempText , 29 ) == 0	||
+			Q_stricmpn( "script thread trirteTT" , tempText , 22 ) == 0			||
+			Q_stricmpn( "script thread _tricorderRoute_" , tempText , 30 ) == 0 ||
+			Q_stricmpn( "script thread _tricorderBase_" , tempText , 29 ) == 0	||
+			Q_stricmpn( "script thread useLibraryTerminal" , tempText , 32 ) == 0)
 		{
 			threadIsValid = 1;
 			startAt = 14;
@@ -2646,7 +2645,7 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	else
 	{
 //hzm gamefix chrissstrahl - do not print "Server: score" when a player connects while he has the score still displayed, this can happen when a map changes, and scores are shown
-		if ( !Q_stricmp( "score" , tempText ) || !Q_stricmpn("!class", tempText,6) || !Q_stricmpn("vote ", tempText, 5)) //[b60011] chrissstrahl - also filter class and vote command
+		if ( Q_stricmp( "score" , tempText ) == 0 || Q_stricmpn("!class", tempText,6) == 0 || Q_stricmpn("vote ", tempText, 5) == 0) //[b60011] chrissstrahl - also filter class and vote command
 		{
 			return;
 		}

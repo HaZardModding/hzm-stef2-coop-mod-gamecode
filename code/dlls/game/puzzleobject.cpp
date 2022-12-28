@@ -665,10 +665,11 @@ void PuzzleObject::useEvent(Event* event)
 			else {
 				fLastMsgTime = uservar->floatValue();
 			}
-			if (!Q_stricmpn("class m", sCoopClass, 7)) {
+			if (Q_stricmpn("class m", sCoopClass, 7) == 0) {
 				if (player->coopPlayer.className != COOP_CLASS_NAME_MEDIC) {
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
+						//[b60012][cleanup] chrissstrahl - this could be put into a func
 						if (coop_checkPlayerLanguageGerman(player)) {
 							player->hudPrint(COOP_TEXT_CLASS_MEDIC_ONLY_DEU);
 						}
@@ -680,10 +681,11 @@ void PuzzleObject::useEvent(Event* event)
 					return;
 				}
 			}
-			else if (!Q_stricmpn("class t", sCoopClass, 7)) {
+			else if (Q_stricmpn("class t", sCoopClass, 7) == 0) {
 				if (player->coopPlayer.className != COOP_CLASS_NAME_TECHNICIAN) {
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
+						//[b60012][cleanup] chrissstrahl - this could be put into a func
 						if (coop_checkPlayerLanguageGerman(player)) {
 							player->hudPrint(COOP_TEXT_CLASS_TECHNICIAN_ONLY_DEU);
 						}
@@ -694,10 +696,11 @@ void PuzzleObject::useEvent(Event* event)
 					return;
 				}
 			}
-			else if (!Q_stricmpn("class h", sCoopClass, 7)) {
+			else if (Q_stricmpn("class h", sCoopClass, 7) == 0) {
 				if (player->coopPlayer.className != COOP_CLASS_NAME_HEAVYWEAPONS) {
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
+						//[b60012][cleanup] chrissstrahl - this could be put into a func
 						if (coop_checkPlayerLanguageGerman(player)) {
 							player->hudPrint(COOP_TEXT_CLASS_HEAVYWEAPONS_ONLY_DEU);
 						}

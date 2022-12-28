@@ -226,7 +226,7 @@ bool coop_returnBool(str sValue)
 	//[b607] chrissstrahl - made to return false on default
 	if ( !sValue.length() ) { return false; }
 
-	if ( !Q_stricmpn(sValue.c_str(),"true",4) ) { return true; }
+	if ( Q_stricmpn(sValue.c_str(),"true",4) == 0) { return true; }
 	
 	if ( atoi( sValue.c_str()) > 0 ) { return true; }
 	return false;
@@ -236,7 +236,7 @@ bool coop_returnBool(str sValue)
 //starts at 0
 int coop_returnIntFind(str sSource , str sKeyword )
 {
-	if ( !Q_stricmp( sKeyword , "") || !Q_stricmp( sSource, "") )
+	if ( Q_stricmp( sKeyword , "") == 0 || Q_stricmp( sSource, "") == 0)
 	{
 		return -1;
 	}
@@ -904,6 +904,7 @@ Vector coop_returnVectorFromString( str sChain )
 //================================================================
 str coop_returnStringDeathmessagenameForEntity( Entity * entity )
 {
+	//[b60012][cleanup] - this should be put in a list or ini (the ini handling needs to be improved first)
 	if ( !entity ){
 		return "^8a GHOST...";
 	}
@@ -921,12 +922,12 @@ str coop_returnStringDeathmessagenameForEntity( Entity * entity )
 	//Details in: coop_playerKilled, or contact HaZardModding
 
 	//get all items into the list, if they match the primary critiria
-	if ( !Q_stricmpn( entityClass , "ScriptSlave" , 11 ) ) {
+	if ( Q_stricmpn( entityClass , "ScriptSlave" , 11 ) == 0) {
 		printString = coop_parserIniGet( "deathlist.ini" , entity->targetname , "targetname" );
-	}else if ( !Q_stricmpn( entityClass , "Explosion" , 9 ) || !Q_stricmpn( entityClass , "Projectile" , 10 ) ) {
+	}else if ( Q_stricmpn( entityClass , "Explosion" , 9 ) == 0 || Q_stricmpn( entityClass , "Projectile" , 10 ) == 0) {
 		printString = coop_parserIniGet( "deathlist.ini" , entity->model , "model" );
 	}
-	else if ( !Q_stricmpn( entityClass , "SlidingDoor" , 11 ) ) {
+	else if ( Q_stricmpn( entityClass , "SlidingDoor" , 11 ) == 0) {
 		printString = coop_parserIniGet( "deathlist.ini" , entity->getClassname() , "class" );
 	}
 
