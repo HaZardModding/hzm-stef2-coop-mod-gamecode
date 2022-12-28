@@ -1895,7 +1895,6 @@ float coop_returnFloatFromString( const str extrapolate )
 
 		//don't want ..... to hapen, accept only 1 period
 		if ( current == '.' ) {
-
 			//we have something like 1.00. or .12434.
 			if ( containsPeriod && containsDigit )
 				break;
@@ -1918,7 +1917,7 @@ float coop_returnFloatFromString( const str extrapolate )
 	if ( sConstruct[sConstruct.length() - 1] == '.' )
 		sConstruct += "0";
 
-	return atof( sConstruct );
+	return atof( sConstruct.c_str() );
 }
 
 //================================================================
