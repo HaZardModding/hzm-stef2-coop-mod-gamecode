@@ -2196,6 +2196,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 		if (iVoteValid == 0) { iVoteValid = coop_vote_skillValidate(player, command, arg, _voteString); }
 		if (iVoteValid == 0) { iVoteValid = coop_vote_addbotValidate(player, command, arg, _voteString); }
 		if (iVoteValid == 0) { iVoteValid = coop_vote_quitserverValidate(player, command, arg, _voteString); }
+		if (iVoteValid == 0) { iVoteValid = coop_vote_flushtikisValidate(player, command, arg, _voteString); }
 		//use the string as command exactly like provided
 
 		//[b607] chrissstrahl - no valid vote (a coop vote was called but with wrong or bad parameters)
@@ -2437,8 +2438,6 @@ gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes,
 			if (!bCoopVote) { bCoopVote = coop_vote_friendlyfireSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_maxspeedSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_mapSet(_voteString.c_str()); }
-			//[b607] chrissstrahl - handle mp modifier type votes
-			if (!bCoopVote) { bCoopVote = coop_vote_mpmodifierSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_airaccelerateSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_stasistimeSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_challengeSet(_voteString.c_str()); }
@@ -2446,6 +2445,10 @@ gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes,
 			if (!bCoopVote) { bCoopVote = coop_vote_kickbotsSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_execSet(_voteString.c_str()); }
 			if (!bCoopVote) { bCoopVote = coop_vote_quitserverSet(_voteString.c_str()); }
+			//[b60012] chrissstrahl - allow flushtiki
+			if (!bCoopVote) { bCoopVote = coop_vote_flushTikis(_voteString.c_str()); }
+			//[b607] chrissstrahl - handle mp modifier type votes
+			if (!bCoopVote) { bCoopVote = coop_vote_mpmodifierSet(_voteString.c_str()); }
 
 			//use the string as command exactly like provided
 			if(!bCoopVote){

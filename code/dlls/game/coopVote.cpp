@@ -19,6 +19,9 @@
 
 //CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
 
+//[b60012] chrissstrahl - allow flushtiki vote
+#include "coopServer.hpp"
+extern CoopServer coopServer;
 
 #include "coopVote.hpp"
 #include "coopReturn.hpp"
@@ -71,7 +74,8 @@ bool coop_vote_checkvalid(const str &command)
 		stricmp(command.c_str(), "coop_prev") == 0 ||
 		stricmp(command.c_str(), "coop_awards") == 0 ||
 		stricmp(command.c_str(), "coop_ff") == 0 ||
-		stricmp(command.c_str(), "coop_quit") == 0 //added [b60011]
+		stricmp(command.c_str(), "coop_quit") == 0 || //added [b60011]
+		stricmp(command.c_str(), "coop_flushtikis") == 0 //added [b60012]
 		)
 	{
 		return true;
@@ -134,6 +138,26 @@ int coop_vote_skipcinematicValidate(Player* player, const str &command, const st
 	game.cinematicSkipping = true;
 
 	return 3; //votestring was not altred
+}
+
+//========================================================= [b60011]
+// Name:        coop_vote_flushtikisValidate
+// Class:       -
+//              
+// Description: Validates flushtikis vote string before it becomes a vote
+//              
+// Parameters:	Player* player, const str &command, const str &arg
+//              
+// Returns:     INTEGER
+//              
+//================================================================
+int coop_vote_flushtikisValidate(Player* player, const str& command, const str& arg, str& _voteString)
+{
+	if (Q_stricmp(command.c_str(), "coop_flushtikis") != 0) {
+		return 0;
+	}
+	_voteString = "coop_flushtikis";
+	return 2; //votestring could have been changed (args)
 }
 
 //========================================================= [b60011]
@@ -1185,6 +1209,28 @@ bool coop_vote_mpmodifierSet(const str  _voteString)
 	return true;
 }
 
+//======================================================= [b60012]
+// Name:        coop_vote_flushTikis
+// Class:       -
+//              
+// Description: Flushes Tikis on server
+//              
+// Parameters:	str _voteString
+//              
+// Returns:     BOOL
+//              
+//================================================================
+bool coop_vote_flushTikis(const str _voteString)
+{
+	int iLength = 9;
+	if (Q_stricmpn(_voteString, "coop_flushtiki", iLength) != 0) {
+		return false;
+	}
+
+	coopServer.flushTikis();
+
+	return true;
+}
 
 //========================================================= [b611]
 // Name:        coop_vote_quitserverSet
