@@ -45,6 +45,82 @@ extern Event EV_ScriptThread_StuffCommand;
 #define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 80 to fix a game bug on this level.\n"
 #define COOP_SERVER_MASTERSERVER "master.hazardmodding.com"
 
+//================================================================
+// Name:        maploadEnforce
+// Class:       -
+//              
+// Description: checks if the seerver should bee loading a different map than it currently is, forces mapload
+//              
+// Parameters:  str sMapToLoad
+//              
+// Returns:     void
+//              
+// Called from:	extern "C" void G_InitGame( int startTime, int randomSeed )
+//================================================================
+void CoopServer::mapLoadEnforce()
+{
+	//[b607] chrissstrahl - moved code down here used to be after CVAR_Init(); 
+	//but it will not load the map in linux since we use the killserver method
+	//instead of the actual quit, but creating a error, so maybe this fixes it
+	//ERROR READS:
+	// Error in `./linuxef2ded': malloc(): smallbin double linked list corrupted: 0x0956cde0 
+	// Aborted
+	//
+	//hzm coop mod chrissstrahl - restore map to continue coop on
+	cvar_t* temp_dedicated;
+	cvar_t* temp_gametype;
+	temp_dedicated = gi.cvar_get("dedicated");
+	temp_gametype = gi.cvar_get("g_gametype");
+
+
+	//hzm coop mod chrissstrahl - load error restore map
+	str sStartMap = "blackbox";
+	if (coop_returnBool(coop_parserIniGet("serverData.ini", "errorboot", "server")))
+	{
+		str sErrorMap = coop_parserIniGet("serverData.ini", "errormap", "server");
+
+		//if not fatal, we can load the map again that did have a error before
+		//because it is fairly save to assume the error does not put the server in a reboot loop
+		if (!coop_returnBool(coop_parserIniGet("serverData.ini", "errorfatal", "server"))) {
+			sStartMap = sErrorMap;
+		}
+
+		str sErrorMsg = coop_parserIniGet("serverData.ini", "errortext", "server");
+
+//coop_parserIniSet("serverData.ini", "rebooting", "false", "server"); //[b60012][cleanup]
+
+					//if map to load is not the map that it wants to load, force coop map
+		if (Q_stricmpn(sStartMap.c_str(), level.mapname, MAX_QPATH) != 0) {
+			gi.Printf(va("COOP MOD - MAP WITH ERROR FOUND:\n%s\n", sErrorMap.c_str()));
+			gi.Printf(va("ERROR MESSAGE READS:\n%s\n", sErrorMsg.c_str()));
+			//load the error map or if fatal, load blackbox map, which has no scripts and no ai
+			gi.SendConsoleCommand(va("map %s\n", sStartMap.c_str()));
+		}
+	}
+	else {
+		//hzm coop mod chrissstrahl - load last coop map if there is any
+		bool bServerHasRebooted = coop_returnBool(coop_parserIniGet("serverData.ini", "rebooting", "server"));
+
+		if (temp_gametype->integer > 0 &&
+			temp_dedicated->integer > 0 &&
+			temp_dedicated->integer < 3 &&
+			bServerHasRebooted == true)
+		{
+			sStartMap = coop_parserIniGet("serverData.ini", "startmap", "server");
+
+//coop_parserIniSet("serverData.ini", "rebooting", "false", "server"); //[b60012][cleanup]
+
+			//if map to load is not the map that it wants to load, force coop map
+			if (Q_stricmpn(sStartMap.c_str(), level.mapname, MAX_QPATH)) {
+				gi.Printf(va("COOP MOD - RESTORING MAP:\n%s\n", sStartMap.c_str()));
+				gi.SendConsoleCommand(va("map %s\n", sStartMap.c_str()));
+			}
+		}
+	}
+
+	//[b60012] chrissstrahl - moved here
+	coop_parserIniSet("serverData.ini", "errorboot", "false", "server");
+}
 
 void CoopServer::flushTikis()
 {
@@ -64,48 +140,46 @@ void CoopServer::flushTikis()
 void CoopServer::enforceLevelSpecificSettings()
 //[b60011] chrissstrahl - enforce variouse settings in levels to ensure the game working correctly
 {
-	//wait a moment so that the message will actually be printed
-	if (level.time < 10.0f) { return; }
+	//make sure the physics is correct - this can happen due to a coop mod voting option
+	if (	_stricmp(level.mapname,"m6-exterior") == 0 ||
+			_stricmp(level.mapname,"m3l1a-forever") == 0 ||
+			_stricmp(level.mapname,"m5l1b-drull_ruins1") == 0)
+	{
+		//this can have a delay - com_maxfps force can not, to work right
+		if (level.time > 12) {
+			if (world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
+				world->setPhysicsVar("airAccelerate", 2.0f);
 
-	if (level.mapname == "m6-exterior"){
-		//make sure the physics is correct - this can happen due to a coop mod voting option
-		if (g_gametype->integer != GT_SINGLE_PLAYER && world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
-			if (multiplayerManager.inMultiplayer()) {
-				multiplayerManager.HUDPrintAllClients("Server: Air Accelerate reset to 2 for this level to work\n");
+				if (multiplayerManager.inMultiplayer()) {
+					multiplayerManager.HUDPrintAllClients("Server: Air Accelerate reset to 2 for this level to work\n");
+				}
 			}
-			world->setPhysicsVar("airAccelerate", 2.0f);
 		}
+
 		//this is a listen server - the host is also playing on the same instance - there is no seperate server running
 		//this is a default game bug, where fps higher 80 can cause player to get stuck floating above in low grav
 		//this is apperently only happening to the host (SP/MP)
-		if (dedicated->integer == 0 && multiplayerManager.inMultiplayer() || g_gametype->integer == GT_SINGLE_PLAYER) {
-			int iFps = coop_returnCvarInteger("com_maxFps");
-			if (iFps > COOP_SERVER_PHYSICS_BUG_MAX_FPS) {
-				Player* player;
-				player = (Player*)g_entities[0].entity;
-				if (player != NULL) {
-					gi.cvar_set("com_maxFps",va("%d",COOP_SERVER_PHYSICS_BUG_MAX_FPS));
-					if (g_gametype->integer == GT_SINGLE_PLAYER) {
-						if (level.time > 12) {
+		if (_stricmp(level.mapname, "m6-exterior") == 0) {
+			if (dedicated->integer == 0 && multiplayerManager.inMultiplayer() || g_gametype->integer == GT_SINGLE_PLAYER) {
+				int iFps = coop_returnCvarInteger("com_maxFps");
+				if (iFps > COOP_SERVER_PHYSICS_BUG_MAX_FPS) {
+					Player* player;
+					player = (Player*)g_entities[0].entity;
+					if (player != NULL) {
+						gi.cvar_set("com_maxFps", va("%d", COOP_SERVER_PHYSICS_BUG_MAX_FPS));
+						//inform player why the fps keeps resetting
+						if(level.time > 12){
+						if (g_gametype->integer == GT_SINGLE_PLAYER) {
 							gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_CRITICAL, COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
 						}
-					}
-					else {
-						if ( level.time > (mp_warmUpTime->integer + 10) ) {
-							player->hudPrint(COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+						else {
+							if (level.time > (mp_warmUpTime->integer + 10)) {
+								player->hudPrint(COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE);
+							}
 						}
 					}
 				}
 			}
-		}
-	}
-	else if ( level.mapname == "m3l1a-forever" || level.mapname == "m5l1b-drull_ruins1") {
-		//make sure the physics is correct - this can happen due to a coop mod voting option
-		if (g_gametype->integer != GT_SINGLE_PLAYER && world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != 2) {
-			if (multiplayerManager.inMultiplayer()) {
-				multiplayerManager.HUDPrintAllClients("Server: Air Accelerate reset to 2 for this level to work\n");
-			}
-			world->setPhysicsVar("airAccelerate", 2.0f);
 		}
 	}
 }
@@ -523,7 +597,8 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 	bool bReset = false;
 
 	if ( strlen( sMapToLoad ) > 4 ) {
-		str s = sMapToLoad.tolower();
+		str s = sMapToLoad;
+		s.tolower();
 		//mapname starts with m like m11
 		//has m and number followed by a l like m1l
 		//has m and number followed by a l like m11l
@@ -662,13 +737,15 @@ void coop_serverManageClientData( str sMap )
 		bCoopKeppPlayerStatus = true;
 	}
 	//check if coop map is a sequel (determined by name simularities coop_[paradiseIsland]2 - coop_[gbs]7 )
-	else if ( !Q_stricmpn( coop_textCleanAllButLettersAndLower( level.mapname ) , coop_textCleanAllButLettersAndLower( sMap.c_str() ) , 64 ) ){
+	else if ( Q_stricmp( coop_textCleanAllButLettersAndLower( level.mapname ) , coop_textCleanAllButLettersAndLower( sMap.c_str() )) == 0){
 		bCoopKeppPlayerStatus = true;
 	}
 
 	if ( bCoopKeppPlayerStatus ){
+		gi.Printf("coop_serverManageClientData - Client Data saved for sublevel.\n");
 		coop_serverSaveAllClientData();
 	}else{
+		gi.Printf("coop_serverManageClientData - Client Data reset, not a sublevel.\n");
 		coop_serverResetAllClientData();
 	}
 	game.coop_saveClientData = false;
@@ -1063,8 +1140,6 @@ void coop_serverCoop()
 
 //hzm coop mod chrissstrahl - decide based upon the mapname and gametype if we are going in to coop mod modus
 	int i;
-	str currentMapName = level.mapname.tolower();
-
 	int *objectiveItemState = game.coop_objectiveItemState;
 	for ( i = 0; i<8; i++ ){
 		*objectiveItemState = -1;
@@ -1089,7 +1164,7 @@ void coop_serverCoop()
 
 	gi.Printf( va( "==== HaZardModding Coop Mod %s -%i-====\n" , sLibrarayName.c_str(), COOP_BUILD) );
 	if ( game.isCoopIncludedLevel  ) {
-		gi.Printf( va( "==== %s is included in this coop build! ====\n" , currentMapName.c_str() ) );
+		gi.Printf( va( "==== %s is included in this coop build! ====\n" , level.mapname.c_str() ) );
 	}
 
 	//hzm coop mod chrissstrahl - NO MORE - Gallifrey Falls No More
@@ -1244,7 +1319,7 @@ void coop_serverSetup( void )
 	if ( correctingTheseSettingsRequiresMapload == true )
 	{
 		coop_serverWarningBadSetting("coop_serverSetup() requested a map reload");
-		str sMapToLoad = level.mapname.tolower();
+		str sMapToLoad = level.mapname;
 
 		//hzm coop mod chrissstrahl - load last coop map if there is any
 		bool bServerHasRebooted = false;
@@ -1256,7 +1331,7 @@ void coop_serverSetup( void )
 			str sStartMap = coop_parserIniGet( "serverData.ini" , "startmap" , "server" );
 
 			if ( gi.FS_Exists( va( "maps/%s.bsp" , sStartMap.c_str() ) ) ){
-				if ( Q_stricmp( sMapToLoad , sStartMap) ){
+				if ( Q_stricmp( sMapToLoad , sStartMap) == 0){
 					sMapToLoad = sStartMap;
 				}
 			}
