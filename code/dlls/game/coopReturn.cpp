@@ -1732,6 +1732,9 @@ float coop_returnFloatFromString( const str extrapolate )
 //================================================================
 bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 {
+	//[b60012][cleanup] - all the static ini entries could be loaded into container list and read from there
+	//There should be a solid structure, maybe have a few experiments with that first where each section is a sublist or something?
+	// 
 	//multiplayer=0,mission=1,igm=2,secret=3,customcoop=4,notsupported=5
 	type = MAPTYPE_MULTIPLAYER;
 	standard = false;
