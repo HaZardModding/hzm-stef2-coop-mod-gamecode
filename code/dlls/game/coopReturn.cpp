@@ -236,7 +236,8 @@ bool coop_returnBool(str sValue)
 //starts at 0
 int coop_returnIntFind(str sSource , str sKeyword )
 {
-	if ( Q_stricmp( sKeyword , "") == 0 || Q_stricmp( sSource, "") == 0)
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( Q_stricmp( sKeyword.c_str(), "") == 0 || Q_stricmp( sSource, "") == 0)
 	{
 		return -1;
 	}
@@ -922,12 +923,15 @@ str coop_returnStringDeathmessagenameForEntity( Entity * entity )
 	//Details in: coop_playerKilled, or contact HaZardModding
 
 	//get all items into the list, if they match the primary critiria
-	if ( Q_stricmpn( entityClass , "ScriptSlave" , 11 ) == 0) {
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( Q_stricmpn( entityClass.c_str(), "ScriptSlave" , 11 ) == 0) {
 		printString = coop_parserIniGet( "deathlist.ini" , entity->targetname , "targetname" );
-	}else if ( Q_stricmpn( entityClass , "Explosion" , 9 ) == 0 || Q_stricmpn( entityClass , "Projectile" , 10 ) == 0) {
+	}else if (	Q_stricmpn( entityClass.c_str(), "Explosion" , 9 ) == 0 ||
+				Q_stricmpn( entityClass.c_str(), "Projectile" , 10 ) == 0)
+	{
 		printString = coop_parserIniGet( "deathlist.ini" , entity->model , "model" );
 	}
-	else if ( Q_stricmpn( entityClass , "SlidingDoor" , 11 ) == 0) {
+	else if ( Q_stricmpn( entityClass.c_str(), "SlidingDoor" , 11 ) == 0) {
 		printString = coop_parserIniGet( "deathlist.ini" , entity->getClassname() , "class" );
 	}
 

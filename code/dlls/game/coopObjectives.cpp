@@ -411,7 +411,8 @@ void coop_objectivesSingleplayer( str sObjectiveState , int iObjectiveNumber , i
 		return;
 	}
 	
-	if ( !Q_stricmp( sObjectiveState , "ObjectiveComplete") ){//CHEKME
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( !Q_stricmp( sObjectiveState.c_str() , "ObjectiveComplete") ){
 		qboolean Complete = 1;
 
 		switch ( ObjIndex )
@@ -460,7 +461,8 @@ void coop_objectivesSingleplayer( str sObjectiveState , int iObjectiveNumber , i
 			break;
 		}
 	}
-	else if ( !Q_stricmp( sObjectiveState, "ObjectiveFailed") ){
+	//[b60012] chrissstrahl - fix missing .c_str()
+	else if ( !Q_stricmp( sObjectiveState.c_str(), "ObjectiveFailed")) {
 		qboolean Failed = 1;
 		switch ( ObjIndex )
 		{
@@ -592,10 +594,11 @@ void coop_objectivesUpdate( str sObjectiveState, str sObjectiveItem, str sObject
 //check for valid objectives state, set incomplete on default
 	sObjectiveState = sObjectiveState.tolower();
 	
-	if ( !Q_stricmp( sObjectiveState, "complete") || !Q_stricmp( sObjectiveState, "objectivecomplete") ){
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( !Q_stricmp( sObjectiveState.c_str(), "complete") || !Q_stricmp( sObjectiveState.c_str(), "objectivecomplete") ){
 		iObjectivteStatus = 2;
 		sObjectiveState = "ObjectiveComplete";
-	}else if ( !Q_stricmp( sObjectiveState, "failed") || !Q_stricmp( sObjectiveState, "objectivefailed") ){
+	}else if ( !Q_stricmp( sObjectiveState.c_str(), "failed") || !Q_stricmp( sObjectiveState.c_str(), "objectivefailed") ){
 		iObjectivteStatus = 3;
 		sObjectiveState = "ObjectiveFailed";
 	}else{

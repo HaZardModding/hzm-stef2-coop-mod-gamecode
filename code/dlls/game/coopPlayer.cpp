@@ -195,7 +195,8 @@ str coop_playerGetDataSegment( Player *player , short int iNumber )
 	sData = coop_parserIniGet( "serverData.ini" , player->coopPlayer.coopId , "client" );
 	coop_trimM( sData , " \t\r\n" );
 
-	if ( !Q_stricmp( sData , "" ) )
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( !Q_stricmp( sData.c_str(), "" ) )
 		return "0";
 
 	int short iChar = 0;
@@ -296,7 +297,8 @@ bool coop_playerSpawnLms( Player *player )
 //================================================================
 void coop_playerRestore( Player *player )
 {
-	if ( !player || !game.coop_isActive || !Q_stricmp( player->coopPlayer.coopId , "" ) )
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( !player || !game.coop_isActive || !Q_stricmp( player->coopPlayer.coopId.c_str(), ""))
 		return;
 
 	if ( multiplayerManager.isPlayerSpectator( player ) )
@@ -332,7 +334,8 @@ void coop_playerRestore( Player *player )
 		return;
 	
 	str sData = coop_parserIniGet( "serverData.ini" , player->coopPlayer.coopId , "client" );
-	if ( !Q_stricmp( sData, "") )
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( !Q_stricmp( sData.c_str(), ""))
 	{
 		return;
 	}
@@ -699,8 +702,8 @@ void coop_playerSetupCoop( Player *player )
 	//hzm coop mod chrissstrahl - tell client the server version - used for menu and hud features
 	//DelayedServerCommand( player->entnum , va( "set coop_svB %i" , COOP_BUILD ) );
 
-	//hzm coop mod chrissstrahl - update mission objective hud and callvote, once
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMap title %s" , level.mapname ) );
+	//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
+	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMap title %s" , level.mapname.c_str() ) ); //[b60012] chrissstrahl - fix missing .c_str()
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesSkillValue title %s" , coop_returnStringSkillname(skill->integer).c_str() ) );
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname(skill->integer).c_str() ));
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoMvSpd title %d" , game.coop_maxspeed ) );
@@ -1512,7 +1515,8 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 			}
 			sEntityName = entityData->stringValue();
 
-			if (Q_stricmpn("killmessage", sEntityName, 11) == 0) {
+			//[b60012] chrissstrahl - fix missing .c_str()
+			if (Q_stricmpn("killmessage", sEntityName.c_str(), 11) == 0) {
 				if (sEntityName.length() > 12) {
 					str tempName = sEntityName;
 					sEntityName = NULL;
@@ -1524,7 +1528,8 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 					break;
 				}
 			}
-			else if (Q_stricmpn("name", sEntityName, 4) == 0) {
+			//[b60012] chrissstrahl - fix missing .c_str()
+			else if (Q_stricmpn("name", sEntityName.c_str(), 4) == 0) {
 				if (sEntityName.length() > 5) {
 					str tempName = sEntityName;
 					sEntityName = "";
@@ -1547,10 +1552,15 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		return true;
 	}
 //check if the inflictor is a player
-	if ( attacker->isSubclassOf( Player ) || Q_stricmp(sModel,"fx-sml-exp.tik") == 0 || Q_stricmpn( entityInflictor->getClassname(), "MultiExploder", 13) == 0 || Q_stricmpn( entityInflictor->getClassname() , "ExplodeObject" , 13 ) == 0){
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if (	attacker->isSubclassOf( Player ) ||
+			Q_stricmp(sModel.c_str(),"fx-sml-exp.tik") == 0 ||
+			Q_stricmpn(entityInflictor->getClassname(), "MultiExploder", 13) == 0 ||
+			Q_stricmpn(entityInflictor->getClassname(), "ExplodeObject" , 13 ) == 0)
+	{
 		if ( attacker != killedPlayer && attacker->isSubclassOf( Player ) ){
 			printString += va(" was neutralized by their Teammate: %s",attacker->client->pers.netname );
-		}else if (	Q_stricmp( sModel, "fx-sml-exp.tik") == 0 ||
+		}else if (	Q_stricmp( sModel.c_str(), "fx-sml-exp.tik") == 0 ||
 					Q_stricmpn( entityInflictor->getClassname(),  "MultiExploder", 13 ) == 0 ||
 					Q_stricmpn( entityInflictor->getClassname(), "ExplodeObject" , 13 ) == 0)
 		{
@@ -2119,7 +2129,7 @@ void coop_playerLeft( Player *player )
 		world->setPhysicsVar("maxSpeed", COOP_DEFAULT_MAXSPEED);
 
 		//[b60011] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
-		coopServer.flushTikis();
+		//coopServer.flushTikis();
 
 		game.coop_autoFailPending = true;
 		Event *newEvent2 = new Event(EV_World_AutoFailure);

@@ -2558,6 +2558,7 @@ void MultiplayerManager::joinTeam( Player *player, const str &teamName )
 
 void MultiplayerManager::say( Player *player, const str &text, bool team )
 {
+	//[b60012] chrissstrahl - fix missing .c_str()
 	str realText;
 	str name;
 
@@ -2590,14 +2591,14 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	if (Q_stricmp( tempText.c_str() , "" ) == 0) { return; }
 
 	//hzm gameupdate chrissstrahl - make tricorderpuzzels an other default gamplay components from singleplayer work
-	if ( Q_stricmpn( "clientrunthread " , tempText , 16 ) == 0 )
+	if ( Q_stricmpn( "clientrunthread " , tempText.c_str(), 16) == 0)
 	{
-		if(		Q_stricmpn( "clientrunthread exitRoutine" , tempText , 27 ) == 0		||
-				Q_stricmpn( "clientrunthread tricorderMod_" , tempText , 29 ) == 0		||
-				Q_stricmpn( "clientrunthread tricorderKeypad_" , tempText , 32 ) == 0	||
-				Q_stricmpn( "clientrunthread useLibraryTerminal" , tempText , 34 ) == 0 ||
-				Q_stricmpn( "clientrunthread trirteClick" , tempText , 27 ) == 0		||
-				Q_stricmpn( "clientrunthread tricorderBaseCancel" , tempText , 35 ) == 0)
+		if(		Q_stricmpn( "clientrunthread exitRoutine" , tempText.c_str(), 27 ) == 0		||
+				Q_stricmpn( "clientrunthread tricorderMod_" , tempText.c_str(), 29 ) == 0		||
+				Q_stricmpn( "clientrunthread tricorderKeypad_" , tempText.c_str(), 32 ) == 0	||
+				Q_stricmpn( "clientrunthread useLibraryTerminal" , tempText.c_str(), 34 ) == 0 ||
+				Q_stricmpn( "clientrunthread trirteClick" , tempText.c_str(), 27 ) == 0		||
+				Q_stricmpn( "clientrunthread tricorderBaseCancel" , tempText.c_str(), 35 ) == 0)
 		{
 			threadIsValid = 1;
 			startAt = 16;
@@ -2605,18 +2606,18 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	}
 	//[b60011] Chrissstrahl
 	//else if ( !Q_stricmpn( "ServerThreadToRun " , tempText , 18 ) )
-	else if ( Q_stricmpn( "ServerThreadToRun trirteClick" , tempText , 29 ) == 0 )
+	else if ( Q_stricmpn( "ServerThreadToRun trirteClick" , tempText.c_str(), 29 ) == 0 )
 	{
 		threadIsValid = 1;
 		startAt = 18;
 	}
-	else if ( Q_stricmpn( "script thread " , tempText , 14 ) == 0 )
+	else if ( Q_stricmpn( "script thread " , tempText.c_str(), 14 ) == 0 )
 	{
-		if (Q_stricmpn( "script thread globalTricorder" , tempText , 29 ) == 0	||
-			Q_stricmpn( "script thread trirteTT" , tempText , 22 ) == 0			||
-			Q_stricmpn( "script thread _tricorderRoute_" , tempText , 30 ) == 0 ||
-			Q_stricmpn( "script thread _tricorderBase_" , tempText , 29 ) == 0	||
-			Q_stricmpn( "script thread useLibraryTerminal" , tempText , 32 ) == 0)
+		if (Q_stricmpn( "script thread globalTricorder" , tempText.c_str(), 29 ) == 0	||
+			Q_stricmpn( "script thread trirteTT" , tempText.c_str(), 22 ) == 0			||
+			Q_stricmpn( "script thread _tricorderRoute_" , tempText.c_str(), 30 ) == 0 ||
+			Q_stricmpn( "script thread _tricorderBase_" , tempText.c_str(), 29 ) == 0	||
+			Q_stricmpn( "script thread useLibraryTerminal" , tempText.c_str(), 32 ) == 0)
 		{
 			threadIsValid = 1;
 			startAt = 14;
@@ -2648,7 +2649,9 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 	else
 	{
 //hzm gamefix chrissstrahl - do not print "Server: score" when a player connects while he has the score still displayed, this can happen when a map changes, and scores are shown
-		if ( Q_stricmp( "score" , tempText ) == 0 || Q_stricmpn("!class", tempText,6) == 0 || Q_stricmpn("vote ", tempText, 5) == 0) //[b60011] chrissstrahl - also filter class and vote command
+		if (	Q_stricmp( "score" , tempText.c_str()) == 0 ||
+				Q_stricmpn("!class", tempText.c_str(),6) == 0 ||
+				Q_stricmpn("vote ", tempText.c_str(), 5) == 0) //[b60011] chrissstrahl - also filter class and vote command
 		{
 			return;
 		}
@@ -4511,7 +4514,7 @@ void MultiplayerManager::checkCvar( cvar_t *mp_cvarToCheck, str optionName, MPCv
 				/* 
 				//hzm coop mod chrissstrahl - mp_warmuptime must not be under 1 or it will brake the coop mod
 				//I didn't have time to investigate why, so this is a cheap fix
-				if ( !Q_stricmp( optionName , "mp_warmuptime") ){
+				if ( !Q_stricmp( optionName.c_str() , "mp_warmuptime") ){
 					if ( mp_cvarToCheck->integer < 1 ){ mp_cvarToCheck->integer = 1; }
 					stringToPrint += mp_cvarToCheck->integer;
 				}

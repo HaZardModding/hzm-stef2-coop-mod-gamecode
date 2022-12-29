@@ -92,7 +92,7 @@ void CoopServer::mapLoadEnforce()
 //coop_parserIniSet("serverData.ini", "rebooting", "false", "server"); //[b60012][cleanup]
 
 		//if map to load is not the map that it wants to load, force coop map
-		if (Q_stricmpn(sStartMap.c_str(), level.mapname, MAX_QPATH) != 0) {
+		if (Q_stricmpn(sStartMap.c_str(), level.mapname.c_str(), MAX_QPATH) != 0) { //[b60012] chrissstrahl - fix missing .c_str()
 			gi.Printf(va("COOP MOD - MAP WITH ERROR FOUND:\n%s\n", sErrorMap.c_str()));
 			gi.Printf(va("ERROR MESSAGE READS:\n%s\n", sErrorMsg.c_str()));
 			//load the error map or if fatal, load blackbox map, which has no scripts and no ai
@@ -113,7 +113,7 @@ void CoopServer::mapLoadEnforce()
 //coop_parserIniSet("serverData.ini", "rebooting", "false", "server"); //[b60012][cleanup]
 
 			//if map to load is not the map that it wants to load, force coop map
-			if (Q_stricmpn(sStartMap.c_str(), level.mapname, MAX_QPATH) != 0) {
+			if (Q_stricmpn(sStartMap.c_str(), level.mapname.c_str(), MAX_QPATH) != 0) { //[b60012] chrissstrahl - fix missing .c_str()
 				gi.Printf(va("COOP MOD - RESTORING MAP:\n%s\n", sStartMap.c_str()));
 				gi.SendConsoleCommand(va("map %s\n", sStartMap.c_str()));
 			}
@@ -143,11 +143,12 @@ void CoopServer::enforceLevelSpecificSettings()
 //[b60011] chrissstrahl - enforce variouse settings in levels to ensure the game working correctly
 {
 	//make sure the physics is correct - this can happen due to a coop mod voting option
-	if (	Q_stricmpn(level.mapname,"m6-exterior", MAX_QPATH) == 0 ||
-			Q_stricmpn(level.mapname,"m3l1a-forever", MAX_QPATH) == 0 ||
-			Q_stricmpn(level.mapname,"ent-training1", MAX_QPATH) == 0||			//[b60012] chrissstrahl - added exception
-			Q_stricmpn(level.mapname,"m5l1b-drull_ruins1", MAX_QPATH) == 0||
-			Q_stricmpn(level.mapname,"m5l2b-drull_ruins1", MAX_QPATH) == 0)		//[b60012] chrissstrahl - added exception
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if (	Q_stricmpn(level.mapname.c_str(), "m6-exterior", 11) == 0 ||
+			Q_stricmpn(level.mapname.c_str(),"m3l1a-forever", 13) == 0 ||
+			Q_stricmpn(level.mapname.c_str(),"ent-training1", 13) == 0||			//[b60012] chrissstrahl - added exception
+			Q_stricmpn(level.mapname.c_str(),"m5l1b-drull_ruins1", 18) == 0||
+			Q_stricmpn(level.mapname.c_str(),"m5l2b-drull_ruins1", 18) == 0)		//[b60012] chrissstrahl - added exception
 	{
 		//this can have a delay - com_maxfps force can not, to work right
 		if (level.time > 12) {
@@ -163,7 +164,7 @@ void CoopServer::enforceLevelSpecificSettings()
 		//this is a listen server - the host is also playing on the same instance - there is no seperate server running
 		//this is a default game bug, where fps higher 80 can cause player to get stuck floating above in low grav
 		//this is apperently only happening to the host (SP/MP)
-		if (Q_stricmpn(level.mapname, "m6-exterior", MAX_QPATH) == 0) {
+		if (Q_stricmpn(level.mapname.c_str(), "m6-exterior", 11) == 0) {
 			if (dedicated->integer == 0 && multiplayerManager.inMultiplayer() || g_gametype->integer == GT_SINGLE_PLAYER) {
 				int iFps = coop_returnCvarInteger("com_maxFps");
 				if (iFps > COOP_SERVER_PHYSICS_BUG_MAX_FPS) {
@@ -607,7 +608,8 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 		//mapname starts with m like m11
 		//has m and number followed by a l like m1l
 		//has m and number followed by a l like m11l
-		if (	!Q_stricmp( "ent-deck" , sMapToLoad )  ||
+		 //[b60012] chrissstrahl - fix missing .c_str()
+		if (	!Q_stricmp( "ent-deck" , sMapToLoad.c_str() )  ||
 				s[0] == 'm' && IsNumeric( va("%c",s[1]) ) && s[2] == 'l' ||
 				s[0] == 'm' && IsNumeric( va("%c",s[1]) ) && IsNumeric( va( "%c" , s[1] ) ) && s[2] == 'l'
 			)
@@ -706,7 +708,8 @@ void coop_serverMonitorTikiCache( str sData )
 			return;
 		}
 
-		if ( !sArray || sArray && !Q_stricmp( sArray , "") ){
+		//[b60012] chrissstrahl - fix missing .c_str()
+		if ( !sArray || sArray && !Q_stricmp( sArray.c_str(), "")) {
 			if ( iType == 0 )		{ iTIKIS++;		game.coop_serverLoadedTikiListing[i]	= sData; }
 			else if ( iType == 1 )	{ iSKAS++;		game.coop_serverLoadedSkaListing[i]		= sData; }
 			else if ( iType == 2 )	{ iSPRITES++;	game.coop_serverLoadedSpritesListing[i]	= sData; }
@@ -738,11 +741,12 @@ void coop_serverManageClientData( str sMap )
 	//hzm coop mod chrissstrahl - remember player status if this is a sublevel
 	bool bCoopKeppPlayerStatus = false;
 
-	if ( game.isStandardLevel && game.levelType == MAPTYPE_MISSION && gi.areSublevels( level.mapname , sMap.c_str() ) == 1 ){
+	if ( game.isStandardLevel && game.levelType == MAPTYPE_MISSION && gi.areSublevels( level.mapname.c_str(), sMap.c_str()) == 1) { //[b60012] chrissstrahl - fix missing .c_str()
 		bCoopKeppPlayerStatus = true;
 	}
 	//check if coop map is a sequel (determined by name simularities coop_[paradiseIsland]2 - coop_[gbs]7 )
-	else if ( Q_stricmp( coop_textCleanAllButLettersAndLower( level.mapname ) , coop_textCleanAllButLettersAndLower( sMap.c_str() )) == 0){
+	//[b60012] chrissstrahl - fix missing .c_str()
+	else if ( Q_stricmp( coop_textCleanAllButLettersAndLower( level.mapname ).c_str(), coop_textCleanAllButLettersAndLower(sMap).c_str()) == 0) {
 		bCoopKeppPlayerStatus = true;
 	}
 
@@ -1247,7 +1251,7 @@ void coop_serverCoop()
 void coop_serverSetup( void )
 {
 	static int SetupExecuted = 0;
-	//gi.Printf( va("ARRE SUBLEVELS:  %i\n" , gi.areSublevels( level.mapname , level.nextmap ) ) );
+	//gi.Printf( va("ARRE SUBLEVELS:  %i\n" , gi.areSublevels( level.mapname.c_str() , level.nextmap.c_str() ) ) );
 
 	//hzm coop mod chrissstrahl - register this server to the alternative master server
 	str cvarNum;
@@ -1348,7 +1352,8 @@ void coop_serverSetup( void )
 			str sStartMap = coop_parserIniGet( "serverData.ini" , "startmap" , "server" );
 
 			if ( gi.FS_Exists( va( "maps/%s.bsp" , sStartMap.c_str() ) ) ){
-				if ( Q_stricmp( sMapToLoad , sStartMap) == 0){
+				//[b60012] chrissstrahl - fix missing .c_str()
+				if ( Q_stricmp( sMapToLoad.c_str(), sStartMap.c_str()) == 0) {
 					sMapToLoad = sStartMap;
 				}
 			}
@@ -1437,7 +1442,8 @@ str coop_serverModifiedFile( str standardPath )
 	str sFileExt = coop_returnStringFileExtensionOnly(standardPath);
 
 	//we handle alternative script file extension, so we need to know
-	if (Q_stricmpn(sFileExt, ".scr", 4) == 0){
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if (Q_stricmpn(sFileExt.c_str(), ".scr", 4) == 0) {
 		isScriptFile = true;
 	}
 

@@ -61,21 +61,21 @@ extern CoopChallenges coopChallenges;
 //================================================================
 bool coop_vote_checkvalid(const str &command)
 {
-	if (stricmp(command.c_str(), "coop_skill") == 0 ||
-		stricmp(command.c_str(), "coop_maxspeed") == 0 ||
-		stricmp(command.c_str(), "coop_respawntime") == 0 ||
-		stricmp(command.c_str(), "coop_lms") == 0 ||
-		stricmp(command.c_str(), "coop_airaccelerate") == 0 || //added in [b607]
-		stricmp(command.c_str(), "coop_challenge") == 0 || //added in [b607]
-		stricmp(command.c_str(), "coop_deadbodies") == 0 || //added in [b607]
-		stricmp(command.c_str(), "coop_stasistime") == 0 || //added in [b607]
-		stricmp(command.c_str(), "coop_next") == 0 ||
-		stricmp(command.c_str(), "nextmap") == 0 ||
-		stricmp(command.c_str(), "coop_prev") == 0 ||
-		stricmp(command.c_str(), "coop_awards") == 0 ||
-		stricmp(command.c_str(), "coop_ff") == 0 ||
-		stricmp(command.c_str(), "coop_quit") == 0 || //added [b60011]
-		stricmp(command.c_str(), "coop_flushtikis") == 0 //added [b60012]
+	if (Q_stricmp(command.c_str(), "coop_skill") == 0 ||
+		Q_stricmp(command.c_str(), "coop_maxspeed") == 0 ||
+		Q_stricmp(command.c_str(), "coop_respawntime") == 0 ||
+		Q_stricmp(command.c_str(), "coop_lms") == 0 ||
+		Q_stricmp(command.c_str(), "coop_airaccelerate") == 0 || //added in [b607]
+		Q_stricmp(command.c_str(), "coop_challenge") == 0 || //added in [b607]
+		Q_stricmp(command.c_str(), "coop_deadbodies") == 0 || //added in [b607]
+		Q_stricmp(command.c_str(), "coop_stasistime") == 0 || //added in [b607]
+		Q_stricmp(command.c_str(), "coop_next") == 0 ||
+		Q_stricmp(command.c_str(), "nextmap") == 0 ||
+		Q_stricmp(command.c_str(), "coop_prev") == 0 ||
+		Q_stricmp(command.c_str(), "coop_awards") == 0 ||
+		Q_stricmp(command.c_str(), "coop_ff") == 0 ||
+		Q_stricmp(command.c_str(), "coop_quit") == 0 || //added [b60011]
+		Q_stricmp(command.c_str(), "coop_flushtikis") == 0 //added [b60012]
 		)
 	{
 		return true;
@@ -1228,6 +1228,16 @@ bool coop_vote_flushTikis(const str _voteString)
 	}
 
 	coopServer.flushTikis();
+
+	//flush also clients
+	for (int i = 0; i < maxclients->integer; i++) {
+		if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
+			Player* playerValid = (Player*)g_entities[i].entity;
+			if (playerValid && !(playerValid->edict->svflags & SVF_BOT)) {
+				gi.SendServerCommand(i, "stufftext \"flushtikis\"\n");
+			}
+		}
+	}
 
 	return true;
 }

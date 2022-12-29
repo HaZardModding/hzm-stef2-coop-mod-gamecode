@@ -585,10 +585,11 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 		}
 
 		//check if it is a section
+		//[b60012] chrissstrahl - fix missing .c_str()
 		if ( sLine[0] == '[' )
 		{
 			//make sure the key is written before we leave the correct section
-			if ( !Q_stricmp( sCurrentSection , section ) && !bKeySet )
+			if ( !Q_stricmp( sCurrentSection.c_str(), section) && !bKeySet )
 			{
 				sNewBuffer += va( "%s%s=%s\n" , sExtraLine.c_str() , key.c_str() , newValue.c_str() );
 				//fprintf( pFileWrite , va( "%s%s=%s\n" , sExtraLine.c_str() , key.c_str() , value.c_str() ) );
@@ -599,7 +600,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 			sCurrentSection = coop_trim( sLine.tolower() , " []\t\r\n" ).tolower();
 
 			//write section name
-			if ( !Q_stricmp( sCurrentSection , section ) ) {
+			if ( !Q_stricmp( sCurrentSection.c_str(), section ) ) {
 				bSectionSet = true;
 			}
 			sNewBuffer += va( "%s[%s]\n" , sExtraLine.c_str() , sCurrentSection.c_str() );
@@ -607,10 +608,11 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 		}
 
 		//file ended, and section could not be found
+		//[b60012] chrissstrahl - fix missing .c_str()
 		if ( i == ( lSize - 1 ) )
 		{
 			//if there is no valid section create it now
-			if ( Q_stricmp( sCurrentSection , section ) && !bSectionSet )
+			if ( Q_stricmp( sCurrentSection.c_str(), section ) && !bSectionSet )
 			{
 				bSectionSet = true;
 				sNewBuffer += va( "%s[%s]\n" , sExtraLine.c_str() , section.c_str() );

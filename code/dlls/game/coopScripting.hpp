@@ -33,7 +33,7 @@ public:
 	bool checkIncludedMrm(str sLex);
 	bool checkIncludedMom4(str sLex);
 	bool checkIncludedMom(str sLex);
-	bool checkIncludedNoscript(str sLex);
+	bool checkIncludedNoscript(const str sLex);
 	void checkFuncCall(str sFunctioname, str parameterString[16]);
 	str checkReplaceInclude(str sLex);
 	bool mrnPlayerReady(Player *player);

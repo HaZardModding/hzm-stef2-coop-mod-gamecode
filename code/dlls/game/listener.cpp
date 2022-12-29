@@ -1569,7 +1569,7 @@ void Event::ListDocumentation( const char *mask, qboolean print_to_disk	)
 			continue;
 		}
 		
-		if ( mask && Q_stricmpn( name, mask, l ) )
+		if ( mask && Q_stricmpn( name.c_str(), mask, l)) //[b60012] chrissstrahl - fix missing .c_str()
 		{
 			continue;
 		}

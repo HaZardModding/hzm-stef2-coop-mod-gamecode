@@ -665,7 +665,8 @@ void PuzzleObject::useEvent(Event* event)
 			else {
 				fLastMsgTime = uservar->floatValue();
 			}
-			if (Q_stricmpn("class m", sCoopClass, 7) == 0) {
+			//[b60012] chrissstrahl - fix missing .c_str()
+			if (Q_stricmpn("class m", sCoopClass.c_str(), 7) == 0) {
 				if (player->coopPlayer.className != COOP_CLASS_NAME_MEDIC) {
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
@@ -681,7 +682,8 @@ void PuzzleObject::useEvent(Event* event)
 					return;
 				}
 			}
-			else if (Q_stricmpn("class t", sCoopClass, 7) == 0) {
+			//[b60012] chrissstrahl - fix missing .c_str()
+			else if (Q_stricmpn("class t", sCoopClass.c_str(), 7) == 0) {
 				if (player->coopPlayer.className != COOP_CLASS_NAME_TECHNICIAN) {
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
@@ -696,7 +698,8 @@ void PuzzleObject::useEvent(Event* event)
 					return;
 				}
 			}
-			else if (Q_stricmpn("class h", sCoopClass, 7) == 0) {
+			//[b60012] chrissstrahl - fix missing .c_str()
+			else if (Q_stricmpn("class h", sCoopClass.c_str(), 7) == 0) {
 				if (player->coopPlayer.className != COOP_CLASS_NAME_HEAVYWEAPONS) {
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
@@ -795,12 +798,12 @@ void PuzzleObject::normalUse( Event* event )
 
 	// let script take it from here
 	if ( _itemUsedThread.length() > 0) { //[b60011] chrissstrahl - thread called when puzzle is started to be used [added check as string could be empty now]
-		ExecuteThread(_itemUsedThread, true, this);
+		ExecuteThread(_itemUsedThread.c_str(), true, this);
 	}
 
 	//[b60011] chrissstrahl - thread called when puzzle is started to be used
 	if (_usedStartThread.length() > 0) {
-		ExecuteThread(_usedStartThread, true, this);
+		ExecuteThread(_usedStartThread.c_str(), true, this);
 	}
 
 	_puzzleState = PUZZLE_STATE_ACTIVE_OPEN;

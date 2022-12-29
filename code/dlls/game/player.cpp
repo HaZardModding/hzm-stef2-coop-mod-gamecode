@@ -4560,7 +4560,7 @@ void Player::LevelCleanup( void )
 	// reset stats that aren't supposed to carry across missions, i.e. only between sublevels
 	// should only be called in single player
 
-	if ( !gi.areSublevels( level.mapname , level.nextmap ) && client )
+	if ( !gi.areSublevels( level.mapname.c_str(), level.nextmap.c_str()) && client) //[b60012] chrissstrahl - fix missing .c_str()
 	{
 		client->ps.stats[STAT_ENEMIES_KILLED] = 0;
 		client->ps.stats[STAT_TEAMMATES_KILLED] = 0;

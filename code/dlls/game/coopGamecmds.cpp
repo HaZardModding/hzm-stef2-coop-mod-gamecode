@@ -240,7 +240,12 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 			player->getActiveWeaponName(WEAPON_ANY, weaponName);
 
 			//hzm coop mod chrissstrahl - check if the weapon can be dropped
-			if (Q_stricmpn("None", weaponName, 4) == 0 || Q_stricmpn("EnterpriseCannon", weaponName, 4) == 0 || Q_stricmpn("Batleth", weaponName, 4) == 0 || Q_stricmpn("Phaser", weaponName, 6) == 0 || Q_stricmpn("Tricorder", weaponName, 9) == 0)
+			//[b60012] chrissstrahl - fix missing .c_str()
+			if (	Q_stricmpn("None", weaponName.c_str(), 4) == 0 ||
+					Q_stricmpn("EnterpriseCannon", weaponName.c_str(), 4) == 0 ||
+					Q_stricmpn("Batleth", weaponName.c_str(), 4) == 0 ||
+					Q_stricmpn("Phaser", weaponName.c_str(), 6) == 0 ||
+					Q_stricmpn("Tricorder", weaponName.c_str(), 9) == 0)
 			{
 				//[b60012][cleanup] chrissstrahl - this could be put into a func
 				if (coop_checkPlayerLanguageGerman(player)) {

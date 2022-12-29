@@ -101,10 +101,11 @@ void coop_classRegenerate( Player *player )
 		return;
 	}
 
-	if ( !Q_stricmp( player->coopPlayer.className, COOP_CLASS_NAME_MEDIC) ){
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( !Q_stricmp( player->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC) ){
 		player->AddHealth( COOP_CLASS_REGENERATE_HEALTH );
 	}
-	else if ( !Q_stricmp( player->coopPlayer.className, COOP_CLASS_NAME_TECHNICIAN) ){
+	else if ( !Q_stricmp( player->coopPlayer.className.c_str(), COOP_CLASS_NAME_TECHNICIAN) ){
 		float fArmorCurrent = player->GetArmorValue();
 		if ( ( fArmorCurrent + COOP_CLASS_REGENERATE_ARMOR ) <= COOP_MAX_ARMOR ){
 			fArmorCurrent++;
@@ -115,7 +116,7 @@ void coop_classRegenerate( Player *player )
 			player->ProcessEvent( armorEvent );
 		}
 	}
-	else if ( !Q_stricmp( player->coopPlayer.className, COOP_CLASS_NAME_HEAVYWEAPONS) ){
+	else if ( !Q_stricmp( player->coopPlayer.className.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS) ){
 		player->GiveAmmo( "Fed" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_FED );
 		player->GiveAmmo( "Plasma" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_PLASMA );
 		player->GiveAmmo( "Idryll" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_IDRYLL );
@@ -233,8 +234,10 @@ void coop_classSet( Player *player , str classToSet )
 	if ( player && game.coop_isActive ){
 		str currentClass = classToSet;
 
+		//[b60012] chrissstrahl - fix missing .c_str()
+
 		//hzm coop mod chrissstrahl - see if the player has selected a class before or during this game
-		if ( !Q_stricmp( "current",currentClass ) || !Q_stricmp( "" ,currentClass) ){
+		if ( !Q_stricmp( "current",currentClass.c_str()) || !Q_stricmp( "" ,currentClass.c_str()) ){
 			currentClass = player->coopPlayer.className;
 		}else{
 			player->coopPlayer.lastTimeChangedClass = level.time;
@@ -295,7 +298,8 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	int classGiveAmmoPlasma = 0;
 	int classGiveAmmoIdryll = 0;
 
-	if ( !Q_stricmp( currentClass, COOP_CLASS_NAME_MEDIC) ){
+	//[b60012] chrissstrahl - fix missing .c_str()
+	if ( !Q_stricmp( currentClass.c_str(), COOP_CLASS_NAME_MEDIC) ){
 		classMaxHealth		= COOP_CLASS_MEDIC_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_MEDIC_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_MEDIC_MAX_AMMO_PHASER;
@@ -305,7 +309,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->gravity		= COOP_CLASS_MEDIC_GRAVITY;
 		player->mass		= COOP_CLASS_MEDIC_MASS;
 	}
-	else if ( !Q_stricmp( currentClass, COOP_CLASS_NAME_HEAVYWEAPONS) ){
+	else if ( !Q_stricmp( currentClass.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS) ){
 		classMaxHealth		= COOP_CLASS_HEAVYWEAPONS_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_HEAVYWEAPONS_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_PHASER;
@@ -533,8 +537,11 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 			}
 			else{
 				if ( equipment ){
-					if ( !Q_stricmp( usingPlayer->coopPlayer.className , COOP_CLASS_NAME_MEDIC) ){
+					//[b60012] chrissstrahl - fix missing .c_str()
+					if ( !Q_stricmp( usingPlayer->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC) ){
 						if ( usedPlayer->health >= usedPlayer->max_health ){
+
+							//[b60012][cleanup] chrissstrahl - this could be put into a func
 							if ( coop_checkPlayerLanguageGerman((usingPlayer)) ){//[b607] chrissstrahl - using now correct entity
 								usingPlayer->hudPrint( "^5COOP^8 - Spieler bereits bei voller Gesundheit!\n" );
 							}
@@ -544,14 +551,17 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 							return;
 						}
 
+						//[b60012][cleanup] chrissstrahl - this could be put into a func
 						if ( coop_checkPlayerLanguageGerman(( usingPlayer )) ){
 							usingPlayer->hudPrint( va( "^5COOP^8 - Sie heilten: %s\n" , usedPlayer->client->pers.netname ) );
 						}else{
 							usingPlayer->hudPrint( va( "^5COOP^8 - You healed: %s\n" , usedPlayer->client->pers.netname ) );
 						}
 					}
-					else if ( !Q_stricmp( usingPlayer->coopPlayer.className , COOP_CLASS_NAME_TECHNICIAN) ){
+					else if ( !Q_stricmp( usingPlayer->coopPlayer.className.c_str(), COOP_CLASS_NAME_TECHNICIAN) ){
 						if ( usedPlayer->GetArmorValue() >= COOP_MAX_ARMOR ){
+
+							//[b60012][cleanup] chrissstrahl - this could be put into a func
 							if ( coop_checkPlayerLanguageGerman((usingPlayer)) ){//[b607] chrissstrahl - using now correct entity
 								usingPlayer->hudPrint( va( "^5COOP^8 - %ss Schild ist bereits bei maximler Kapazitaet\n" , usedPlayer->client->pers.netname ) );
 							}else{
@@ -560,6 +570,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 							return;
 						}
 
+						//[b60012][cleanup] chrissstrahl - this could be put into a func
 						if ( coop_checkPlayerLanguageGerman(( usingPlayer )) ){
 							usingPlayer->hudPrint( va( "^5COOP^8 - Sie luden %ss Schild auf\n" , usedPlayer->client->pers.netname ) );
 						}else{
@@ -567,6 +578,8 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						}
 					}
 					else{
+
+						//[b60012][cleanup] chrissstrahl - this could be put into a func
 						if ( coop_checkPlayerLanguageGerman(( usingPlayer )) ){
 							usingPlayer->hudPrint( va( "^5COOP^8 - Sie luden %ss Waffenenergie auf\n" , usedPlayer->client->pers.netname ) );
 						}else{

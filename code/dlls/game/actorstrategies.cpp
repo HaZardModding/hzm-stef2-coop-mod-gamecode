@@ -264,7 +264,7 @@ void ActorThink::UpdateBossHealth( Actor &actor )
 		}
 
 		sEntityName = entityData->stringValue();
-		if ( Q_stricmpn( "name" , sEntityName , 4 ) == 0 ){
+		if ( Q_stricmpn( "name" , sEntityName.c_str(), 4) == 0) { //[b60012] chrissstrahl - fix missing .c_str()
 			if ( sEntityName.length() > 5 ){
 				str tempName = sEntityName;
 				sEntityName = "";

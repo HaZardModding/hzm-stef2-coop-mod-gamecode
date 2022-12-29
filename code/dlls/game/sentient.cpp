@@ -1228,7 +1228,8 @@ Item *Sentient::FindItemByModelname( const char *mdl, Item *current )
 		if ( seeking )
 			continue;
 
-		if ( !Q_stricmp( item->model, tmpmdl ) )
+		//[b60012] chrissstrahl - fix missing .c_str()
+		if ( !Q_stricmp( item->model.c_str(), tmpmdl.c_str()))
 			return item;
 	}
 	
