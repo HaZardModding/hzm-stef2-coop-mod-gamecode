@@ -75,7 +75,7 @@ bool CoopScripting::checkIncludedMom(str sLex)
 	return includedMom;
 }
 
-bool CoopScripting::checkIncludedNoscript(str sLex)
+bool CoopScripting::checkIncludedNoscript(const str sLex)
 {
 	if (coop_returnIntFind(sLex, COOP_SCRIPTING_FILENAME_NOSCRIPT) != -1) {
 		includedNoscript = true;
