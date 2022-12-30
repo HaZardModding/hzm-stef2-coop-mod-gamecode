@@ -303,7 +303,7 @@ void coop_playerRestore( Player *player )
 
 	if ( multiplayerManager.isPlayerSpectator( player ) )
 	{
-		int iTime = atoi( coop_playerGetDataSegment( player , 7 ) );
+		int iTime = atoi( coop_playerGetDataSegment( player , 7 ).c_str() );
 		player->coopPlayer.deathTime = iTime;
 		if ( game.coop_lastmanstanding )
 		{
@@ -332,13 +332,17 @@ void coop_playerRestore( Player *player )
 	//if it is not a mission or custom coop map do not restore
 	if ( game.levelType != MAPTYPE_MISSION && game.levelType != MAPTYPE_CUSTOM )
 		return;
-	
-	str sData = coop_parserIniGet( "serverData.ini" , player->coopPlayer.coopId , "client" );
+
+	str sData = coop_parserIniGet("serverData.ini", player->coopPlayer.coopId, "client");
 	//[b60012] chrissstrahl - fix missing .c_str()
-	if ( !Q_stricmp( sData.c_str(), ""))
+	if (!Q_stricmp(sData.c_str(), ""))
 	{
 		return;
 	}
+	
+	//[b60012] chrissstrahl - if it is not a sublevel, do not restore
+	if (!gi.areSublevels(level.mapname.c_str(), coop_playerGetDataSegment(player, 8).c_str()))
+		return;
 
 	//health armor phaser plasma fed idryll timestamp
 	//100 200 200 200 200 200 1465368163
