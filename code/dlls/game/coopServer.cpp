@@ -126,6 +126,7 @@ void CoopServer::mapLoadEnforce()
 
 void CoopServer::flushTikis()
 {
+	gi.Printf("CoopServer::flushTikis()\n");
 	//[b60011] chrissstrahl - refined the handling, handle dedicated server as before
 	if (dedicated->integer > 0) {
 		Engine_TIKI_FreeAll(1);//call to function pointer
@@ -808,14 +809,29 @@ void coop_serverSaveClientDataWrite( Player *player )
 	if ( !player || g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.isPlayerSpectator( player, SPECTATOR_TYPE_ANY ) )
 		return;
 
-	str sData = va( "%d %d %d %d %d %d %d" ,
+	//[b60012] chrissstrahl - add mapname to client data
+	int iCnt = 0;
+	str sMapname;
+	while ( iCnt < level.mapname.length() ){
+		if (level.mapname[iCnt] == '$' ){
+			iCnt = 999;
+		}
+		else{
+			sMapname += level.mapname[iCnt];
+			iCnt++;
+		}
+	}
+
+
+	str sData = va( "%d %d %d %d %d %d %d %s" ,
 		( int )player->getHealth() ,
 		( int )player->GetArmorValue() ,
 		( int )player->AmmoCount( "Phaser" ) ,
 		( int )player->AmmoCount( "Plasma" ) ,
 		( int )player->AmmoCount( "Fed" ) ,
 		( int )player->AmmoCount( "Idryll" ),
-		( int )player->coopPlayer.deathTime
+		( int )player->coopPlayer.deathTime,
+		sMapname.c_str()
 		);
 
 	//[b60012] chrissstrahl - have a printout
