@@ -1415,7 +1415,7 @@ void G_ExitLevel( void )
 		int iCnt = 0;
 		while ( iCnt < level.nextmap.length() ){
 			if ( level.nextmap[iCnt] == '$' ){
-				iCnt = 99;
+				iCnt = 999;
 			}
 			else{
 				sFileSystemMapname += level.nextmap[iCnt];
