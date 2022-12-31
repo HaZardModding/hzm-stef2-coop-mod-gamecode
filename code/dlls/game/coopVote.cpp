@@ -1229,15 +1229,7 @@ bool coop_vote_flushTikis(const str _voteString)
 
 	coopServer.flushTikis();
 
-	//flush also clients
-	for (int i = 0; i < maxclients->integer; i++) {
-		if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
-			Player* playerValid = (Player*)g_entities[i].entity;
-			if (playerValid && !(playerValid->edict->svflags & SVF_BOT)) {
-				gi.SendServerCommand(i, "stufftext \"flushtikis\"\n");
-			}
-		}
-	}
+	coop_playerFlushTikis();
 
 	return true;
 }
