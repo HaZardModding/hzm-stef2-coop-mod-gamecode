@@ -126,13 +126,13 @@ void CoopServer::mapLoadEnforce()
 
 void CoopServer::flushTikis()
 {
-	gi.Printf("CoopServer::flushTikis()\n");
 	//[b60011] chrissstrahl - refined the handling, handle dedicated server as before
 	if (dedicated->integer > 0) {
 		Engine_TIKI_FreeAll(1);//call to function pointer
 
+		//[b60012] chrissstrahl - disabled, I don't think it does us any good
 		//[b607] chrissstrahl - flushtikis - fixing animation issues of actor and other models
-		gi.SendServerCommand(NULL, "stufftext flushtikis\n");
+		//gi.SendServerCommand(NULL, "stufftext flushtikis\n");
 	}	
 	else {
 		//hzm gameupdate Chrissstrahl - but, handle listen servers with a automatic flushtikis
@@ -145,7 +145,7 @@ void CoopServer::enforceLevelSpecificSettings()
 {
 	//make sure the physics is correct - this can happen due to a coop mod voting option
 	//[b60012] chrissstrahl - fix missing .c_str()
-	if (	Q_stricmpn(level.mapname.c_str(), "m6-exterior", 11) == 0 ||
+	if (	Q_stricmpn(level.mapname.c_str(),"m6-exterior", 11) == 0 ||
 			Q_stricmpn(level.mapname.c_str(),"m3l1a-forever", 13) == 0 ||
 			Q_stricmpn(level.mapname.c_str(),"ent-training1", 13) == 0||			//[b60012] chrissstrahl - added exception
 			Q_stricmpn(level.mapname.c_str(),"m5l1b-drull_ruins1", 18) == 0||
