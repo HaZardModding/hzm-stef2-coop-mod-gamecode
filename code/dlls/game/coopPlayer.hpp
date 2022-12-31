@@ -184,6 +184,8 @@ public:
 
 
 extern pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
+//[b60012] chrissstrahl - try to fix tiki model anim cache overload issue
+void coop_playerFlushTikis();
 //[b607] chrissstrahl - add/remove/update playername for communicator menu
 void coop_playerCommunicator(Player* player, int iAdd);
 //[b607] chrissstrahl - added for coop admin login

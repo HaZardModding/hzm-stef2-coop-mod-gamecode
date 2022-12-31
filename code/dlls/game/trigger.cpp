@@ -2263,6 +2263,9 @@ void TriggerChangeLevel::ChangeLevel( Event *ev )
 	//hzm coop mod chrissstrahl - check if the player data should be saved or not
 	coop_serverManageClientData( map );
 
+	//[b60012] chrissstrahl - try to fix tiki model anim cache overload issue
+	coop_playerFlushTikis();
+
 	// if noexit, do a ton of damage to other
 	if ( multiplayerManager.inMultiplayer() && multiplayerManager.checkFlag( MP_FLAG_SAME_LEVEL ) && ( other != world ) )
 	{

@@ -51,6 +51,31 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+
+//=========================================================[b60012]
+// Name:        coop_playerFlushTikis
+// Class:       -
+//              
+// Description: [b60012] Flushtikis for clients - try to fix tiki model anim cache overload issue
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void coop_playerFlushTikis()
+{
+	//flush also clients
+	for (int i = 0; i < maxclients->integer; i++) {
+		if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
+			Player* playerValid = (Player*)g_entities[i].entity;
+			if (playerValid && !(playerValid->edict->svflags & SVF_BOT)) {
+				DelayedServerCommand(i, "flushtikis");
+			}
+		}
+	}
+}
+	
 //[b607] chrissstrahl - updated and improved and also fixed player names with space not showing
 //================================================================
 // Name:        coop_playerCommunicator
