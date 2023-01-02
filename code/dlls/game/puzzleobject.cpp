@@ -232,6 +232,11 @@ void PuzzleObject::cancelPlayer(Player* player)
 		hideTimerHud(player);
 		_usedTime = 0.0f;
 
+		if (_canceledThread.length())
+		{
+			ProcessEvent(EV_PuzzleObject_Canceled);
+		}
+
 		//switch to any weapon, avoids the issue that the player might start to modulate to early again
 		Weapon* weap = player->BestWeapon();
 		if (weap) {
@@ -919,7 +924,8 @@ void PuzzleObject::timedPuzzleCanceled( void )
 	{
 		Entity* ePlayer = (Entity *)activator;
 		hideTimerHud( (Player *)ePlayer );
-		activator = NULL;
+		//[b60013] chrissstrahl - disabled to fix cancelthread not being able to accsess last activator
+		//activator = NULL;
 	}
 
 	if ( _canceledThread.length() )
@@ -983,6 +989,8 @@ void PuzzleObject::reset( Event* event )
 
 	_lastTimeUsed = 0.0f;
 	_usedTime = 0.0f;
+
+
 	activator = NULL;
 	entityVars.SetVariable( "_activator" , -1.0f );
 }
