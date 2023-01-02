@@ -1662,6 +1662,17 @@ void MultiplayerModeBase::_giveInitialConditions( Player *player )
 		return;
 	}
 
+	//[b60013] chrissstrahl gameupgrade - on Bat'leth Maps give only the Sword of Honor
+	if (Q_stricmpn(level.mapname.c_str(), "bl_", 3) == 0) {
+		
+		str sBatleth = "models/weapons/worldmodel-batleth.tik";
+		multiplayerManager.givePlayerItem(player->entnum, sBatleth.c_str());
+		Event* ev = new Event("use");
+		ev->AddString(sBatleth.c_str());
+		player->ProcessEvent(ev); // deletes the created Event
+		return;
+	}
+
 	// Give all the weapons to the player
 
 	for ( idx=1; idx <= _weaponList.NumObjects(); idx++ )
