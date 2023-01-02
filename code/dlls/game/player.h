@@ -290,6 +290,29 @@ class Player : public Sentient
 		str					getPowerupModel(void);
 		str					getPowerupName(void);
 
+		//[b60013] chrissstrahl - checks if player is pressing backwards button
+		void				checkForward(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing backwards button
+		void				checkBackward(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing left turn or strafe button
+		void				checkLeft(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing right turn or strafe button
+		void				checkRight(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing lean right button
+		void				checkLeanRight(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing lean left button
+		void				checkLeanLeft(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing drop rune button
+		void				checkDropRune(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing run button
+		void				checkRun(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing reload button
+		void				checkReload(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing crouch button
+		void				checkCrouch(Event* ev);
+		//[b60011] chrissstrahl - return if player is pressing jump or not
+		void				checkJump(Event* ev);
+
 		//[b60011] chrissstrahl - return if player is pressing use or not
 		void				checkUsePressing(Event* ev);
 		//[b60011] chrissstrahl - checks if player is pressing fire button

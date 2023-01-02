@@ -1597,6 +1597,116 @@ Event EV_Player_HasLanguageEnglish
 	"Check if Player has English Language of the game"
 );
 
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing jump button
+Event EV_Player_checkCrouch
+(
+	"checkCrouch",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing Crouch button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing jump button
+Event EV_Player_checkJump
+(
+	"checkJump",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing jump button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing forward button
+Event EV_Player_checkForward
+(
+	"checkForward",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing forward button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing backward button
+Event EV_Player_checkBackward
+(
+	"checkBackward",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing backward button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing left button
+Event EV_Player_checkLeft
+(
+	"checkLeft",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing left button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing right button
+Event EV_Player_checkRight
+(
+	"checkRight",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing right button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing lean right button
+Event EV_Player_checkLeanRight
+(
+	"checkLeanRight",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing lean right button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing lean right button
+Event EV_Player_checkLeanLeft
+(
+	"checkLeanLeft",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing lean left button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing drop rune button
+Event EV_Player_checkDropRune
+(
+	"checkDropRune",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing drop rune button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing run button
+Event EV_Player_checkRun
+(
+	"checkRun",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing run button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing reload button
+Event EV_Player_checkReload
+(
+	"checkReload",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing reload button"
+);
+
 /*
 ==============================================================================
 
@@ -1822,6 +1932,30 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getTeamName,					&Player::getTeamName },
 	{ &EV_Player_getTeamScore,					&Player::getTeamScore },
 	{ &EV_Player_getCoopVersion,				&Player::getCoopVersion },
+	
+	//[b60013] chrissstrahl - checks if player is pressing fowrward button
+	{ &EV_Player_checkForward,					&Player::checkForward },
+	//[b60013] chrissstrahl - checks if player is pressing backward button
+	{ &EV_Player_checkBackward,					&Player::checkBackward },
+	//[b60013] chrissstrahl - checks if player is pressing left turn or strafe button
+	{ &EV_Player_checkLeft,						&Player::checkLeft },
+	//[b60013] chrissstrahl - checks if player is pressing right turn or strafe button
+	{ &EV_Player_checkRight,					&Player::checkRight },
+	//[b60013] chrissstrahl - checks if player is pressing lean right button
+	{ &EV_Player_checkLeanRight,				&Player::checkLeanRight },
+	//[b60013] chrissstrahl - checks if player is pressing lean left button
+	{ &EV_Player_checkLeanLeft,					&Player::checkLeanLeft },
+	//[b60013] chrissstrahl - checks if player is pressing drop rune button
+	{ &EV_Player_checkDropRune,					&Player::checkDropRune },
+	//[b60013] chrissstrahl - checks if player is pressing run button
+	{ &EV_Player_checkRun,						&Player::checkRun },
+	//[b60013] chrissstrahl - checks if player is pressing reload button
+	{ &EV_Player_checkReload,					&Player::checkReload },
+	//[b60013] chrissstrahl - checks if player is pressing jump button
+	{ &EV_Player_checkJump,						&Player::checkJump },
+	//[b60013] chrissstrahl - checks if player is pressing crouch fire button
+	{ &EV_Player_checkCrouch,					&Player::checkCrouch },
+
 	//[b60011] chrissstrahl - checks if player is using the use button
 	{ &EV_Player_checkUse,						&Player::checkUsePressing },
 	//[b60011] chrissstrahl - checks if player is in third person
@@ -1850,6 +1984,71 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_HasLanguageEnglish ,				&Player::hasLanguageEnglish },
 	{ NULL , NULL }
 };
+
+//[b60013] chrissstrahl - checks if player is pressing crouch button
+void Player::checkCrouch(Event* ev)
+{
+	ev->ReturnInteger((int)GetCrouch());
+}
+
+//[b60013] chrissstrahl - checks if player is pressing jump button
+void Player::checkJump(Event* ev)
+{
+	qboolean bJump = last_ucmd.upmove > 0;
+	ev->ReturnInteger((int)bJump);
+}
+
+//[b60013] chrissstrahl - checks if player is pressing forwrads button
+void Player::checkForward(Event* ev)
+{
+	qboolean bJump = last_ucmd.forwardmove > 0;
+	ev->ReturnInteger((int)bJump);
+}
+//[b60013] chrissstrahl - checks if player is pressing backwards button
+void Player::checkBackward(Event* ev)
+{
+	qboolean bJump = last_ucmd.forwardmove < 0;
+	ev->ReturnInteger((int)bJump);
+}
+//[b60013] chrissstrahl - checks if player is pressing left strafe button
+void Player::checkLeft(Event* ev)
+{
+	qboolean bJump = last_ucmd.rightmove < 0;
+	ev->ReturnInteger((int)bJump);
+}
+//[b60013] chrissstrahl - checks if player is pressing right strafe button
+void Player::checkRight(Event* ev)
+{
+	qboolean bJump = last_ucmd.rightmove > 0;
+	ev->ReturnInteger((int)bJump);
+}
+//[b60013] chrissstrahl - checks if player is pressing lean left button
+void Player::checkLeanLeft(Event* ev)
+{
+	qboolean bJump = last_ucmd.lean > 0;
+	ev->ReturnInteger((int)bJump);
+}
+//[b60013] chrissstrahl - checks if player is pressing lean right button
+void Player::checkLeanRight(Event* ev)
+{
+	qboolean bJump = last_ucmd.lean < 0;
+	ev->ReturnInteger((int)bJump);
+}
+//[b60013] chrissstrahl - checks if player is pressing drop rune button
+void Player::checkDropRune(Event* ev)
+{
+	ev->ReturnInteger((last_ucmd.buttons & BUTTON_DROP_RUNE) != 0);
+}
+//[b60013] chrissstrahl - checks if player is pressing run button
+void Player::checkRun(Event* ev)
+{
+	ev->ReturnInteger((last_ucmd.buttons & BUTTON_RUN) != 0);
+}
+//[b60013] chrissstrahl - checks if player is pressing reload button
+void Player::checkReload(Event* ev)
+{
+	ev->ReturnInteger((last_ucmd.buttons & BUTTON_RELOAD) != 0);
+}
 
 //[b60012] chrissstrahl - cancel player modulating event - if player gets hurt or so
 void Player::cancelPuzzle()
