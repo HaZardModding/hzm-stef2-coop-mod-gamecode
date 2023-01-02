@@ -1731,19 +1731,24 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	//multiplayer=0,mission=1,igm=2,secret=3,customcoop=4,notsupported=5
 	type = MAPTYPE_MULTIPLAYER;
 	standard = false;
-/*
-1 = singlePlayerMission
-2 = singlePlayerIgm
-3 = singlePlayerSecret and training
-4 = singlePlayer
-5 = multiPlayer
-6 = coopIncluded
-*/
+
+	//check if it is a multiplayer map - it is faster if we can check the name prefix first - reduce file read
+	if (Q_stricmpn(sLevelname.c_str(), "dm_", 3) == 0 ||
+		Q_stricmpn(sLevelname.c_str(), "aah_", 4) == 0 ||
+		Q_stricmpn(sLevelname.c_str(), "ctf_", 4) == 0 ||
+		Q_stricmpn(sLevelname.c_str(), "hm_", 3) == 0) {
+		//check if it is a standard multiplayer map
+		if (coop_parserIsItemInCategory("maplist.ini", sLevelname, "multiplayer")) {
+			type = MAPTYPE_MULTIPLAYER;
+			return true;
+		}
+	}
+
 	//check if it is a custom coop (or testmap) map, it is faster if we can check the name prefix first - reduce file read
-	if ( strnicmp( sLevelname.c_str() , "coop_", 5 ) == 0 ||
-		strnicmp( sLevelname.c_str() , "sp_" , 4 ) == 0 || //new added support for singleplayer maps
-		strnicmp( sLevelname.c_str() , "prf_" , 4 ) == 0 ||
-		strnicmp( sLevelname.c_str() , "rpg_" , 4 ) == 0 )
+	if (Q_stricmpn( sLevelname.c_str() , "coop_", 5 ) == 0 ||
+		Q_stricmpn( sLevelname.c_str() , "sp_" , 4 ) == 0 || //new added support for singleplayer maps
+		Q_stricmpn( sLevelname.c_str() , "prf_" , 4 ) == 0 ||
+		Q_stricmpn( sLevelname.c_str() , "rpg_" , 4 ) == 0 )
 	{
 		type = MAPTYPE_CUSTOM;
 
@@ -1754,16 +1759,9 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 		//if map is not listed, it is not known, and mostlikley not provided with the coop mod
 		return false;
 	}
-	//check if it is a multiplayer map - it is faster if we can check the name prefix first - reduce file read
-	if ( strnicmp( sLevelname.c_str() , "dm_" , 3 ) == 0 || strnicmp( sLevelname.c_str() , "aah_" , 4 ) == 0  || strnicmp( sLevelname.c_str() , "ctf_" , 4 ) == 0 || strnicmp( sLevelname.c_str() , "hm_" , 3 ) == 0 ) {
-		//check if it is a standard multiplayer map
-		if ( coop_parserIsItemInCategory( "maplist.ini" , sLevelname , "multiplayer" ) ) {
-			type = MAPTYPE_MULTIPLAYER;
-			return true;
-		}
-	}
+
 	//check if it is a igm map - it is faster if we can check the name prefix first - reduce file read
-	if ( strnicmp( sLevelname.c_str() , "ent-deck" , 8 ) == 0 ) {
+	if (Q_stricmpn( sLevelname.c_str() , "ent-deck" , 8 ) == 0 ) {
 		//check if it is a coop map - igm
 		if ( coop_parserIsItemInCategory( "maplist.ini" , sLevelname , "singleplayerigm" ) ) {
 			type = MAPTYPE_IGM;
@@ -1773,7 +1771,9 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	}
 	//check if it is a coop map - this is most likley
 	//check if it is a igm map - it is faster if we can check the name prefix first - reduce file read
-	if ( strnicmp( sLevelname.c_str() , "m" , 1 ) == 0 && coop_returnIntFind( sLevelname , "-" ) != -1 || strnicmp( sLevelname.c_str() , "credits" , 7 ) == 0 ) {
+	if (Q_stricmpn( sLevelname.c_str() , "m" , 1 ) == 0 &&
+		coop_returnIntFind( sLevelname , "-" ) != -1 ||
+		Q_stricmpn( sLevelname.c_str() , "credits" , 7 ) == 0 ) {
 		
 		if ( coop_parserIsItemInCategory( "maplist.ini" , sLevelname , "singleplayermission" ) ) {
 			type = MAPTYPE_MISSION;
