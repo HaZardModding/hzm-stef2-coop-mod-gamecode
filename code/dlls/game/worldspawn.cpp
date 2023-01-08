@@ -478,6 +478,15 @@ Event EV_World_AutoFailure
 	"",
 	"event to start a mission failure on empty server"
 );
+//[b60013] chrissstrahl - allow to grab physics vars
+Event EV_World_GetPhysicsVar
+(
+	"getPhysicsVar",
+	EV_SCRIPTONLY,
+	"@fs",
+	"return-float physicsvar-name",
+	"returns gravity, airaccelerate and maxspeed Physics values"
+);
 
 CLASS_DECLARATION( Entity, World, "worldspawn" )
 {
@@ -528,6 +537,8 @@ CLASS_DECLARATION( Entity, World, "worldspawn" )
 	{ &EV_World_RemoveAvailableViewMode,	&World::removeAvailableViewMode },
 	{ &EV_World_ClearAvailableViewModes,	&World::clearAvailableViewModes },
 	{ &EV_World_CanShakeCamera,				&World::setCanShakeCamera },
+	//[b60013] chrissstrahl - allow to grab physics vars
+	{ &EV_World_GetPhysicsVar,				&World::getPhysicsVar },
 	//hzm coop mod chrissstrahl - allow delayed loading of map
 	{ &EV_World_LoadMap,					&World::loadMap } ,
 	{ &EV_World_AutoFailure,				&World::autoFailure } ,
@@ -535,6 +546,29 @@ CLASS_DECLARATION( Entity, World, "worldspawn" )
 	{ NULL, NULL }
 };
 
+//[b60013] Chrissstrahl - allow to return physics var value via script
+void World::getPhysicsVar(Event* ev) {
+	float fValue = -1;
+	str sName = ev->GetString(1);
+	if (sName.length()) {
+		fValue = getPhysicsVar(sName.c_str());
+		if (fValue == -1) {
+			sName.tolower();
+
+			if (sName == "maxspeed") { sName = "sv_maxspeed"; }
+			else if (sName == "airaccelerate") { sName = "sv_airaccelerate"; }
+			else if (sName == "gravity") { sName = "sv_gravity"; }
+			else { gi.Printf("getPhysicsVar - unknown Physics Var Name: %s\nKnown names are: maxspeed, airaccelerate and gravity\n", sName.c_str()); }
+			cvar_t* cvar = gi.cvar_get(sName.c_str());
+
+			if (cvar) {
+				ev->ReturnFloat((float)cvar->integer);
+				return;
+			}
+		}
+	}
+	ev->ReturnFloat(fValue);
+}
 
 //[b607] chrissstrahl
 void World::autoFailure(Event *ev)

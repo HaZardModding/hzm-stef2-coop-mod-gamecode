@@ -281,6 +281,8 @@ public:
 	
 	virtual void	Archive( Archiver &arc );
 
+	//[b60013] chrissstrahl - allow to grab physics vars
+	void			getPhysicsVar(Event* ev);
 	//hzm coop mod chrissstrahl - allow delayed loading of maps
 	void			loadMap( Event *ev );
 	void			autoFailure(Event *ev);
