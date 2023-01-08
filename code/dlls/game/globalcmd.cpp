@@ -1163,7 +1163,7 @@ Event EV_ScriptThread_getIntStringFind
 	EV_SCRIPTONLY ,
 	"@fss" ,
 	"retunedFloat sourceString findString" ,
-	"Returns position at wich the given string was found otherwise, if not found return -1"
+	"Returns position at wich the given string was found starts at 0, if not found returns -1"
 );
 Event EV_ScriptThread_getVectorScriptVariable
 (
@@ -2214,7 +2214,8 @@ void CThread::getIntStringFind( Event *ev )
 {
 	str sSource = ev->GetString( 1 );
 	str sFind = ev->GetString( 2 );
-	ev->ReturnFloat( coop_returnIntFind( sSource , sFind ) );
+	int iFind = coop_returnIntFind(sSource, sFind);
+	ev->ReturnFloat( iFind );
 }
 void CThread::setVectorScriptVariable( Event *ev )
 {

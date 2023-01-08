@@ -1387,7 +1387,7 @@ Event EV_Player_RunThread
 //[b60011] chrissstrahl - get player viewangle
 Event EV_Player_GetViewangles
 (
-	"getViewangles",
+	"getViewAngles",
 	EV_DEFAULT,
 	"@v",
 	"vector-viewangle",
