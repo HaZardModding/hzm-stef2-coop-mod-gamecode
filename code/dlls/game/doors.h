@@ -36,6 +36,9 @@ extern Event EV_Door_SetSpeed;
 extern Event EV_Door_Lock;
 extern Event EV_Door_Unlock;
 
+//[b60013] chrissstrahl - allow to get the state of the door, so we know when it is really closed
+extern Event EV_Door_GetState;
+
 class Door;
 
 typedef SafePtr<Door> DoorPtr;
@@ -92,6 +95,9 @@ class Door : public ScriptSlave
 		CLASS_PROTOTYPE( Door );
 
 		qboolean	locked;
+		
+		//[b60013] chrissstrahl - allow to get the state of the door, so we know when it is really closed
+		void				GetDoorState(Event* ev);
 
 							Door();
 		qboolean			isOpen( void );

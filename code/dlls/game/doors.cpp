@@ -191,6 +191,16 @@ Event EV_Door_ExtraTriggerSize
 	"Sets the extra trigger size to use for a door, defaults to (0 0 0)."
 );
 
+//[b60013] chrissstrahl - allow to get the state of the door, so we know when it is really closed
+Event EV_Door_GetState
+(
+	"getDoorState",
+	EV_SCRIPTONLY,
+	"@f",
+	"State-Number",
+	"Gets Current State of Door open=1,opening=2,closeing=3,closed=4"
+);
+
 #define DOOR_START_OPEN			1
 #define DOOR_OPEN_DIRECTION		2
 #define DOOR_DONT_LINK			4
@@ -244,9 +254,17 @@ CLASS_DECLARATION( ScriptSlave, Door, "NormalDoor" )
 	{ &EV_Touch,						NULL },
 	{ &EV_SetGameplayDamage,			&Door::setDamage },
 	{ &EV_Door_ExtraTriggerSize,		&Door::setExtraTriggerSize },
+	//[b60013] chrissstrahl - allow to get the state of the door, so we know when it is really closed
+	{ &EV_Door_GetState,				&Door::GetDoorState },
 
 	{ NULL, NULL }
 };
+
+void Door::GetDoorState(Event *ev)
+{
+	ev->ReturnFloat(state);
+}
+
 
 Door::Door()
 {
