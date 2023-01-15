@@ -290,6 +290,12 @@ class Player : public Sentient
 		str					getPowerupModel(void);
 		str					getPowerupName(void);
 
+		//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
+		void				getBackpackAttachOffset(Event* ev);
+		void				getBackpackAttachAngles(Event* ev);
+		void				getFlagAttachOffset(Event* ev);
+		void				getFlagAttachAngles(Event* ev);
+
 		//[b60013] chrissstrahl - checks if player is pressing backwards button
 		void				checkForward(Event* ev);
 		//[b60013] chrissstrahl - checks if player is pressing backwards button

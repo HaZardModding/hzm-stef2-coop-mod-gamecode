@@ -1706,6 +1706,39 @@ Event EV_Player_checkReload
 	"return-int",
 	"Returns Int/Bool if player is pressing reload button"
 );
+//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
+Event EV_Player_getBackpackAttachOffset
+(
+	"getBackpackAttachOffset",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined offset data for backpacks"
+);
+Event EV_Player_getBackpackAttachAngles
+(
+	"getBackpackAttachAngles",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined Angle data for backpacks"
+);
+Event EV_Player_getFlagAttachOffset
+(
+	"getFlagAttachOffset",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined offset data for CTF Flags"
+);
+Event EV_Player_getFlagAttachAngles
+(
+	"getFlagAttachAngles",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined Angle data for CTF Flags"
+);
 
 /*
 ==============================================================================
@@ -1933,6 +1966,12 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getTeamScore,					&Player::getTeamScore },
 	{ &EV_Player_getCoopVersion,				&Player::getCoopVersion },
 	
+	//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
+	{ &EV_Player_getBackpackAttachOffset,				&Player::getBackpackAttachOffset },
+	{ &EV_Player_getBackpackAttachAngles,				&Player::getBackpackAttachAngles },
+	{ &EV_Player_getFlagAttachOffset,					&Player::getFlagAttachOffset },
+	{ &EV_Player_getFlagAttachAngles,					&Player::getFlagAttachAngles },
+
 	//[b60013] chrissstrahl - checks if player is pressing fowrward button
 	{ &EV_Player_checkForward,					&Player::checkForward },
 	//[b60013] chrissstrahl - checks if player is pressing backward button
@@ -1984,6 +2023,28 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_HasLanguageEnglish ,				&Player::hasLanguageEnglish },
 	{ NULL , NULL }
 };
+
+//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
+void Player::getBackpackAttachOffset(Event *ev)
+{
+	ev->ReturnVector(_backpackAttachOffset);
+}
+
+void Player::getBackpackAttachAngles(Event *ev)
+{
+	ev->ReturnVector(_backpackAttachAngles);
+}
+
+void Player::getFlagAttachOffset(Event *ev)
+{
+	ev->ReturnVector(_flagAttachOffset);
+}
+
+void Player::getFlagAttachAngles(Event *ev)
+{
+	ev->ReturnVector(_flagAttachAngles);
+}
+
 
 //[b60013] chrissstrahl - checks if player is pressing crouch button
 void Player::checkCrouch(Event* ev)
