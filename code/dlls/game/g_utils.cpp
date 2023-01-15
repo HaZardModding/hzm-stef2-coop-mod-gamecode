@@ -779,21 +779,28 @@ void SelectSpawnPoint( Vector &org, Vector &ang, str &thread )
 		}
 	}
 	
+	//[b60013] chrissstrahl - allow for a better error message
+	str sError = "No Singleplayer info_player_start found!";
 	if ( !spot && !level.spawnpoint.length() )
 	{
 		// there wasn't a spawnpoint without a target, so use any
 		spot = G_FindClass( NULL, "info_player_start" );
+
+		sError += " Please add it to the level!\n";
+	}
+	else {
+		sError += va(" With targetname: %s", level.spawnpoint.c_str());
 	}
 	
 	if ( !spot )
 	{
 		//hzm coop mod chrissstrahl - quit complete game, allow reboot if server is dedicated
-		if ( coop_serverError( va("No spawn! No info_player_start with targetname: %s\n", level.spawnpoint.c_str() ) , true ) ) {
+		if ( coop_serverError(sError, true ) ) {
 			return;
 		}
 		else {
 			//hzm gamefix - check for spawn targetname. this error message is way more informative to mappers
-			gi.Error( ERR_DROP, "No spawn! No info_player_start with targetname: %s\n", level.spawnpoint.c_str() );
+			gi.Error( ERR_DROP, sError.c_str() );
 		}
 	}
 	
