@@ -330,10 +330,14 @@ void ModeTeamBase::addPlayerToTeam( Player *player, Team *team )
 		else
 		{
 			if ( level.time < 20.0f ){//print warning, so that the mapper knows whats wrong
-				coop_textHudprint( player , "^1WARNING:^3 Map is missing info_player_deathmatch MP-Spawn\n" );
-				coop_textHudprint( player , "^3NOTE:^8 Spawning player at Singleplayer-Spawn info_player_start\n" );
+				coop_textHudprint( player , "^1WARNING:^3 Map is missing valid info_player_deathmatch MP-Spawn\n" );
+				coop_textHudprint( player , "^3NOTE:^8 Spawning player at any info_player_deathmatch, then any info_player_start\n" );
 			}
-			coop_playerSpawnTrySpSpawn( player , false );
+			
+			//[b60013] chrissstrahl - find alternative spawn
+			if (!coop_playerSpawnTryTdmSpawn(player,false)) {
+				coop_playerSpawnTrySpSpawn( player , false );
+			}
 		}
 		//end of hzm
 	}

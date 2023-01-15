@@ -1009,10 +1009,63 @@ bool coop_playerSpawnTrySpSpawn( Player *player , bool bRespawning )
 		}
 		else{
 			gi.Printf( "ERROR: No info_player_start or info_player_deathmatch found, spawning player at '0 0 0'\n" );
-			return false;		
+			return false;
 		}
 	}
 }
+
+
+//=========================================================[b60013]
+// Name:        coop_playerSpawnTryTdmSpawn
+// Class:       -
+//              
+// Description: Tries to spawn the player at a info_player_start spawnloacation
+//              
+// Parameters:  Player player
+//              
+// Returns:     bool
+//              
+//================================================================
+bool coop_playerSpawnTryTdmSpawn(Player* player, bool bRespawning)
+{
+	if (!player) {
+		return false;
+	}
+
+	player->_makeSolidASAP = true;
+	player->_makeSolidASAPTime = 0.25f;
+
+	Vector vSpawnOrigin, vAngles;
+	vSpawnOrigin[0] = 0.0f;
+	vSpawnOrigin[1] = 0.0f;
+	vSpawnOrigin[2] = 0.0f;
+	vAngles[0] = 0.0f;
+	vAngles[1] = 0.0f;
+	vAngles[2] = 0.0f;
+	if (bRespawning) {
+		//spawning the player at where he died restore viewangles of the player as they where before he died
+		vAngles[0] = 0.0f;
+		vAngles[1] = player->coopPlayer.deathViewangleY;
+		vAngles[2] = 0.0f;
+		player->SetViewAngles(vAngles);
+		return true;
+	}
+	else {
+		gi.Printf("No valid spawn info_player_deathmatch found for this mp_gametype.\nTrying any info_player_deathmatch, if that fails player might spawn at '0 0 0'\n");
+
+		Entity* spawnLocation;
+		spawnLocation = G_FindClass(NULL, "info_player_deathmatch");
+		if (spawnLocation) {
+			player->WarpToPoint(spawnLocation);
+			return true;
+		}
+		else {
+			gi.Printf("No info_player_deathmatch found!\n");
+			return false;
+		}
+	}
+}
+
 
 //================================================================
 // Name:        coop_playerPlaceAtSpawn
