@@ -1853,9 +1853,31 @@ Event EV_GetLastAttacker
 	"Returns entity that did last attack or inflicted damage"
 );
 
+//[b60013] chrissstrahl - allow to turn off shadow on odenary entities
+Event EV_Entity_TurnOffShadow
+(
+	"noshadow",
+	EV_TIKIONLY,
+	NULL,
+	NULL,
+	"Turns off the shadow (plus extra light and precise shadow) for this entity."
+);
+//[b60013] chrissstrahl - allow to turn on shadow on odenary entities
+Event EV_Entity_TurnOnShadow
+(
+	"shadow",
+	EV_TIKIONLY,
+	NULL,
+	NULL,
+	"Turns on the shadow (plus extra light and precise shadow) for this entity."
+);
+
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
-	//[b60012] chrissstrahl - Returns entity that did last attack or inflicted damage on this entity
+		//[b60013] chrissstrahl - allow to turn on/off shadow on odenary entities
+		{ &EV_Entity_TurnOffShadow,			&Entity::TurnOffShadow },
+		{ &EV_Entity_TurnOnShadow,			&Entity::TurnOnShadow },
+		//[b60012] chrissstrahl - Returns entity that did last attack or inflicted damage on this entity
 		{ &EV_GetLastAttacker,				&Entity::getLastAttacker },
 		//[b60012] chrissstrahl - allow to remove a vewmode from a entity
 		{ &EV_RemoveViewMode,				&Entity::removeAffectingViewMode },
@@ -2078,6 +2100,40 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	
 		{ NULL, NULL }
 	};
+
+//--------------------------------------------------------[b60013]
+// Name:			TurnOffShadow
+// Class:			Entity
+//
+// Description:		Turns off shadow for this entity
+//
+// Parameters:		Event *ev
+//
+// Returns:			None
+//----------------------------------------------------------------
+void Entity::TurnOffShadow(Event* ev)
+{
+	edict->s.renderfx &= ~RF_SHADOW;
+	edict->s.renderfx &= ~RF_EXTRALIGHT;
+	edict->s.renderfx &= ~RF_SHADOW_PRECISE;
+}
+
+//--------------------------------------------------------[b60013]
+// Name:			TurnOnShadow
+// Class:			Entity
+//
+// Description:		Turns on shadow for this entity
+//
+// Parameters:		Event *ev
+//
+// Returns:			None
+//----------------------------------------------------------------
+void Entity::TurnOnShadow(Event* ev)
+{
+	edict->s.renderfx |= RF_EXTRALIGHT;
+	edict->s.renderfx |= RF_SHADOW_PRECISE;
+	edict->s.renderfx |= RF_SHADOW;
+}
 
 //--------------------------------------------------------[b60012]
 // Name:			getLastAttacker
@@ -2480,6 +2536,11 @@ void Entity::Setup()
 	_missionObjective = false;
 
 	_networkDetail = false;
+
+	//[b60013] chrisstrahl - test how this works with all entites shadow on on default
+	edict->s.renderfx |= RF_EXTRALIGHT;
+	edict->s.renderfx |= RF_SHADOW_PRECISE;
+	edict->s.renderfx |= RF_SHADOW;
 	}
 
 Entity::~Entity()
@@ -4026,10 +4087,13 @@ void Entity::FadeNoRemove
 
    if ( ev->NumArgs() > 0 )
       {
-      rate = ev->GetFloat( 1 );
-      assert( rate );
-      if ( rate > 0.0f )
-         rate = FRAMETIME / rate;
+		  rate = ev->GetFloat( 1 );
+      
+		  //[b60013] chrissstrahl - allow 0 time, set it to 0.03
+		  //assert( rate );
+		  if (rate > 0.0f) {
+			  rate = FRAMETIME / rate;
+		  }
       }
    else
       {
@@ -10881,8 +10945,13 @@ void Entity::traceHitsEntity( Event *ev )
 
 	// Determine if we hit this entity
 
-	if ( trace.ent && entityToCheck && trace.ent->entity == entityToCheck )
-		ev->ReturnFloat( 1.0f );
+	if (trace.ent && entityToCheck && trace.ent->entity == entityToCheck) {
+		
+		//[b613] chrissstrahl - testing
+		//gi.Printf(va("traceHitsEntity %s hits %\n", this->targetname.c_str(), trace.ent->entity->targetname.c_str()));
+		
+		ev->ReturnFloat(1.0f);
+	}
 	else
 		ev->ReturnFloat( 0.0f );
 }

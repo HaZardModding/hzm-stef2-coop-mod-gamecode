@@ -463,6 +463,10 @@ class Entity : public Listener
 		void				SetUserVar9(Event* ev);
 		void				SetUserVar10(Event* ev);
 
+		//[b60013] chrissstrahl - allow to turn on and off shadows on entities
+		void				TurnOffShadow(Event* ev);
+		void				TurnOnShadow(Event* ev);
+
 		//[b60012] chrissstrahl - allow to keep track of last inflictor
 		EntityPtr			lastInflictor;
 		void				getLastAttacker(Event* ev);
