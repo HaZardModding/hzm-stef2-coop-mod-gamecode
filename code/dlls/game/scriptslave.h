@@ -62,9 +62,12 @@ class ScriptSlave : public Trigger
 		int					dmg_means_of_death;
 		qboolean			thinking;
 
+	//[b60013] chrissstrahl - allow quick accsess for new phaser shooting throgh forcefield feature
+	public:
 		float				_forcefieldNumber;
 		float				_triggerNumber;
 		EntityPtr			_scanner;
+	protected:
 
 		bool				_portalOpen;
 
