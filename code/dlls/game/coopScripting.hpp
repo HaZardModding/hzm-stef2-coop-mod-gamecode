@@ -28,6 +28,7 @@ public:
 	bool getIncludedMom4();
 	bool getIncludedMom();
 	bool getIncludedNoscript();
+	void init();
 	str checkIncludedFiles(str sLex);
 	bool checkIncludedCoop(str sLex);
 	bool checkIncludedMrm(str sLex);

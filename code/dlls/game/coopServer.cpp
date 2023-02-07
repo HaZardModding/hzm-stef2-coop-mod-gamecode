@@ -15,6 +15,9 @@
 #include "coopServer.hpp"
 CoopServer coopServer;
 
+#include "coopScripting.hpp"
+extern CoopScripting coopScripting;
+
 #include "coopReturn.hpp"
 #include "coopPlayer.hpp"
 #include "coopObjectives.hpp"
@@ -1139,6 +1142,9 @@ void coop_serverResetAllClientData( void )
 //================================================================
 void coop_serverCoop()
 {
+	//[b60013] chrissstrahl - set/reset vars upon each map load
+	coopScripting.init();
+
 	//hzm coop mod chrissstrahl - determin maptype
 	//game.isStandardLevel
 	//game.isMissionLevel
@@ -1267,7 +1273,7 @@ void coop_serverCoop()
 void coop_serverSetup( void )
 {
 	static int SetupExecuted = 0;
-	//gi.Printf( va("ARRE SUBLEVELS:  %i\n" , gi.areSublevels( level.mapname.c_str() , level.nextmap.c_str() ) ) );
+	//gi.Printf( va("ARE SUBLEVELS:  %i\n" , gi.areSublevels( level.mapname.c_str() , level.nextmap.c_str() ) ) );
 
 	//hzm coop mod chrissstrahl - register this server to the alternative master server
 	str cvarNum;

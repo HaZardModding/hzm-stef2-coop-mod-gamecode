@@ -28,6 +28,16 @@ bool CoopScripting::getIncludedMom4() { return includedMom4; }
 bool CoopScripting::getIncludedMom() { return includedMom; }
 bool CoopScripting::getIncludedNoscript() { return includedNoscript; }
 
+//[b60013] chrissstrahl - set/reset vars upon each map load
+void CoopScripting::init()
+{
+	includedCoop = false;
+	includedMrm = false;
+	includedMom4 = false;
+	includedMom = false;
+	includedNoscript = false;
+}
+
 str CoopScripting::checkIncludedFiles(str sLex)
 {
 	//[b60011] chrissstrahl - check and remember if special scripts are used
