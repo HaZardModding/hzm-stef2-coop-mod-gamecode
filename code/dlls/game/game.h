@@ -30,6 +30,7 @@
 #define MAPTYPE_IGM 2
 #define MAPTYPE_MISSION 3
 #define MAPTYPE_CUSTOM 4
+#define MAPTYPE_RPG 5 //[b60013] chrissstrahl - allow rpg_ maps to be handled differently
 //end of chrissstrahl - added this commentary [b607]
 
 //
