@@ -12,6 +12,10 @@
 #include "coopAlias.hpp"
 #include "coopParser.hpp"
 
+//[b60013] chrissstrahl - added rpg specific support
+#include "coopRPG.hpp"
+extern CoopRPG coopRpg;
+
 #include "entity.h"
 #include "player.h"
 #include "weapon.h"
@@ -1750,7 +1754,15 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 		Q_stricmpn( sLevelname.c_str() , "prf_" , 4 ) == 0 ||
 		Q_stricmpn( sLevelname.c_str() , "rpg_" , 4 ) == 0 )
 	{
-		type = MAPTYPE_CUSTOM;
+
+		//[b60013] chrissstrahl - start RPG_ Maps handle
+		if (Q_stricmpn(sLevelname.c_str(), "rpg_", 4) == 0) {
+			type = MAPTYPE_RPG;
+			coopRpg.init();
+		}
+		else {
+			type = MAPTYPE_CUSTOM;
+		}
 
 		if ( coop_parserIsItemInCategory( "maplist.ini" , sLevelname , "coopincluded" ) ) {
 			return true;
