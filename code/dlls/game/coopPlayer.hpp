@@ -212,7 +212,7 @@ bool coop_playerTransportToSpawn( Player *player );
 bool coop_playerSpawnTryVariable( Player *player , bool bRespawning );
 bool coop_playerSpawnTryIPD( Player *player , bool bRespawning );
 bool coop_playerSpawnTrySpSpawn( Player *player , bool bRespawning );
-bool coop_playerSpawnTryTdmSpawn(Player* player, bool bRespawning);
+bool coop_playerSpawnTryDMSpawn(Player* player, bool bRespawning);
 bool coop_playerPlaceAtSpawn(Player *player);
 bool coop_playerSay( Player *player , str sayString );
 bool coop_playerKilled( const Player *killedPlayer , const Entity * attacker , const Entity *inflictor , const int meansOfDeath );

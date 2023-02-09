@@ -1019,14 +1019,14 @@ bool coop_playerSpawnTrySpSpawn( Player *player , bool bRespawning )
 // Name:        coop_playerSpawnTryTdmSpawn
 // Class:       -
 //              
-// Description: Tries to spawn the player at a info_player_start spawnloacation
+// Description: Tries to spawn the player at a info_player_deathmatch spawnloacation
 //              
-// Parameters:  Player player
+// Parameters:  Player player, bool respawning
 //              
 // Returns:     bool
 //              
 //================================================================
-bool coop_playerSpawnTryTdmSpawn(Player* player, bool bRespawning)
+bool coop_playerSpawnTryDMSpawn(Player* player, bool bRespawning)
 {
 	if (!player) {
 		return false;
@@ -1110,11 +1110,15 @@ bool coop_playerPlaceAtSpawn( Player *player )
 			if ( !bSpawnedSucessfull ){
 				bSpawnedSucessfull = coop_playerSpawnTryIPD( player , false );
 				if ( !bSpawnedSucessfull ){
-					bSpawnedSucessfull = coop_playerSpawnTrySpSpawn( player , false );
-					//let the regular spawn routine handle the spawning...
-					//player->WarpToPoint( spawnLocation );
-					//gi.Printf( "spawn at and info_player_deathmatch\n" );
-					//return false;					
+					//[b60013] chrissststrahl - spawn at standard info_player_deathmatch
+					bSpawnedSucessfull = coop_playerSpawnTryDMSpawn(player, false);
+					if (!bSpawnedSucessfull) {
+						bSpawnedSucessfull = coop_playerSpawnTrySpSpawn(player, false);
+						//let the regular spawn routine handle the spawning...
+						//player->WarpToPoint( spawnLocation );
+						//gi.Printf( "spawn at and info_player_deathmatch\n" );
+						//return false;
+					}
 				}
 			}
 		}
