@@ -335,7 +335,7 @@ void ModeTeamBase::addPlayerToTeam( Player *player, Team *team )
 			}
 			
 			//[b60013] chrissstrahl - find alternative spawn
-			if (!coop_playerSpawnTryTdmSpawn(player,false)) {
+			if (!coop_playerSpawnTryDMSpawn(player,false)) {
 				coop_playerSpawnTrySpSpawn( player , false );
 			}
 		}
