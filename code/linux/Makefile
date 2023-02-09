@@ -328,6 +328,7 @@ GOBJ =\
 	$(B)/game/coopActor.o \
 	$(B)/game/coopVote.o \
     $(B)/game/coopText.o 
+    $(B)/game/coopRPG.o 
 #    $(B)/game/coopAchievements.o \
 
 
@@ -520,6 +521,7 @@ $(B)/game/coopTrigger.o : $(GDIR)/coopTrigger.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopActor.o : $(GDIR)/coopActor.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopVote.o : $(GDIR)/coopVote.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopText.o : $(GDIR)/coopText.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/coopRPG.o : $(GDIR)/coopRPG.cpp; $(DO_GAME_SHLIB_CC)
 # $(B)/game/coopAchievements.o : $(GDIR)/$(GDIR)/coopAchievements.o; $(DO_GAME_SHLIB_CC)
 
 
