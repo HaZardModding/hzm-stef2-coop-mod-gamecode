@@ -19,6 +19,10 @@
 #include "coopPlayer.hpp"
 #include "coopText.hpp"
 
+//[b60013] chrissstrahl - handle coop spawn location stuff
+#include "coopSpawnlocation.hpp"
+extern CoopSpawnlocation coopSpawnlocation;
+
 #include "mp_manager.hpp"
 #include "mp_modeBase.hpp"
 #include "mp_modeTeamBase.hpp"
@@ -316,33 +320,13 @@ void ModeTeamBase::addPlayerToTeam( Player *player, Team *team )
 			multiplayerManager.setTeamHud( player, "mp_teambluespec" ); */
 	}
 
-	//hzm gameupdate chrissstrahl - do not do this during coop
+	//[b60013] chrissstrahl - restored original code - coop is now managed in: getSpawnPoint
 	// Warp player to a spawn point
-	if ( !game.coop_isActive )
+	spawnPoint = getSpawnPoint(player);
+	if (spawnPoint)
 	{
-		spawnPoint = getSpawnPoint(player);
-
-		if (spawnPoint)
-		{
-			player->WarpToPoint(spawnPoint);
-		}
-		//hzm gameupdate chrissstrahl - warp player to singleplayer spawn if there is no mp spawn
-		else
-		{
-			if ( level.time < 20.0f ){//print warning, so that the mapper knows whats wrong
-				coop_textHudprint( player , "^1WARNING:^3 Map is missing valid info_player_deathmatch MP-Spawn\n" );
-				coop_textHudprint( player , "^3NOTE:^8 Spawning player at any info_player_deathmatch, then any info_player_start\n" );
-			}
-			
-			//[b60013] chrissstrahl - find alternative spawn
-			if (!coop_playerSpawnTryDMSpawn(player,false)) {
-				coop_playerSpawnTrySpSpawn( player , false );
-			}
-		}
-		//end of hzm
+		player->WarpToPoint(spawnPoint);
 	}
-	//end of hzm
-
 
 	if (team && _gameStarted)
 	{
@@ -385,28 +369,13 @@ void ModeTeamBase::respawnPlayer( Player *player )
 	multiplayerManager.initPlayer( player );
 	
 
-	//try first to spawn at coop spawn point
-	if ( !game.coop_isActive || !coop_playerPlaceAtSpawn( player ) )
+	Entity *spawnPoint;
+	//[b60013] chrissstrahl - spawns are now managed else where
+	// Warp the player to a spawn point
+	spawnPoint = getSpawnPoint(player);
+	if (spawnPoint)
 	{
-		Entity *spawnPoint;
-
-		//hzm coop mod chrissstrahl - respawn 
-		spawnPoint = getSpawnPoint( player );
-
-		if ( spawnPoint )
-		{
-			player->WarpToPoint( spawnPoint );
-		}
-		//hzm gameupdate - spawn players at sp spawn if there is no mp spawn
-		else {
-			if ( coop_playerSpawnTrySpSpawn( player , false ) ) {
-				gi.Printf( va( "No info_player_deahtmatch found, spawning players at info_player_start\n" ) );
-			}
-			else {
-				gi.Printf( va( "No info_player_deahtmatch and info_player_start found. player spawning at '0 0 0'\n" ) );
-			}
-		}
-		//end of hzm
+		player->WarpToPoint(spawnPoint);
 	}
 
 	KillBox( player );
@@ -501,11 +470,15 @@ Entity *ModeTeamBase::getSpawnPoint( Player *player )
 
 		// This is a good spawn point so use it
 
-		return spawnPoint;
+		//[b60013] chrissstrahl
+		//return spawnPoint;
+		break;
 	}
 
-	// Just return the last spawn point found
+	//[b60013] chrissstrahl - handle coop spawn location stuff
+	spawnPoint = coopSpawnlocation.getSpawnPoint(player,spawnPoint);
 
+	// Just return the last spawn point found
 	return spawnPoint;
 }
 

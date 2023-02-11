@@ -17,6 +17,9 @@ extern CoopNpcTeam coopNpcTeam;
 extern CoopChallenges coopChallenges;
 extern CoopServer coopServer;
 
+#include "coopSpawnlocation.hpp"
+extern CoopSpawnlocation coopSpawnlocation;
+
 #include "coopAlias.hpp"
 #include "coopParser.hpp"
 #include "coopModel.hpp"
@@ -552,8 +555,9 @@ bool coop_playerSetup(Player* player)
 		DelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
 	}
 
-	//hzm coop mod chrissstrahl - place player at spawnpoint
-	coop_playerPlaceAtSpawn( player );
+//[b60013] chrissstrahl - 
+//hzm coop mod chrissstrahl - place player at spawnpoint
+//coop_playerPlaceAtSpawn( player );
 
 	//hzm coop mod chrissstrahl - enable ai again, if it was disabled, as there is now a player on the server again
 	coop_serverManageAi(true);
@@ -851,7 +855,9 @@ bool coop_playerTransportToSpawn( Player *player )
 		player->PostEvent(newEvent2, 0.0f);
 	}
 
-	return coop_playerPlaceAtSpawn( player );
+	//[b60013] chrissstrahl - updated
+	//return coop_playerPlaceAtSpawn( player );
+	return coopSpawnlocation.placeAtSpawnPoint( player );
 }
 
 
@@ -1268,8 +1274,9 @@ void coop_playerEnterArena(int entnum, float health)
 	if (!player)
 		return;
 
+	//[b60013] chrissstrahl - disabled as spawns are now managed else where
 	//hzm coop mod chrissstrahl - spawn and place player
-	coop_playerPlaceAtSpawn(player);
+	//coop_playerPlaceAtSpawn(player);
 
 	//hzm coop mod chrissstrahl set when the player spawned last time, used to display objectives in text hud
 	player->coopPlayer.lastTimeSpawned = level.time;
@@ -2081,7 +2088,9 @@ void coop_playerThink( Player *player )
 		if ( ( player->coopPlayer.lastTimeSpawned + 1 ) > level.time ) {
 			if ( coop_checkEntityInsideDoor( ( Entity * )player ) ) {
 				player->coopPlayer.respawnAtRespawnpoint = true;
-				coop_playerPlaceAtSpawn( player );
+				//[b60013] chrissstrahl - move player to spawn if stuck in door
+				coopSpawnlocation.placeAtSpawnPoint(player);
+				//coop_playerPlaceAtSpawn( player );
 			}
 		}
 

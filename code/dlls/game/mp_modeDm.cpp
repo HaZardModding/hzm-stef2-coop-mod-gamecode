@@ -87,27 +87,12 @@ void ModeDeathmatch::respawnPlayer( Player *player )
 
 	multiplayerManager.initPlayer( player );
 
+	//[b60013] chrissstrahl - spawns are now managed else where
 	// Warp the player to a spawn point
-
-
-	if ( !game.coop_isActive || !coop_playerPlaceAtSpawn( player ) )
+	spawnPoint = getSpawnPoint( player );
+	if ( spawnPoint )
 	{
-		spawnPoint = getSpawnPoint( player );
-
-		if ( spawnPoint )
-		{
-			player->WarpToPoint( spawnPoint );
-		}
-		//hzm gameupdate - spawn players at sp spawn if there is no mp spawn
-		else {
-			if ( coop_playerSpawnTrySpSpawn( player , false ) ) {
-				gi.Printf(va("No info_player_deahtmatch found, spawning players at info_player_start\n"));
-			}
-			else {
-				gi.Printf( va( "No info_player_deahtmatch and info_player_start found. player spawning at '0 0 0'\n" ) );
-			}
-		}
-		//end of hzm
+		player->WarpToPoint( spawnPoint );
 	}
 
 	KillBox( player );
@@ -156,27 +141,12 @@ void ModeDeathmatch::AddPlayer( Player *player )
 		return;
 	}
 
-
-	if ( !game.coop_isActive || !coop_playerPlaceAtSpawn(player))
+	//[b60013] chrissstrahl - restored original code - coop is now managed in: getSpawnPoint
+	// Warp player to a spawn point
+	spawnPoint = getSpawnPoint(player);
+	if (spawnPoint)
 	{
-		// Warp the player to a spawn point
-
-		spawnPoint = getSpawnPoint( player );
-
-		if ( spawnPoint )
-		{
-			player->WarpToPoint( spawnPoint );
-		}
-		//hzm gameupdate - spawn players at sp spawn if there is no mp spawn
-		else {
-			if ( coop_playerSpawnTrySpSpawn( player , false ) ) {
-				gi.Printf( va( "No info_player_deahtmatch found, spawning players at info_player_start\n" ) );
-			}
-			else {
-				gi.Printf( va( "No info_player_deahtmatch and info_player_start found. player spawning at '0 0 0'\n" ) );
-			}
-		}
-		//end of hzm
+		player->WarpToPoint(spawnPoint);
 	}
 
 	KillBox( player );

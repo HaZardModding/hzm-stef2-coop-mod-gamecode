@@ -20,6 +20,10 @@
 #include "coopPlayer.hpp"
 #include "coopReturn.hpp"
 
+//[b60013] chrissstrahl - handle coop spawn location stuff
+#include "coopSpawnlocation.hpp"
+extern CoopSpawnlocation coopSpawnlocation;
+
 #include "mp_manager.hpp"
 #include "mp_modeBase.hpp"
 #include "equipment.h"
@@ -1971,6 +1975,9 @@ Entity *MultiplayerModeBase::getSpawnPoint( Player *player )
 		}
 
 	}
+
+	//[b60013] chrissstrahl - handle coop spawn location stuff
+	spawnPoint = coopSpawnlocation.getSpawnPoint(player, spawnPoint);
 
 	return spawnPoint;
 }
