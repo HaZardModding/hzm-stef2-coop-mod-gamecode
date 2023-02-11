@@ -3,7 +3,7 @@
 // E-Mail:		chrissstrahl@yahoo.de
 //
 // CONTAINING RPG LEVEL RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-//-----------------------------------------------------------------------------------
+//-------------------------------------------------------------------------//[b60013]
 
 #include "_pch_cpp.h"
 #include "coopReturn.hpp"

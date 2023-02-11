@@ -1,3 +1,9 @@
+//-----------------------------------------------------------------------------------
+// Code by:	HaZardModding, Christian Sebastian Strahl
+// E-Mail:		chrissstrahl@yahoo.de
+//
+// CONTAINING RPG LEVEL RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//-------------------------------------------------------------------------//[b60013]
 #ifndef __COOPRPG_HPP__
 #define __COOPRPG_HPP__
 
