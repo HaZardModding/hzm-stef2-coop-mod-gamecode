@@ -3393,7 +3393,6 @@ ModifierControlPoints::~ModifierControlPoints()
 
 void ModifierControlPoints::init( int maxPlayers )
 {
-	//[b607] chrissstrahl - reversed - not needed anymore
 	multiplayerManager.cacheMultiplayerFiles("mp_controlPoints");
 }
 
