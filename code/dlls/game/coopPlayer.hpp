@@ -208,12 +208,6 @@ void coop_playerSetupClient(Player* player);			//[b60011] chrissstrahl - does se
 void coop_playerSaveNewPlayerId(Player *player);
 void coop_playerSetupNoncoop( Player *player );
 void coop_playerSetupCoop( Player *player );
-bool coop_playerTransportToSpawn( Player *player );
-bool coop_playerSpawnTryVariable( Player *player , bool bRespawning );
-bool coop_playerSpawnTryIPD( Player *player , bool bRespawning );
-bool coop_playerSpawnTrySpSpawn( Player *player , bool bRespawning );
-bool coop_playerSpawnTryDMSpawn(Player* player, bool bRespawning);
-bool coop_playerPlaceAtSpawn(Player *player);
 bool coop_playerSay( Player *player , str sayString );
 bool coop_playerKilled( const Player *killedPlayer , const Entity * attacker , const Entity *inflictor , const int meansOfDeath );
 void coop_playerModelChanged( Player *player );
