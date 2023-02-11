@@ -731,10 +731,6 @@ void coop_playerSetupCoop( Player *player )
 		DelayedServerCommand( player->entnum , "exec coop_mod/cfg/init.cfg" );
 	}
 
-	//not used anmyore
-	//hzm coop mod chrissstrahl - tell client the server version - used for menu and hud features
-	//DelayedServerCommand( player->entnum , va( "set coop_svB %i" , COOP_BUILD ) );
-
 	//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMap title %s" , level.mapname.c_str() ) ); //[b60012] chrissstrahl - fix missing .c_str()
 	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesSkillValue title %s" , coop_returnStringSkillname(skill->integer).c_str() ) );
