@@ -527,6 +527,9 @@ bool coop_playerSetup(Player* player)
 		return true;
 	}
 
+	//[b60013] chrissstrahl - moved here - execute clientside inizialisation for coop - for all clients
+	DelayedServerCommand(player->entnum, "exec coop_mod/cfg/init.cfg");
+
 	//hzm coop mod chrissstrahl - disable radar hud selected symbol
 	player->coopPlayer.radarSelectedActive = false;
 	//[b607] chrissstrahl - this is used to reduce nettraffic on first spawn - needs to be false on start
@@ -723,12 +726,6 @@ void coop_playerSetupCoop( Player *player )
 	//because the command can and will be executed even if there is no coop
 	if ( !game.coop_isActive ){
 		return;
-	}
-
-	//hzm coop mod chrissstrahl - execute clientside setup for the specific map, can contain story or translated objectives
-	if ( g_gametype->integer != GT_SINGLE_PLAYER ){
-		//hzm coop mod chrissstrahl - execute clientside cfg file
-		DelayedServerCommand( player->entnum , "exec coop_mod/cfg/init.cfg" );
 	}
 
 	//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
