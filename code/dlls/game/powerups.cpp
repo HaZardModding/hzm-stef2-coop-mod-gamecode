@@ -892,7 +892,7 @@ bool HoldableItemTransporter::use( void )
 
 		player = (Player *)_owner;
 
-		if ( multiplayerManager.inMultiplayer() && !game.coop_isActive || !coop_playerPlaceAtSpawn( player ) )
+		if ( multiplayerManager.inMultiplayer() )
 		{
 			spawnPoint = multiplayerManager.getSpawnPoint( player );
 
@@ -908,16 +908,6 @@ bool HoldableItemTransporter::use( void )
 				KillBox( player );
 				return true;
 			}
-			//hzm gameupdate - spawn players at sp spawn if there is no mp spawn
-			else {
-				if ( coop_playerSpawnTrySpSpawn( player , false ) ) {
-					gi.Printf( va( "No info_player_deahtmatch found, spawning players at info_player_start\n" ) );
-				}
-				else {
-					gi.Printf( va( "No info_player_deahtmatch and info_player_start found. player spawning at '0 0 0'\n" ) );
-				}
-			}
-			//end of hzm
 		}
 	}
 
