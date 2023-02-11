@@ -436,7 +436,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	player->hudPrint(va("^5Language^8: %s, ", player->getLanguage().c_str()));
 	player->hudPrint(va("^5Client-Id^8: %d\n", player->entnum));
 
-	player->hudPrint(va("^5Entred game at^8: %f, ", player->client->pers.enterTime));
+	player->hudPrint(va("^5Entred game at^8: %.2f, ", player->client->pers.enterTime));
 	player->hudPrint(va("^5Personal Id^8: %s\n", player->coopPlayer.coopId.c_str()));
 	
 	player->hudPrint("===SERVER Informations ===\n");
@@ -458,7 +458,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	player->hudPrint(va("^5Dificulty:^8 %d %s\n", skill->integer, s.c_str()));
 
 
-	player->hudPrint(va("^5Friendly Fire Multiplier:^8 %f\n", game.coop_friendlyFire));
+	player->hudPrint(va("^5Friendly Fire Multiplier:^8 %.2f\n", game.coop_friendlyFire));
 #ifdef WIN32
 	str sys = "Windows";
 #else
