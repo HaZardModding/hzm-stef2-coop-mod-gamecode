@@ -1039,17 +1039,11 @@ qboolean KillBox( Entity *ent )
 	{
 		hit = &g_entities[ touch[ i ] ];
 		
-		if ( !hit->inuse || ( hit->entity == ent ) || !hit->entity || ( hit->entity == world ) || ( !hit->entity->edict->solid ) )
+		//[b600] chrissstrahl - no killbox in coop
+		if ( game.coop_isActive || !hit->inuse || ( hit->entity == ent ) || !hit->entity || ( hit->entity == world ) || ( !hit->entity->edict->solid ) )
 		{
 			continue;
 		}
-
-//hzm coop mod - do not kill the player, no telekill
-		if( game.coop_isActive )
-		{
-			continue;
-		}
-
 
 		hit->entity->Damage( ent, ent, hit->entity->health + 100000.0f, ent->origin, vec_zero, vec_zero,
 			0, DAMAGE_NO_PROTECTION, MOD_TELEFRAG );
