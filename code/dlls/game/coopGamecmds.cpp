@@ -427,30 +427,26 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	str s;
 	player->hudPrint(COOP_TEXT_HELP_YOUR_INFO_ENG);
 	if (player->coopPlayer.installed == 1) {
-		str temp = player->coopPlayer.installedVersion;
-		str coopVer = temp[0];
-		coopVer += '.';
-		coopVer += temp[1];
-		coopVer += temp[2];
-		player->hudPrint(va("^5Coop Version^8: %s\n", coopVer.c_str()));
+		player->hudPrint(va("^5Coop Version^8: %i\n",player->coopPlayer.installedVersion));
 	}
 	else {
 		player->hudPrint("^5Coop Version^8: None detected\n");
 	}
-	player->hudPrint(va("^5Coop class^8: %s\n", player->coopPlayer.className.c_str()));
-	player->hudPrint(va("^5Entred this game at^8: %f\n", player->client->pers.enterTime));
-	player->hudPrint(va("^5Your game language is^8: %s\n", player->getLanguage().c_str()));
-	player->hudPrint(va("^5Your Personal Id (only shown to you) is^8: %s\n", player->coopPlayer.coopId.c_str()));
-	player->hudPrint(va("^5Your Client/Coop number is^8: %d\n", player->entnum));
+	player->hudPrint(va("^5Coop Class^8: %s, ", player->coopPlayer.className.c_str()));
+	player->hudPrint(va("^5Language^8: %s, ", player->getLanguage().c_str()));
+	player->hudPrint(va("^5Client-Id^8: %d\n", player->entnum));
+
+	player->hudPrint(va("^5Entred game at^8: %f, ", player->client->pers.enterTime));
+	player->hudPrint(va("^5Personal Id^8: %s\n", player->coopPlayer.coopId.c_str()));
+	
 	player->hudPrint("===SERVER Informations ===\n");
-	player->hudPrint(va("^5Current map:^8 %s\n", level.mapname.c_str()));
+	player->hudPrint(va("^5Map:^8 %s\n", level.mapname.c_str()));
 
 	cvar_t* cvarTemp = gi.cvar_get("local_language");
 	if (cvarTemp != NULL) {
 		s = cvarTemp->string;
-		player->hudPrint(va("^5Server Language:^8 %s\n", s.c_str()));
+		player->hudPrint(va("^5Language:^8 %s, ", s.c_str()));
 	}
-
 	if (skill->integer == 0)
 		s = " [$$Easy$$]";
 	else if (skill->integer == 1)
@@ -459,8 +455,9 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		s = " [$$Hard$$]";
 	else
 		s = " [$$VeryHard$$]";
-
 	player->hudPrint(va("^5Dificulty:^8 %d %s\n", skill->integer, s.c_str()));
+
+
 	player->hudPrint(va("^5Friendly Fire Multiplier:^8 %f\n", game.coop_friendlyFire));
 #ifdef WIN32
 	str sys = "Windows";
