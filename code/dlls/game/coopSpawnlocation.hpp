@@ -15,6 +15,7 @@ public:
 	void		init();
 	Entity*		getSpawnPoint(Player* player, Entity* spawnPoint);
 	bool		placeAtSpawnPoint(Player* player);
+	bool		transportToSpawnPoint(Player* player);
 private:
 };
 

@@ -6,6 +6,8 @@
 //-------------------------------------------------------------------------//[b60013]
 
 #include "_pch_cpp.h"
+#include "mp_manager.hpp"
+
 #include "coopReturn.hpp"
 #include "coopArmory.hpp"
 #include "coopObjectives.hpp"
@@ -112,6 +114,35 @@ bool CoopSpawnlocation::placeAtSpawnPoint(Player* player)
 	if (spawnPoint){
 		player->WarpToPoint(spawnPoint);
 		return true;
+	}
+	return false;
+}
+
+bool CoopSpawnlocation::transportToSpawnPoint(Player* player)
+{
+	Entity* spawnPoint;
+	spawnPoint = getSpawnPoint(player, NULL);
+
+	if (spawnPoint) {
+		if (player->health <= 0 || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+			return false;
+		}
+
+		player->coopPlayer.respawnAtRespawnpoint = true;
+		player->client->ps.pm_time = 100;
+		player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
+
+		player->WarpToPoint(spawnPoint);
+
+		Event* newEvent2 = new Event(EV_DisplayEffect);
+		newEvent2->AddString("TransportIn");
+		newEvent2->AddString("Multiplayer");
+		player->PostEvent(newEvent2, 0.0f);
+
+		return true;
+	}
+	else {
+		gi.Printf("transportToSpawnPoint: No SpawnPoints found!\n");
 	}
 	return false;
 }

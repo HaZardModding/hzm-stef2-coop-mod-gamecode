@@ -11,6 +11,9 @@
 #include "coopGamecmds.hpp"
 #include "coopText.hpp"
 
+#include "coopSpawnlocation.hpp"
+extern CoopSpawnlocation coopSpawnlocation;
+
 
 //================================================================
 // Name:        G_coopClientId
@@ -745,8 +748,8 @@ qboolean G_coopCom_stuck(const gentity_t* ent)
 		return true;
 	}
 
-	//hzm coop mod chrissstrahl - place player at respawn/spawn location
-	coop_playerTransportToSpawn(player);
+	//[b60013] chrissstrahl - place player at respawn/spawn location
+	coopSpawnlocation.transportToSpawnPoint(player);
 
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
 	{
