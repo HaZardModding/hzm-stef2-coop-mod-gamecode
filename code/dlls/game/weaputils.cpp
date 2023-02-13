@@ -27,6 +27,9 @@
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
 
+#include "coopForcefield.hpp"
+extern CoopForcefield coopForcefield;
+
 void FlashPlayers
 (
 	const Vector   &org,
@@ -2259,9 +2262,13 @@ float BulletAttack(
 		decal->setDirection( trace.plane.normal );
 		decal->setOrientation( "random" );
 		decal->setRadius( 8 );*/
-		
-		if ( trace.ent )
+
+		//[b60013] chrissstrahl - test forcefield
+		coopForcefield.passthroughBullettAtack(owner, trace, start, end, meansofdeath);
+
+		if (trace.ent) {
 			ent = trace.ent->entity;
+		}
 
 		/*if ( trace.ent )
 		{
