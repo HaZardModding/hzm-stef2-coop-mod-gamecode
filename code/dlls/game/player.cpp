@@ -2469,7 +2469,7 @@ void Player::checkFirealt(Event* ev)
 //[b60011] chrissstrahl - checks if player is in third person
 void Player::checkThirdperson(Event *ev)
 {
-	ev->ReturnInteger(_isThirdPerson);
+	ev->ReturnInteger((int)_isThirdPerson);
 }
 
 //[b60011] chrissstrahl - checks if player is using the use button
