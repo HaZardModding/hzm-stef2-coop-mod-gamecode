@@ -1042,8 +1042,8 @@ void Interpreter::Execute( Event *e )
 			if ( localstack_used < 0 )
 			{
 				//[b60012] chrissstrahl - make sure this is always printed
-				gi.Printf("Execute: locals stack underflow\n");
-				RunError( "Execute: locals stack underflow\n" );
+				gi.Printf("Execute: locals stack underflow - (to few parameters)\n");
+				RunError( "Execute: locals stack underflow - (to few parameters)\n" );
 			}
 			
 			CleanupStack( localstack_used, oldstacktop );
@@ -1077,8 +1077,8 @@ void Interpreter::Execute( Event *e )
 				if ( localstack_used < 0 )
 				{
 					//[b60012] chrissstrahl - make sure this is always printed
-					gi.Printf("Execute: locals stack underflow\n");
-					RunError( "Execute: locals stack underflow\n" );
+					gi.Printf("Execute: locals stack underflow - (to few parameters)\n");
+					RunError( "Execute: locals stack underflow - (to few parameters)\n" );
 				}
 				
 				CleanupStack( localstack_used, oldstacktop );
