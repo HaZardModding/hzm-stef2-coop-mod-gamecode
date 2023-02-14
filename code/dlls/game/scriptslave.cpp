@@ -2588,6 +2588,7 @@ void ScriptSkyOrigin::Think( void )
 	Vector delta;
 	Entity *player;
 	Vector new_origin;
+	Vector player_origin = Vector(0.0f,0.0f,0.0f);
 	
 	new_origin = origin;
 	
@@ -2597,22 +2598,33 @@ void ScriptSkyOrigin::Think( void )
 		{
 			// Get player
 			
-			//hzm coop mod chrissstrahl - return any player
+			//[b600] chrissstrahl - return any player
 			//player = g_entities[ 0 ].entity;
 			player = coop_returnEntityPlayerFavored();
+
+			//[b60013] chrissstrahl - fixed crash in ScriptSkyOrigin::Think with these commands if no player present
+			//Bug Reported by MJT - Moritz
+			//.baseposition
+			//.playerbaseposition
+			//.translationmult
+			//.maxtranslationdist
+
+			if (!player) {
+				player_origin = player->origin;
+			}
 			
 			if ( !use_player_base_position )
 			{
 				// Get current player position
 				
-				player_base_position = player->origin;
+				player_base_position = player_origin;
 				
 				use_player_base_position = true;
 			}
 			
 			// Calculate the new origin
 			
-			delta = player->origin - player_base_position;
+			delta = player_origin - player_base_position;
 			delta *= translation_multiplier;
 			
 			if ( max_distance && ( delta.length() > max_distance ) )
