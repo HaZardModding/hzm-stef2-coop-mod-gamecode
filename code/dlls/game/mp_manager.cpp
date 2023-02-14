@@ -3483,7 +3483,8 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 
 	player->enableInventory();
 
-	changePlayerModel( player , player->model , true );
+	//[b60013] chrissstrahl - disabled as this seems to be redundant
+	//changePlayerModel( player , player->model , true );
 
 	//   Init();	
 
