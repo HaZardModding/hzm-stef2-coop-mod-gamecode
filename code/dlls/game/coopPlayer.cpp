@@ -616,9 +616,9 @@ void coop_playerSetupHost(Player* player)
 	str sCvar = (cvar ? cvar->string : "Eng");
 	player->setLanguage(sCvar);
 
-	cvar = gi.cvar_get("coop_verInf");
+	//[b60013] chrissstrahl - changed to grab the cvar that is used also in the main menu
+	cvar = gi.cvar_get("coop_ver");
 	sCvar = (cvar ? cvar->string : va("%d", COOP_BUILD));
-	coop_manipulateStringTrim(sCvar, "coopinstalled "); //remove command prefix
 	player->coopPlayer.installedVersion = atoi(sCvar.c_str());
 	player->coopPlayer.installed = true;
 
