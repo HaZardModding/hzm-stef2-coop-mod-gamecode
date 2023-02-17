@@ -936,7 +936,7 @@ void coop_playerEnterArena(int entnum, float health)
 
 	if (!game.coop_isActive) {
 		return;
-	}	
+	}
 
 	//[b607] chrissstrahl - add all players to blue team in coop
 	//[b608] chrissstrahl - adjusted that it makes player go to blue team if he is not in blue team, added NOTE
