@@ -393,6 +393,9 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	event->AddString( "stasis" );
 	event->AddInteger( 100 );
 	player->ProcessEvent( event );
+
+	//[b60013] chrissstrahl - added to have more control over attributes changing
+	ExecuteThread("coop_justChangedClass", true, (Entity*)player);
 }
 
 
