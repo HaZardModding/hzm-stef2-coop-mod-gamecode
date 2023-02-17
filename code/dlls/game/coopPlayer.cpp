@@ -1109,7 +1109,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 			meansOfDeath != MOD_EAT &&
 			meansOfDeath != MOD_UPPERCUT &&
 			//supported for sure
-		//meansOfDeath != MOD_SUICIDE && //currently needed to work, so we can test it
+			meansOfDeath != MOD_SUICIDE &&
 			meansOfDeath != MOD_NONE &&
 			meansOfDeath != MOD_VAPORIZE_COMP &&
 			meansOfDeath != MOD_VAPORIZE_DISRUPTOR &&
