@@ -1092,6 +1092,12 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		return true;
 	}
 
+	//[b60013]chrissstrahl - used to determin if player should respawn at where he is or at a predefinied spawn location
+	//have this ´seperate to ensure it always triggers if killed by trigger
+	if (!Q_stricmp(entityInflictor->getClassname(), "TriggerHurt")) {
+		playerPrey->coopPlayer.respawnAtRespawnpoint = true;
+	}
+
 	//hzm coop mod chrissstrahl - check if mission failed
 	coop_serverLmsCheckFailure();
 
@@ -1370,8 +1376,6 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 
 	}
 	else if ( !Q_stricmp( entityInflictor->getClassname(), "TriggerHurt") ){
-		//hzm coop mod chrissstrahl - used to determin if player should respawn at where he is or at a predefinied spawn location
-		playerPrey->coopPlayer.respawnAtRespawnpoint = true;
 		printString += " ^8$$MOD_SUICIDE$$";
 	}
 //hzm coop mod chrissstrahl - owner is not a actor
