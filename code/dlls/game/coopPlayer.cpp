@@ -931,10 +931,6 @@ void coop_playerEnterArena(int entnum, float health)
 	if (!player)
 		return;
 
-	//[b60013] chrissstrahl - disabled as spawns are now managed else where
-	//hzm coop mod chrissstrahl - spawn and place player
-	//coop_playerPlaceAtSpawn(player);
-
 	//hzm coop mod chrissstrahl set when the player spawned last time, used to display objectives in text hud
 	player->coopPlayer.lastTimeSpawned = level.time;
 
@@ -1747,7 +1743,6 @@ void coop_playerThink( Player *player )
 				player->coopPlayer.respawnAtRespawnpoint = true;
 				//[b60013] chrissstrahl - move player to spawn if stuck in door
 				coopSpawnlocation.placeAtSpawnPoint(player);
-				//coop_playerPlaceAtSpawn( player );
 			}
 		}
 
