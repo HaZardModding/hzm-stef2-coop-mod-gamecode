@@ -1092,8 +1092,10 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		return true;
 	}
 
+	playerPrey->coopPlayer.respawnAtRespawnpoint = false;
+
 	//[b60013]chrissstrahl - used to determin if player should respawn at where he is or at a predefinied spawn location
-	//have this ´seperate to ensure it always triggers if killed by trigger
+	//have this seperate to ensure it always triggers if killed by trigger
 	if (!Q_stricmp(entityInflictor->getClassname(), "TriggerHurt")) {
 		playerPrey->coopPlayer.respawnAtRespawnpoint = true;
 	}
@@ -1179,7 +1181,6 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	playerPrey->coopPlayer.deathViewangleY = floor( vView[1] );
 	playerPrey->coopPlayer.respawned = true;
 	playerPrey->coopPlayer.injuredSymbolVisible = false;
-	playerPrey->coopPlayer.respawnAtRespawnpoint = false;
 
 	//check if we are allowed to spawn players at the place they die or if we are forced to respawn them on a save respawnlocation
 	ScriptVariable *entityData = NULL;
