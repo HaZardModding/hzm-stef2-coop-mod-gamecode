@@ -42,7 +42,8 @@ Entity* CoopSpawnlocation::getSpawnPoint(Player* player, Entity* spawnPoint)
 
 		//FORCE SPAWN AT SPAWNLOCATION
 		//- lookup coop_playerPlaceAtSpawn if we need more variables
-		if (player->entityVars.GetVariable("coop_respawnAtRespawnpoint")) {
+		ScriptVariable* entityData = player->entityVars.GetVariable("coop_respawnAtRespawnpoint");
+		if (entityData && entityData->floatValue() == 1.0f || player->coopPlayer.respawnAtRespawnpoint) {
 			player->entityVars.SetVariable("coop_respawnAtRespawnpoint", 0.0f);
 			respawning = false;
 		}
