@@ -79,7 +79,8 @@ consolecmd_t G_ConsoleCmds[] =
 //Coop Commands End
 //Coop Commands End
 
-	//hzm gameupdate chrissstrahl - add features to game without coop dependency
+	//[b60013] chrissstrahl - add features to game without coop dependency
+	{ "reload",				G_Reload	,			true },	//[b60013] chrissstrahl - allow reloading of map (complete reload, not just a restart)
 	{ "Eng",				G_LanguageEng,			true },	//[b60011] chrissstrahl - select English Player Laguage
 	{ "Deu",				G_LanguageDeu,			true },	//[b60011] chrissstrahl - select English German Laguage
 	{ "circle",				G_circleMenu,			true }, //[b60011] chrissstrahl - show circle menu to player
@@ -1585,7 +1586,7 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 // Name:			G_LanguageEng
 // Class:			None
 //
-// Description:		Detects the player class
+// Description:		Sets player language to ENGLISH
 //
 // Parameters:		gentity_t -- the entity issuing the command.  This
 //							 is the player who issued the command.
@@ -1610,7 +1611,7 @@ qboolean G_LanguageEng(const gentity_t* ent)
 // Name:			G_LanguageDeu
 // Class:			None
 //
-// Description:		Detects the player class
+// Description:		Sets player language to GERMAN
 //
 // Parameters:		gentity_t -- the entity issuing the command.  This
 //							 is the player who issued the command.
@@ -1624,6 +1625,40 @@ qboolean G_LanguageDeu(const gentity_t* ent)
 	player->setLanguage("Deu");
 	if ((player->client->pers.enterTime + 5) < level.time) {
 		player->hudPrint("Ihre Sprache wurde auf deutsch gesetzt\n");
+	}
+	return true;
+}
+
+//[b60013] chrissstrahl - add command to reload map - so it can be bind and works on every map without typing mapname
+//--------------------------------------------------------------
+//
+// Name:			G_Reload
+// Class:			None
+//
+// Description:		Detects the player class
+//
+// Parameters:		gentity_t -- the entity issuing the command.  This
+//							 is the player who issued the command.
+//
+// Returns:			qboolean -- true if the command was executed.	
+//
+//--------------------------------------------------------------
+extern void G_ExitLevel(void);
+qboolean G_Reload(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+#ifdef WIN32
+	bool bWindows = true;
+#else
+	bool bWindows = false;
+#endif
+
+	if (dedicated->integer == 0 && player->entnum == 0 && bWindows) {
+		G_ExitLevel();
+	}
+	else {
+		str sVote = va("callvote map %s", level.mapname.c_str());
+		gi.SendServerCommand(ent->entity->entnum, va("stufftext \"%s\"\n", sVote.c_str()));
 	}
 	return true;
 }

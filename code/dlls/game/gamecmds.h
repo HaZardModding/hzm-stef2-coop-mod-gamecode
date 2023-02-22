@@ -26,6 +26,7 @@ extern "C" qboolean  G_ConsoleCommand( void );
 void     G_InitConsoleCommands( void );
 qboolean G_ProcessClientCommand( gentity_t *ent );
 
+qboolean G_Reload(const gentity_t* ent);			//[b60013] chrissstrahl - reload current map completly
 qboolean G_LanguageEng( const gentity_t *ent );		//[b60011] chrissstrahl - add language detection
 qboolean G_LanguageDeu( const gentity_t *ent );		//[b60011] chrissstrahl - add language detection
 qboolean G_widgettext(const gentity_t* ent);		//[b60011] chrissstrahl - allowing players to make use of widgettext command
