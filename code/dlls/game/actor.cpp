@@ -7474,30 +7474,9 @@ void Actor::Killed( Event *ev )
 			if( player->client )
 			{
 				++player->client->ps.stats[ STAT_ENEMIES_KILLED ];
-				//hzm coop mod daggolin - add points to the player in coop
-				if ( game.coop_isActive )
-				{
-					multiplayerManager._awardSystem->coop_awardEnemyKilled( player , this );
-
-					//hzm coop mod chrissstrahl - test how it feels when there is a feedback sound on killing the enemy
-					//multiplayerManager.instantPlayerSound( player->entnum , "snd_mp_killedsomeone" , CHAN_COMBAT4 );
-					//player->Sound( "snd_mp_killedsomeone" , CHAN_LOCAL );
-					multiplayerManager.addPoints( player->entnum, 1 );
-					multiplayerManager.addKills( player->entnum, 1 );
-					//hzm coop mod chrissstrahl, if player is down, this is his chance to get up again
-					if ( player->coopPlayer.neutralized == true )
-					{
-						player->coopPlayer.neutralized = false;
-						player->health = ( player->max_health / 2 );
-						player->disableUseWeapon( false );
-						player->coopPlayer.reviveCounter = 0;
-						if ( player->coopPlayer.lastMass > 0 ){
-							player->mass = player->coopPlayer.lastMass;
-						}
-						player->coopPlayer.reviveCounter = 0;
-						player->coopPlayer.lastTimeRevived = 0.0f;
-					}
-				}
+				
+				//[b60013] chrissstrahl - Adds points to the player score and possibly revives a player - coopActor.cpp
+				coop_Killed(player);
 			}
 		}
 	}
@@ -14067,24 +14046,8 @@ void Actor::ArmorDamage( Event *ev )
 
 	::Damage damage(ev);
 
-	//hzm coop mod chrissstrahl - adjust damage dealing according to the number of players
-	//only if damaged by a player adjust
-	if ( game.coop_isActive && enemy->isSubclassOf( Player ) ){
-		if ( damage.damage < this->max_health ) {//only check if enemy can't be killed withg one hit
-			int iPlayerNum = coop_returnPlayerQuantityInArena();
-
-			float fMultiplicator;
-
-			if ( iPlayerNum <= 1 ) fMultiplicator = 1.0f;
-			else if ( iPlayerNum == 2 )fMultiplicator = 0.90f;
-			else if ( iPlayerNum == 3 )fMultiplicator = 0.85f;
-			else if ( iPlayerNum == 4 )fMultiplicator = 0.80f;
-			else if ( iPlayerNum == 4 )fMultiplicator = 0.75f;
-			else fMultiplicator = 0.70f;
-
-			damage.damage = ( damage.damage * fMultiplicator );
-		}
-	}
+	//[b60013] chrissstrahl - Handles damage to actor from a player based on number of player in game
+	damage.damage = coop_ArmorDamage(enemy,damage.damage);
 
 	// Only react to an attack if we respond to pain
 	if ( sensoryPerception && sensoryPerception->ShouldRespondToStimuli( STIMULI_PAIN ) )

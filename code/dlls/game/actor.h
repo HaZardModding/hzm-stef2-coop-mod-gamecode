@@ -110,6 +110,12 @@ class Actor : public Sentient
 			ACTOR_CONTROL_LOCKED,
 		} ActorControlType ;
 
+		//[b60013] chrissstrahl - Adds points to the player score and possibly revives a player - coopActor.cpp
+		void coop_Killed(Player* player);
+
+		//[b60013] chrissstrahl - Handles damage to actor from a player based on number of player in game
+		float coop_ArmorDamage(Entity *enemy,float damage);
+
 		//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
 		//remember the current dialog so we can remove it from the configstrings on stop
 		str dialogCurrentPlaying;

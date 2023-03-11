@@ -188,3 +188,74 @@ bool coop_actorDeadBodiesHandle(Entity* actor)
 	//return info that this body will stay
 	return true;
 }
+
+
+//================================================================
+// Name:       Actor::Coop_Killed -> actor.h/actor.cpp -> void Actor::Killed( Event *ev )
+// Class:       -
+//              
+// Description: Adds points to the player score and possibly revives a player
+//              
+// Parameters:  Player*
+//              
+// Returns:     VOID
+//              
+//========================================================[b60013]
+void Actor::coop_Killed(Player *player)
+{
+	if (!game.coop_isActive) {
+		return;
+	}
+
+	multiplayerManager._awardSystem->coop_awardEnemyKilled(player, this);
+	multiplayerManager.addPoints(player->entnum, 1);
+	multiplayerManager.addKills(player->entnum, 1);
+
+	//hzm coop mod chrissstrahl, if player is down, this is his chance to get up again
+	if (player->coopPlayer.neutralized == true)
+	{
+		player->coopPlayer.neutralized = false;
+		player->health = (player->max_health / 2);
+		player->disableUseWeapon(false);
+		player->coopPlayer.reviveCounter = 0;
+		if (player->coopPlayer.lastMass > 0) {
+			player->mass = player->coopPlayer.lastMass;
+		}
+		player->coopPlayer.reviveCounter = 0;
+		player->coopPlayer.lastTimeRevived = 0.0f;
+	}
+}
+
+//================================================================
+// Name:       Actor::coop_ArmorDamage -> actor.h/actor.cpp -> void Actor::ArmorDamage( Event *ev )
+// Class:       -
+//              
+// Description: Handles damage to actor from a player based on number of player in game
+//              
+// Parameters:  Player*
+//              
+// Returns:     VOID
+//              
+//========================================================[b60013]
+float Actor::coop_ArmorDamage(Entity* enemy,float damage)
+{
+	if (!game.coop_isActive || !enemy->isSubclassOf(Player)) {
+		return damage;
+	}
+
+	if (damage < max_health) {//only check if enemy can't be killed withg one hit
+		int iPlayerNum = coop_returnPlayerQuantityInArena();
+
+		float fMultiplicator;
+
+		if (iPlayerNum <= 1) fMultiplicator = 1.0f;
+		else if (iPlayerNum == 2)fMultiplicator = 0.90f;
+		else if (iPlayerNum == 3)fMultiplicator = 0.85f;
+		else if (iPlayerNum == 4)fMultiplicator = 0.80f;
+		else if (iPlayerNum == 4)fMultiplicator = 0.75f;
+		else fMultiplicator = 0.70f;
+
+		damage = (damage * fMultiplicator);
+	}
+	return damage;
+}
