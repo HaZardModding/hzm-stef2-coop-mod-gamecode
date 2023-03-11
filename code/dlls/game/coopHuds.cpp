@@ -187,9 +187,9 @@ void coop_hudsUpdateNotification( Player *player )
 		if ( player->coopPlayer.installedVersion < COOP_BUILD ) {
 			if ( !player->coopPlayer.updateHudDisplayed ) {
 				if ( ( level.time + 20 ) > mp_warmUpTime->integer &&
-					level.cinematic != true &&
-					level.mission_failed != true &&
-					level.playerfrozen != true &&
+					level.cinematic != qtrue &&
+					level.mission_failed != qtrue &&
+					level.playerfrozen != qtrue &&
 					player->coopPlayer.setupComplete != false )
 				{
 					player->coopPlayer.updateHudDisplayed = true;
