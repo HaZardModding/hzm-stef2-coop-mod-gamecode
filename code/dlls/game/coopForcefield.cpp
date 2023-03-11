@@ -41,14 +41,20 @@ bool CoopForcefield::passthroughBullettAtack(Entity* owner, trace_t &trace, cons
 	Entity *ent;
 	trace_t trace2 = trace;
 	ScriptSlave* forceField = (ScriptSlave*)eTrace;
-	str sFrequencySet = "66.90";
+
+	ScriptVariable* var = NULL;
+	var = owner->entityVars.GetVariable("globalCoop_scannedCoopForcefieldFreq");
+	if (!var || !strlen(var->stringValue()) || atof(var->stringValue()) <= 0.00) {
+		return false;
+	}
+
 	str sFfFrequency = va("%.2f", forceField->_forcefieldNumber);
 	int surfaceFlags = trace.surfaceFlags;	// surface hit
 	int contents = trace.contents;	   // contents on other side of surface hit
 
 	//frequency does not match
-	if (sFfFrequency != sFrequencySet) {
-		gi.Printf(va("NO-MATCH : BulletAttack Forcefield Frequency -> %s , %s\n", sFfFrequency.c_str(), sFrequencySet.c_str()));
+	if (sFfFrequency != var->stringValue()) {
+		gi.Printf(va("NO-MATCH : BulletAttack Forcefield Frequency -> %s , %s\n", sFfFrequency.c_str(), var->stringValue()));
 		return false;
 	}
 
@@ -80,4 +86,41 @@ bool CoopForcefield::passthroughBullettAtack(Entity* owner, trace_t &trace, cons
 	}
 
 	return false;
+}
+
+//When a forcefield gets scanned
+void CoopForcefield::scan(Entity* owner, Equipment* scanner)
+{
+	Vector start;
+	Vector end;
+	trace_t trace;
+
+	Player* player = (Player*)owner;
+	player->GetViewTrace(trace, MASK_SHOT, 5000.0f);
+	start = trace.endpos;
+	end = start + Vector(0.0f, 0.0f, 5000.0f);
+	
+	if (!trace.ent) {
+		return;
+	}
+
+	Entity* eFF;
+	eFF = trace.ent->entity;
+	if (eFF->isSubclassOf(ScriptSlave)) {
+		ScriptSlave* forceField = (ScriptSlave*)eFF;
+		if (forceField->_forcefieldNumber > 0.0f) {
+			//player->hudPrint(va("FF FREQ: %.2f\n", forceField->_forcefieldNumber));
+			player->addHud("coop_tricorderFreq");
+			player->entityVars.SetVariable("globalCoop_scannedCoopForcefieldFreq",va("%.2f",forceField->_forcefieldNumber));
+			gi.SendServerCommand(player->entnum, va("stufftext \"globalwidgetcommand coop_tricorderFreq1 title %.2f\"\n",forceField->_forcefieldNumber));
+		}
+	}
+}
+
+//When a forcefield gets scanned no more
+void CoopForcefield::scanEnd(Entity* owner, Equipment* scanner)
+{
+	Player* player = (Player*)owner;
+	player->removeHud("coop_tricorderFreq");
+	//player->hudPrint("stop\n");
 }

@@ -21,6 +21,9 @@
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
 
+#include "coopForcefield.hpp"
+extern CoopForcefield coopForcefield;
+
 #define DETAILED_SCAN_TIME 1.5
 #define MAX_TARGET_DISTANCE			600.0f
 #define MAX_TARGET_DISTANCE_SQUARED	MAX_TARGET_DISTANCE * MAX_TARGET_DISTANCE
@@ -346,6 +349,12 @@ void Equipment::scanStart(Event* ev)
 	if(_scanEndFrame == level.framenum)
 	{
 		PostEvent( EV_Scan, 0.05f );
+
+		//[b60013] chrissstrahl - allow scanning forcefileds
+		if (owner && owner->isSubclassOf(Player)) {
+			coopForcefield.scan(owner, this);
+		}
+
 		return;
 	}
 
@@ -371,6 +380,8 @@ void Equipment::scanEnd(Event* ev)
 
 	if ( shootingSkin )
 		ChangeSkin( shootingSkin, false );
+
+	coopForcefield.scanEnd(owner, this);
 
 	CancelEventsOfType( EV_Scan );
 }
