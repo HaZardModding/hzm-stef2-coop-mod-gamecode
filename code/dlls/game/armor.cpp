@@ -356,6 +356,8 @@ AdaptiveArmor::AdaptiveArmor()
 	_AddMODToCannotAdaptList( MOD_ALIEN_MELEE ); //alien attack 
 	_AddMODToCannotAdaptList( MOD_KLINGON_MELEE ); //klingon attack
 
+	//[b60013] chrissstrahl - finally fix the borg adapting to batleth
+	_AddMODToCannotAdaptList( MOD_SWORD ); //player batleth
 
 	_AddMODToCannotAdaptList( MOD_IMOD_PRIMARY);   
 	_AddMODToCannotAdaptList( MOD_IMOD_SECONDARY);
