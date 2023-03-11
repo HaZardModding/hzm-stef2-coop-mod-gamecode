@@ -442,28 +442,17 @@ void DamageModifierActorType::resolvePain(Damage &damage)
 //--------------------------------------------------------------
 void DamageModifierTargetName::resolveDamage(Damage &damage)
 {
-	//hzm coop mod chrissstrahl - handle targetname player for all players
+	//[b60013] chrissstrahl - handle targetname player for all players
 	//this will prevent players from hurting ingame actors that they should not, like in sp
-	//[b60012] chrissstrahl - updated to check for player class
-	if ( g_gametype->integer != GT_SINGLE_PLAYER ) {
-		if (damage.attacker && damage.attacker->isSubclassOf(Player)) {
-			damage.damage *= getMultiplier();
-			return;
-
-		}
-		/*if ( damage.attacker->targetname.length() < 8 && _targetname == "player" ){
-			if ( Q_stricmpn( damage.attacker->targetname , _targetname , 6) == 0 ){
-				damage.damage *= getMultiplier();
-				return;
-			}
-		}*/
+	if (!damage.attacker || damage.attacker->isSubclassOf(Player) && _targetname == "player") {
+		damage.damage *= getMultiplier();
+		return;
 	}
-	//end of hzm
 
-	if ( damage.attacker->targetname == _targetname )
+	if (damage.attacker->targetname == _targetname)
 	{
 		float rand = G_Random();
-		if ( rand < getChance() )
+		if (rand < getChance())
 			damage.damage *= getMultiplier();
 		else
 			damage.damage = 0.0f;
