@@ -1517,9 +1517,8 @@ void coop_playerSpectator( Player *player )
 		player->coopPlayer.respawnAtRespawnpoint = true;
 	}
 
-	//hzm coop mod chrissstrahl - notify level scripts of teamchange - this is used on custom map scripts
-	//[b608] chrissstrahl - fixed using client id instead of player targetname number which is client-id + 1
-	coop_serverRunScriptThread( va( "coop_justBecameSpectatorplayer%i" , (player->entnum + 1) ));
+	//[b60013] chrissstrahl  - notify level scripts of teamchange - this is used on custom map scripts
+	ExecuteThread("coop_justBecameSpectator", true, (Entity*)player);
 
 	//hzm coop mod chrissstrahl - update statistics of how many active players of each class are
 	coop_classUpdateClassStats();
