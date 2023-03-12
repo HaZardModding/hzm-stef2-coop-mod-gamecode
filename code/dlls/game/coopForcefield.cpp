@@ -54,13 +54,16 @@ bool CoopForcefield::passthroughBullettAtack(Entity* owner, trace_t &trace, cons
 
 	//frequency does not match
 	if (sFfFrequency != var->stringValue()) {
-		gi.Printf(va("NO-MATCH : BulletAttack Forcefield Frequency -> %s , %s\n", sFfFrequency.c_str(), var->stringValue()));
+		//gi.Printf(va("NO-MATCH : BulletAttack Forcefield Frequency -> %s , %s\n", sFfFrequency.c_str(), var->stringValue()));
 		return false;
 	}
 
-	Event* even1 = new Event(EV_BecomeNonSolid);
-	eTrace->PostEvent(even1, 0.0f);
-	//eTrace->setSolidType(SOLID_NOT);
+	//Event* even1 = new Event(EV_BecomeNonSolid);
+	//eTrace->PostEvent(even1, 0.0f);
+
+	eTrace->CancelEventsOfType(EV_BecomeSolid);
+	eTrace->ProcessPendingEvents();
+	eTrace->setSolidType(SOLID_NOT);
 	//trace.contents = CONTENTS_WATER;
 	//trace.surfaceFlags = SURF_NONSOLID;
 
@@ -70,8 +73,8 @@ bool CoopForcefield::passthroughBullettAtack(Entity* owner, trace_t &trace, cons
 		trace = G_Trace(start, vec_zero, vec_zero, end, owner, MASK_SHOT, false, "BulletAttack");
 	}
 
-	Event* even2 = new Event(EV_BecomeSolid);
-	eTrace->PostEvent(even2, 0.01f);
+Event* even2 = new Event(EV_BecomeSolid);
+eTrace->PostEvent(even2, 0.01f);
 	//eTrace->setSolidType(SOLID_BSP);
 	//trace.contents = contents;
 	//trace.surfaceFlags = surfaceFlags;
@@ -79,11 +82,11 @@ bool CoopForcefield::passthroughBullettAtack(Entity* owner, trace_t &trace, cons
 	//DEBUG PRINTOUT
 	if (trace.ent) {
 		ent = trace.ent->entity;
-		gi.Printf(va("BulletAttack Forcefield passed -> '$%s'\n", ent->targetname.c_str()));		
+		//gi.Printf(va("BulletAttack Forcefield passed -> '$%s'\n", ent->targetname.c_str()));		
 	}
-	else {
-		gi.Printf("BulletAttack Forcefield passed -> NULL\n");
-	}
+	//else {
+		//gi.Printf("BulletAttack Forcefield passed -> NULL\n");
+	//}
 
 	return false;
 }
