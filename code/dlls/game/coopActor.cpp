@@ -64,7 +64,7 @@ bool coop_actorDeadBodiesHandle(Entity* actor)
 	#define COOP_MAX_DEADBODIES_ARRAY_SIZE 256
 	#define COOP_MIN_DEADBODIES_AREA_DIST_2D 4048
 	#define COOP_MIN_DEADBODIES_VERT_DIST 256
-	#define COOP_MAX_DEADBODIES_ROUNDS 1000
+	#define COOP_MAX_DEADBODIES_ROUNDS 1048 //[b60013] chrissstrahl - Changed to 1048 - it did hit 1000 rounds mark
 
 	//do not fade out if we want dead bodies to stay
 	if (game.coop_deadBodiesPerArea > 0) {
