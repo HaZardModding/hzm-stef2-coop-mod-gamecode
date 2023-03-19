@@ -1223,7 +1223,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 
 	if ( !attacker->isSubclassOf( Actor ) && !owner->isSubclassOf( Player ) && !owner->isSubclassOf( Actor ) )
 	{
-		gi.Printf( va( "inflictor: %i - ePurp: %i\n" , inflictor->entnum , ePurp->entnum) );
+		//gi.Printf( va( "inflictor: %i - ePurp: %i\n" , inflictor->entnum , ePurp->entnum) );
 		//[609] chrissstrahl - reenabled this, because a trigger (mod_electric) killing a player
 		//would make the code use $world from attacker, instead of using the inflictor which is
 		//the actual cause for the damage - if world is really the attacker it is also the inflictor
