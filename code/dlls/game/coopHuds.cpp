@@ -93,7 +93,7 @@ void coop_huds_setupMultiplayerUI(Player *player) //chrissstrahl - added [b607]
 
 	//handle all the coop specific huds
 	if (player->coopPlayer.installed) {
-		DelayedServerCommand(player->entnum, "ui_addhud coop_radarhud");
+		DelayedServerCommand(player->entnum, "ui_addhud coop_radar");
 		DelayedServerCommand(player->entnum, "globalwidgetcommand crs disable");
 	}
 }
