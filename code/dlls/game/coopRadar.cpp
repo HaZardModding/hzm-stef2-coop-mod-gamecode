@@ -75,10 +75,10 @@ void coop_radarUpdate( Player *player )
 //hzm coop mod chrissstrahl - check for mission objective entities update radar
 //CALCULATION CODE BY ALBERT DORN (dorn.albert)
 {
-	//[b607] chrissstrahl - make sure we do not handle bots
+	//[b613] chrissstrahl - make sure we do not handle bots - fixed using wrong edict type for player - Reported by Crimewavez
 	gentity_t *ent = NULL;
-	ent = (gentity_t *)(Entity *)player;
-	if (ent->svflags & SVF_BOT) {
+	ent = player->edict;
+	if (ent && ent->svflags & SVF_BOT) {
 		return;
 	}
 
