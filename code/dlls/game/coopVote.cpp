@@ -254,7 +254,7 @@ int coop_vote_respawntimeValidate(Player* player, const str &command, const str 
 	if (iTime > 60) {
 		iTime = 60;
 	}
-	else if (time < 0) {
+	else if (iTime < 0) { //[b613] chrissstrahl - fixed usage of wrong variable - reported by Crimewavez
 		iTime = 0;
 	}
 	_voteString = va("coop_respawntime %i", iTime);
