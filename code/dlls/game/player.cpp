@@ -6862,87 +6862,67 @@ void Player::CheckForTargetedEntity(void)
 	memset(&viewTrace, 0, sizeof(trace_t));
 	GetViewTrace(viewTrace, MASK_SHOT | CONTENTS_TARGETABLE);
 
-	//[b607] chrissstrahl - recoded this entire function starting from here
-	//this fixes 2 issues:
-	//- last targeted player name sticking on screen when targeting a different entity that was not a player or world
-	//- health indicator showing meant for players when targeting other entities after a player
-	static bool bClearCvar = false;
 	if (!viewTrace.ent) {
 		SetTargetedEntity(0);
 		last_entityTargeted = NULL;
 		return;//comes here once after respawn
 	}
 
-	//moved up here to resemle the previousely half working code stage
+	//moved up here to resemble the previousely half working code stage
 	//this way the name of the player stays on screen for some ammount of time when targeting world after a player
 	//if player is targeting world
 	if ((viewTrace.entityNum == ENTITYNUM_WORLD)) {
-		//remove coop targeted hud if looking away from a player
-		if (last_entityTargeted && last_entityTargeted->isSubclassOf(Player)) {
-			bClearCvar = true; //goes here when leaving player aiming on world
-			if (game.coop_isActive && coopPlayer.installed) {
-				DelayedServerCommand(entnum, "ui_removehud coop_targeted");
-			}
-//hudPrint("ui_removehud coop_targeted\n");
-		}
 		SetTargetedEntity(0);
 		last_entityTargeted = world;
 		return;
 	}
 
-	//if it is a player, put it into a player var
-	Player* playerTargeted = NULL;
-	if (viewTrace.ent->entity->isSubclassOf(Player)) {
-		playerTargeted = (Player*)viewTrace.ent->entity;
-	}
-	
-	//do not update anything if nothing changed
-	if (last_entityTargeted && last_entityTargeted == viewTrace.ent->entity) {
-		//make sure the player we are targeting has not changed his class
-		if(game.coop_isActive && playerTargeted && playerTargeted->coopPlayer.className != this->coopPlayer.lastTargetedEntityClass){
-			this->coopPlayer.lastTargetedEntityClass = playerTargeted->coopPlayer.className;
-			DelayedServerCommand(entnum, va("globalwidgetcommand coopTgSym shader sysimg/icons/mp/specialty_%s", playerTargeted->coopPlayer.className.c_str()));
-//hudPrint(va("target has changed coop class: %s\n", playerTargeted->coopPlayer.className.c_str()));
-		}
-		SetTargetedEntity(viewTrace.ent->entity);
-		return;
-	}
+	//[b60014] chrissstrahl - rewrote function
+	//[b607] fixes: 
+	//- last targeted player name sticking on screen when targeting a different entity that was not a player or world
+	//- health indicator showing meant for players when targeting other entities after a player
 
 	//[b607] chrissstrahl - developer show targetnames command
-	if ( coopPlayer.showTargetedEntity ) {
+	if (coopPlayer.showTargetedEntity) {
 		str sTarget = viewTrace.ent->entity->targetname;
-		hudPrint(va("Object: $%s, Class: %s\n",sTarget.c_str(), viewTrace.ent->entity->getClassname()));
+		hudPrint(va("Object: $%s, Class: %s\n", sTarget.c_str(), viewTrace.ent->entity->getClassname()));
 	}
 
-	//if a player was targeted before, clean up
-	if (!viewTrace.ent->entity->isSubclassOf(Player)){
-		if (bClearCvar || last_entityTargeted && last_entityTargeted->isSubclassOf(Player)) {
-			gi.SendServerCommand(entnum, "stufftext \"cg_targetedPlayerName ^0\"\n");
-			if (game.coop_isActive && coopPlayer.installed) {
-				this->coopPlayer.lastTargetedEntityClass = "Empty";
-				DelayedServerCommand(entnum, "ui_removehud coop_targeted");
-//hudPrint("ui_removehud coop_targeted\n");
+	Player* playerTargeted = NULL;
+
+	//IT IS A PLAYER
+	if (viewTrace.ent->entity->isSubclassOf(Player)) {
+		playerTargeted = (Player*)viewTrace.ent->entity;
+		
+		//Handle Class stuff only in coop, if player has the coop mod
+		if (game.coop_isActive && this->coopPlayer.installed) {
+			str sShader = "weapons/empty";
+
+			//target player class changed
+			if (playerTargeted->coopPlayer.className != this->coopPlayer.lastTargetedEntityClass) {
+				if (playerTargeted->coopPlayer.className != "") {
+					sShader = va("sysimg/icons/mp/specialty_%s", playerTargeted->coopPlayer.className.c_str());
+				}
+				DelayedServerCommand(entnum,va("globalwidgetcommand targetNameHudS shader %s", sShader.c_str()));
+				this->coopPlayer.lastTargetedEntityClass = playerTargeted->coopPlayer.className;
+				
+				//hudPrint(va("coop class has changed: %s\n", playerTargeted->coopPlayer.className.c_str()));
 			}
 		}
 	}
-	//if it is a player we are targeting, add the damn hud
-	else if (viewTrace.ent->entity->isSubclassOf(Player)) {
-		this->coopPlayer.lastTargetedEntityClass = playerTargeted->coopPlayer.className;
-		if (game.coop_isActive && coopPlayer.installed) {
-			DelayedServerCommand(entnum, va("globalwidgetcommand coopTgSym shader sysimg/icons/mp/specialty_%s", playerTargeted->coopPlayer.className.c_str()));
-			DelayedServerCommand(entnum, "ui_addhud coop_targeted");
+	//NOT A PLAYER
+	//- Remove player name, if last entity was a player
+	else {
+		if (last_entityTargeted->isSubclassOf(Player)) {
+			gi.SendServerCommand(entnum, "stufftext \"cg_targetedPlayerName ^0\"\n");
+			
+			//reset also the class symbol
+			if (this->coopPlayer.installed) {
+				DelayedServerCommand(entnum,"globalwidgetcommand targetNameHudS shader weapons/empty");
+				this->coopPlayer.lastTargetedEntityClass = "";
+			}
 		}
 	}
-//hudPrint("ui_addhud coop_targeted\n");
-
-	//i don't remember why this was implemented, so I deactivated it for now
-	/*
-	if (viewTrace.ent->entity->getHealth() <= 0) {
-		last_entityTargeted = viewTrace.ent->entity;
-		SetTargetedEntity(0);
-		return;
-	}
-	*/
 	
 	//set first the target then the last target
 	SetTargetedEntity(viewTrace.ent->entity);
