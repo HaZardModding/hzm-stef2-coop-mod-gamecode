@@ -72,51 +72,53 @@ float coop_radarSignedAngleTo( const Vector& source , const Vector& dest , const
 
 
 void coop_radarUpdate( Player *player )
-//hzm coop mod chrissstrahl - check for mission objective entities update radar
-//CALCULATION CODE BY ALBERT DORN (dorn.albert)
+//[b60014] chrissstrahl - check for mission objective entities update radar
+//- update the radar every server frame (1 / sv_fps 20)
+//- CALCULATION CODE BY ALBERT DORN (dorn.albert)
 {
-	//[b613] chrissstrahl - make sure we do not handle bots - fixed using wrong edict type for player - Reported by Crimewavez
-	gentity_t *ent = NULL;
-	ent = player->edict;
-	if (ent && ent->svflags & SVF_BOT) {
-		return;
-	}
+	//Exit on NULL
+	if (!player) { return; }
+	
+	
 
-	//hzm coop mod chrissstrahl - do not update for spectator and dead players
-	Entity *target = NULL;
-	target = player->GetTargetedEntity();
+	//Exit on NULL, bot and mod not installed
+	gentity_t *ent = player->edict;
+	if (!player || ent->svflags & SVF_BOT || player->coopPlayer.installed != 1) { return; }
 
-	//hzm coop mod chrissstrahl - 
-	if (	player->coopPlayer.installed && player->health <= 0.0f ||
-			multiplayerManager.isPlayerSpectator( player ) ||
-			!target )
+	
+
+	//player dead or in spectator, disable selected blip
+	Entity* target = player->GetTargetedEntity();
+	if (player->health <= 0.0f || multiplayerManager.isPlayerSpectator(player) || !target)
 	{
-		if ( player->coopPlayer.radarSelectedActive ) {
+		if (player->coopPlayer.radarSelectedActive) {
 			player->coopPlayer.radarSelectedActive = false;
-			DelayedServerCommand( player->entnum , "globalwidgetcommand crs disable" );
+			DelayedServerCommand(player->entnum, "globalwidgetcommand crs disable");
 		}
 	}
 
-	//hzm coop mod chrissstrahl - update the radar every server frame (1 / sv_fps 20)
-	if (	player->coopPlayer.installed != 1 ||
-			level.mission_failed ||
-			(player->coopPlayer.timeEntered + 3) > level.time || //[b607] chrissstrahl - make sure the player does not get updates in the beginning for better connect
-			player->coopPlayer.lastTimeRadarUpdated + 0.05f > level.time || //[b607] chrissstrahl - changed from 0.1 to 0.05
-			multiplayerManager.isPlayerSpectator( player ) ||
-			player->health <= 0.0f )
+
+	//don't update radar:
+	//- on mission failure
+	//- player just entered
+	//- to soon after last update
+	//- for spectators
+	//- for dead
+	//- when doing tricorder puzzle
+	ScriptVariable* solvingPuzzle = NULL;
+	solvingPuzzle = player->entityVars.GetVariable("_playerIsSolvingPuzzle");
+	if( level.mission_failed ||
+		player->health <= 0.0f ||
+		multiplayerManager.isPlayerSpectator(player) ||
+		(player->coopPlayer.timeEntered + 3) > level.time ||
+		player->coopPlayer.lastTimeRadarUpdated + COOP_RADAR_TIMECYCLE > level.time ||
+		solvingPuzzle && solvingPuzzle->floatValue() == 1.0f )
 	{
 		return;
 	}
 
+	//keep track of last update time
 	player->coopPlayer.lastTimeRadarUpdated = level.time;
-
-	//hzm coop mod chrissstrahl - do not send radar update data while player is doing a puzzle
-	ScriptVariable *solvingPuzzle = NULL;
-	solvingPuzzle = player->entityVars.GetVariable( "_playerIsSolvingPuzzle" );
-	if ( solvingPuzzle && solvingPuzzle->floatValue() == 1.0f ) {
-		//gi.Printf("info: player doing puzzle\n");
-		return;
-	}
 
 	//radar COOP_RADAR_CIRCLE_START at: 09 09 of hud
 	//radar COOP_RADAR_BLIP_SIZE /2 = precise blip pos
@@ -140,18 +142,24 @@ void coop_radarUpdate( Player *player )
 	float	fRealDistance;
 	float	fRadarDistance;
 	float	fRadarAngle;
-//	float	fPlayerAngle; //[b607] chrissstrahl - removed, it was not in use
 	float	fBlipAxisX , fBlipAxisY;
 	bool	targetedStillValid = false;
 
 	//check routine is needed to detect what data needs to be send and not be send
 	for ( i = 0; i < maxentities->integer; i++ ){
 		eMiObjEntity = g_entities[i].entity;
-		if ( !eMiObjEntity || eMiObjEntity->edict->s.missionObjective != 1 || iMiObjEntityItemNumber >= COOP_RADAR_MAX_BLIPS ){
+
+		//not meant to show on radar
+		if ( !eMiObjEntity || eMiObjEntity->edict->s.missionObjective != 1 ){
 			continue;
 		}
 
-		vRealDistance = eMiObjEntity->origin - player->origin;
+		//overreach
+		if (iMiObjEntityItemNumber >= COOP_RADAR_MAX_BLIPS) {
+			break;
+		}
+
+		vRealDistance = (eMiObjEntity->origin - player->origin);
 		vRealDistance.z = 0.0f;
 
 		fRealDistance = vRealDistance.lengthSquared();
