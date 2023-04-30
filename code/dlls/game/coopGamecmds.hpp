@@ -32,6 +32,7 @@ qboolean G_coopCom_skill(const gentity_t* ent);
 qboolean G_coopCom_stuck(const gentity_t* ent);
 qboolean G_coopCom_transport(const gentity_t* ent);
 qboolean G_coopCom_leader(const gentity_t* ent);
+qboolean G_coopCom_follow(const gentity_t* ent);
 // COOP COMMANDS - DEVELOPER SPECIFIC
 qboolean G_coopCom_reboot(const gentity_t* ent);
 qboolean G_coopCom_levelend(const gentity_t* ent);

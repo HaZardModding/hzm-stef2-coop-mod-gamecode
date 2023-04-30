@@ -40,7 +40,7 @@ qboolean G_coopClientId(const gentity_t* ent)
 	if (!sId.length()) {
 		//[b60012] chrissstrahl - have a printout
 		player->hudPrint("coop_cId - Bad or Empty: Rejected!\n");
-		gi.Printf("coop_cId - Bad or Empty: Rejected!\n");
+		gi.Printf(va("coop_cId - Bad or Empty: Rejected! For: %s\n",player->client->pers.netname));
 		return qtrue;
 	}
 
@@ -50,7 +50,7 @@ qboolean G_coopClientId(const gentity_t* ent)
 	}
 	else {
 		player->hudPrint("coop_cId - Timed Out: Rejected!\n");
-		gi.Printf("coop_cId - Timed Out: Rejected!\n");
+		gi.Printf(va("coop_cId - Timed Out: Rejected! For: %s\n", player->client->pers.netname));
 	}
 	return qtrue;
 }
@@ -343,6 +343,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!login^8 - Zeigt die Coop Admin Login Schnittstelle an.\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!logout^8 - Entzieht Ihnen Coop Admin Rechte.\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!kickbots^8 - Kickt alle Bots\"\n");
+		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!follow^8 - Zeigt nutzenden Spieler auf dem Radar\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!leader^8 - Erzwingt Teamleader Abstimmung - Parameter: Client Nummer\"\n");
 
 		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_PRINTED_DEU);
@@ -378,11 +379,43 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!login^8 - Promts the Coop Admin Login Menu.\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!logout^8 - Revokes your Coop Admin Status.\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!kickbots^8 - Kicks all Bots\"\n");
+		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!follow^8 - Shows useing Player on the Radar for everyone\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!leader^8 - Forces a Teamleader Vote - Parameter: Client Number.\"\n");
 
 		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_PRINTED_ENG);
 		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_ENTER_TAB_DEU);
 	}
+	return true;
+}
+
+//================================================================
+// Name:        G_coopCom_follow
+// Class:       -
+//              
+// Description: handles player !follow command
+//              
+// Parameters:  const gentity_t* ent
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_coopCom_follow(const gentity_t* ent)
+{
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return true;
+	}
+	
+	gentity_t* gentity;
+	for (int i = 0; i < maxclients->integer; i++) {
+		gentity = &g_entities[i];
+		if (gentity->inuse && gentity->entity && ent != gentity && gentity->client && gentity->entity->isSubclassOf(Player))
+		{
+			gentity->entity->edict->s.missionObjective = 0;
+		}
+	}
+	ent->entity->edict->s.missionObjective = 1;
+	Player* player = (Player*)ent->entity;
+	player->hudPrint("You are now shown on the Radar!\n");
 	return true;
 }
 
