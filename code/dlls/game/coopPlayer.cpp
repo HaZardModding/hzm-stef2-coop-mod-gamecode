@@ -684,7 +684,6 @@ gi.Printf(va("\n======================\nSENDING NEW ID TO PLAYER\n%s\n==========
 //================================================================
 void coop_playerSaveNewPlayerId(Player *player)
 {
-	gi.Printf("\n======================\nSAVING NEW PLAYER ID\n======================\n");
 	//if player has no id send from his config, generate one
 	if (!player->coopPlayer.coopId.length()) {
 		coop_playerGenerateNewPlayerId(player);
@@ -692,6 +691,8 @@ void coop_playerSaveNewPlayerId(Player *player)
 
 	//write id of player to server ini
 	coop_parserIniSet("serverData.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
+
+	gi.Printf(va("\n======================\nSAVING NEW PLAYER ID\n%s\nFor: %s\n======================\n", player->coopPlayer.coopId.c_str(), player->client->pers.netname));
 	
 	//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
 	if (multiplayerManager.inMultiplayer()) {
@@ -1045,6 +1046,9 @@ void coop_playerEnterArena(int entnum, float health)
 
 	//[b60011] chrissstrahl 
 	coopChallenges.playerEntered(player);
+
+	//[b60014] chrissstrahl - moved here because radar was not always added properly
+	DelayedServerCommand(player->entnum, "exec coop_mod/cfg/ea.cfg");
 }
 
 
@@ -1414,9 +1418,6 @@ void coop_playerModelChanged( Player *player )
 {
 	if ( game.coop_isActive && player )
 	{
-		//hzm coop mod chrissstrahl - 
-		player->coopPlayer.lastTimeChangedClass = level.time;
-
 		//hzm coop mod chrissstrahl - remove the injured symbol
 		player->coopPlayer.injuredSymbolVisible = false;
 		player->removeAttachedModelByTargetname( "globalCoop_playerInjured" );
@@ -1598,90 +1599,95 @@ void coop_playerPlaceableThink(Player* player)
 	end_pos = (forward * 100.0f + vPlayer);
 	trace = G_Trace(vPlayer, vec_zero, vec_zero, end_pos, player, MASK_PROJECTILE, false, "ProjectileAttack");
 	//player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+
+	//[b60014] chrissstrahl - make sure to exit on invalid
+	if (!player->coopPlayer.ePlacable || !trace.endpos) {
+		return;
+	}
+
 	trace.endpos[2] = vPlayer[2];
 	vPlayerAngle[1] = player->client->ps.viewangles[1];
-	if (player->coopPlayer.ePlacable && trace.endpos) {
+
+	player->coopPlayer.ePlacable->setOrigin(trace.endpos);
+	player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
+
+	//drop about 100 units - do stuff here if it could not be dropped
+	if (!player->coopPlayer.ePlacable->droptofloor(100)) {
+		//if object could not be placed, display it at the height of feet of player and change animation so it changes skin/texture
+		trace.endpos[2] = player->client->ps.origin[2];
 		player->coopPlayer.ePlacable->setOrigin(trace.endpos);
-		player->coopPlayer.ePlacable->setAngles(vPlayerAngle);
+		player->coopPlayer.ePlacable->animate->RandomAnimate("location_invalid");
+		//gi.Printf("ePlacable - can't be placed here\n");
+	}
+	else {
+		extern Event EV_Object_SetAnim;
+		Event* event;
+		event = new Event(EV_Object_SetAnim);
+		event->AddString("location_valid");
+		player->coopPlayer.ePlacable->ProcessEvent(event);
 
-		//drop about 100 units - do stuff here if it could not be dropped
-		if (!player->coopPlayer.ePlacable->droptofloor(100)) {
-			//if object could not be placed, display it at the height of feet of player and change animation so it changes skin/texture
-			trace.endpos[2] = player->client->ps.origin[2];
-			player->coopPlayer.ePlacable->setOrigin(trace.endpos);
-			player->coopPlayer.ePlacable->animate->RandomAnimate("location_invalid");
-			//gi.Printf("ePlacable - can't be placed here\n");
-		}
-		else {
-			extern Event EV_Object_SetAnim;
-			Event* event;
-			event = new Event(EV_Object_SetAnim);
-			event->AddString("location_valid");
-			player->coopPlayer.ePlacable->ProcessEvent(event);
+		//wait after the placable is shown to player before the click counts at placing it
+		if (player->circleMenuLastTimeActive() + (0.45) < level.time && player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
+			//perevent weapon firing
+			Event* StopFireEvent;
+			StopFireEvent = new Event(EV_Sentient_StopFire);
+			StopFireEvent->AddString("dualhand");
+			player->ProcessEvent(StopFireEvent);
 
-			//wait after the placable is shown to player before the click counts at placing it
-			if (player->circleMenuLastTimeActive() + (0.45) < level.time && player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
-				//perevent weapon firing
-				Event* StopFireEvent;
-				StopFireEvent = new Event(EV_Sentient_StopFire);
-				StopFireEvent->AddString("dualhand");
-				player->ProcessEvent(StopFireEvent);
+			//args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
 
-				//args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
-
-				bool classSpecificStation = false;
-				if ("models/item/mp_weapon-spawn.tik" == player->coopPlayer.ePlacable->model) {
-					classSpecificStation = true;
-					if (player->coopPlayer.className == "HeavyWeapons" || g_gametype->integer == GT_SINGLE_PLAYER) { //Make it work in singleplayer for testing
-						args.setArg("model", "models/item/coop_ammoStation.tik");
-					}
-					else if (player->coopPlayer.className == "Medic") {
-						args.setArg("model", "models/item/coop_mediStation.tik");
-					}
-					else {
-						args.setArg("model", "models/item/coop_techStation.tik");
-					}
+			bool classSpecificStation = false;
+			if ("models/item/mp_weapon-spawn.tik" == player->coopPlayer.ePlacable->model) {
+				classSpecificStation = true;
+				if (player->coopPlayer.className == "HeavyWeapons" || g_gametype->integer == GT_SINGLE_PLAYER) { //Make it work in singleplayer for testing
+					args.setArg("model", "models/item/coop_ammoStation.tik");
+				}
+				else if (player->coopPlayer.className == "Medic") {
+					args.setArg("model", "models/item/coop_mediStation.tik");
 				}
 				else {
-					args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
+					args.setArg("model", "models/item/coop_techStation.tik");
 				}
-
-				args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
-				args.setArg("setmovetype", "" + player->coopPlayer.ePlacable->getMoveType());
-				args.setArg("targetname", player->coopPlayer.ePlacable->targetname.c_str());
-				args.setArg("notsolid", "1");
-				//args.setArg("anim", "idle");
-				obj = args.Spawn();
-				obj->setOrigin(player->coopPlayer.ePlacable->origin);
-				obj->setAngles(player->coopPlayer.ePlacable->angles);
-				obj->setSize(player->coopPlayer.ePlacable->mins, player->coopPlayer.ePlacable->maxs);
-				//handle class specific stations
-				if (classSpecificStation) {
-					//remove any previouse class specific placed objects
-					if (player->coopPlayer.eClassPlacable) {
-						Event* RemoveMe;
-						RemoveMe = new Event(EV_Remove);
-						player->coopPlayer.eClassPlacable->ProcessEvent(RemoveMe);
-					}
-					//remember the class specific placed object
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-//player->coopPlayer.eClassPlacable = obj;
-				}
-
-				player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
-				player->coopPlayer.ePlacable = NULL;
-
-				player->_makeSolidASAP = true;
-				player->_makeSolidASAPTime = 0.0f;
 			}
+			else {
+				args.setArg("model", player->coopPlayer.ePlacable->model.c_str());
+			}
+
+			args.setArg("classname", player->coopPlayer.ePlacable->getClassname());
+			args.setArg("setmovetype", "" + player->coopPlayer.ePlacable->getMoveType());
+			args.setArg("targetname", player->coopPlayer.ePlacable->targetname.c_str());
+			args.setArg("notsolid", "1");
+			//args.setArg("anim", "idle");
+			obj = args.Spawn();
+			obj->setOrigin(player->coopPlayer.ePlacable->origin);
+			obj->setAngles(player->coopPlayer.ePlacable->angles);
+			obj->setSize(player->coopPlayer.ePlacable->mins, player->coopPlayer.ePlacable->maxs);
+			//handle class specific stations
+			if (classSpecificStation) {
+				//remove any previouse class specific placed objects
+				if (player->coopPlayer.eClassPlacable) {
+					Event* RemoveMe;
+					RemoveMe = new Event(EV_Remove);
+					player->coopPlayer.eClassPlacable->ProcessEvent(RemoveMe);
+				}
+				//remember the class specific placed object
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+//player->coopPlayer.eClassPlacable = obj;
+			}
+
+			player->coopPlayer.ePlacable->PostEvent(EV_Remove, 0.0f);
+			player->coopPlayer.ePlacable = NULL;
+
+			player->_makeSolidASAP = true;
+			player->_makeSolidASAPTime = 0.0f;
 		}
 	}
 }

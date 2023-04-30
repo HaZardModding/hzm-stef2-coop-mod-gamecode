@@ -1447,7 +1447,7 @@ int coop_returnCvarInteger( str cvarName )
 	
 	cvar_t* cvar = gi.cvar_get(cvarName.c_str());
 	if (!cvar || !strlen(cvar->string)) {
-		gi.Printf("coopReturn.cpp - coop_returnCvarInteger() - CVar did not Exist or was empty!\nCausing function to return -1\n");
+		gi.Printf(va("coopReturn.cpp - coop_returnCvarInteger(%s) - CVar did not Exist or was empty!\nCausing function to return -1\n", cvarName.c_str())); //[b60014] chrissstrahl - added cvar name
 		return -1;
 	}
 

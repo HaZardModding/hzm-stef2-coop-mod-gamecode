@@ -840,7 +840,7 @@ void coop_serverSaveClientDataWrite( Player *player )
 	//[b60012] chrissstrahl - have a printout
 	if (player->coopPlayer.coopId == "") {
 		if ((player->coopPlayer.timeEntered + 10) < level.time) {
-			str sDataz = va("Your Data was REJECTED! INVALID_ID: (%s) '%s'\n", player->coopPlayer.coopId.c_str(), sData.c_str());
+			str sDataz = va("Your Data was REJECTED! INVALID_ID: (%s) '%s'\nFor: %s\n", player->coopPlayer.coopId.c_str(), sData.c_str(), player->client->pers.netname);
 			player->hudPrint(sDataz.c_str());
 			gi.Printf(sDataz.c_str());
 		}
