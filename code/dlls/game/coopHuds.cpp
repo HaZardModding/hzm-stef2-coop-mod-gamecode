@@ -89,13 +89,7 @@ void coop_huds_setupMultiplayerUI(Player *player) //chrissstrahl - added [b607]
 	//use delayed server command so it will not be added to soon and then removed from the command above
 	//issues often occur on a listen server
 	DelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer disable");
-	DelayedServerCommand(player->entnum, "ui_addhud mp_console"); 
-
-	//handle all the coop specific huds
-	if (player->coopPlayer.installed) {
-		DelayedServerCommand(player->entnum, "ui_addhud coop_radar");
-		DelayedServerCommand(player->entnum, "globalwidgetcommand crs disable");
-	}
+	DelayedServerCommand(player->entnum, "ui_addhud mp_console");
 }
 
 //========================================================= [b607]

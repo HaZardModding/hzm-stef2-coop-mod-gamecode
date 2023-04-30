@@ -378,9 +378,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	//}
 
 	//hzm coop mod chrissstrahl - display info to player
-	if ( player->coopPlayer.installed ){
-		DelayedServerCommand( player->entnum , "exec coop_mod/cfg/ea.cfg" );
-	}else{
+	if ( !player->coopPlayer.installed ){
 		player->hudPrint( va( "^5Coop:^2 You are now: ^5$$%s$$\n" , currentClass.c_str() ) );
 	}
 
