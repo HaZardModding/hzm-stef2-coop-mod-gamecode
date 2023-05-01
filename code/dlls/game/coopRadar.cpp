@@ -276,7 +276,10 @@ void coop_radarUpdate( Player *player )
 		//no one will ever notice this, and if they do then there are nettraffic issues anyway
 		//used to be send via DelayedServerCommand 
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 64 ){
-			gi.SendServerCommand(player->entnum,va("stufftext \"set coop_r %i\"\n",player->coopPlayer.lastRadarAngle));
+			//[b60014] chrissstrahl - this needs more network traffic, but reduces cfg saves for client massively, this can help some clients with performance
+			//gi.SendServerCommand(player->entnum,va("stufftext \"set coop_r %i\"\n",player->coopPlayer.lastRadarAngle));
+			int angle = (270 - player->coopPlayer.lastRadarAngle);
+			gi.SendServerCommand(player->entnum,va("stufftext \"globalwidgetcommand radarBg rendermodelpitch %i\"\n", angle));
 		}
 	}
 
