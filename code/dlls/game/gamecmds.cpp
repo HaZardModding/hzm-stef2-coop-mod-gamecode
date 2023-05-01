@@ -75,6 +75,9 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!hidespawn",G_coopCom_hidespawn	,	true }, 
 	{ "!testspawn",G_coopCom_testspawn	,	true }, 
 	{ "!noclip",G_coopCom_noclip,			true }, 
+	//[b60014] chrissstrahl - added
+	{ "!follow",G_coopCom_follow,			true },
+
 //Coop Commands End
 //Coop Commands End
 //Coop Commands End
