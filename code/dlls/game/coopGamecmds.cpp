@@ -415,7 +415,20 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 	}
 	ent->entity->edict->s.missionObjective = 1;
 	Player* player = (Player*)ent->entity;
-	player->hudPrint("You are now shown on the Radar!\n");
+
+	for (int i = 0; i < maxclients->integer; i++) {
+		gentity_t* gentity = &g_entities[i];
+		if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
+			Player* currentPlayer = (Player*)gentity->entity;
+			if (currentPlayer) {
+				str text = "^5Locaction marked ^2green ^5on Radar of^8";
+				if (coop_checkPlayerLanguageGerman(currentPlayer)) {
+					text = "^5Position ^2gruen ^5markiert auf Radar von^8";
+				}
+				multiplayerManager.HUDPrint(currentPlayer->entnum,va("%s: %s\n", text.c_str(), player->client->pers.netname));
+			}
+		}
+	}
 	return true;
 }
 
