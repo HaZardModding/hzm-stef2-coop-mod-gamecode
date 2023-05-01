@@ -515,6 +515,9 @@ bool coop_playerSetup(Player* player)
 	bool bWindows = false;
 #endif
 
+	//needs only to be send to players that played the coop mod in singleplayer on a custom map before, so only send to players with coop mod
+	DelayedServerCommand(player->entnum, "bind TAB +objectives_score");
+
 	if (dedicated->integer == 0 && player->entnum == 0 && bWindows) {
 		coop_playerSetupHost(player);
 	}
@@ -1783,11 +1786,6 @@ void coop_playerThink( Player *player )
 
 		//display update notification menu if needed
 		coop_hudsUpdateNotification( player );
-
-		//needs only to be send to players that played the coop mod in singleplayer on a custom map before, so only send to players with coop mod
-		if ( player->coopPlayer.installed ) {
-			DelayedServerCommand( player->entnum ,"bind TAB +objectives_score");
-		}
 
 		if ( player->health < 0.0f || sv_cinematic->integer != 0 || multiplayerManager.isPlayerSpectator( player ) ) {
 			return;
