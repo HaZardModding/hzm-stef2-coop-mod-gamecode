@@ -6913,7 +6913,7 @@ void Player::CheckForTargetedEntity(void)
 	//NOT A PLAYER
 	//- Remove player name, if last entity was a player
 	else {
-		if (last_entityTargeted->isSubclassOf(Player)) {
+		if (last_entityTargeted && last_entityTargeted->isSubclassOf(Player)) {
 			gi.SendServerCommand(entnum, "stufftext \"cg_targetedPlayerName ^0\"\n");
 			
 			//reset also the class symbol
