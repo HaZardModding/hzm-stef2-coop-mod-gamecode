@@ -469,7 +469,6 @@ bool coop_playerSetup(Player* player)
 		world->CancelEventsOfType(EV_World_AutoFailure);
 	}
 
-	//[b607] chrissstrahl - check if this player is a bot
 	gentity_t* ent = player->edict;
 	if (!ent) {
 		return false;
@@ -532,11 +531,6 @@ bool coop_playerSetup(Player* player)
 
 	//[b60013] chrissstrahl - moved here - execute clientside inizialisation for coop - for all clients
 	DelayedServerCommand(player->entnum, "exec coop_mod/cfg/init.cfg");
-
-	//hzm coop mod chrissstrahl - disable radar hud selected symbol
-	player->coopPlayer.radarSelectedActive = false;
-	//[b607] chrissstrahl - this is used to reduce nettraffic on first spawn - needs to be false on start
-	player->coopPlayer.radarFirstResetDone = false;
 
 	//hzm coop mod chrissstrahl - mark as not respawned
 	//hzm coop mod chrissstrahl - mark to respawn next time where player died
@@ -964,9 +958,9 @@ void coop_playerEnterArena(int entnum, float health)
 		return;
 	}
 
-	//reset the radar hud
-	//[b607] chrissstrahl - make sure not to reset twiche
-	coop_radarReset( player );
+	//[b60014] chrissstrahl - reset/hide radar blips
+	//coop_radarResetCFG( player );
+	//now managed in ea.cfg, which is executed at the end of this function
 
 	//hzm coop mod chrissstrahl - used to store if a medic was notified to heal this now critically injured player
 	player->coopPlayer.lastTargetedClassSend = "";
@@ -1051,6 +1045,7 @@ void coop_playerEnterArena(int entnum, float health)
 	coopChallenges.playerEntered(player);
 
 	//[b60014] chrissstrahl - moved here because radar was not always added properly
+	coop_radarReset(player);
 	DelayedServerCommand(player->entnum, "exec coop_mod/cfg/ea.cfg");
 }
 
