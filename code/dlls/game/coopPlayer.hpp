@@ -12,7 +12,8 @@
 #include "equipment.h"
 #include "coopClass.hpp"
 
-#define COOP_RADAR_MAX_BLIPS 8
+#define COOP_RADAR_MAX_BLIPS 9
+#define COOP_RADAR_MAX_OBJCTIVE_BLIPS (COOP_RADAR_MAX_BLIPS - 1)
 //[b607] chrissstrahl - changed to autoadjust
 #define COOP_RADAR_CIRCLE_START (COOP_RADAR_MAX_BLIPS + 1)
 #define COOP_RADAR_BLIP_SIZE 28
@@ -71,9 +72,10 @@ public:
 	//hzm coop mod chrissstrahl - keep track of the objective blips from the radar - so that it will only be resend if nessary
 	bool	radarBlipActive[COOP_RADAR_MAX_BLIPS];
 	bool	radarSelectedActive = false;
-	bool	radarFirstResetDone = false; //[b607] chrissstrahl - used to reduce nettraffic on first spawn
-	//bool	radarBlipSetInactive[COOP_RADAR_MAX_BLIPS];
 	Vector	radarBlipLastPosition[COOP_RADAR_MAX_BLIPS];
+	//bool	radarFirstResetDone = false
+	//bool	radarBlipSetInactive[COOP_RADAR_MAX_BLIPS];
+	
 
 	//hzm coop mod chrissstrahl - used to store last player mass value, needed to restore it after player has been revived
 	int		lastMass = 0;

@@ -1,21 +1,9 @@
 //-----------------------------------------------------------------------------------
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// NEWLY CREATED CODE
+// Code by:	HaZardModding, Christian Sebastian Strahl
 // E-Mail:		chrissstrahl@yahoo.de
 //
-// CONTAINING RADAR-FUNCTIONS, MANAGING OBJECTIVE RADAR
-
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2018 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
+// CONTAINING PLAYER RADAR RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
 
@@ -24,28 +12,15 @@
 #include "player.h"
 #include "mp_manager.hpp"
 
-//reset radar, fixes issues with the radar not updating
 void coop_radarReset( Player* player )
+//[b60014] chrissstrahl - reset variables - the ui is reset via ea.cfg in coop_playerEnterArena
 {
 	if ( !player )return;
 
-	//[b607] chrissstrahl - make sure we do not handle bots
-	gentity_t *ent = NULL;
-	ent = (gentity_t *)(Entity *)player;
-	if (ent->svflags & SVF_BOT) {
-		return;
-	}
-
 	for ( int i = 0; i < COOP_RADAR_MAX_BLIPS; i++ ) {
 		player->coopPlayer.radarBlipLastPosition[i] = Vector( 0.0f , -999.0f , -999.0f );
-		//[b607] chrissstrahl - reset only if active or first time - meant to reduce nettraffic
-		if(player->coopPlayer.radarBlipActive[i] || !player->coopPlayer.radarFirstResetDone ) {
-			DelayedServerCommand( player->entnum , va( "globalwidgetcommand cr%i disable" , i ) );
-		}
 		player->coopPlayer.radarBlipActive[i] = false;
 	}
-	//[b607] chrissstrahl - first reset shall only happen once
-	player->coopPlayer.radarFirstResetDone = true;
 	player->coopPlayer.radarSelectedActive = false;
 }
 
@@ -70,6 +45,113 @@ float coop_radarSignedAngleTo( const Vector& source , const Vector& dest , const
 	return dot < 0 ? -angle : angle;
 }
 
+void coop_radarUpdateBlip(Player* player,
+	Entity* eMiObjEntity,
+	Entity* target,
+	Vector& vRadarCenterPos,
+	int& iMiObjEntityItemNumber,
+	bool& targetedStillValid)
+{
+	float	fRealDistance;
+	float	fRadarDistance;
+	float	fRadarAngle;
+	float	fBlipAxisX, fBlipAxisY;
+	Vector	vRadarBlipLastPosition(0.0f, 0.0f, 0.0f);
+	Vector	vRealDistance;
+	Vector	vRadarDistance;
+	Vector	vNorth(-1.0f, 0.0f, 0.0f);
+	vRealDistance = (eMiObjEntity->origin - player->origin);
+	vRealDistance.z = 0.0f;
+
+	fRealDistance = vRealDistance.lengthSquared();
+	fRadarDistance = fRealDistance / COOP_RADAR_SCALE_FACTOR;
+
+	//make sure the blip does not go outside the actual radar
+	if (fRadarDistance > COOP_RADAR_MAX_RADIUS) fRadarDistance = COOP_RADAR_MAX_RADIUS;
+
+	//set vector to length 1, but keep it pointed into the actual direction (Einheitsvector (Länge = 1))
+	vRadarDistance = vRealDistance;
+	vRadarDistance.normalize();
+
+
+	//make real pos of the object to a relative pos of the radar
+	//Die reale position des objected wird zu realtiven einer position des radars
+	vRadarDistance *= fRadarDistance;
+
+	trace_t trace;
+	player->GetViewTrace(trace, MASK_PROJECTILE, 1.0f);
+
+	//[b607] chrissstrahl - fix radar not working when player is in cg_3rd_person
+	Vector viewDir = Vector(0, 0, 0);
+	Vector vorg = Vector(0, 0, 0);
+	if (player->client->ps.pm_flags & PMF_CAMERA_VIEW) { // 3rd person automatic camera
+		vorg = player->client->ps.camera_origin;
+	}
+	else if (!player->checkthirdperson()) { // First person
+		vorg = player->origin;
+		vorg.z += player->client->ps.viewheight;
+	}
+	else { // Third person
+		vorg = player->client->ps.camera_origin;
+	}
+
+	viewDir = trace.endpos - vorg; //[b607] chrissstrahl - use the correct player/camera origin now
+	viewDir.z = 0.0f;
+
+	vRealDistance.normalize();
+	viewDir.normalize();
+	Vector up(0.0f, 0.0f, 1.0f);
+
+	fRadarAngle = coop_radarSignedAngleTo(viewDir, vRealDistance, up);
+
+	//debug
+	//gi.Printf( va( "PlayerPos(%f,%f)\n" , player->origin.x , player->origin.y ) );
+	//gi.Printf( va( "fRadarAngle : %f\n" , fRadarAngle ) );
+
+	vRadarDistance = Vector(0.0f, -fRadarDistance, 0.0f);
+
+	fRadarAngle -= M_PI / 2;
+
+	fBlipAxisX = vRadarCenterPos.x + ((sinf(fRadarAngle) * vRadarDistance.x) + (cosf(fRadarAngle) * vRadarDistance.y));
+	fBlipAxisY = vRadarCenterPos.y + ((cosf(fRadarAngle) * vRadarDistance.x) - (sinf(fRadarAngle) * vRadarDistance.y));
+
+	vRadarBlipLastPosition[0] = fBlipAxisX;
+	vRadarBlipLastPosition[1] = fBlipAxisY;
+
+	//hzm coop mod chrissstrahl - construct client command
+	if (player->coopPlayer.radarBlipLastPosition[iMiObjEntityItemNumber] != vRadarBlipLastPosition) {
+		player->coopPlayer.radarBlipLastPosition[iMiObjEntityItemNumber] = vRadarBlipLastPosition;
+
+		//hzm coop mod chrissstrahl - convert floats to int, to reduce traffic
+		//[b607] chrissstrahl - if there is a lot send to player, do not update blips
+		//The blips are updated every time the player moves or turns, so chances are high
+		//no one will ever notice this, and if they do then there are nettraffic issues anyway
+		//used to be send via DelayedServerCommand 
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 120) { //64
+			gi.SendServerCommand(player->entnum, va("stufftext \"globalwidgetcommand cr%i rect %i %i %i %i\"\n", iMiObjEntityItemNumber, (int)fBlipAxisX, (int)fBlipAxisY, COOP_RADAR_BLIP_SIZE, COOP_RADAR_BLIP_SIZE));
+		}
+
+		if (target) {
+			if (target == eMiObjEntity) {
+				targetedStillValid = true;
+				//[b607] chrissstrahl - if there is a lot send to player, do not update blips
+				//The blips are updated every time the player moves or turns, so chances are high
+				//no one will ever notice this, and if they do then there are nettraffic issues anyway
+				//used to be send via DelayedServerCommand 
+				if (gi.GetNumFreeReliableServerCommands(player->entnum) > 120) { //64
+					gi.SendServerCommand(player->entnum, va("stufftext \"globalwidgetcommand crs rect %i %i %i %i\"\n", (int)fBlipAxisX, (int)fBlipAxisY, COOP_RADAR_BLIP_SIZE, COOP_RADAR_BLIP_SIZE));
+				}
+			}
+		}
+	}
+
+	//hzm coop mod chrissstrahl - enable active blip if it is not already
+	if (player->coopPlayer.radarBlipActive[iMiObjEntityItemNumber] == false) {
+		player->coopPlayer.radarBlipActive[iMiObjEntityItemNumber] = true;
+		//we need it to be reliable
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand cr%i enable", iMiObjEntityItemNumber));
+	}
+}
 
 void coop_radarUpdate( Player *player )
 //[b60014] chrissstrahl - check for mission objective entities update radar
@@ -78,14 +160,10 @@ void coop_radarUpdate( Player *player )
 {
 	//Exit on NULL
 	if (!player) { return; }
-	
-	
 
 	//Exit on NULL, bot and mod not installed
 	gentity_t *ent = player->edict;
 	if (!player || ent->svflags & SVF_BOT || player->coopPlayer.installed != 1) { return; }
-
-	
 
 	//player dead or in spectator, disable selected blip
 	Entity* target = player->GetTargetedEntity();
@@ -97,10 +175,10 @@ void coop_radarUpdate( Player *player )
 		}
 	}
 
-
 	//don't update radar:
 	//- on mission failure
-	//- player just entered
+	//- player just entered server
+	//- player just entered arena/team
 	//- to soon after last update
 	//- for spectators
 	//- for dead
@@ -111,6 +189,7 @@ void coop_radarUpdate( Player *player )
 		player->health <= 0.0f ||
 		multiplayerManager.isPlayerSpectator(player) ||
 		(player->coopPlayer.timeEntered + 3) > level.time ||
+		(player->coopPlayer.lastTimeSpawned + 1.5) > level.time ||
 		player->coopPlayer.lastTimeRadarUpdated + COOP_RADAR_TIMECYCLE > level.time ||
 		solvingPuzzle && solvingPuzzle->floatValue() == 1.0f )
 	{
@@ -133,136 +212,27 @@ void coop_radarUpdate( Player *player )
 	vRadarCenterPos[1] = ( ( vRadarCenterPos[1] + COOP_RADAR_CIRCLE_START ) - ( COOP_RADAR_BLIP_SIZE / 2 ) );
 
 	Entity	*eMiObjEntity = NULL;
-	Vector	vRadarBlipLastPosition( 0.0f , 0.0f , 0.0f );
-	Vector	vRealDistance;
-	Vector	vRadarDistance;
-	Vector	vNorth( -1.0f , 0.0f , 0.0f );
 	int		iMiObjEntityItemNumber = 0;
-	int		i;
-	float	fRealDistance;
-	float	fRadarDistance;
-	float	fRadarAngle;
-	float	fBlipAxisX , fBlipAxisY;
 	bool	targetedStillValid = false;
 
 	//check routine is needed to detect what data needs to be send and not be send
-	for ( i = 0; i < maxentities->integer; i++ ){
+	for (int i = 0; i < maxentities->integer; i++ ){
 		eMiObjEntity = g_entities[i].entity;
 
 		//not meant to show on radar
-		if ( !eMiObjEntity || eMiObjEntity->edict->s.missionObjective != 1 ){
+		if ( !eMiObjEntity || eMiObjEntity->edict->s.missionObjective != 1 || eMiObjEntity->isSubclassOf(Player)){
 			continue;
 		}
 
 		//overreach
-		if (iMiObjEntityItemNumber >= COOP_RADAR_MAX_BLIPS) {
+		if (iMiObjEntityItemNumber >= COOP_RADAR_MAX_OBJCTIVE_BLIPS) {
 			break;
 		}
 
-		vRealDistance = (eMiObjEntity->origin - player->origin);
-		vRealDistance.z = 0.0f;
-
-		fRealDistance = vRealDistance.lengthSquared();
-		fRadarDistance = fRealDistance / COOP_RADAR_SCALE_FACTOR;
-
-		//make sure the blip does not go outside the actual radar
-		if ( fRadarDistance > COOP_RADAR_MAX_RADIUS ) fRadarDistance = COOP_RADAR_MAX_RADIUS;
-
-		//set vector to length 1, but keep it pointed into the actual direction (Einheitsvector (Länge = 1))
-		vRadarDistance = vRealDistance;
-		vRadarDistance.normalize();
-
-
-		//make real pos of the object to a relative pos of the radar
-		//Die reale position des objected wird zu realtiven einer position des radars
-		vRadarDistance *= fRadarDistance;
-
-		trace_t trace;
-		player->GetViewTrace( trace , MASK_PROJECTILE , 1.0f );
-
-		//[b607] chrissstrahl - fix radar not working when player is in cg_3rd_person
-		Vector viewDir = Vector(0,0,0);
-		Vector vorg = Vector(0,0,0);
-		if (player->client->ps.pm_flags & PMF_CAMERA_VIEW){ // 3rd person automatic camera
-			vorg = player->client->ps.camera_origin;
-		}
-		else if (!player->checkthirdperson()){ // First person
-			vorg = player->origin;
-			vorg.z += player->client->ps.viewheight;
-		}
-		else{ // Third person
-			vorg = player->client->ps.camera_origin;
-		}
-
-		viewDir = trace.endpos - vorg; //[b607] chrissstrahl - use the correct player/camera origin now
-		viewDir.z = 0.0f;
-
-		vRealDistance.normalize();
-		viewDir.normalize();
-		Vector up( 0.0f , 0.0f , 1.0f );
-
-		fRadarAngle = coop_radarSignedAngleTo( viewDir , vRealDistance , up );
-
-		//debug
-		//gi.Printf( va( "PlayerPos(%f,%f)\n" , player->origin.x , player->origin.y ) );
-		//gi.Printf( va( "fRadarAngle : %f\n" , fRadarAngle ) );
-
-		vRadarDistance = Vector( 0.0f , -fRadarDistance , 0.0f );
-
-		fRadarAngle -= M_PI / 2;
-
-		fBlipAxisX = vRadarCenterPos.x + ( ( sinf( fRadarAngle ) * vRadarDistance.x ) + ( cosf( fRadarAngle ) * vRadarDistance.y ) );
-		fBlipAxisY = vRadarCenterPos.y + ( ( cosf( fRadarAngle ) * vRadarDistance.x ) - ( sinf( fRadarAngle ) * vRadarDistance.y ) );
-
-		vRadarBlipLastPosition[0] = fBlipAxisX;
-		vRadarBlipLastPosition[1] = fBlipAxisY;
-
-		//hzm coop mod chrissstrahl - construct client command
-		if ( player->coopPlayer.radarBlipLastPosition[iMiObjEntityItemNumber] != vRadarBlipLastPosition ){
-			player->coopPlayer.radarBlipLastPosition[iMiObjEntityItemNumber] = vRadarBlipLastPosition;
-
-			//hzm coop mod chrissstrahl - convert floats to int, to reduce traffic
-			//[b607] chrissstrahl - if there is a lot send to player, do not update blips
-			//The blips are updated every time the player moves or turns, so chances are high
-			//no one will ever notice this, and if they do then there are nettraffic issues anyway
-			//used to be send via DelayedServerCommand 
-			if (gi.GetNumFreeReliableServerCommands(player->entnum) > 120) { //64
-				gi.SendServerCommand(player->entnum,va("stufftext \"globalwidgetcommand cr%i rect %i %i %i %i\"\n", iMiObjEntityItemNumber, (int)fBlipAxisX, (int)fBlipAxisY, COOP_RADAR_BLIP_SIZE, COOP_RADAR_BLIP_SIZE));
-			}
-
-			if ( target ){
-				if ( target == eMiObjEntity ){
-					targetedStillValid = true;
-					//[b607] chrissstrahl - if there is a lot send to player, do not update blips
-					//The blips are updated every time the player moves or turns, so chances are high
-					//no one will ever notice this, and if they do then there are nettraffic issues anyway
-					//used to be send via DelayedServerCommand 
-					if (gi.GetNumFreeReliableServerCommands(player->entnum) > 120) { //64
-						gi.SendServerCommand(player->entnum, va("stufftext \"globalwidgetcommand crs rect %i %i %i %i\"\n", (int)fBlipAxisX, (int)fBlipAxisY, COOP_RADAR_BLIP_SIZE, COOP_RADAR_BLIP_SIZE));
-					}
-				}
-			}
-		}
-
-		//hzm coop mod chrissstrahl - enable active blip if it is not already
-		if ( player->coopPlayer.radarBlipActive[iMiObjEntityItemNumber] == false ){
-			player->coopPlayer.radarBlipActive[iMiObjEntityItemNumber] = true;
-			//we need it to be reliable
-			DelayedServerCommand( player->entnum , va( "globalwidgetcommand cr%i enable" , iMiObjEntityItemNumber ) );
-		}
+		coop_radarUpdateBlip(player, eMiObjEntity, target, vRadarCenterPos, iMiObjEntityItemNumber, targetedStillValid); 
 
 		//hzm coop mod chrissstrahl - keep track of the current Mission Objective Blip Marker
 		iMiObjEntityItemNumber++;
-	}
-
-	//update (enable/disable) selected marker
-	//bugfix - chrissstrahl - make sure it is deactivated if not needed
-	if( targetedStillValid ) {
-		if ( !player->coopPlayer.radarSelectedActive ) {
-			player->coopPlayer.radarSelectedActive = true;
-			//[b607] chrissstrahl - made seperate, because we need it to be reliable
-			DelayedServerCommand(player->entnum,"globalwidgetcommand crs enable");
-		}
 	}
 
 	//hzm coop mod chrissstrahl - update radar background compas disc, update it first that way the radar seams more responsive
@@ -283,15 +253,36 @@ void coop_radarUpdate( Player *player )
 		}
 	}
 
-	if ( iMiObjEntityItemNumber >= COOP_RADAR_MAX_BLIPS )return;
-
-	//hzm coop mod chrissstrahl - disable all other inactive blips
-	for ( i = iMiObjEntityItemNumber; i < COOP_RADAR_MAX_BLIPS; i++ ){
+	//[b60014] chrissstrahl - disable all other inactive blips
+	for (int i = iMiObjEntityItemNumber; i < COOP_RADAR_MAX_OBJCTIVE_BLIPS; i++ ){
 		if ( player->coopPlayer.radarBlipActive[i] == true ){
 			player->coopPlayer.radarBlipActive[i] = false;
 			//we need it to be reliable
 			DelayedServerCommand( player->entnum , va( "globalwidgetcommand cr%i disable" , i ) );
 		}
 	}
-}
 
+	//[b60014] chrissstrahl - disable all other inactive blips
+	iMiObjEntityItemNumber = COOP_RADAR_MAX_OBJCTIVE_BLIPS;
+	for (int i = 0; i < maxclients->integer; i++) {
+		gentity_t* gentity = &g_entities[i];
+		
+		if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
+			Player* currentPlayer = (Player*)gentity->entity;
+			if (currentPlayer && currentPlayer->edict->s.missionObjective == 1) {
+				coop_radarUpdateBlip(player, currentPlayer, target, vRadarCenterPos, iMiObjEntityItemNumber, targetedStillValid);
+				break;
+			}
+		}
+	}
+
+	//update (enable/disable) selected marker
+	//bugfix - chrissstrahl - make sure it is deactivated if not needed
+	if (targetedStillValid) {
+		if (!player->coopPlayer.radarSelectedActive) {
+			player->coopPlayer.radarSelectedActive = true;
+			//[b607] chrissstrahl - made seperate, because we need it to be reliable
+			DelayedServerCommand(player->entnum, "globalwidgetcommand crs enable");
+		}
+	}
+}
