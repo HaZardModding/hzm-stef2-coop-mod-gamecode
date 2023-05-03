@@ -401,7 +401,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_follow(const gentity_t* ent)
 {
-	if (g_gametype->integer != GT_MULTIPLAYER) {
+	if (g_gametype->integer != GT_MULTIPLAYER || !ent || ent->entity->edict->s.missionObjective == 1) {
 		return true;
 	}
 	
@@ -413,7 +413,9 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 			gentity->entity->edict->s.missionObjective = 0;
 		}
 	}
+
 	ent->entity->edict->s.missionObjective = 1;
+	
 	Player* player = (Player*)ent->entity;
 
 	for (int i = 0; i < maxclients->integer; i++) {
