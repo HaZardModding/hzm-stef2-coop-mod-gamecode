@@ -1119,7 +1119,26 @@ Item* SecretItem::ItemPickup( Entity *other, qboolean add_to_inventory = true, q
 	level.found_specialItems++;
 	levelVars.SetVariable( "found_specialItems" , level.found_specialItems );
 
-	gi.centerprintf ( other->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$FoundSecretItem$$" );
+	//[b60014] chrissstrahl - print message to all player during coop
+	if (game.coop_isActive && multiplayerManager.inMultiplayer()) {
+		for (int i = 0; i < maxclients->integer; i++) {
+			if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
+				Player* player = (Player*)g_entities[i].entity;
+
+				if (player) {
+					str sMessage = "^5Secret golden Starship^2 found by:^8 ";
+					if (coop_checkPlayerLanguageGerman(player)) {
+						sMessage = "^5Geheimes goldenes Raumschiffe^2 gefunden von:^8 ";
+					}
+
+					gi.centerprintf(player->edict, CENTERPRINT_IMPORTANCE_NORMAL, va("%s%s", sMessage.c_str(), other->client->pers.netname));
+				}
+			}
+		}
+	}
+	else {
+		gi.centerprintf(other->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$FoundSecretItem$$");
+	}
 
 	pickupSoundName = GetRandomAlias( "snd_pickup" );
 
