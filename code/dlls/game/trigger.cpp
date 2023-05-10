@@ -1497,7 +1497,31 @@ void TriggerSecret::FoundSecret( Event *ev )
 	level.found_secrets++;
 	levelVars.SetVariable( "found_secrets", level.found_secrets );
 
-	gi.centerprintf ( &g_entities[0], CENTERPRINT_IMPORTANCE_NORMAL, "$$FoundSecretArea$$" );
+	
+	if (!activator || !activator->isSubclassOf(Player)) {
+		return;
+	}
+
+	//[b60014] chrissstrahl - print message to all player during coop
+	if (game.coop_isActive && multiplayerManager.inMultiplayer()) {
+		for (int i = 0; i < maxclients->integer; i++) {
+			if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
+				Player* player = (Player*)g_entities[i].entity;
+
+				if (player) {
+					str sMessage = "^5Secret Area^2 found by:^8 ";
+					if (coop_checkPlayerLanguageGerman(player)) {
+						sMessage = "^5Versteck^2 gefunden von:^8 ";
+					}
+
+					gi.centerprintf(player->edict, CENTERPRINT_IMPORTANCE_NORMAL, va("%s%s", sMessage.c_str(), (Player*)activator->client->pers.netname));
+				}
+			}
+		}
+	}
+	else {
+		gi.centerprintf(&g_entities[0], CENTERPRINT_IMPORTANCE_NORMAL, "$$FoundSecretArea$$");
+	}
 }
 
 /*****************************************************************************/
