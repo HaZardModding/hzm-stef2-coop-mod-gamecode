@@ -1739,6 +1739,15 @@ Event EV_Player_getFlagAttachAngles
 	"return-vector",
 	"Returns vector of player skin defined Angle data for CTF Flags"
 );
+//[b60014] chrissstrahl - grab userfov
+Event EV_Player_getUserFov
+(
+	"getUserFov",
+	EV_DEFAULT,
+	"@f",
+	"return-float",
+	"Returns player their userfov setting"
+);
 
 /*
 ==============================================================================
@@ -1937,6 +1946,8 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 
+	//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
+	{ &EV_Player_getUserFov,					&Player::getUserFov},
 
 	//hzm gameupdate chrissstrahl [b60011] circlemenu
 	{ &EV_Player_circleMenu,					&Player::circleMenuEvent},
@@ -2024,6 +2035,19 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ NULL , NULL }
 };
 
+//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
+void Player::getUserFov(Event *ev)
+{
+	float fov = (float)atof(Info_ValueForKey(client->pers.userinfo, "userFov"));
+	if (fov < 1.0f){
+		fov = atof(coop_returnCvarString("sv_defaultFov"));
+	}
+	else if (fov > 160.0f){
+		fov = 160.0f;
+	}
+	ev->ReturnFloat(fov);
+}
+
 //[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
 void Player::getBackpackAttachOffset(Event *ev)
 {
@@ -2049,66 +2073,66 @@ void Player::getFlagAttachAngles(Event *ev)
 //[b60013] chrissstrahl - checks if player is pressing crouch button
 void Player::checkCrouch(Event* ev)
 {
-	ev->ReturnInteger((int)GetCrouch());
+	ev->ReturnFloat((int)GetCrouch());
 }
 
 //[b60013] chrissstrahl - checks if player is pressing jump button
 void Player::checkJump(Event* ev)
 {
 	qboolean bJump = last_ucmd.upmove > 0;
-	ev->ReturnInteger((int)bJump);
+	ev->ReturnFloat((int)bJump);
 }
 
 //[b60013] chrissstrahl - checks if player is pressing forwrads button
 void Player::checkForward(Event* ev)
 {
 	qboolean bJump = last_ucmd.forwardmove > 0;
-	ev->ReturnInteger((int)bJump);
+	ev->ReturnFloat((int)bJump);
 }
 //[b60013] chrissstrahl - checks if player is pressing backwards button
 void Player::checkBackward(Event* ev)
 {
 	qboolean bJump = last_ucmd.forwardmove < 0;
-	ev->ReturnInteger((int)bJump);
+	ev->ReturnFloat((int)bJump);
 }
 //[b60013] chrissstrahl - checks if player is pressing left strafe button
 void Player::checkLeft(Event* ev)
 {
 	qboolean bJump = last_ucmd.rightmove < 0;
-	ev->ReturnInteger((int)bJump);
+	ev->ReturnFloat((int)bJump);
 }
 //[b60013] chrissstrahl - checks if player is pressing right strafe button
 void Player::checkRight(Event* ev)
 {
 	qboolean bJump = last_ucmd.rightmove > 0;
-	ev->ReturnInteger((int)bJump);
+	ev->ReturnFloat((int)bJump);
 }
 //[b60013] chrissstrahl - checks if player is pressing lean left button
 void Player::checkLeanLeft(Event* ev)
 {
 	qboolean bJump = last_ucmd.lean > 0;
-	ev->ReturnInteger((int)bJump);
+	ev->ReturnFloat((int)bJump);
 }
 //[b60013] chrissstrahl - checks if player is pressing lean right button
 void Player::checkLeanRight(Event* ev)
 {
 	qboolean bJump = last_ucmd.lean < 0;
-	ev->ReturnInteger((int)bJump);
+	ev->ReturnFloat((int)bJump);
 }
 //[b60013] chrissstrahl - checks if player is pressing drop rune button
 void Player::checkDropRune(Event* ev)
 {
-	ev->ReturnInteger((last_ucmd.buttons & BUTTON_DROP_RUNE) != 0);
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_DROP_RUNE) != 0);
 }
 //[b60013] chrissstrahl - checks if player is pressing run button
 void Player::checkRun(Event* ev)
 {
-	ev->ReturnInteger((last_ucmd.buttons & BUTTON_RUN) != 0);
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_RUN) != 0);
 }
 //[b60013] chrissstrahl - checks if player is pressing reload button
 void Player::checkReload(Event* ev)
 {
-	ev->ReturnInteger((last_ucmd.buttons & BUTTON_RELOAD) != 0);
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_RELOAD) != 0);
 }
 
 //[b60012] chrissstrahl - cancel player modulating event - if player gets hurt or so
@@ -2457,25 +2481,25 @@ void Player::setLanguage(str sLang)
 //[b60011] chrissstrahl - checks if player is pressing fire button
 void Player::checkFire(Event* ev)
 {
-	ev->ReturnInteger((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0);
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0);
 }
 
 //[b60011] chrissstrahl - checks if player is pressing fire button
 void Player::checkFirealt(Event* ev)
 {
-	ev->ReturnInteger((last_ucmd.buttons & BUTTON_ATTACKRIGHT) != 0);
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKRIGHT) != 0);
 }
 
 //[b60011] chrissstrahl - checks if player is in third person
 void Player::checkThirdperson(Event *ev)
 {
-	ev->ReturnInteger((int)_isThirdPerson);
+	ev->ReturnFloat((int)_isThirdPerson);
 }
 
 //[b60011] chrissstrahl - checks if player is using the use button
 void Player::checkUsePressing(Event *ev)
 {
-	ev->ReturnInteger((last_ucmd.buttons & BUTTON_USE) != 0);	
+	ev->ReturnFloat((last_ucmd.buttons & BUTTON_USE) != 0);
 }
 
 //[b60011] chrissstrahl - runs thread from player entity
