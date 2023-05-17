@@ -101,6 +101,9 @@ void coop_classRegenerate( Player *player )
 		return;
 	}
 
+	//[b60014] chrissstrahl - deactivating regeneration to motivate players to work closer together
+	return;
+
 	//[b60012] chrissstrahl - fix missing .c_str()
 	if ( !Q_stricmp( player->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC) ){
 		player->AddHealth( COOP_CLASS_REGENERATE_HEALTH );
@@ -557,6 +560,21 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 							usingPlayer->hudPrint( va( "^5COOP^8 - Sie heilten: %s\n" , usedPlayer->client->pers.netname ) );
 						}else{
 							usingPlayer->hudPrint( va( "^5COOP^8 - You healed: %s\n" , usedPlayer->client->pers.netname ) );
+						}
+
+						//[b60014] chrissstrahl - give player health in return for his cooperation
+						if(usingPlayer->health < COOP_CLASS_MEDIC_MAX_HEALTH){
+							//give player 15% health back for his cooperation
+							float playerHealthNew = (usingPlayer->health + ((COOP_CLASS_MEDIC_MAX_HEALTH / 100) * 15));
+							if (playerHealthNew > COOP_CLASS_MEDIC_MAX_HEALTH) {
+								playerHealthNew = COOP_CLASS_MEDIC_MAX_HEALTH;
+							}
+							usingPlayer->health = playerHealthNew;
+							
+							//if player has health below 50 up it to 50
+							if (usingPlayer->health < ((COOP_CLASS_MEDIC_MAX_HEALTH / 100) * 50)) {
+								usingPlayer->health = ((COOP_CLASS_MEDIC_MAX_HEALTH / 100) * 50);
+							}
 						}
 					}
 					else if ( !Q_stricmp( usingPlayer->coopPlayer.className.c_str(), COOP_CLASS_NAME_TECHNICIAN) ){
