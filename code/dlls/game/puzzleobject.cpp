@@ -332,7 +332,10 @@ PuzzleObject::PuzzleObject()
 //-----------------------------------------------------
 PuzzleObject::~PuzzleObject()
 {
-
+	//[b60014] chrissstrahl - added fix to remove hud from player currently modulating
+	if (activator && activator->isSubclassOf(Player) && _hudOn ){
+		gi.SendServerCommand(activator->entnum, va("stufftext \"popmenu %s 1\"\n",_hudName.c_str()));
+	}
 }
 
 
@@ -387,9 +390,14 @@ void PuzzleObject::Think( void )
 			animate->RandomAnimate("puzzle_closing", EV_PuzzleObject_AnimationDone );
 		}
 	}
-
-	if ( ( _timed || (level.getSkill() <= _minSkill) ) 
-		&& _hudOn && ( _lastTimeUsed + 0.25 < level.time ) )
+	//[b60014] chrissstrahl - tricorder puzzle should become a timer bar for coop class technician
+	//if ( ( _timed || (level.getSkill() <= _minSkill) ) 	&& _hudOn && ( _lastTimeUsed + 0.25 < level.time ) )
+	if (activator && activator->isSubclassOf(Player)) { player = (Player*)(Entity*)activator; }
+	if ( _hudOn && ( _lastTimeUsed + 0.25 < level.time ) &&
+		(	 _timed							||
+			(level.getSkill() <= _minSkill) ||
+			multiplayerManager.inMultiplayer() && game.coop_isActive && player && player->isSubclassOf(Player) && player->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN)
+		)
 	{
 		_lastTimeUsed = 0.0f;
 		_usedTime = 0.0f;
@@ -622,6 +630,7 @@ void PuzzleObject::animationDone(Event* event)
 //-----------------------------------------------------
 void PuzzleObject::useEvent(Event* event)
 //hzm gamefix chrissstrahl - updated, so it works with any player not just client 0
+//started when player presses use button on puzzle
 {
 	Entity* entity = NULL;
 	Player *player = NULL;
@@ -770,14 +779,24 @@ void PuzzleObject::useEvent(Event* event)
 		}
 		player = ( Player * )entity;
 	}
-	if ( _timed || ( level.getSkill() <= _minSkill ) )
+
+	//[b60014] chrissstrahl - tricorder puzzle should become a timer bar for coop class technician
+	//if (_timed || (level.getSkill() <= _minSkill)) {
+	if (_timed || (level.getSkill() <= _minSkill) || multiplayerManager.inMultiplayer() && game.coop_isActive && player && player->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
+		if (_timeToUse <= 0.0f){
+			_timeToUse = 3.0f;
+		}
+
 		timedUse( event );
-	else
-		normalUse( event );
+	}		
+	else {
+		normalUse(event);
+	}
 }
 
 void PuzzleObject::normalUse( Event* event )
 //used to be void, added event parameter
+//started when player uses tricorder on the puzzle
 {
 	//[b60011] chrissstrahl - thread called when puzzle is started to be used [_usedStartThread]
 	if ( _itemUsedThread.length() <= 0 && _usedStartThread.length() <= 0)
@@ -798,6 +817,8 @@ void PuzzleObject::normalUse( Event* event )
 	}
 	else
 	{
+		//[b60014] chrissstrahl - last activator is now reset
+		activator = NULL;
 		entityVars.SetVariable( "_activator" , -1.0f );
 	}
 
@@ -896,7 +917,7 @@ void PuzzleObject::timedPuzzleSolved( Player *player )
 			{
 				break;
 			}
-//this does not work bellow, so I gave up on it, so much to do, not wasting time with little issues like this
+//this does not work below, so I gave up on it, so much to do, not wasting time with little issues like this
 //hzm gameupdate chrissstrahl - we need to activate doors from script
 			//if ( ent->isSubclassOf(Door) ){
 				//event = new Event( EV_Activate );
@@ -924,7 +945,7 @@ void PuzzleObject::timedPuzzleCanceled( void )
 	{
 		Entity* ePlayer = (Entity *)activator;
 		hideTimerHud( (Player *)ePlayer );
-		//[b60013] chrissstrahl - disabled to fix cancelthread not being able to accsess last activator
+		//[b60013] chrissstrahl - disabled to fix cancelthread (in scripts) not being able to accsess last activator
 		//activator = NULL;
 	}
 
