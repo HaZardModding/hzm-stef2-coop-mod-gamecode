@@ -311,6 +311,11 @@ qboolean G_coopCom_help(const gentity_t* ent)
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) < 32)
 		return true;
 
+	if (player->coopPlayer.installedVersion >= 60014) {
+		gi.SendServerCommand(player->entnum, "stufftext \"set coop_comT 1;set coop_comL 10;pushmenu coop_com\"\n");
+		return true;
+	}
+
 	if (coop_checkPlayerLanguageGerman(player)) {
 		//gi.SendConsoleCommand(va("echo %s\n", ));
 
