@@ -262,7 +262,8 @@ void coop_radarUpdate( Player *player )
 		}
 	}
 
-	//[b60014] chrissstrahl - disable all other inactive blips
+	//[b60014] chrissstrahl - show green player blip
+	bool bGreenBlipActive = false;
 	iMiObjEntityItemNumber = COOP_RADAR_MAX_OBJCTIVE_BLIPS;
 	for (int i = 0; i < maxclients->integer; i++) {
 		gentity_t* gentity = &g_entities[i];
@@ -270,11 +271,24 @@ void coop_radarUpdate( Player *player )
 		if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
 			Player* currentPlayer = (Player*)gentity->entity;
 			if (currentPlayer && currentPlayer->edict->s.missionObjective == 1) {
+				bGreenBlipActive = true;
 				coop_radarUpdateBlip(player, currentPlayer, target, vRadarCenterPos, iMiObjEntityItemNumber, targetedStillValid);
 				break;
 			}
 		}
 	}
+	//[b60014] chrissstrahl - deactivate green blip
+	if (!bGreenBlipActive) {
+		for (int i = 0; i < maxclients->integer; i++) {
+			gentity_t* gentity = &g_entities[i];
+			if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
+				Player* currentPlayer = (Player*)gentity->entity;
+				currentPlayer->coopPlayer.radarBlipActive[(COOP_RADAR_MAX_BLIPS - 1)] = false;
+				DelayedServerCommand(gentity->entity->entnum,va("globalwidgetcommand cr%i disable", (COOP_RADAR_MAX_BLIPS - 1)));
+			}
+		}
+	}
+
 
 	//update (enable/disable) selected marker
 	//bugfix - chrissstrahl - make sure it is deactivated if not needed
