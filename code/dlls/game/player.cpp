@@ -6907,9 +6907,24 @@ void Player::CheckForTargetedEntity(void)
 	//- health indicator showing meant for players when targeting other entities after a player
 
 	//[b607] chrissstrahl - developer show targetnames command
+	//[b60014] chrissstrahl - Fixed info being prited every frame
 	if (coopPlayer.showTargetedEntity) {
-		str sTarget = viewTrace.ent->entity->targetname;
-		hudPrint(va("Object: $%s, Class: %s\n", sTarget.c_str(), viewTrace.ent->entity->getClassname()));
+		Vector vData;
+		ScriptVariable* scriptVar = NULL;
+		scriptVar = entityVars.GetVariable("!targeted");
+		if (scriptVar != NULL) {
+			vData = scriptVar->vectorValue();
+		}
+		else {
+			vData = Vector(0, 0, 0);
+		}
+		//0=time,1=entitynum,2=?
+		if ((vData[0] + 3) < level.time || (int)vData[1] != viewTrace.entityNum) {
+			vData[0] = level.time;
+			vData[1] = viewTrace.entityNum;
+			entityVars.SetVariable("!targeted", vData);
+			hudPrint(va("Object: $%s, Class: %s\n", viewTrace.ent->entity->targetname.c_str(), viewTrace.ent->entity->getClassname()));
+		}
 	}
 
 	Player* playerTargeted = NULL;
