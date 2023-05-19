@@ -393,7 +393,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 	return true;
 }
 
-//================================================================
+//=========================================================[b60014]
 // Name:        G_coopCom_follow
 // Class:       -
 //              
@@ -406,23 +406,46 @@ qboolean G_coopCom_help(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_follow(const gentity_t* ent)
 {
-	if (g_gametype->integer != GT_MULTIPLAYER || !ent || ent->entity->edict->s.missionObjective == 1) {
+	if (g_gametype->integer != GT_MULTIPLAYER || !ent ) {
 		return true;
 	}
-	
+
+	Player* player = (Player*)ent->entity;
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!follow");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time ) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!follow", fData);
+
+	bool bDisable = (bool)ent->entity->edict->s.missionObjective;
+
 	gentity_t* gentity;
 	for (int i = 0; i < maxclients->integer; i++) {
 		gentity = &g_entities[i];
-		if (gentity->inuse && gentity->entity && ent != gentity && gentity->client && gentity->entity->isSubclassOf(Player))
-		{
+		if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)){
 			gentity->entity->edict->s.missionObjective = 0;
 		}
 	}
 
+	if (bDisable) {
+		str text = "^5Locaction ^2green^5 location marker ^5on Radar ^1disabled";
+		if (coop_checkPlayerLanguageGerman(player)) {
+			text = "^2Gruene ^5Positions ^5Markerkierung ^5auf Radar ^1deaktiviert";
+		}
+		multiplayerManager.HUDPrint(player->entnum, va("%s\n", text.c_str()));
+		ent->entity->edict->s.missionObjective;
+		return true;
+	}
+
 	ent->entity->edict->s.missionObjective = 1;
 	
-	Player* player = (Player*)ent->entity;
-
 	for (int i = 0; i < maxclients->integer; i++) {
 		gentity_t* gentity = &g_entities[i];
 		if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
@@ -456,6 +479,21 @@ qboolean G_coopCom_leader(const gentity_t* ent)
 		return true;
 	}
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!leader");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!leader", fData);
+
 	multiplayerManager.callVote(player, "leader", va("%i",player->entnum));
 	return true;
 }
@@ -476,6 +514,20 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) < 32)
 		return true;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData= 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!info");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!info", fData);
 
 	str s;
 	player->hudPrint(COOP_TEXT_HELP_YOUR_INFO_ENG);
@@ -545,6 +597,22 @@ qboolean G_coopCom_kickbots(const gentity_t* ent)
 	}
 
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!kickbots");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!kickbots", fData);
+
+
 	if (!coop_playerCheckAdmin(player)) {
 		multiplayerManager.callVote(player, "kick", "kickbots");
 		return true;
@@ -603,6 +671,20 @@ qboolean G_coopCom_login(const gentity_t* ent)
 		return true;
 	}
 
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!login");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!login", fData);
+
 	player->hudPrint("^5login started\n");
 	player->entityVars.SetVariable("uservar1", "mom_codepanel2");
 	player->entityVars.SetVariable("uservar2", "coop_login");
@@ -649,6 +731,22 @@ qboolean G_coopCom_logout(const gentity_t* ent)
 qboolean G_coopCom_mapname(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!mapname");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!mapname", fData);
+
+
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
 	{
 		if (coop_checkPlayerLanguageGerman(player)) {
@@ -675,6 +773,23 @@ qboolean G_coopCom_mapname(const gentity_t* ent)
 qboolean G_coopCom_origin(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!origin");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 1) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!origin", fData);
+
+
 	str sPrint = va("^3Your origin is:^8 %i %i %i", (int)player->origin[1], (int)player->origin[1], (int)player->origin[2]);
 	if (player->_targetedEntity != NULL) {
 		sPrint += va(" - ^3Targeted origin is:^8 %i %i %i\n", (int)player->_targetedEntity->origin[0], (int)player->_targetedEntity->origin[1], (int)player->_targetedEntity->origin[2]);
@@ -700,6 +815,21 @@ qboolean G_coopCom_origin(const gentity_t* ent)
 qboolean G_coopCom_skill(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!skill");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!skill", fData);
+
 
 	//coop only command
 	if (!game.coop_isActive) {
@@ -786,6 +916,21 @@ qboolean G_coopCom_skill(const gentity_t* ent)
 qboolean G_coopCom_stuck(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+	
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!stuck");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!stuck", fData);
 
 	//coop only command
 	if (!game.coop_isActive) {
@@ -799,7 +944,19 @@ qboolean G_coopCom_stuck(const gentity_t* ent)
 	}
 
 	//[b60013] chrissstrahl - place player at respawn/spawn location
+	Vector vOriginB4 = player->origin;
 	coopSpawnlocation.transportToSpawnPoint(player);
+	Vector vOriginDATA = player->origin;
+
+	//[b60014] chrissstrahl - compare player locations to determin if player is at a bad spawnspot
+	//level z-axis out so we ignore falling players
+	vOriginDATA[2] = 0;
+	vOriginB4[2] = 0;
+	if (VectorLength(vOriginB4 - vOriginDATA) < 100) {
+		player->entityVars.SetVariable("!transport", 0.0f);
+		G_coopCom_transport(ent);
+		return true;
+	}	
 
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
 	{
@@ -827,6 +984,22 @@ qboolean G_coopCom_stuck(const gentity_t* ent)
 qboolean G_coopCom_transport(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!transport");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!transport", fData);
+
 
 	//coop only command
 	if (!game.coop_isActive) {
@@ -996,6 +1169,21 @@ qboolean G_coopCom_levelend(const gentity_t* ent)
 		return true;
 	}
 
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!levelend");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!levelend", fData);
+
+
 	CThread *thread;
 	thread = ExecuteThread("coop_endLevel", true, (Entity*)player);
 	if (thread == NULL) {
@@ -1026,6 +1214,21 @@ qboolean G_coopCom_targeted(const gentity_t* ent)
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
 	}
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!targeted");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	fData = level.time;
+	player->entityVars.SetVariable("!targeted", fData);
+
 
 	if (player->coopPlayer.showTargetedEntity) {
 		player->coopPlayer.showTargetedEntity = false;
