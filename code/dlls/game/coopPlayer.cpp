@@ -140,9 +140,9 @@ void coop_playerCommunicator(Player* player, int iAdd)
 				sListName = coop_textReplaceWhithespace(sListName);
 			}
 
-			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTrans%i title %s\n",j, sListName.c_str()));
-			//multiplayerManager.HUDPrint(player->entnum, va("\nCOOPDEBUG coop_comTrans%i title %s\n",j, sListName.c_str()));
-			//gi.Printf(va("COOPDEBUG [%s] coop_comTrans%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
+			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTran%i title %s\n",j, sListName.c_str()));
+			//multiplayerManager.HUDPrint(player->entnum, va("\nCOOPDEBUG coop_comTran%i title %s\n",j, sListName.c_str()));
+			//gi.Printf(va("COOPDEBUG [%s] coop_comTran%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
 		}
 	}
 }
@@ -189,8 +189,7 @@ bool coop_playerCheckAdmin(Player *player)
 	}
 	sServerAuth += cvar->string;
 
-	ScriptVariable *entityData;
-	entityData = NULL;
+	ScriptVariable *entityData = NULL;
 	entityData = player->entityVars.GetVariable("coop_login_authorisation");
 	if (entityData == NULL) {
 		return false;
@@ -770,6 +769,9 @@ void coop_playerSetupCoop( Player *player )
 	
 	player->coopPlayer.setupComplete = true;
 
+	//[b60014] chrissstrahl - fix class not applaying on local server because lastTimeChangedClass and lastTimeAppliedClass are both 999 at start
+	player->coopPlayer.lastTimeChangedClass = player->coopPlayer.timeEntered - 42;
+	
 	//[b60011] chrissstrahl - setupComplete needs to be true for this to work
 	coop_classSet( player , "current" );
 
