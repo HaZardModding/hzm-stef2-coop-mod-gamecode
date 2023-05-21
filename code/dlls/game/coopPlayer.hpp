@@ -89,28 +89,28 @@ public:
 	//hzm coop mod chrissstrahl - used to saveoff info when the player was last notified about spamming
 	float	lastTimeSpamInfo = -999.0f;
 	//hzm coop mod chrissstrahl - used to determin when player spawned last
-	float	lastTimeSpawned = -999.0f;
+	float	lastTimeSpawned = -998.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last think time
-	float	lastTimeThink = -999.0f;
+	float	lastTimeThink = -997.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last radar update time
 	float	lastTimeRadarUpdated = 0.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last transmitted radar angle
 	int		lastRadarAngle = 0;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last class change time
-	float	lastTimeAppliedClass = -999.0f;
+	float	lastTimeAppliedClass = -996.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last class info update time
-	float	lastTimeUpdatedClassStat = -999.0f;
+	float	lastTimeUpdatedClassStat = -995.0f;
 	//hzm coop mod chrissstrahl - used to save when the player has recived the last time the mission objectives
 	float	lastTimeUpdatedObjectives = -1.0f;
-	int		objectivesCycle = -999;
+	int		objectivesCycle = -994;
 	//[b60011] chrissstrahl - when the Missionobjectives Title text was last printed
 	float	lastTimePrintedObjectivesTitle = -1.0f;
 	//hzm coop mod chrissstrahl - used to save when the player was used the last time by another player
 	float	lastTimeUsedClassMsg = 0.0f;
 	//hzm coop mod chrissstrahl - used to determin when player was injured last time
-	float	lastTimeInjured = -999.0f;
+	float	lastTimeInjured = -993.0f;
 	//hzm coop mod chrissstrahl - used to store the time of last class change
-	float	lastTimeChangedClass = -999.0f;
+	float	lastTimeChangedClass = -992.0f;
 	//hzm coop mod chrissstrahl - used to store gametime this player was neutralized at
 	float	lastTimeNeutralized = 0.0f;
 	//hzm coop mod chrissstrahl - used to store gametime this player was last time revived
@@ -126,13 +126,13 @@ public:
 	//hzm coop mod chrissstrahl - keeps track of last targeted entity its class
 	str		lastTargetedEntityClass = "";
 	//hzm coop mod chrissstrahl - keeps track of when the player last used !transport
-	float	lastTimeTransported = -999.0f;
+	float	lastTimeTransported = -991.0f;
 	//hzm coop mod chrissstrahl - remember when player pressed escape during this cinematic
-	float	lastTimeSkipCinematic = -999.0f;
+	float	lastTimeSkipCinematic = -990.0f;
 	//hzm coop mod chrissstrahl - remember when player caused the last time a message to the hud, prevent him from spamming, used for events like rejoining when dead in lms and so forth
-	float	lastTimeHudMessage = -999.0f;
+	float	lastTimeHudMessage = -989.0f;
 	//hzm coop mod chrissstrahl - keeps track of when the player entered the game
-	float	timeEntered = -999.0f;
+	float	timeEntered = -988.0f;
 	//hzm coop mod chrissstrahl - marks if player weapons should be unholstered after !transport
 	bool	transportUnholster = false;
 	//hzm coop mod chrissstrahl - remember weapon that should be unholstered after !transport
@@ -146,11 +146,11 @@ public:
 	//hzm coop mod chrissstrahl - used to keep track of tricorder scan info hud status
 	bool scanHudActive = false;
 	//hzm coop mod chrissstrahl - used to store tricorder scan last data send time
-	float lastScanSend = -999.0f;
+	float lastScanSend = -987.0f;
 	//hzm coop mod chrissstrahl - used to store real time when player last died
-	int deathTime = -999;
+	int deathTime = -986;
 	//[b607] chrissstrahl - used to store last level.time this player died
-	float diedLast = -999.0f;
+	float diedLast = -985.0f;
 	//[b60011] chrissstrahl - used to store deaths this player died during lms
 	int lmsDeaths = 0;
 	//hzm coop mod chrissstrahl - used to store data send 
