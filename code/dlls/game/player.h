@@ -185,6 +185,10 @@ inline void WeaponSetItem::Archive( Archiver &arc )
 class Player : public Sentient
 	{
 	public:
+		//[b60014] chrissstrahl - grab vector player for endpoint where player is aiming at
+		Vector				GetViewTraceEndVector(void);
+		void				getViewtraceEndpos(Event* ev);
+
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);
 		void				cancelPuzzle(); //[b60012] chrissstrahl - allow cancellation of puzzles (used when player recives damade from sentients while modulating)

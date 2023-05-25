@@ -1748,6 +1748,15 @@ Event EV_Player_getUserFov
 	"return-float",
 	"Returns player their userfov setting"
 );
+//[b60014] chrissstrahl - grab vector the player targeting end location
+Event EV_Player_getViewtraceEndpos
+(
+	"getViewtraceEndpos",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector at wich players aim ends at"
+);
 
 /*
 ==============================================================================
@@ -1947,6 +1956,9 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 
 	//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
+	{ &EV_Player_getViewtraceEndpos,			&Player::getViewtraceEndpos },
+
+	//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
 	{ &EV_Player_getUserFov,					&Player::getUserFov},
 
 	//hzm gameupdate chrissstrahl [b60011] circlemenu
@@ -2034,6 +2046,37 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_HasLanguageEnglish ,				&Player::hasLanguageEnglish },
 	{ NULL , NULL }
 };
+
+//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
+void Player::getViewtraceEndpos(Event *ev)
+{
+	ev->ReturnVector(GetViewTraceEndVector());
+}
+
+//================================================================
+// Name:        GetViewTraceEndVector
+// Class:       -
+//              
+// Description: 
+//              
+// Parameters:  void
+//              
+// Returns:     Vector
+//              
+//================================================================
+Vector Player::GetViewTraceEndVector(void)
+{
+	trace_t viewTrace;
+
+	memset(&viewTrace, 0, sizeof(trace_t));
+	GetViewTrace(viewTrace, MASK_SHOT | CONTENTS_TARGETABLE);
+
+	if (!viewTrace.ent) {
+		return origin;
+	}
+
+	return viewTrace.endpos;
+}
 
 //[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
 void Player::getUserFov(Event *ev)
