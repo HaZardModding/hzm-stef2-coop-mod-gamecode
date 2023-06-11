@@ -2553,12 +2553,12 @@ void Player::RunThread(Event* ev)
 	RunThread(thread_name);
 }
 
-void Player::RunThread(const str &thread_name)
+CThread* Player::RunThread(const str &thread_name)
 {
 	if (thread_name.length() <= 0)
-		return;
+		return NULL;
 
-	ExecuteThread(thread_name, true, this);
+	return ExecuteThread(thread_name, true, this);
 }
 
 //[b60011] chrissstrahl - get player viewangle
@@ -6966,7 +6966,7 @@ void Player::CheckForTargetedEntity(void)
 			vData[0] = level.time;
 			vData[1] = viewTrace.entityNum;
 			entityVars.SetVariable("!targeted", vData);
-			hudPrint(va("Object: $%s, Class: %s\n", viewTrace.ent->entity->targetname.c_str(), viewTrace.ent->entity->getClassname()));
+			hudPrint(va("^5Object:^3 $%s, ^5Class:^3 %s\n", viewTrace.ent->entity->targetname.c_str(), viewTrace.ent->entity->getClassname()));
 		}
 	}
 
