@@ -376,7 +376,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		}
 
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!help^8 - Zeigt alle Befehle in der Konsole an\"\n");
-		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!block^8 - Zielen Sie auf einen blockierenden Spieler\"\n");
+		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!block^8 - Eingeben und zielen Sie auf einen blockierenden Spieler\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!class^8 - Zeigt Ihre Klasse an. Tippen Sie '^5!class Medic^8' zum wechseln\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!drop^8 - Legt Ihre aktuelle Waffe ab. Zielen Sie auf einen Spieler zum vergeben\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!kill^8 -  Tippen Sie dies zum Selbstmord\"\n");
@@ -391,7 +391,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!logout^8 - Entzieht Ihnen Coop Admin Rechte.\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!kickbots^8 - Kickt alle Bots\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!follow^8 - Zeigt nutzenden Spieler auf dem Radar\"\n");
-		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!leader^8 - Erzwingt Teamleader Abstimmung - Parameter: Client Nummer\"\n");
+		//gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!leader^8 - Erzwingt Teamleader Abstimmung - Parameter: Client Nummer\"\n");
 
 		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_PRINTED_DEU);
 		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_ENTER_TAB_DEU);
@@ -427,7 +427,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!logout^8 - Revokes your Coop Admin Status.\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!kickbots^8 - Kicks all Bots\"\n");
 		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!follow^8 - Shows useing Player on the Radar for everyone\"\n");
-		gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!leader^8 - Forces a Teamleader Vote - Parameter: Client Number.\"\n");
+		//gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!leader^8 - Forces a Teamleader Vote - Parameter: Client Number.\"\n");
 
 		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_PRINTED_ENG);
 		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_ENTER_TAB_DEU);
@@ -740,10 +740,6 @@ qboolean G_coopCom_kill(const gentity_t* ent)
 qboolean G_coopCom_login(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	if (coop_playerCheckAdmin(player)) {
-		player->hudPrint("^3You are already logged in - use ^2!logout^3 to log out.\n");
-		return true;
-	}
 
 	//[b60014] chrissstrahl - add spam protection
 	float fData = 0.0f;
@@ -757,6 +753,11 @@ qboolean G_coopCom_login(const gentity_t* ent)
 		return true;
 	}
 	player->entityVars.SetVariable("!login", level.time);
+
+	if (coop_playerCheckAdmin(player)) {
+		player->hudPrint("^3You are already logged in - use ^2!logout^3 to log out.\n");
+		return true;
+	}
 
 	player->hudPrint("^5login started\n");
 	player->entityVars.SetVariable("uservar1", "mom_codepanel2");
@@ -780,6 +781,20 @@ qboolean G_coopCom_login(const gentity_t* ent)
 qboolean G_coopCom_logout(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!logout");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!logut", level.time);
+
 	if (player->coopPlayer.admin) {
 		player->coopPlayer.admin = false;
 		player->hudPrint("^3You are now logged out.\n");
@@ -863,7 +878,7 @@ qboolean G_coopCom_origin(const gentity_t* ent)
 
 	str sPrint = va("^3Your origin is:^8 %i %i %i", (int)player->origin[1], (int)player->origin[1], (int)player->origin[2]);
 	if (player->_targetedEntity != NULL) {
-		sPrint += va(" - ^3Targeted origin is:^8 %i %i %i\n", (int)player->_targetedEntity->origin[0], (int)player->_targetedEntity->origin[1], (int)player->_targetedEntity->origin[2]);
+		sPrint += va(" - ^3Targeted[$%s] origin is:^8 %i %i %i\n", player->_targetedEntity->targetname.c_str(), (int)player->_targetedEntity->origin[0], (int)player->_targetedEntity->origin[1], (int)player->_targetedEntity->origin[2]);
 	}
 	else {
 		sPrint += "\n";
@@ -1202,6 +1217,20 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 qboolean G_coopCom_reboot(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!reboot");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 10) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!reboot", level.time);
+
 	if (!coop_playerCheckAdmin(player)) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
@@ -1245,7 +1274,7 @@ qboolean G_coopCom_levelend(const gentity_t* ent)
 		fData = scriptVar->floatValue();
 	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((fData + 10) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!levelend", level.time);
@@ -1321,6 +1350,20 @@ qboolean G_coopCom_targeted(const gentity_t* ent)
 qboolean G_coopCom_showspawn(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!showspawn");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!showspawn", level.time);
+
 	if (!coop_playerCheckAdmin(player)) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
@@ -1367,6 +1410,20 @@ qboolean G_coopCom_hidespawn(const gentity_t* ent)
 qboolean G_coopCom_testspawn(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!testspawn");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!testspawn", level.time);
+
 	if (!coop_playerCheckAdmin(player)) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
@@ -1474,7 +1531,7 @@ qboolean G_coopThread(const gentity_t* ent)
 
 	// Get the thread name
 	if (!gi.argc())
-		return false;
+		return true;
 
 	threadName = gi.argv(1);
 
@@ -1483,9 +1540,20 @@ qboolean G_coopThread(const gentity_t* ent)
 	// Run the thread - if set 
 	Player* player = (Player*)ent->entity;
 	if (!threadName.length() || g_gametype->integer != GT_SINGLE_PLAYER && coop_returnIntFind(threadName, "coopThread_") != 0 && player->coopPlayer.admin != true) {
-		return false;
+		return true;
 	}
-	player->RunThread(threadName.c_str());
+	
+	CThread* pThread;
+	pThread = player->RunThread(threadName.c_str());
+
+	//if a admin executes a thread, give feedback
+	if (g_gametype->integer != GT_SINGLE_PLAYER && coop_returnIntFind(threadName, "coopThread_") != 0 && player->coopPlayer.admin == true) {
+		str sPrint = "^5Succsessfully ran func";
+		if (pThread == NULL) {
+			sPrint = "^2FAILED to run func";
+		}
+		player->hudPrint(va("%s:^3 %s\n", sPrint.c_str(), threadName.c_str()));
+	}
 	return true;
 }
 
