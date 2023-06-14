@@ -2376,7 +2376,7 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		
 		G_ClientUserinfoChanged( ent, userinfo );
 
-		if ( firstTime && ( game.maxclients > 1 ) )
+		if ( firstTime && ( game.maxclients > 1 ) && !isBot) //[b60014] chrissstrahl - we don't want to know when a bot connects
 		{
 			gi.Printf( "%s connected\n", ent->client->pers.netname );
 
