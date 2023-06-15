@@ -802,6 +802,12 @@ void PuzzleObject::normalUse( Event* event )
 	if ( _itemUsedThread.length() <= 0 && _usedStartThread.length() <= 0)
 		return;
 
+	//[b60014] chrissstrahl - A player modulating with Tricorder can be interrupted by a player and get stuck with the Modulation Bar
+	//if previous player exists remove modulation bar from them
+	if (activator && activator->isSubclassOf(Player) && _hudOn) {
+		gi.SendServerCommand(activator->entnum, va("stufftext \"popmenu %s 1\"\n", _hudName.c_str()));
+	}
+
 	Entity* entity = NULL;
 	Player* player = NULL;
 
