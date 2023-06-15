@@ -782,6 +782,7 @@ qboolean G_coopCom_logout(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
 	str sMessage = "^3You are already logged out.\n";
+	//[b60014] chrissstrahl - fixed login check
 	if (coop_playerCheckAdmin(player)) {
 		player->coopPlayer.admin = false;
 		//[b60014] chrissstrahl - fixed auth string being retained keeping player loged in
