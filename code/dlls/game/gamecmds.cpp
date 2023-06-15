@@ -372,14 +372,14 @@ void G_Say( const gentity_t *ent, bool team, qboolean arg0 )
 qboolean G_circleMenu(const gentity_t* ent)
 {
 	if (!ent || !ent->inuse || !ent->client)
-		return qfalse;
+		return qtrue;
 
 	Player* player = (Player*)ent->entity;
 
 	//make sure player that do not have the coop mod and try this command know
 	if (!player->coopPlayer.installed) {
 		player->hudPrint("You need the Coop Mod for this to work\n");
-		return qfalse;
+		return qtrue;
 	}
 
 	player->circleMenu(1);
@@ -400,14 +400,14 @@ qboolean G_circleMenu(const gentity_t* ent)
 qboolean G_circleDialog(const gentity_t* ent)
 {
 	if (!ent || !ent->inuse || !ent->client)
-		return qfalse;
+		return qtrue;
 
 	Player* player = (Player*)ent->entity;
 
 	//make sure player that do not have the coop mod and try this command know
 	if (!player->coopPlayer.installed) {
 		player->hudPrint("You need the Coop Mod for this to work\n");
-		return qfalse;
+		return qtrue;
 	}
 	
 	player->circleMenu(2);
@@ -428,11 +428,11 @@ qboolean G_circleDialog(const gentity_t* ent)
 qboolean G_widgettext(const gentity_t *ent)
 {
 	if (!ent || !ent->inuse || !ent->client)
-		return qfalse;
+		return qtrue;
 
 	const char *widgetName = gi.argv(1);
 	if (strlen(widgetName) == 0) {
-		return qfalse;
+		return qtrue;
 	}
 	int iParameterIndex = 2;
 	str sParameters = "";
@@ -447,7 +447,7 @@ qboolean G_widgettext(const gentity_t *ent)
 		}
 		else {
 			if (iParameterIndex == 2) {
-				return qfalse;
+				return qtrue;
 			}
 			break;
 		}
