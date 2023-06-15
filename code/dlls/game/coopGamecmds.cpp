@@ -781,6 +781,13 @@ qboolean G_coopCom_login(const gentity_t* ent)
 qboolean G_coopCom_logout(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+	str sMessage = "^3You are already logged out.\n";
+	if (coop_playerCheckAdmin(player)) {
+		player->coopPlayer.admin = false;
+		//[b60014] chrissstrahl - fixed auth string being retained keeping player loged in
+		player->entityVars.SetVariable("coop_login_authorisation","*");
+		sMessage = "^3You are now logged out.\n";
+	}
 
 	//[b60014] chrissstrahl - add spam protection
 	float fData = 0.0f;
@@ -793,15 +800,9 @@ qboolean G_coopCom_logout(const gentity_t* ent)
 	if ((fData + 3) > level.time) {
 		return true;
 	}
-	player->entityVars.SetVariable("!logut", level.time);
+	player->entityVars.SetVariable("!logout", level.time);
 
-	if (player->coopPlayer.admin) {
-		player->coopPlayer.admin = false;
-		player->hudPrint("^3You are now logged out.\n");
-	}
-	else {
-		player->hudPrint("^3You are already logged out.\n");
-	}
+	player->hudPrint(sMessage.c_str());
 	return true;
 }
 
