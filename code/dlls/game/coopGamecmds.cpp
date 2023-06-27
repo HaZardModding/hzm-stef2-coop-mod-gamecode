@@ -463,10 +463,13 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 	if ((fData + 3) > level.time ) {
 		return true;
 	}
+
 	player->entityVars.SetVariable("!follow", level.time);
 
+	//remember if player using command is currently shown on radar (as missionobjective blip)
 	bool bDisable = (bool)ent->entity->edict->s.missionObjective;
 
+	//reset missionobjective blip on all players
 	gentity_t* gentity;
 	for (int i = 0; i < maxclients->integer; i++) {
 		gentity = &g_entities[i];
@@ -475,6 +478,7 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 		}
 	}
 
+	//If blip is enabled for player disable (toggle)
 	if (bDisable) {
 		str text = "^5Locaction ^2green^5 location marker ^5on Radar ^1disabled";
 		if (coop_checkPlayerLanguageGerman(player)) {
@@ -485,8 +489,10 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 		return true;
 	}
 
+	//Otherwise enable missionobjective blip for player
 	ent->entity->edict->s.missionObjective = 1;
-	
+
+	//print message to all player huds of player being marked
 	for (int i = 0; i < maxclients->integer; i++) {
 		gentity_t* gentity = &g_entities[i];
 		if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
@@ -753,6 +759,12 @@ qboolean G_coopCom_login(const gentity_t* ent)
 		return true;
 	}
 	player->entityVars.SetVariable("!login", level.time);
+
+	//[b60014] chrissstrahl - added printout that this feature is only working on coop maps
+	if (!game.coop_isActive) {
+		player->hudPrint("^5Login:^8 ^1Failed^8, you can only login on ^5Coop^8 Maps!\n");
+		return true;
+	}
 
 	if (coop_playerCheckAdmin(player)) {
 		player->hudPrint("^3You are already logged in - use ^2!logout^3 to log out.\n");
@@ -1199,6 +1211,10 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	player->SetViewAngles(targetPlayer->angles);
 
 	targetPlayer->_makeSolidASAP = true;
+
+	//[b60014] chrissstrahl - execute thread if player gets transported
+	ExecuteThread("coop_justTransported", true, (Entity*)player);
+
 	return true;
 }
 
