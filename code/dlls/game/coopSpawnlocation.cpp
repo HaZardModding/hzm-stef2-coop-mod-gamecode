@@ -140,6 +140,9 @@ bool CoopSpawnlocation::transportToSpawnPoint(Player* player)
 		newEvent2->AddString("Multiplayer");
 		player->PostEvent(newEvent2, 0.0f);
 
+		//[b60014] chrissstrahl - execute thread if player gets transported
+		ExecuteThread("coop_justTransported", true, (Entity*)player);
+
 		return true;
 	}
 	else {
