@@ -2424,16 +2424,17 @@ void Player::widgetCommandEvent(Event* ev)
 void Player::widgetCommand(str sWidget,str sParameters)
 {
 	//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
-	str sTemp;
+	//str sTemp;
 	if (coop_returnIntFind(sParameters.c_str(), "labeltext") != -1) {
-		sTemp = coop_replaceForLabelText(sTemp);
+		sParameters = coop_replaceForLabelText(sParameters);
 	}
 	str sData = "stufftext \"globalwidgetcommand ";
 	sData += sWidget;
 	sData += " ";
-	sData += sParameters;
+	sData += sParameters; //[b60014] chrissstrahl - fixed widgetcommand not converting text
 	sData += "\"\n";
 	gi.SendServerCommand(edict - g_entities, sData.c_str());
+	//gi.Printf(va("%s \n",sData.c_str()));
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - sets specific camera on player
