@@ -540,8 +540,18 @@ void coop_textHudprintAll( str messageToShow )
 //================================================================
 str coop_replaceForLabelText(str sPure)
 {
-	int i;
-	for (i = 0; i < strlen(sPure); i++) {
+	int i = 0;
+	//[b60014] chrissstrahl - fixed "labeltext^" issue
+	bool bLabelText;
+	if (strlen(sPure) > 10) {
+		str sTemp = sPure;
+		sTemp = sTemp.tolower();
+		if (coop_returnIntFind(sTemp,"labeltext ") != -1) {
+			i = 11;
+		}
+	}
+	
+	for (i = i; i < strlen(sPure); i++) {
 		if (sPure[i] == '\n' || sPure[i] == '#')
 			sPure[i] = '~';
 		if (sPure[i] == ' ')
