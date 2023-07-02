@@ -77,6 +77,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!noclip",G_coopCom_noclip,			true }, 
 	//[b60014] chrissstrahl - added
 	{ "!follow",G_coopCom_follow,			true },
+	{ "!notransport",G_coopCom_notransport,	true },
 
 //Coop Commands End
 //Coop Commands End
