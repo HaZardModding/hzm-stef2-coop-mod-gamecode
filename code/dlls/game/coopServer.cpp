@@ -1205,7 +1205,7 @@ void coop_serverCoop()
 		str sLibrarayName = "gamex86.dll";
 	#endif
 
-	gi.Printf( va( "==== HaZardModding Coop Mod %s -%i-====\n" , sLibrarayName.c_str(), COOP_BUILD) );
+	gi.Printf( va( "==== HaZardModding Coop Mod %s %i ====\n" , sLibrarayName.c_str(), COOP_BUILD) );
 	if ( game.isCoopIncludedLevel  ) {
 		gi.Printf( va( "==== %s is included in this coop build! ====\n" , level.mapname.c_str() ) );
 	}
@@ -1587,9 +1587,11 @@ void coop_serverThink( void )
 		//[b607] chrissstrahl - allow to adjust the coop reboot feature
 		str sCoopRebootState = coop_parserIniGet("serverData.ini", "rebootType", "server");
 		if (Q_stricmpn(sCoopRebootState.c_str(), "killserver",10) == 0) {
+			gi.Printf("HZM COOP MOD: game.coop_reboot == true, rebootType = killserver, server killed\n");
 			gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver.cfg\n");
 		}
 		else{
+			gi.Printf("HZM COOP MOD: game.coop_reboot == true, server quitting\n");
 			gi.SendConsoleCommand("quit\n");
 		}
 		//chrissstrahl - we need to clear the variable now
@@ -1609,7 +1611,7 @@ void coop_serverThink( void )
 		if (game.coop_showEventsTime == 3) {
 			game.coop_showEventsTime=301; //do not allow activation again until server has been completley(quit) restarted
 			gi.cvar_set("g_showevents","0");
-			gi.Printf("HZM COOP MOD - Disabled g_showevents again.\n");
+			gi.Printf("HZM COOP MOD: Disabled g_showevents again.\n");
 		}
 	}
 
