@@ -73,7 +73,9 @@ void coop_playerFlushTikis()
 		if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
 			Player* playerValid = (Player*)g_entities[i].entity;
 			if (playerValid && !(playerValid->edict->svflags & SVF_BOT)) {
-				DelayedServerCommand(i, "flushtikis");
+				//[b60014] chrissstrahl - changed so it will instantly transmit
+				//DelayedServerCommand(i, "flushtikis");
+				gi.SendServerCommand(i, "stufftext flushtikis\n");
 			}
 		}
 	}
@@ -357,13 +359,16 @@ void coop_playerRestore( Player *player )
 	}
 
 	//if it is not a mission or custom coop map do not restore
-	if ( game.levelType != MAPTYPE_MISSION && game.levelType != MAPTYPE_CUSTOM )
+	if (game.levelType != MAPTYPE_MISSION && game.levelType != MAPTYPE_CUSTOM) {
+		gi.Printf("COOPDEBUG coop_playerRestore MAPTYPE EXIT\n");
 		return;
+	}
 
 	str sData = coop_parserIniGet("serverData.ini", player->coopPlayer.coopId, "client");
 	//[b60012] chrissstrahl - fix missing .c_str()
 	if (!Q_stricmp(sData.c_str(), ""))
 	{
+		gi.Printf("COOPDEBUG coop_playerRestore CLIENT data empty\n");
 		return;
 	}
 	
@@ -515,8 +520,13 @@ bool coop_playerSetup(Player* player)
 
 	//needs only to be send to players that played the coop mod in singleplayer on a custom map before, so only send to players with coop mod
 	DelayedServerCommand(player->entnum, "bind TAB +objectives_score");
-
-	if (dedicated->integer == 0 && player->entnum == 0 && bWindows) {
+	
+	//[b60014] chrissstrahl - added check for cl_running
+	//because starting a local dedicated server and joing it from the same installation
+	//is detected as a player who is joining as host, while technically right this is
+	//not how we want it to go
+	cvar_t* cl_running = gi.cvar_get("cl_running");
+	if (dedicated->integer == 0 && player->entnum == 0 && bWindows && (cl_running ? cl_running->integer : 0) == 1) {
 		coop_playerSetupHost(player);
 	}
 	else {
@@ -576,14 +586,17 @@ bool coop_playerSetup(Player* player)
 //================================================================
 void coop_playerSetupClient(Player* player)
 {
-	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
-	DelayedServerCommand(player->entnum, "vstr coop_cId"); //[b60012] chrissstrahl - fixed missing letter c
-	DelayedServerCommand(player->entnum, "vstr local_language");
-	//[b60011] chrissstrahl - changed to avoid command being shown as text on older servers	
-	DelayedServerCommand(player->entnum, "vstr coop_verInf");
-	player->checkingClMaxPackets = true;
-	DelayedServerCommand(player->entnum, "vstr cl_maxpackets");
+	gi.Printf("COOPDEBUG coop_playerSetupClient VSTR\n");
 
+	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
+	//[b60012] chrissstrahl - fixed missing letter c
+	//[b60014] chrissstrahl - put both commands together
+	gi.SendServerCommand(player->entnum, "stufftext \"vstr coop_cId;vstr local_language\"\n");
+	//[b60011] chrissstrahl - changed to avoid command being shown as text on older servers
+	player->checkingClMaxPackets = true;
+	//[b60014] chrissstrahl - put both commands together
+	DelayedServerCommand(player->entnum, "vstr cl_maxpackets;vstr coop_verInf");
+	
 	//Do this only during a active coop game
 	if (game.coop_isActive) {
 		//[b60011] chrissstrahl - get player class
@@ -608,6 +621,8 @@ void coop_playerSetupClient(Player* player)
 //================================================================
 void coop_playerSetupHost(Player* player)
 {
+	gi.Printf("COOPDEBUG coop_playerSetupHost\n");
+
 	cvar_t* cvar = gi.cvar_get("local_language");
 	str sCvar = (cvar ? cvar->string : "Eng");
 	player->setLanguage(sCvar);
@@ -657,14 +672,19 @@ void coop_playerGenerateNewPlayerId(Player* player)
 	time_t curTime;
 	time(&curTime);
 	str sPlayerId = va("%d%d", (int)curTime, player->entnum);
-gi.Printf(va("\n======================\nSENDING NEW ID TO PLAYER\n%s\n======================\n", player->client->pers.netname));
+
+	gi.Printf(va("\n======================\nSENDING NEW ID TO PLAYER\n%s\n======================\n", player->client->pers.netname));
 	gi.Printf(va("%s\n", sPlayerId.c_str()));
 	//add current client number to make sure we add a absolute uniqe player id
 	//even if two players join at the same instance
 	player->coopPlayer.coopId = sPlayerId.c_str();
-	//make sure the cvar is created and saved with seta first before using set - set used because it accepts commands with space
-	DelayedServerCommand(player->entnum, va("seta coop_cId 0;set coop_cId coopcid %s", sPlayerId.c_str()));
-//multiplayerManager.HUDPrint(player->entnum, va("COOPDEBUG you got a new id by server: %s\n", sPlayerId.c_str()));
+
+	gi.SendServerCommand(player->edict - g_entities, va("stufftext  \"seta coop_cId coopcid %s\"\n", sPlayerId.c_str()));
+
+	gi.Printf("coop_playerGenerateNewPlayerId-> you got a new id by server\n");
+	if (multiplayerManager.inMultiplayer()) {
+		multiplayerManager.HUDPrint(player->entnum,va("COOPDEBUG you got a new id by server: %s\n", sPlayerId.c_str()));
+	}
 }
 
 //================================================================
@@ -682,7 +702,19 @@ void coop_playerSaveNewPlayerId(Player *player)
 {
 	//if player has no id send from his config, generate one
 	if (!player->coopPlayer.coopId.length()) {
+		gi.Printf(va("COOPDEBUG coop_playerSaveNewPlayerId %s did not send a id from cfg\n", player->client->pers.netname));
+		if (multiplayerManager.inMultiplayer()) {
+			multiplayerManager.HUDPrint(player->entnum,va("COOPDEBUG You did not send a id from cfg [coop_playerSaveNewPlayerId]\n"));
+		}
+		
 		coop_playerGenerateNewPlayerId(player);
+	}
+	else {
+		str sPrint = va("COOPDEBUG coop_playerSaveNewPlayerId: %s %s", player->coopPlayer.coopId.c_str(), player->client->pers.netname);
+		gi.Printf(va("%s\n", sPrint.c_str()));
+		if (multiplayerManager.inMultiplayer()) {
+			multiplayerManager.HUDPrint(player->entnum, va("%s\n", sPrint.c_str()));
+		}
 	}
 
 	//write id of player to server ini
@@ -723,6 +755,11 @@ void coop_playerSetupCoop( Player *player )
 	//because the command can and will be executed even if there is no coop
 	if ( !game.coop_isActive ){
 		return;
+	}
+
+	gi.Printf("COOPDEBUG coop_playerSetupCoop\n");
+	if (multiplayerManager.inMultiplayer()) {
+		multiplayerManager.HUDPrint(player->entnum,"COOPDEBUG coop_playerSetupCoop\n");
 	}
 
 	//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
@@ -770,7 +807,7 @@ void coop_playerSetupCoop( Player *player )
 	player->coopPlayer.setupComplete = true;
 
 	//[b60014] chrissstrahl - fix class not applaying on local server because lastTimeChangedClass and lastTimeAppliedClass are both 999 at start
-	player->coopPlayer.lastTimeChangedClass = player->coopPlayer.timeEntered - 42;
+	player->coopPlayer.lastTimeChangedClass = (player->coopPlayer.timeEntered - 42);
 	
 	//[b60011] chrissstrahl - setupComplete needs to be true for this to work
 	coop_classSet( player , "current" );
@@ -795,6 +832,11 @@ void coop_playerSetupNoncoop( Player *player)
 {
 	//hzm coop mod chrissstrahl - notify game about the client state
 	player->coopPlayer.installed = 0;
+
+	gi.Printf("COOPDEBUG coop_playerSetupNoncoop\n");
+	if (multiplayerManager.inMultiplayer()) {
+		multiplayerManager.HUDPrint(player->entnum,"COOPDEBUG coop_playerSetupNoncoop\n");
+	}
 
 	//hzm coop mod chrissstrahl - tell player that it would be so much better if he has the coop mod
 	//this is notr a priority message, we don't bother with it if the client has heavy traffic
