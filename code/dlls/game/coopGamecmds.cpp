@@ -46,7 +46,15 @@ qboolean G_coopClientId(const gentity_t* ent)
 
 	if ((player->coopPlayer.timeEntered + 10) > level.time) {
 		sClientId = coop_returnStringTrim(sId, " \t\r\n;[]=");
-		coop_checkPlayerCoopIdExistInIni(player, sClientId);
+		player->hudPrint(va("COOPDEBUG coop_cId - received: %s\n", sClientId.c_str()));
+		gi.Printf(va("COOPDEBUG coop_cId - received: %s\n", player->client->pers.netname));
+		str sClientIdNew = coop_checkPlayerCoopIdExistInIni(player, sClientId);
+		if (sClientIdNew != sClientId.c_str()) {
+			gi.Printf(va("COOPDEBUG coop_cId - NO MATCH: %s vs %s for %s\n", sClientId.c_str(), sClientIdNew.c_str(), player->client->pers.netname));
+		}
+		else {
+			gi.Printf(va("COOPDEBUG coop_cId - MATCH for: \n", player->client->pers.netname));
+		}
 	}
 	else {
 		player->hudPrint("coop_cId - Timed Out: Rejected!\n");
@@ -1041,9 +1049,9 @@ qboolean G_coopCom_stuck(const gentity_t* ent)
 		return true;
 	}
 
-	//[b60013] chrissstrahl - place player at respawn/spawn location
+	//[b60014] chrissstrahl - place player at respawn/spawn location - changed from transporting to just moving
 	Vector vOriginB4 = player->origin;
-	coopSpawnlocation.transportToSpawnPoint(player);
+	coopSpawnlocation.placeAtSpawnPoint(player);
 	Vector vOriginDATA = player->origin;
 
 	//[b60014] chrissstrahl - compare player locations to determin if player is at a bad spawnspot
@@ -1059,10 +1067,10 @@ qboolean G_coopCom_stuck(const gentity_t* ent)
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
 	{
 		if (coop_checkPlayerLanguageGerman(player)) {
-			player->hudPrint("^5Coop^2: Sie wurden zum Spawnpunkt Teleportiert.\n");
+			player->hudPrint("^5Coop^2: Sie wurden zu Ihrem Spawnpunkt geschoben.\n");
 		}
 		else {
-			player->hudPrint("^5Coop^2: You have been teleported to your spawn location.\n");
+			player->hudPrint("^5Coop^2: You have been moved to your spawn location.\n");
 		}
 	}
 	return true;
@@ -1140,12 +1148,15 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	}
 
 	Player* targetPlayer = NULL;
+	//beam directly to a given player number
 	if (iPlayer >= 0) {
 		if (&g_entities[iPlayer] && g_entities[iPlayer].client && g_entities[iPlayer].inuse) {
 			targetPlayer = (Player*)g_entities[iPlayer].entity;
 		}
 	}
+	//given player does not exist or no number was given
 	if (!targetPlayer) {
+		//more than 2 players, transport to closest player
 		if (coop_returnPlayerQuantity(2) > 1) {
 			targetPlayer = coop_returnPlayerClosestTo(player);
 		}
@@ -1168,6 +1179,46 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	if (!targetPlayer || multiplayerManager.isPlayerSpectator(targetPlayer) || targetPlayer->health <= 0) {
 		bTransportFailed = true;
 	}
+	//[b60014] chrissstrahl - prevent transport to target player if player has !notransport activated
+	else {
+		ScriptVariable* scriptVar2 = NULL;
+		scriptVar2 = targetPlayer->entityVars.GetVariable("!notransport_active");
+		float fData = 0;
+		if (scriptVar2 != NULL) {
+			fData = scriptVar2->floatValue();
+		}
+
+		if (fData != 0) {
+			bTransportFailed = true;
+
+			if (coop_checkPlayerLanguageGerman(player)) {
+				player->hudPrint("^5Coop^2: Spieler erlaubt keine direkt Transporte.\n");
+			}
+			else {
+				player->hudPrint("^5Coop^2: Player does not allow, direct Transports.\n");
+			}
+		}
+		//[b60014] chrissstrahl - prevent transport if player has !notransport activated - do not allow terrorising other players
+		else {
+			ScriptVariable* scriptVar3 = NULL;
+			scriptVar3 = player->entityVars.GetVariable("!notransport_active");
+			float fData = 0;
+			if (scriptVar3 != NULL) {
+				fData = scriptVar3->floatValue();
+			}
+
+			if (fData != 0) {
+				bTransportFailed = true;
+
+				if (coop_checkPlayerLanguageGerman(player)) {
+					player->hudPrint("^5Coop^2: Ihr Transport Inhibitor ist aktiviert!!!\n");
+				}
+				else {
+					player->hudPrint("^5Coop^2: Your Transport inhibitor is active!!!\n");
+				}
+			}
+		}
+	}
 
 	if (targetPlayer == player) {
 		if (coop_checkPlayerLanguageGerman(player)) {
@@ -1178,7 +1229,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 		}
 		bTransportFailed = true;
 	}
-
+	
 	if (bTransportFailed) {
 		return true;
 	}
@@ -1214,6 +1265,72 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 
 	//[b60014] chrissstrahl - execute thread if player gets transported
 	ExecuteThread("coop_justTransported", true, (Entity*)player);
+
+	return true;
+}
+
+//================================================================
+// Name:        G_coopCom_notransport
+// Class:       -
+//              
+// Description: toggles transport inhibitor
+//              
+// Parameters:  const gentity_t* ent
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_coopCom_notransport(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	float fData = 0.0f;
+	ScriptVariable* scriptVar = NULL;
+	scriptVar = player->entityVars.GetVariable("!notransport");
+	if (scriptVar != NULL) {
+		fData = scriptVar->floatValue();
+	}
+
+	//deny usage of command if player executed command to quickly
+	if ((fData + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!notransport", level.time);
+
+
+	//coop only command
+	if (!game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+		return true;
+	}
+
+	ScriptVariable* scriptVar2 = NULL;
+	scriptVar2 = player->entityVars.GetVariable("!notransport_active");
+	if (scriptVar != NULL) {
+		fData = scriptVar2->floatValue();
+	}
+
+	if(fData == 0.0f){
+		player->entityVars.SetVariable("!notransport_active", 1.0f);
+
+		if (coop_checkPlayerLanguageGerman(player)) {
+			player->hudPrint("^5Coop^2: Transport Inhibitor aktiviert.\n");
+		}
+		else {
+			player->hudPrint("^5Coop^2: Transport inhibitor activated.\n");
+		}
+	}
+	else {
+		player->entityVars.SetVariable("!notransport_active", 0.0f);
+
+		if (coop_checkPlayerLanguageGerman(player)) {
+			player->hudPrint("^5Coop^2: Transport Inhibitor ausgeschaltet.\n");
+		}
+		else {
+			player->hudPrint("^5Coop^2: Transport inhibitor turned off.\n");
+		}
+	}
 
 	return true;
 }
