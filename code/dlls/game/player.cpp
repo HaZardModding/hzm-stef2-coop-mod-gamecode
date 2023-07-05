@@ -2195,14 +2195,19 @@ void Player::cancelPuzzle()
 
 //[b60011] chrissstrahl - get coop class name
 void Player::getCoopClass(Event* ev)
-{
+{	
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
+	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive) {
+		ev->ReturnString("");
+	}
 	ev->ReturnString(this->coopPlayer.className);
 }
 
 //[b60011] chrissstrahl - check if coop class is technician
 void Player::isCoopClassTechnician(Event* ev)
 {
-	if (this->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
 		ev->ReturnFloat(1.0f);
 		return;
 	}
@@ -2212,7 +2217,8 @@ void Player::isCoopClassTechnician(Event* ev)
 //[b60011] chrissstrahl - check if coop class is Medic
 void Player::isCoopClassMedic(Event* ev)
 {
-	if (this->coopPlayer.className == COOP_CLASS_NAME_MEDIC) {
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_MEDIC) {
 		ev->ReturnFloat(1.0f);
 		return;
 	}
@@ -2222,7 +2228,8 @@ void Player::isCoopClassMedic(Event* ev)
 //[b60011] chrissstrahl - check if coop class is HeavyWeapons
 void Player::isCoopClassHeavyWeapons(Event* ev)
 {
-	if (this->coopPlayer.className == COOP_CLASS_NAME_HEAVYWEAPONS) {
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_HEAVYWEAPONS) {
 		ev->ReturnFloat(1.0f);
 		return;
 	}
@@ -2232,7 +2239,10 @@ void Player::isCoopClassHeavyWeapons(Event* ev)
 //[b60011] chrissstrahl - set coop class restriction - allowing/preventing player from switching class
 void Player::setClassLocked(Event* ev)
 {
-	coopPlayer.classChangingDisabled = (bool)ev->GetInteger(1);
+	//[b60014] chrissstrahl - accsess coopPlayer.classChangingDisabled only in multiplayer)
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive) {
+		coopPlayer.classChangingDisabled = (bool)ev->GetInteger(1);
+	}
 }
 
 //[b60011] chrissstrahl - allow to get Holdable Item Name from outside class
@@ -2310,26 +2320,46 @@ str Player::getPowerupName(void)
 //hzm gameupdate chrissstrahl - add new commands for script use
 void Player::getScore(Event* ev)
 {
-	ev->ReturnFloat(multiplayerManager.getPoints(this));
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		ev->ReturnFloat(multiplayerManager.getPoints(this));
+	}
+	else {
+		ev->ReturnFloat(0.0f);
+	}
 }
 
 void Player::addScore(Event* ev)
 {
-	int iAdd = ev->GetInteger(1);
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		int iAdd = ev->GetInteger(1);
 
-	multiplayerManager.addPoints(entnum, iAdd);
-	str s;
-	s = multiplayerManager._playerData[entnum]._name;
-	gi.Printf("Info: Level-Script adding Points(%d) to Player[%d]: %s\n", iAdd, entnum, s.c_str());
+		multiplayerManager.addPoints(entnum, iAdd);
+		str s;
+		s = multiplayerManager._playerData[entnum]._name;
+		gi.Printf("Info: Level-Script adding Points(%d) to Player[%d]: %s\n", iAdd, entnum, s.c_str());
+	}
 }
 
 void Player::getDeaths(Event* ev)
 {
-	ev->ReturnFloat(multiplayerManager.getDeaths(this));
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		ev->ReturnFloat(multiplayerManager.getDeaths(this));
+	}
+	else {
+		ev->ReturnFloat(0.0f);
+	}
 }
 void Player::getKills(Event* ev)
 {
-	ev->ReturnFloat(multiplayerManager.getKills(this));
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		ev->ReturnFloat(multiplayerManager.getKills(this));
+	}else {
+		ev->ReturnFloat(0.0f);
+	}
 }
 void Player::getLastDamaged(Event* ev)
 {
@@ -2337,39 +2367,62 @@ void Player::getLastDamaged(Event* ev)
 }
 void Player::getTeamName(Event* ev)
 {
-	Team* team;
-	team = multiplayerManager.getPlayersTeam(this);
-	if (team == NULL) {
-		ev->ReturnString("None");
-		return;
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		Team* team;
+		team = multiplayerManager.getPlayersTeam(this);
+		if (team == NULL) {
+			ev->ReturnString("None");
+			return;
+		}
+		ev->ReturnString(team->getName());
 	}
-	ev->ReturnString(team->getName());
+	else {
+		ev->ReturnString("None");
+	}
 }
 void Player::getTeamScore(Event* ev)
 {
-	Team* team;
-	team = multiplayerManager.getPlayersTeam(this);
-	if (team == NULL) {
-		//[b60012] chrissstrahl - return player score if not in a team
-		ev->ReturnFloat(multiplayerManager.getPoints(this));
-		return;
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		Team* team;
+		team = multiplayerManager.getPlayersTeam(this);
+		if (team == NULL) {
+			//[b60012] chrissstrahl - return player score if not in a team
+			ev->ReturnFloat(multiplayerManager.getPoints(this));
+		}
+		else {
+			ev->ReturnFloat(multiplayerManager.getTeamPoints(this));
+		}
 	}
-	ev->ReturnFloat(multiplayerManager.getTeamPoints(this));
+	else {
+		ev->ReturnFloat(0.0f);
+	}
 }
 void Player::getCoopVersion(Event* ev)
 {
-	//value is -1 while the mod is detecting
-	int i = coopPlayer.installedVersion;
-	if (i < 0) {
-		i = 0;
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()){
+		//value is -1 while the mod is detecting
+		int i = coopPlayer.installedVersion;
+		if (i < 0) {
+			i = 0;
+		}
+		ev->ReturnFloat((float)i);
 	}
-	ev->ReturnFloat((float)i);
+	else {
+		cvar_t* cvar = gi.cvar_get("coop_ver");
+		str sCvar = (cvar ? cvar->string : va("%d", COOP_BUILD));
+		ev->ReturnFloat(atof(sCvar.c_str()));
+		return;
+	}
+
 }
 //hzm gameupdate chrissstrahl - get player name
 void Player::getNameEvent(Event* ev)
 {
-	//[b609] chrissstrahl - return also player name in singleplayer instead of crashing
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+	//[b60014] chrissstrahl - return also player name when not in multiplayer instead of crashing
+	if (!multiplayerManager.inMultiplayer()) {
 		cvar_t* cvar = gi.cvar_get("name");
 		ev->ReturnString(cvar ? cvar->string : "");
 		return;
@@ -2499,27 +2552,37 @@ void Player::getLanguageEvent(Event* ev)
 //hzm gameupdate chrissstrahl [b60011]  - returns player language string
 str Player::getLanguage()
 {
-	return language;
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		return language;
+	}
+	else {
+		cvar_t* cvar = gi.cvar_get("local_language");
+		return (cvar ? cvar->string : "");
+	}
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - sets player language string
 void Player::setLanguage(str sLang)
 {
-	if (sLang.length() < 1 || sLang.length() > 3) {
-		language = "Eng";
-		gi.Printf(va("setLanguage(%s) - Bad string size for client %s\n",sLang.c_str(),entnum));
-		return;
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		if (sLang.length() < 1 || sLang.length() > 3) {
+			language = "Eng";
+			gi.Printf(va("setLanguage(%s) - Bad string size for client %s\n", sLang.c_str(), entnum));
+			return;
+		}
+		if (sLang != "Eng" && sLang != "Deu") {
+			language = "Eng";
+			gi.Printf(va("setLanguage(%s) - Unknown Language for client %s\n", sLang.c_str(), entnum));
+			return;
+		}
+		if (sLang != "Deu") {
+			language = "Eng";
+			return;
+		}
+		language = sLang;
 	}
-	if (sLang != "Eng" && sLang != "Deu") {
-		language = "Eng";
-		gi.Printf(va("setLanguage(%s) - Unknown Lagugae for client %s\n", sLang.c_str(), entnum));
-		return;
-	}
-	if (sLang != "Deu") {
-		language = "Eng";
-		return;
-	}
-	language = sLang;
 }
 
 //[b60011] chrissstrahl - checks if player is pressing fire button
@@ -6952,7 +7015,7 @@ void Player::CheckForTargetedEntity(void)
 
 	//[b607] chrissstrahl - developer show targetnames command
 	//[b60014] chrissstrahl - Fixed info being prited every frame
-	if (coopPlayer.showTargetedEntity) {
+	if (multiplayerManager.inMultiplayer() && coopPlayer.showTargetedEntity) {
 		Vector vData;
 		ScriptVariable* scriptVar = NULL;
 		scriptVar = entityVars.GetVariable("!targeted");
@@ -6977,8 +7040,8 @@ void Player::CheckForTargetedEntity(void)
 	if (viewTrace.ent->entity->isSubclassOf(Player)) {
 		playerTargeted = (Player*)viewTrace.ent->entity;
 		
-		//Handle Class stuff only in coop, if player has the coop mod
-		if (game.coop_isActive && this->coopPlayer.installed) {
+		//[b60014] chrissstrahl - Handle Class stuff only in coop, if player has the coop mod
+		if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.installed) {
 			str sShader = "weapons/empty";
 
 			//target player class changed
@@ -6999,8 +7062,8 @@ void Player::CheckForTargetedEntity(void)
 		if (last_entityTargeted && last_entityTargeted->isSubclassOf(Player)) {
 			gi.SendServerCommand(entnum, "stufftext \"cg_targetedPlayerName ^0\"\n");
 			
-			//reset also the class symbol
-			if (this->coopPlayer.installed) {
+			//[b60014] chrissstrahl - reset also the class symbol, in multiplayer
+			if (multiplayerManager.inMultiplayer() && this->coopPlayer.installed) {
 				DelayedServerCommand(entnum,"globalwidgetcommand targetNameHudS shader weapons/empty");
 				this->coopPlayer.lastTargetedEntityClass = "";
 			}
@@ -7037,8 +7100,8 @@ void Player::SetTargetedEntity( EntityPtr entity )
 			continue;
 
 		//is a spectator or is a bot
-		//[b607] chrissstrahl - possible bug fixed where it checked if it is not a bot to skip
-		if ( multiplayerManager.isPlayerSpectator( players ) && players->edict->svflags & SVF_BOT )
+		//[b60014] chrissstrahl - possible bug fixed where it checked if it is not a bot to skip
+		if (multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator( players ) && players->edict->svflags & SVF_BOT )
 			continue;
 
 		//exit, do not allow new player to end a scann, because this player is scanning
@@ -7059,8 +7122,8 @@ void Player::SetTargetedEntity( EntityPtr entity )
 
 	_targetedEntity = entity;
 
-	//hzm coop mod chrissstrahl - do not allow spectators to trigger archetypes
-	if ( multiplayerManager.isPlayerSpectator( this ) ) {
+	//[b60014] chrissstrahl - do not allow spectators to trigger archetypes
+	if ( multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator( this ) ) {
 		return;
 	}
 	//end of hzm

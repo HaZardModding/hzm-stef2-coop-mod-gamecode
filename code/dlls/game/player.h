@@ -1861,6 +1861,9 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveBool(&coopPlayer.clickFireHudActive);				//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lmsDeaths);						//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.);								//used in multiplayer only - not relevant for zingleplaya
+//[b60014] chrissstrahl - no longer used in singleplayer
+	//arc.ArchiveString(&coopPlayer.className);			//Not quite Clean implemented, so also accsessed in singleplayer
+
 	arc.ArchiveSafePointer(&last_entityTargeted);
 	arc.ArchiveString(&kill_thread);
 	arc.ArchiveString(&coopPlayer.lastScanSendData);
@@ -1884,7 +1887,6 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveString(&coopPlayer.scanData0);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer
-	arc.ArchiveString(&coopPlayer.className);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.coopId);
 	arc.ArchiveString(&coopPlayer.coopStatus);
 	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
