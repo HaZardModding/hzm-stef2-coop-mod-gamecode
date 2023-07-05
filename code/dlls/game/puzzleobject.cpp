@@ -666,8 +666,8 @@ void PuzzleObject::useEvent(Event* event)
 		}
 	}
 
-	//hzm coop mod chrissstrahl - makes puzzles respond only to a specific class
-	if ( game.coop_isActive){
+	//[b60014] chrissstrahl - makes puzzles respond only to a specific class, during Coop
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive){
 		if (sCoopClass.length() > 0) {
 			sCoopClass = sCoopClass.tolower();
 			float fLastMsgTime;
