@@ -1599,7 +1599,7 @@ bool coop_playerMakeSolidASAPThink(Player* player)
 // Name:        coop_playerPlaceableThink
 // Class:       -
 //              
-// Description: Handles the placable object each - called from playerthink
+// Description: Handles the placable object each - called from playerthink, coop only command
 //              
 // Parameters:  Player *player
 //              
@@ -1608,6 +1608,11 @@ bool coop_playerMakeSolidASAPThink(Player* player)
 //================================================================
 void coop_playerPlaceableThink(Player* player)
 {
+	//[b60014] chrissstrahl - multiplayer only command
+	if (!multiplayerManager.inMultiplayer()) {
+		return;
+	}
+
 	if (!player->coopPlayer.ePlacable) {
 		return;
 	}
