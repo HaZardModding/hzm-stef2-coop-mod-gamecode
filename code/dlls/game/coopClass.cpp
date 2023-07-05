@@ -93,8 +93,11 @@ void coop_classCeckUpdateStat( Player *player )
 void coop_classRegenerate( Player *player )
 {
 	//do not regenerate if dead, neutralized or under fire
+	//[b60014] chrissstrahl - go further only in multiplayer or coop
 	if (	/* haloThingActive || */
 			player->health <= 0 ||
+			!multiplayerManager.inMultiplayer() ||
+			game.coop_isActive ||
 			player->coopPlayer.neutralized ||
 			(player->getLastDamageTime() + COOP_CLASS_HURT_WAITTIME) > level.time )
 	{
@@ -234,32 +237,27 @@ void coop_classNotifyOfInjured( Player *player )
 //================================================================
 void coop_classSet( Player *player , str classToSet )
 {
-	if ( player && game.coop_isActive ){
-		str currentClass = classToSet;
-
-		//[b60012] chrissstrahl - fix missing .c_str()
-
-		//hzm coop mod chrissstrahl - see if the player has selected a class before or during this game
-		if ( !Q_stricmp( "current",currentClass.c_str()) || !Q_stricmp( "" ,currentClass.c_str()) ){
-			currentClass = player->coopPlayer.className;
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
+	if ( player && multiplayerManager.inMultiplayer() && game.coop_isActive )
+	{	
+		if ( !Q_stricmp( "current", classToSet.c_str()) || !Q_stricmp( "" , classToSet.c_str()) ){
+			classToSet = player->coopPlayer.className;
 		}else{
 			player->coopPlayer.lastTimeChangedClass = level.time;
 		}
 
 		//[b60011] chrissstrahl - make sure the right class is set
-		if (Q_stricmpn("h", currentClass.c_str(), 1) == 0) {
-			currentClass = COOP_CLASS_NAME_HEAVYWEAPONS;
+		if (Q_stricmpn("h", classToSet.c_str(), 1) == 0) {
+			classToSet = COOP_CLASS_NAME_HEAVYWEAPONS;
 		}
-		else if (Q_stricmpn("m", currentClass.c_str(), 1) == 0) {
-			currentClass = COOP_CLASS_NAME_MEDIC;
+		else if (Q_stricmpn("m", classToSet.c_str(), 1) == 0) {
+			classToSet = COOP_CLASS_NAME_MEDIC;
 		}
 		else {
-			currentClass = COOP_CLASS_NAME_TECHNICIAN;
+			classToSet = COOP_CLASS_NAME_TECHNICIAN;
 		}
 
-		player->coopPlayer.className = currentClass;
-//managed via cfg
-//DelayedServerCommand(player->entnum, va("seta coop_class 0;set coop_class !class %s", currentClass.c_str()));
+		player->coopPlayer.className = classToSet;
 	}
 }
 
@@ -279,7 +277,13 @@ void coop_classSet( Player *player , str classToSet )
 void coop_classApplayAttributes( Player *player , bool changeOnly )
 {
 	//[b60011] chrissstrahl - added prevention of class being executed before player setup is complete
-	if ( !player || multiplayerManager.isPlayerSpectator( player ) || level.time < mp_warmUpTime->integer || !player->coopPlayer.setupComplete){
+	//[b60014] chrissstrahl - handle only in multiplayer
+	if (	!player ||
+			!multiplayerManager.inMultiplayer() ||
+			multiplayerManager.isPlayerSpectator( player ) ||
+			level.time < mp_warmUpTime->integer ||
+			!player->coopPlayer.setupComplete)
+	{
 		return;
 	}
 	coop_classSet( player , "current" );
@@ -413,7 +417,12 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 //================================================================
 void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment *equipment )
 {
-	if ( usedPlayer && usingPlayer && !multiplayerManager.isPlayerSpectator( usedPlayer ) && usedPlayer->health > 0.0f ){
+	//[b60014] chrissstrahl - handle only in multiplayer
+	if (	usedPlayer && usingPlayer &&
+			multiplayerManager.inMultiplayer() &&
+			!multiplayerManager.isPlayerSpectator( usedPlayer ) &&
+			usedPlayer->health > 0.0f )
+	{
 		float fMessageTime = 2.0f;
 
 		//get current weapon name
@@ -641,6 +650,11 @@ int coop_classPlayersOfClass(str className)
 {
 	if ( className.length() < 1 )
 		return -1;
+
+	//[b60014] chrissstrahl - return default value if not in multiplayer or coop
+	if (!multiplayerManager.inMultiplayer() || game.coop_isActive) {
+		return 0;
+	}
 
 	str temp;
 	temp = className.tolower();
