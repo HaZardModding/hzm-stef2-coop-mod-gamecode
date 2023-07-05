@@ -139,7 +139,7 @@ qboolean G_coopCom_block(const gentity_t* ent)
 // Name:        G_coopCom_class
 // Class:       -
 //              
-// Description: handles player !class command
+// Description: handles player !class command, coop only command
 //              
 // Parameters:  const gentity_t* ent
 //              
@@ -149,13 +149,13 @@ qboolean G_coopCom_block(const gentity_t* ent)
 qboolean G_coopCom_class(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	//coop only command
-	if (!game.coop_isActive) {
+	//[b60014] chrissstrahl - coop only command
+	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive){	
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
 		return true;
 	}
 
-	//[b60011] chrissstrahl - if chaning classes is disabled for this player, abbort
+	//[b60011] chrissstrahl - if changing classes is disabled for this player, abbort
 	if (player->coopPlayer.classChangingDisabled) {
 		//[b60012][cleanup] chrissstrahl - this could be put into a func
 		if (coop_checkPlayerLanguageGerman(player)) {
@@ -556,7 +556,7 @@ qboolean G_coopCom_leader(const gentity_t* ent)
 // Name:        G_coopCom_info
 // Class:       -
 //              
-// Description: handles player !info command
+// Description: handles player !info command, coop only command
 //              
 // Parameters:  const gentity_t* ent
 //              
@@ -566,8 +566,10 @@ qboolean G_coopCom_leader(const gentity_t* ent)
 qboolean G_coopCom_info(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	if (gi.GetNumFreeReliableServerCommands(player->entnum) < 32)
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
+	if (gi.GetNumFreeReliableServerCommands(player->entnum) < 32 || g_gametype->integer == GT_SINGLE_PLAYER) {
 		return true;
+	}
 
 	str s,s2;
 
