@@ -213,24 +213,23 @@ void coop_checkDoesPlayerHaveCoopMod( Player *player )
 	}
 
 	//if in singleplayer or botmatch, player does ofcourse have the coop mod
-	if ( g_gametype->integer != GT_MULTIPLAYER ){
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
 		player->coop_setInstalled(true);
-		coop_playerSetupCoop( player );
+		coop_playerSetupCoop(player);
 		return;
 	}
+
 	//in multiplayer do the checking procedure
-	else {
-		//have some time delay and also make sure the player is even able to process any commands
-		if (player->coop_getInstalledCheckTime() < level.time) {
-			player->coop_setInstalledCheckTime(level.time + 0.25f);
-			if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
-				player->coopPlayer.setupTries++;
-			}
+	//have some time delay and also make sure the player is even able to process any commands
+	if (player->coop_getInstalledCheckTime() < level.time) {
+		player->coop_setInstalledCheckTime(level.time + 0.25f);
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
+			player->coopPlayer.setupTries++;
 		}
 	}
 
 	//player does not have coop mod - give up at this point
-	if (player->coopPlayer.setupTries == 11) {
+	if (player->coopPlayer.setupTries == 11 || player->coop_isBot()) {
 		coop_playerSetupNoncoop(player);
 		player->coopPlayer.setupTries++;
 		return;
@@ -262,11 +261,13 @@ void coop_checkDoesPlayerHaveCoopId(Player* player)
 		player->coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
 			player->coopPlayer.setupTriesCid++;
+			gi.Printf(va("COOPDEBUG coop_checkDoesPlayerHaveCoopId %s checkNum: %d\n", player->client->pers.netname, player->coopPlayer.setupTriesCid));
 		}
 	}
 	//player does not have coop mod - give up at this point
 	if (player->coopPlayer.setupTriesCid == COOP_MAX_ID_CHECK_TRIES) {
 		player->coopPlayer.setupTriesCid++;
+		gi.Printf(va("COOPDEBUG coop_checkDoesPlayerHaveCoopId %s failed: %d\n", player->client->pers.netname, player->coopPlayer.setupTriesCid));
 		coop_playerSaveNewPlayerId(player);
 		return;
 	}
@@ -303,9 +304,9 @@ str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId)
 
 	//check if it is in ini
 	//client id was provided
-	str ss = coop_parserIniGet("serverData.ini", sClientId.c_str(), "client");
+	str sData = coop_parserIniGet("serverData.ini", sClientId.c_str(), "client");
 	//client id is not known on the server
-	if (!ss.length()) {
+	if (!sData.length()) {
 		coop_playerSaveNewPlayerId(player);		
 	}
 	//client is in ini, restore
