@@ -54,6 +54,35 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+//=========================================================[b60014]
+// Name:        player::coop_isHost
+// Class:       -
+//              
+// Description: Checks if player is host
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_isHost()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer != GT_BOT_SINGLE_PLAYER) {
+		return true;
+	}
+
+	#ifdef WIN32
+		bool bWindows = true;
+	#else
+		bool bWindows = false;
+	#endif
+
+	cvar_t* cl_running = gi.cvar_get("cl_running");
+	if (dedicated->integer == 0 && entnum == 0 && bWindows && (cl_running ? cl_running->integer : 0)) {
+		return true;
+	}
+	return false;
+}
 
 //=========================================================[b60014]
 // Name:        player::coop_getId
@@ -335,14 +364,8 @@ bool coop_playerCheckAdmin(Player *player)
 		return true;
 	}
 
-#ifdef WIN32
-	bool bWindows = true;
-#else
-	bool bWindows = false;
-#endif
-
 	//[b610] chrissstrahl - auto login if player is host
-	if (dedicated->integer == 0 && player->entnum == 0 && bWindows) {
+	if (player->coop_isHost()) {
 		player->coopPlayer.admin = true;
 		player->hudPrint("^3You are now logged in (Host auto-!login).\n");
 		return true;
@@ -679,12 +702,6 @@ bool coop_playerSetup(Player* player)
 		return true;
 	}
 
-#ifdef WIN32
-	bool bWindows = true;
-#else
-	bool bWindows = false;
-#endif
-
 	//needs only to be send to players that played the coop mod in singleplayer on a custom map before, so only send to players with coop mod
 	DelayedServerCommand(player->entnum, "bind TAB +objectives_score");
 	
@@ -692,8 +709,7 @@ bool coop_playerSetup(Player* player)
 	//because starting a local dedicated server and joing it from the same installation
 	//is detected as a player who is joining as host, while technically right this is
 	//not how we want it to go
-	cvar_t* cl_running = gi.cvar_get("cl_running");
-	if (dedicated->integer == 0 && player->entnum == 0 && bWindows && (cl_running ? cl_running->integer : 0) == 1) {
+	if (player->coop_isHost()) {
 		coop_playerSetupHost(player);
 	}
 	else {
