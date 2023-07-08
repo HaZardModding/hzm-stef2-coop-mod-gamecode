@@ -70,11 +70,11 @@ void coop_classCheckApplay( Player *player )
 void coop_classCeckUpdateStat( Player *player )
 {
 	if ( game.coop_classInfoSendAt > player->coopPlayer.lastTimeUpdatedClassStat ){
-		if ( player->coopPlayer.installed ) {
+		if ( player->coop_getInstalled() ) {
 			player->coopPlayer.lastTimeUpdatedClassStat = game.coop_classInfoSendAt;
-			DelayedServerCommand( player->entnum , va( "set coop_ch %i" , coop_classPlayersOfClass( "HeavyWeapon" ) ) );
-			DelayedServerCommand( player->entnum , va( "set coop_ct %i" , coop_classPlayersOfClass( "Technician" ) ) );
-			DelayedServerCommand( player->entnum , va( "set coop_cm %i" , coop_classPlayersOfClass( "Medic" ) ) );
+			gi.Printf(va("COOPDEBUG coop_classCeckUpdateStat sending to %s\n", player->client->pers.netname));
+			//[b60014] chrissstrahl - fused multiple commands to one data burst
+			DelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i" ,coop_classPlayersOfClass( "HeavyWeapon" ),coop_classPlayersOfClass( "Technician" ),coop_classPlayersOfClass( "Medic" )));
 		}
 	}
 }
@@ -237,6 +237,7 @@ void coop_classNotifyOfInjured( Player *player )
 //================================================================
 void coop_classSet( Player *player , str classToSet )
 {
+	gi.Printf(va("COOPDEBUG coop_classSet trying to set %s to %s\n", player->client->pers.netname, classToSet.c_str()));
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
 	if ( player && multiplayerManager.inMultiplayer() && game.coop_isActive )
 	{	
@@ -258,6 +259,8 @@ void coop_classSet( Player *player , str classToSet )
 		}
 
 		player->coopPlayer.className = classToSet;
+
+		gi.Printf(va("COOPDEBUG coop_classSet to %s to %s\n", player->client->pers.netname, classToSet.c_str()));
 	}
 }
 
@@ -288,6 +291,8 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	}
 	coop_classSet( player , "current" );
 	str currentClass = player->coopPlayer.className;
+
+	gi.Printf(va("COOPDEBUG coop_classApplayAttributes applaying to %s changeOnly(%b)\n", player->client->pers.netname, changeOnly));
 
 	//hzm coop mod chrissstrahl - we do no longer attach model, class is now shown with the player name when targeted
 	//hzm coop mod chrissstrahl - remove class indicator model
@@ -352,7 +357,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	player->entityVars.SetVariable( "globalclassName" , currentClass.c_str() );
 
 	//hzm coop mod chrissstrahl - add a background shader to the hud, this shows the player his current class
-	if ( player->coopPlayer.installed ) {
+	if ( player->coop_getInstalled() ) {
 		//DelayedServerCommand( player->entnum , va( "globalwidgetcommand classBg shader coop_%s" , currentClass.c_str() ) );
 		DelayedServerCommand( player->entnum , va( "exec coop_mod/cfg/%s.cfg" , currentClass.c_str() ) );
 	}
@@ -385,7 +390,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	//}
 
 	//hzm coop mod chrissstrahl - display info to player
-	if ( !player->coopPlayer.installed ){
+	if ( !player->coop_getInstalled() ){
 		player->hudPrint( va( "^5Coop:^2 You are now: ^5$$%s$$\n" , currentClass.c_str() ) );
 	}
 
