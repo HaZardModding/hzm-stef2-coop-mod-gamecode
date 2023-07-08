@@ -715,8 +715,6 @@ bool coop_playerSetup(Player* player)
 		if (iCvar3 > 0) {
 			gi.cvar_set("cl_packetdup", "0");
 		}
-
-//player->coopPlayer.setupComplete = true;
 		coop_classSet(player, "HeavyWeapon");
 		return true;
 	}
@@ -788,6 +786,12 @@ bool coop_playerSetup(Player* player)
 //================================================================
 void coop_playerSetupClient(Player* player)
 {
+	//[b60014] chrissstrahl
+	if (player->coop_isBot()) {
+		gi.Printf("COOPDEBUG coop_playerSetupClient BOT - abborted\n");
+		return;
+	}
+
 	gi.Printf("COOPDEBUG coop_playerSetupClient VSTR\n");
 
 	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
