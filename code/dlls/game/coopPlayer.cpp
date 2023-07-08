@@ -793,6 +793,9 @@ void coop_playerSetupClient(Player* player)
 	}
 
 	gi.Printf("COOPDEBUG coop_playerSetupClient VSTR\n");
+	if (multiplayerManager.inMultiplayer()) {
+		multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupClient\n");
+	}
 
 	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
 	//[b60012] chrissstrahl - fixed missing letter c
@@ -828,6 +831,9 @@ void coop_playerSetupClient(Player* player)
 void coop_playerSetupHost(Player* player)
 {
 	gi.Printf("COOPDEBUG coop_playerSetupHost\n");
+	if (multiplayerManager.inMultiplayer()) {
+		multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupHost\n");
+	}
 
 	cvar_t* cvar = gi.cvar_get("local_language");
 	str sCvar = (cvar ? cvar->string : "Eng");
