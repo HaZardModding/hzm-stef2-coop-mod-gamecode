@@ -116,7 +116,7 @@ bool Player::coop_isHost()
 //================================================================
 str Player::coop_getId()
 {
-	if (multiplayerManager.inMultiplayer()) {
+	if (multiplayerManager.inMultiplayer() && !coop_isHost()) {
 		return coopPlayer.coopId;
 	}
 	else {
@@ -788,7 +788,7 @@ void coop_playerSetupClient(Player* player)
 {
 	//[b60014] chrissstrahl
 	if (player->coop_isBot()) {
-		gi.Printf("COOPDEBUG coop_playerSetupClient BOT - abborted\n");
+		gi.Printf("COOPDEBUG coop_playerSetupClient %s BOT - abborted\n", player->client->pers.netname);
 		return;
 	}
 
