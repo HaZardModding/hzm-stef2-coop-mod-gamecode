@@ -55,6 +55,34 @@ extern int iSKAS;
 extern int iSPRITES;
 
 //=========================================================[b60014]
+// Name:        player::coop_spEquip
+// Class:       -
+//              
+// Description: Handles weapons load from script in singleplayer
+//              we need to have this delayed because in sp the player is spawned way before the level or the script is ready
+//
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_spEquip()
+{
+	if (g_gametype->integer != GT_SINGLE_PLAYER || !Director.PlayerReady() || !entityVars.GetVariable("_armoryNeedstoBeEquiped")) {
+		return;
+	}
+
+	coop_armoryEquipPlayer(this);
+	//make sure the coop objectives hud is displayed when we play a custom (coop) map
+	if (game.isStandardLevel) {
+		gi.SendServerCommand(entnum, "stufftext \"set coop_oExc score\"\n");
+	}
+	else {
+		gi.SendServerCommand(entnum, "stufftext \"set coop_oExc pushmenu coop_objectives\"\n");
+	}
+}
+
+//=========================================================[b60014]
 // Name:        player::coop_isBot
 // Class:       -
 //              

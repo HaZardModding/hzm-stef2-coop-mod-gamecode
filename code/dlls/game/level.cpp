@@ -173,22 +173,6 @@ void Level::update(int levelTime, int frameTime)
 			}
 		}
 	}
-	//[b607] chrissstrahl - handle weapons load from script in singleplayer
-	//we need to have this delayed because in sp the player is spawned way before the level or the script is ready
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		Player* player = GetPlayer(0);
-		if (player && player->coopPlayer.armoryNeedstoBeEquiped) {
-			if (Director.PlayerReady()) {
-				player->coopPlayer.armoryNeedstoBeEquiped = false;
-				coop_armoryEquipPlayer(player);
-				//hzm coop mod chrissstrahl - make sure the coop objectives hud is displayed when we play a custom map
-				if (game.isStandardLevel)
-					gi.SendServerCommand(player->entnum, "stufftext \"set coop_oExc score\"\n");
-				else
-					gi.SendServerCommand(player->entnum, "stufftext \"set coop_oExc pushmenu coop_objectives\"\n");
-			}
-		}
-	}
 }
 
 

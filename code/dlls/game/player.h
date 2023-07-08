@@ -189,6 +189,7 @@ class Player : public Sentient
 		Vector				GetViewTraceEndVector(void);
 		void				getViewtraceEndpos(Event* ev);
 
+		void				coop_spEquip();
 		bool				coop_isBot();
 		bool				coop_isHost();
 		str					coop_getId();

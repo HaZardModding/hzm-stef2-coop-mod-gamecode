@@ -6837,6 +6837,9 @@ void Player::ClientThink( Event *ev )
 	client->cmd_angles[1] = SHORT2ANGLE(current_ucmd->angles[1]);
 	client->cmd_angles[2] = SHORT2ANGLE(current_ucmd->angles[2]);
 
+	//[b60014] chrissstrahl - check if player needs to be equiped
+	coop_spEquip();
+
 	//[b60011] chrissstrahl - check if circle menu is active, if so react
 	circleMenuThink();
 	//hzm coop mod chrissstrahl - handle coop specific stuff in here
