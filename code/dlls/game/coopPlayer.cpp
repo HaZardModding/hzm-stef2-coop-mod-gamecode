@@ -55,6 +55,25 @@ extern int iSKAS;
 extern int iSPRITES;
 
 //=========================================================[b60014]
+// Name:        player::coop_isBot
+// Class:       -
+//              
+// Description: Checks if player is a bot
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_isBot()
+{
+	if (edict->svflags & SVF_BOT) {
+		return true;
+	}
+	return false;
+}
+
+//=========================================================[b60014]
 // Name:        player::coop_isHost
 // Class:       -
 //              
@@ -679,7 +698,7 @@ bool coop_playerSetup(Player* player)
 	player->coopPlayer.timeEntered = level.time;
 
 	//[b60011] chrissstrahl - make sure we do not handle bots
-	if (ent->svflags & SVF_BOT) {
+	if (player->coop_isBot()) {
 		
 		cvar_t* cvar = gi.cvar_get("local_language");
 		str sCvar = (cvar ? cvar->string : "Eng");
@@ -871,6 +890,12 @@ void coop_playerGenerateNewPlayerId(Player* player)
 //================================================================
 void coop_playerSaveNewPlayerId(Player *player)
 {
+	//[b60014] chrissstrahl - don't handle Bots
+	if (player->coop_isBot()) {
+		gi.Printf(va("COOPDEBUG coop_playerSaveNewPlayerId %s is a bot, abborting\n", player->client->pers.netname));
+		return;
+	}
+
 	//if player has no id send from his config, generate one
 	if (!player->coopPlayer.coopId.length()) {
 		gi.Printf(va("COOPDEBUG coop_playerSaveNewPlayerId %s did not send a id from cfg\n", player->client->pers.netname));
@@ -1004,23 +1029,25 @@ void coop_playerSetupNoncoop( Player *player)
 	//hzm coop mod chrissstrahl - notify game about the client state
 	player->coop_setInstalled(false);
 
+	//[b60014] chrissstrahl - don't handle bots
+	if (player->coop_isBot()) {
+		player->coopPlayer.setupComplete = true;
+		return;
+	}
+
 	gi.Printf("COOPDEBUG coop_playerSetupNoncoop\n");
 	if (multiplayerManager.inMultiplayer()) {
-		multiplayerManager.HUDPrint(player->entnum,"COOPDEBUG coop_playerSetupNoncoop\n");
+		multiplayerManager.HUDPrint(player->entnum,"COOPDEBUG coop_playerSetupNoncoop NO-COOP-MOD\n");
 	}
 
 	//hzm coop mod chrissstrahl - tell player that it would be so much better if he has the coop mod
-	//this is notr a priority message, we don't bother with it if the client has heavy traffic
+	//this is not a priority message, we don't bother with it if the client has heavy traffic
 	if ( game.coop_isActive && !level.mission_failed ){
-		//[b607] chrissstrahl - make sure we do not handle bots
-		gentity_t *ent = player->edict;
-		if (!(ent->svflags & SVF_BOT)) {
-			if ( coop_checkPlayerLanguageGerman(player) ) {
-				DelayedServerCommand( player->entnum , "hudprint ^2Holen Sie sich den ^5HZM Coop Mod^2 fuer ein volles Erlebniss! ^5!help^8 eingeben fuer Befehle.\n" );
-			}
-			else {
-				DelayedServerCommand( player->entnum , "hudprint ^2For the full Experience please download the ^5HZM Coop Mod^2! ^8Enter ^5!help^8 for Commands.\n" );
-			}			
+		if ( coop_checkPlayerLanguageGerman(player) ) {
+			DelayedServerCommand( player->entnum , "hudprint ^2Holen Sie sich den ^5HZM Coop Mod^2 fuer ein volles Erlebniss! ^5!help^8 eingeben fuer Befehle.\n" );
+		}
+		else {
+			DelayedServerCommand( player->entnum , "hudprint ^2For the full Experience please download the ^5HZM Coop Mod^2! ^8Enter ^5!help^8 for Commands.\n" );
 		}
 	}
 
@@ -1070,7 +1097,6 @@ bool coop_playerSay( Player *player , str sayString)
 
 	//[b60011] chrissstrahl - clientid backwardscompatibility - supress text
 	if (Q_stricmpn(sayString.c_str(), "cid.", 4) == 0) {
-//coop_playerSaveNewPlayerId(player); //[b60012] chrissstrahl - better not cause overlapping managment
 		return true;
 	}
 
