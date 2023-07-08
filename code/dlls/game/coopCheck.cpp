@@ -208,7 +208,7 @@ bool coop_checkEntityInsideDoor( Entity *entity1 )
 void coop_checkDoesPlayerHaveCoopMod( Player *player )
 {
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (player->coop_getInstalled() != 0 || player->coopPlayer.setupTries == 12) {
+	if (player->coop_getInstalled() || player->coopPlayer.setupTries == 12) {
 		return;
 	}
 
