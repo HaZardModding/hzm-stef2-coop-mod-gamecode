@@ -181,13 +181,7 @@ void coop_objectivesMarkerRemove( Entity *eMaster )
 //================================================================
 void coop_objectivesSetup( Player *player)
 {
-	if ( !player || !player->coop_getInstalled() ){
-		return;
-	}
-
-	//[b607] chrissstrahl - make sure we do not handle bots
-	gentity_t *ent = player->edict;
-	if (ent->svflags & SVF_BOT) {
+	if ( !player || !player->coop_getInstalled() || player->coop_isBot()){
 		return;
 	}
 
