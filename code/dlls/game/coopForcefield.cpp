@@ -49,8 +49,8 @@ bool CoopForcefield::passthroughBullettAtack(Entity* owner, trace_t &trace, cons
 	}
 
 	str sFfFrequency = va("%.2f", forceField->_forcefieldNumber);
-	int surfaceFlags = trace.surfaceFlags;	// surface hit
-	int contents = trace.contents;	   // contents on other side of surface hit
+	//int surfaceFlags = trace.surfaceFlags;	// surface hit
+	//int contents = trace.contents;	   // contents on other side of surface hit
 
 	//frequency does not match
 	if (sFfFrequency != var->stringValue()) {

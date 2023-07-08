@@ -542,7 +542,6 @@ str coop_replaceForLabelText(str sPure)
 {
 	int i = 0;
 	//[b60014] chrissstrahl - fixed "labeltext^" issue
-	bool bLabelText;
 	if (strlen(sPure) > 10) {
 		str sTemp = sPure;
 		sTemp = sTemp.tolower();
