@@ -208,21 +208,21 @@ bool coop_checkEntityInsideDoor( Entity *entity1 )
 void coop_checkDoesPlayerHaveCoopMod( Player *player )
 {
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (player->coopPlayer.installed != 0 || player->coopPlayer.setupTries == 12) {
+	if (player->coop_getInstalled() != 0 || player->coopPlayer.setupTries == 12) {
 		return;
 	}
 
-	//if in singleplayer, player does ofcourse have the coop mod
-	if ( g_gametype->integer == GT_SINGLE_PLAYER ){
-		player->coopPlayer.installed = 1;
+	//if in singleplayer or botmatch, player does ofcourse have the coop mod
+	if ( g_gametype->integer != GT_MULTIPLAYER ){
+		player->coop_setInstalled(true);
 		coop_playerSetupCoop( player );
 		return;
 	}
 	//in multiplayer do the checking procedure
 	else {
 		//have some time delay and also make sure the player is even able to process any commands
-		if (player->coopPlayer.installedCheckTime < level.time) {
-			player->coopPlayer.installedCheckTime = (level.time + 0.25f);
+		if (player->coop_getInstalledCheckTime() < level.time) {
+			player->coop_setInstalledCheckTime(level.time + 0.25f);
 			if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
 				player->coopPlayer.setupTries++;
 			}

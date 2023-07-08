@@ -163,6 +163,8 @@ qboolean G_coopCom_class(const gentity_t* ent)
 		}else{
 			player->hudPrint(COOP_TEXT_CLASS_CANT_CHANGE_ANYMORE_ENG);
 		}
+
+		gi.Printf(va("COOPDEBUG G_coopCom_class can't change class anymore for %s\n", player->client->pers.netname));
 		return true;
 	}
 
@@ -217,6 +219,8 @@ qboolean G_coopCom_class(const gentity_t* ent)
 	//hzm coop mod chrissstrahl - set new class on player
 	coop_classSet(player, classSelected);
 	coop_classApplayAttributes(player, true);
+
+	gi.Printf(va("COOPDEBUG G_coopCom_class changed class for %s to %s\n", player->client->pers.netname, classSelected.c_str()));
 	return true;
 }
 
@@ -360,7 +364,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		return true;
 
 	//[b60014] chrissstrahl - show communicator menu to player
-	if (player->coopPlayer.installedVersion >= 60014) {
+	if (player->coop_getInstalledVersion() >= 60014) {
 		gi.SendServerCommand(player->entnum, "stufftext \"set coop_comT 1;set coop_comL 10;pushmenu coop_com\"\n");
 		return true;
 	}
@@ -587,9 +591,9 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	player->entityVars.SetVariable("!info", level.time);
 
 	//[b60014] chrissstrahl printout the info to menu
-	if (player->coopPlayer.installedVersion >= 60014) {
+	if (player->coop_getInstalledVersion() >= 60014) {
 		str sInfoPrint = "YOU:\n";
-		sInfoPrint += va("Coop Ver.: %i, C-Id: %d\n",player->coopPlayer.installedVersion,player->entnum);
+		sInfoPrint += va("Coop Ver.: %i, C-Id: %d\n",player->coop_getInstalledVersion(),player->entnum);
 		sInfoPrint += va("Coop Class: %s\n", player->coopPlayer.className.c_str());
 		sInfoPrint += va("Lang.: %s, Entered: %.2f\n", player->getLanguage().c_str(),player->client->pers.enterTime);
 		sInfoPrint += va("Pers.Id: %s\n", player->coopPlayer.coopId.c_str());
@@ -622,8 +626,8 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		return true;
 	}
 	player->hudPrint(COOP_TEXT_HELP_YOUR_INFO_ENG);
-	if (player->coopPlayer.installed == 1) {
-		player->hudPrint(va("^5Coop Version^8: %i\n",player->coopPlayer.installedVersion));
+	if (player->coop_getInstalled() == 1) {
+		player->hudPrint(va("^5Coop Version^8: %i\n",player->coop_getInstalledVersion()));
 	}
 	else {
 		player->hudPrint("^5Coop Version^8: None detected\n");
@@ -1714,7 +1718,7 @@ qboolean G_coopInstalled(const gentity_t* ent)
 	const char* coopVer = gi.argv(1);
 
 	if (strlen(coopVer)) { //[b60011] Chrissstrahl - fixed bad check
-		player->coopPlayer.installedVersion = atoi(coopVer);
+		player->coop_setInstalledVersion(atoi(coopVer));
 	}
 	coop_playerSetupCoop(player);
 

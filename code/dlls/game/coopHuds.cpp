@@ -58,7 +58,7 @@ void coop_huds_callvoteOptionChangedUI(str sText, str sValue, str sWidget)
 		player = (Player*)g_entities[i].entity;
 		if (player && player->client && player->isSubclassOf(Player)) {
 			multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: %s set to^5 %s\n", sText.c_str(), sValue.c_str()));
-			if (player->coopPlayer.installed) {
+			if (player->coop_getInstalled()) {
 				DelayedServerCommand(player->entnum, va("globalwidgetcommand %s title %s", sWidget.c_str(), sValue.c_str()));
 			}
 		}
@@ -106,7 +106,7 @@ void coop_huds_setupMultiplayerUI(Player *player) //chrissstrahl - added [b607]
 void coop_hudsKilled(Player *player) //chrissstrahl - added [b607]
 {
 	//if player does not have the coop mod installed handle [b607]
-	if (!player->coopPlayer.installed) {
+	if (!player->coop_getInstalled()) {
 		DelayedServerCommand(player->entnum, "ui_removehud targetedhud"); //sniper red dot when being targeted
 	}
 	//coop huds are handled in the cfg file
@@ -149,7 +149,7 @@ void coop_hudsAdd( Player *player , str hudName )
 void coop_hudsAddCoop( Player *player , str hudName )
 {
 	if ( player && strlen(hudName) > 0 ){
-		if ( player->coopPlayer.installed == 1 ){
+		if ( player->coop_getInstalled() == 1 ){
 			coop_hudsAdd( player , hudName );
 		}
 	}
@@ -177,8 +177,8 @@ void coop_hudsRemove( Player *player , str hudName )
 //hzm coop mod chrissstrahl - add coop related huds, updatenotification
 void coop_hudsUpdateNotification( Player *player )
 {
-	if ( player->coopPlayer.installed ) {
-		if ( player->coopPlayer.installedVersion < COOP_BUILD ) {
+	if ( player->coop_getInstalled() ) {
+		if ( player->coop_getInstalledVersion() < COOP_BUILD ) {
 			if ( !player->coopPlayer.updateHudDisplayed ) {
 				if ( ( level.time + 20 ) > mp_warmUpTime->integer &&
 					level.cinematic != qtrue &&
@@ -187,7 +187,7 @@ void coop_hudsUpdateNotification( Player *player )
 					player->coopPlayer.setupComplete != false )
 				{
 					player->coopPlayer.updateHudDisplayed = true;
-					player->hudPrint( va( "^5Coop info^8: Please ^5update^8 the HZM Coop Mod!\nYour version:^3 %d ^8- server version:^5 %d\n" , player->coopPlayer.installedVersion , COOP_BUILD ) );
+					player->hudPrint( va( "^5Coop info^8: Please ^5update^8 the HZM Coop Mod!\nYour version:^3 %d ^8- server version:^5 %d\n" , player->coop_getInstalledVersion() , COOP_BUILD ) );
 				}
 			}
 		}

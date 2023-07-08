@@ -2451,7 +2451,7 @@ void G_MissionFailed( const str& reason )
 				}
 				
 				//hzm coop mod chrissstrahl - show hud for coop clients and text for others
-				if ( player->coopPlayer.installed ){
+				if ( player->coop_getInstalled() ){
 
 					DelayedServerCommand( player->entnum , va( "set ui_failureReason %s\n", sReason.c_str() ) );
 					DelayedServerCommand( player->entnum , "pushmenu coop_failure" );

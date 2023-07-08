@@ -163,7 +163,7 @@ void coop_radarUpdate( Player *player )
 
 	//Exit on NULL, bot and mod not installed
 	gentity_t *ent = player->edict;
-	if (!player || ent->svflags & SVF_BOT || player->coopPlayer.installed != 1) { return; }
+	if (!player || ent->svflags & SVF_BOT || player->coop_getInstalled() != 1) { return; }
 
 	//player dead or in spectator, disable selected blip
 	Entity* target = player->GetTargetedEntity();

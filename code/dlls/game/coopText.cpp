@@ -420,7 +420,7 @@ str coop_textPhraseLocalStrUmlaute( Player *player, str sText )
 
 		if ( bAddE ) {
 			//no coop mod
-			if ( player->coopPlayer.installed == 0 ) {
+			if ( player->coop_getInstalled() == 0 ) {
 				sNewText += sNoCoop;
 			}
 			//coop mod installed

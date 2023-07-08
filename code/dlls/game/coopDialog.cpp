@@ -55,7 +55,7 @@ void coop_dialogSetupPlayerAll( Actor *speaker , char localizedDialogName[MAX_QP
 		player = g_entities[i].entity;
 		if ( player && player->client && player->isSubclassOf( Player ) ){
 			playerPlayer = ( Player * )player;
-			if ( headDisplay && speaker /* && playerPlayer->coopPlayer.installed == 1 */ ){
+			if ( headDisplay && speaker /* && playerplayer->coop_getInstalled() == 1 */ ){
 				//gi.Printf("coop_dialogSetupPlayerAll speaker exists (head)\n");
 				playerPlayer->SetupDialog( (Entity *)speaker , localizedDialogName );
 			}else{

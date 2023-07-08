@@ -236,7 +236,7 @@ void MultiplayerManager::update( float frameTime )
 		{
 			player = ( Player* )g_entities[j].entity;
 			if ( player && player->client && player->isSubclassOf( Player ) ){
-				if ( player->coopPlayer.installed ) {
+				if ( player->coop_getInstalled() ) {
 					DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
 					DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesSkillValue title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
 				}
@@ -787,7 +787,7 @@ void MultiplayerManager::updateVotes( Player * player, bool bLeaving )
 				if ( !bALt )
 					sVoteText = multiplayerManager.getVoteString();
 				//[b607] chrissstrahl - yes and no are now in a seperate line - and non coop clients get the default text
-				if (player->coopPlayer.installed) {
+				if (player->coop_getInstalled()) {
 					player->setVoteText( va( "$$NewVote$$: %s\n(F1 = $$Yes$$, F2 = $$No$$)" , sVoteText.c_str() ) );
 				}
 				else {
@@ -912,6 +912,10 @@ void MultiplayerManager::addPlayer( Player *player )
 	// Inform the award system about the new player
 
 	_awardSystem->addPlayer ( player );
+
+	//[b60014] chrissstrahl - we don't need that for bots
+	if (player->edict->svflags & SVF_BOT)
+		return;
 
 	// Inform all of the players that the player has joined the game
 	//[b607] chrissstrahl - restored to default - last minute fix
@@ -3429,7 +3433,7 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	//[b607] chrissstrahl - remove this hud if player respawns
 	if (player->coopPlayer.clickFireHudActive) {
 		player->coopPlayer.clickFireHudActive = false;
-		if (player->coopPlayer.installed) {
+		if (player->coop_getInstalled()) {
 			player->removeHud("coop_fireToSpawn");
 		}
 	}

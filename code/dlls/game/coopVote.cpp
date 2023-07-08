@@ -1306,7 +1306,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 	//[b60011] chrissstrahl - send updated data to player UI
 	for (int i = 0; i < maxclients->integer; i++) {
 		player = (Player*)g_entities[i].entity;
-		if (player && player->client && player->isSubclassOf(Player) && player->coopPlayer.installed) {
+		if (player && player->client && player->isSubclassOf(Player) && player->coop_getInstalled()) {
 			player->widgetCommand("coopGpoLms", va("title %d", iValueNew));
 		}
 	}

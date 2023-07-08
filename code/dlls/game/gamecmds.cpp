@@ -378,7 +378,7 @@ qboolean G_circleMenu(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//make sure player that do not have the coop mod and try this command know
-	if (!player->coopPlayer.installed) {
+	if (!player->coop_getInstalled()) {
 		player->hudPrint("You need the Coop Mod for this to work\n");
 		return qtrue;
 	}
@@ -406,7 +406,7 @@ qboolean G_circleDialog(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//make sure player that do not have the coop mod and try this command know
-	if (!player->coopPlayer.installed) {
+	if (!player->coop_getInstalled()) {
 		player->hudPrint("You need the Coop Mod for this to work\n");
 		return qtrue;
 	}

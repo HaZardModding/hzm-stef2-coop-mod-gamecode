@@ -390,7 +390,7 @@ void CoopChallenges::updateStickTogether(float frameTime)
 			Player* player = (Player*)playerAnker;
 
 			//show distance hud
-			if (player->coopPlayer.installed) {
+			if (player->coop_getInstalled()) {
 				DelayedServerCommand(player->entnum, "ui_addhud coop_stickTogether");
 			}
 			else {

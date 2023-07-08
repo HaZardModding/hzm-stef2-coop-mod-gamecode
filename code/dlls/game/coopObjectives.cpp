@@ -181,7 +181,7 @@ void coop_objectivesMarkerRemove( Entity *eMaster )
 //================================================================
 void coop_objectivesSetup( Player *player)
 {
-	if ( !player || !player->coopPlayer.installed ){
+	if ( !player || !player->coop_getInstalled() ){
 		return;
 	}
 
@@ -267,7 +267,7 @@ void coop_objectivesUpdateUservar( int iUservar )
 		gentity = &g_entities[i];
 		if ( gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf( Player ) ){
 			player = ( Player * )gentity->entity;
-			if ( player && player->coopPlayer.installed ){
+			if ( player && player->coop_getInstalled() ){
 				if ( iUservar == 1){
 					DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor title %s" , game.coop_author.c_str() ) );
 				}
@@ -710,7 +710,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 		sVariableName = "coop_string_objectiveItem";
 		sVariableName += iObjectiveItem;
 
-		//if ( iObjectiveItem == 1 && iObjectiveState == 1 && player->coopPlayer.installed == 1 || g_gametype->integer == GT_SINGLE_PLAYER ){
+		//if ( iObjectiveItem == 1 && iObjectiveState == 1 && player->coop_getInstalled() == 1 || g_gametype->integer == GT_SINGLE_PLAYER ){
 			//str sStory = game.coop_story;
 			//if ( coop_checkPlayerLanguageGerman(player) ){
 				//if ( game.coop_story_deu.length() > 0){
@@ -743,7 +743,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 			}
 
 			//if player has the mod installed display to menu
-			if ( player->coopPlayer.installed ){
+			if ( player->coop_getInstalled() ){
 				//phrase text replace umlaute הצהü and ß, allow german text to work right - using loc strings $$u$$
 				sObjective = sObjective;
 
@@ -782,7 +782,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 		if ( sHint.length() < 1 ){
 			sHint = program.getStringVariableValue( sVariableName.c_str() );
 		}
-		if ( sHint.length() > 0 && player->coopPlayer.installed == 1 ){
+		if ( sHint.length() > 0 && player->coop_getInstalled() == 1 ){
 			DelayedServerCommand( player->entnum , va( "set %s %s%s%s" , sCvar.c_str() , sLocalString.c_str() , sHint.c_str() , sLocalString.c_str() ) );
 		}
 	}
@@ -801,7 +801,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 //================================================================
 void coop_objectives_tacticalShow( Player *player , int iTactical )
 {
-	if ( player && player->coopPlayer.installed == 1 )
+	if ( player && player->coop_getInstalled() == 1 )
 	{
 		if ( iTactical < 1 )
 		{
