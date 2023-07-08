@@ -68,17 +68,22 @@ extern int iSPRITES;
 //================================================================
 void Player::coop_spEquip()
 {
-	if (g_gametype->integer != GT_SINGLE_PLAYER || !Director.PlayerReady() || !entityVars.GetVariable("_armoryNeedstoBeEquiped")) {
+	if (g_gametype->integer != GT_SINGLE_PLAYER || !Director.PlayerReady() || coop_returnEntityIntegerVar(this,"_spArmoryEquiped") == 1) {
 		return;
 	}
 
+	entityVars.SetVariable("_spArmoryEquiped","1");
 	coop_armoryEquipPlayer(this);
+
 	//make sure the coop objectives hud is displayed when we play a custom (coop) map
 	if (game.isStandardLevel) {
 		gi.SendServerCommand(entnum, "stufftext \"set coop_oExc score\"\n");
 	}
 	else {
 		gi.SendServerCommand(entnum, "stufftext \"set coop_oExc pushmenu coop_objectives\"\n");
+		DelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMapAuthor title %s", game.coop_author.c_str()));
+		DelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str()));
+		DelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
 	}
 }
 
