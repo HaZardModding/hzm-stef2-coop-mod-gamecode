@@ -9,6 +9,12 @@
 #define __COOPRETURN_HPP__
 #include "_pch_cpp.h"
 
+//[b60014] chrissstrahl - to use entity vars more convinently
+int coop_returnEntityIntegerVar(Entity* e, str sVarName);
+float coop_returnEntityFloatVar(Entity* e, str sVarName);
+str coop_returnEntityStringVar(Entity* e, str sVarName);
+Vector coop_returnEntityVectorVar(Entity* e, str sVarName);
+
 Entity*	coop_returnEntity( const str &name );
 str coop_returnBoolWord( int iValue );
 str coop_returnBoolWord( bool bValue );

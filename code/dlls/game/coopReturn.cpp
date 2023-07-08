@@ -29,6 +29,98 @@ extern CoopRPG coopRpg;
 #include "trigger.h"
 #include "weaputils.h"
 
+//=========================================================[b60014]
+// Name:        coop_returnEntityFloatVar
+// Class:       -
+//              
+// Description: Grabs Entity Variables from a entity in a convinient way so they can be used more in the code
+//
+// Parameters:  Entity*,str
+//              
+// Returns:     float
+//              
+//================================================================
+float coop_returnEntityFloatVar(Entity *e, str sVarName)
+{
+	if (e) {
+		ScriptVariable* entityData = NULL;
+		entityData = e->entityVars.GetVariable(va("%s", sVarName.c_str()));
+		if (entityData != NULL) {
+			return entityData->floatValue();
+		}
+	}
+	return 0.0f;
+}
+
+//=========================================================[b60014]
+// Name:        coop_returnEntityIntegerVar
+// Class:       -
+//              
+// Description: Grabs Entity Variables from a entity in a convinient way so they can be used more in the code
+//
+// Parameters:  Entity*,str
+//              
+// Returns:     float
+//              
+//================================================================
+int coop_returnEntityIntegerVar(Entity *e, str sVarName)
+{
+	if (e) {
+		ScriptVariable* entityData = NULL;
+		entityData = e->entityVars.GetVariable(va("%s", sVarName.c_str()));
+		if (entityData != NULL) {
+			return entityData->intValue();
+		}
+	}
+	return 0;
+}
+
+//=========================================================[b60014]
+// Name:        coop_returnEntityStringVar
+// Class:       -
+//              
+// Description: Grabs Entity Variables from a entity in a convinient way so they can be used more in the code
+//
+// Parameters:  Entity*,str
+//              
+// Returns:     str
+//              
+//================================================================
+str coop_returnEntityStringVar(Entity* e, str sVarName)
+{
+	if (e) {
+		ScriptVariable* entityData = NULL;
+		entityData = e->entityVars.GetVariable(va("%s", sVarName.c_str()));
+		if (entityData != NULL) {
+			return entityData->stringValue();
+		}
+	}
+	return "";
+}
+
+//=========================================================[b60014]
+// Name:        coop_returnEntityVectorVar
+// Class:       -
+//              
+// Description: Grabs Entity Variables from a entity in a convinient way so they can be used more in the code
+//
+// Parameters:  Entity*,str
+//              
+// Returns:     Vector
+//              
+//================================================================
+Vector coop_returnEntityVectorVar(Entity* e, str sVarName)
+{
+	if (e) {
+		ScriptVariable* entityData = NULL;
+		entityData = e->entityVars.GetVariable(va("%s", sVarName.c_str()));
+		if (entityData != NULL) {
+			return entityData->vectorValue();
+		}
+	}
+	return Vector(0.0f,0.0f,0.0f);
+}
+
 Entity*	coop_returnEntity( const str &name )
 {
 #if 0
