@@ -189,6 +189,15 @@ class Player : public Sentient
 		Vector				GetViewTraceEndVector(void);
 		void				getViewtraceEndpos(Event* ev);
 
+		str					coop_getId();
+		void				coop_setId(str sId);
+		bool				coop_getInstalled();
+		void				coop_setInstalled(bool bInst);
+		int					coop_getInstalledVersion();
+		void				coop_setInstalledVersion(int iVer);
+		int					coop_getInstalledCheckTime();
+		void				coop_setInstalledCheckTime(int iTime);
+		
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);
 		void				cancelPuzzle(); //[b60012] chrissstrahl - allow cancellation of puzzles (used when player recives damade from sentients while modulating)
@@ -1862,15 +1871,15 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveFloat(&coopPlayer.lmsDeaths);						//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.);								//used in multiplayer only - not relevant for zingleplaya
 //[b60014] chrissstrahl - no longer used in singleplayer
-	//arc.ArchiveString(&coopPlayer.className);			//Not quite Clean implemented, so also accsessed in singleplayer
-
+	//arc.ArchiveString(&coopPlayer.className)
+	//arc.ArchiveInteger(&coopPlayer.installedVersion);
+	//arc.ArchiveInteger(&coopPlayer.installed);
+	//arc.ArchiveString(&coopPlayer.coopId);
 	arc.ArchiveSafePointer(&last_entityTargeted);
 	arc.ArchiveString(&kill_thread);
 	arc.ArchiveString(&coopPlayer.lastScanSendData);
 	arc.ArchiveBool(&coopPlayer.showTargetedEntity);		
 	arc.ArchiveBool(&coopPlayer.armoryNeedstoBeEquiped); //only used in singleplayer to prevent loss of inventory caused by code alterations - this might be fixable else where
-	arc.ArchiveInteger(&coopPlayer.installed);
-	arc.ArchiveInteger(&coopPlayer.installedVersion);
 	//these should be reviewd properly - I was in a hurry so I added em anyway
 	arc.ArchiveBool(&coopPlayer.neutralized);
 	arc.ArchiveBool(&coopPlayer.scanning);
@@ -1887,7 +1896,7 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveString(&coopPlayer.scanData0);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer
-	arc.ArchiveString(&coopPlayer.coopId);
+	
 	arc.ArchiveString(&coopPlayer.coopStatus);
 	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
 	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);

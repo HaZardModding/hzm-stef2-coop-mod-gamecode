@@ -55,11 +55,178 @@ extern int iSKAS;
 extern int iSPRITES;
 
 
+//=========================================================[b60014]
+// Name:        player::coop_getId
+// Class:       -
+//              
+// Description: Gets Player coop Id
+//              
+// Parameters:  void
+//              
+// Returns:     str
+//              
+//================================================================
+str Player::coop_getId()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.coopId;
+	}
+	else {
+		cvar_t* cvar = gi.cvar_get("coop_cId");
+		str sCvar = (cvar ? cvar->string : "");
+		coop_manipulateStringTrim(sCvar, "coopcid ");
+		return sCvar;
+	}
+}
+
+//=========================================================[b60014]
+// Name:        player::coop_setId
+// Class:       -
+//              
+// Description: Sets Player coop Id
+//              
+// Parameters:  str
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_setId(str sId)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		coopPlayer.coopId = sId;
+	}
+}
+
+//=========================================================[b60014]
+// Name:        player::coop_getInstalled
+// Class:       -
+//              
+// Description: Checks if player has the coop mod installed or not
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_getInstalled()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		if (coopPlayer.installed > 0) {
+			return true;
+		}
+	}
+	else {
+		return true;
+	}
+}
+
+//=========================================================[b60014]
+// Name:        player::coop_setInstalled
+// Class:       -
+//              
+// Description: Sets flag that player has coop mod installed
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_setInstalled(bool bIns)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		coopPlayer.installed = bIns;
+	}
+}
+
+//=========================================================[b60014]
+// Name:        player::coop_getInstalledVersion
+// Class:       -
+//              
+// Description: Returns Coop Mod installed version
+//              
+// Parameters:  void
+//              
+// Returns:     int
+//              
+//================================================================
+int Player::coop_getInstalledVersion()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.installedVersion;
+	}
+	else {
+		cvar_t* cvar = gi.cvar_get("coop_ver");
+		str sCvar = (cvar ? cvar->string : va("%d", COOP_BUILD));
+		return atoi(sCvar);
+	}
+}
+
+//=========================================================[b60014]
+// Name:        player::coop_setInstalledVersion
+// Class:       -
+//              
+// Description: Sets Coop Mod installed version
+//              
+// Parameters:  int
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_setInstalledVersion(int iVer)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		coopPlayer.installedVersion = iVer;
+	}
+}
+
+//=========================================================[b60014]
+// Name:        player::coop_getInstalledCheckTime
+// Class:       -
+//              
+// Description:	Returns Coop Mod installed time check var content
+//				Used to detect when coop setup should timeout for player
+//              
+// Parameters:  void
+//              
+// Returns:     int
+//              
+//================================================================
+int Player::coop_getInstalledCheckTime()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.installedVersion;
+	}
+	else {
+		cvar_t* cvar = gi.cvar_get("coop_ver");
+		str sCvar = (cvar ? cvar->string : va("%d", COOP_BUILD));
+		return atoi(sCvar);
+	}
+}
+
+//=========================================================[b60014]
+// Name:        player::coop_setInstalledVersion
+// Class:       -
+//              
+// Description:	Sets Coop Mod installed time check var
+//				Used to detect when coop setup should timeout for player
+//              
+// Parameters:  int
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_setInstalledCheckTime(int iTime)
+{
+	if (multiplayerManager.inMultiplayer()) {
+		coopPlayer.installedVersion = iTime;
+	}
+}
+
 //=========================================================[b60012]
 // Name:        coop_playerFlushTikis
 // Class:       -
 //              
-// Description: [b60012] Flushtikis for clients - try to fix tiki model anim cache overload issue
+// Description: Flushtikis for clients - try to fix tiki model anim cache overload issue
 //              
 // Parameters:  void
 //              
@@ -86,7 +253,7 @@ void coop_playerFlushTikis()
 // Name:        coop_playerCommunicator
 // Class:       -
 //              
-// Description: [b607] adds player names to !transport section of the coop communicator
+// Description: adds player names to !transport section of the coop communicator
 //              
 // Parameters:  Player*, int iAdd <0,1,2> 0=getlist,1=add, 2=remove
 //              
@@ -119,7 +286,7 @@ void coop_playerCommunicator(Player* player, int iAdd)
 		currentPlayer = (Player *)g_entities[i].entity;
 
 		//don't send update info to player without mod menu or if it is bot
-		if (!currentPlayer || currentPlayer->edict->svflags & SVF_BOT) { //[b60011]Chrissstrahl - disabled coop check as a quick fix cuz entering player has not yet ccoop detected - !currentPlayer->coopPlayer.installed 
+		if (!currentPlayer || currentPlayer->edict->svflags & SVF_BOT) { //[b60011]Chrissstrahl - disabled coop check as a quick fix cuz entering player has not yet ccoop detected - !currentplayer->coop_getInstalled() 
 			continue;
 		}
 
@@ -627,11 +794,9 @@ void coop_playerSetupHost(Player* player)
 	str sCvar = (cvar ? cvar->string : "Eng");
 	player->setLanguage(sCvar);
 
-	//[b60013] chrissstrahl - changed to grab the cvar that is used also in the main menu
-	cvar = gi.cvar_get("coop_ver");
-	sCvar = (cvar ? cvar->string : va("%d", COOP_BUILD));
-	player->coopPlayer.installedVersion = atoi(sCvar.c_str());
-	player->coopPlayer.installed = true;
+	//[b60014] chrissstrahl - changed to use functions that handle sp/mp/coop
+	player->coop_setInstalledVersion(player->coop_getInstalledVersion());
+	player->coop_setInstalled(true);
 
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER ){
 		player->coopPlayer.setupComplete = true;
@@ -639,20 +804,10 @@ void coop_playerSetupHost(Player* player)
 		return;
 	}
 
-	cvar = gi.cvar_get("coop_cId");
-	sCvar = (cvar ? cvar->string : "");
-	coop_manipulateStringTrim(sCvar,"coopcid ");
-	player->coopPlayer.coopId = coop_checkPlayerCoopIdExistInIni(player, sCvar);
+	player->coop_setId(coop_checkPlayerCoopIdExistInIni(player, player->coop_getId()));
 	coop_playerRestore(player);
 
 	coop_playerSetupCoop(player);
-
-	/*if (game.coop_isActive) {
-		cvar = gi.cvar_get("coop_class");
-		sCvar = (cvar ? cvar->string : "");
-		coop_manipulateStringTrim(sCvar, "!class "); //remove command prefix
-		coop_classSet(player, sCvar);
-	}*/
 }
 
 //================================================================
@@ -749,7 +904,7 @@ void coop_playerSetupCoop( Player *player )
 
 	//hzm coop mod chrissstrahl - notify game about the client state
 	//can also be used on regular deathmatch by script check
-	player->coopPlayer.installed = 1;
+	player->coop_setInstalled(true);
 
 	//make sure the setup # executed while coop is not active
 	//because the command can and will be executed even if there is no coop
@@ -831,7 +986,7 @@ void coop_playerSetupCoop( Player *player )
 void coop_playerSetupNoncoop( Player *player)
 {
 	//hzm coop mod chrissstrahl - notify game about the client state
-	player->coopPlayer.installed = 0;
+	player->coop_setInstalled(false);
 
 	gi.Printf("COOPDEBUG coop_playerSetupNoncoop\n");
 	if (multiplayerManager.inMultiplayer()) {

@@ -2197,10 +2197,12 @@ void Player::cancelPuzzle()
 void Player::getCoopClass(Event* ev)
 {	
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
-	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive) {
-		ev->ReturnString("");
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive) {
+		ev->ReturnString(this->coopPlayer.className);
 	}
-	ev->ReturnString(this->coopPlayer.className);
+	else {
+		 ev->ReturnString("");
+	}
 }
 
 //[b60011] chrissstrahl - check if coop class is technician
@@ -2209,9 +2211,10 @@ void Player::isCoopClassTechnician(Event* ev)
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
 	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
 		ev->ReturnFloat(1.0f);
-		return;
 	}
-	ev->ReturnFloat(0.0f);
+	else {
+		ev->ReturnFloat(0.0f);
+	}
 }
 
 //[b60011] chrissstrahl - check if coop class is Medic
@@ -2220,9 +2223,10 @@ void Player::isCoopClassMedic(Event* ev)
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
 	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_MEDIC) {
 		ev->ReturnFloat(1.0f);
-		return;
 	}
-	ev->ReturnFloat(0.0f);
+	else {
+		ev->ReturnFloat(0.0f);
+	}
 }
 
 //[b60011] chrissstrahl - check if coop class is HeavyWeapons
@@ -2233,7 +2237,9 @@ void Player::isCoopClassHeavyWeapons(Event* ev)
 		ev->ReturnFloat(1.0f);
 		return;
 	}
-	ev->ReturnFloat(0.0f);
+	else {
+		ev->ReturnFloat(0.0f);
+	}
 }
 
 //[b60011] chrissstrahl - set coop class restriction - allowing/preventing player from switching class
@@ -2402,21 +2408,7 @@ void Player::getTeamScore(Event* ev)
 void Player::getCoopVersion(Event* ev)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
-	if (multiplayerManager.inMultiplayer()){
-		//value is -1 while the mod is detecting
-		int i = coopPlayer.installedVersion;
-		if (i < 0) {
-			i = 0;
-		}
-		ev->ReturnFloat((float)i);
-	}
-	else {
-		cvar_t* cvar = gi.cvar_get("coop_ver");
-		str sCvar = (cvar ? cvar->string : va("%d", COOP_BUILD));
-		ev->ReturnFloat(atof(sCvar.c_str()));
-		return;
-	}
-
+	ev->ReturnFloat(coop_getInstalledVersion());
 }
 //hzm gameupdate chrissstrahl - get player name
 void Player::getNameEvent(Event* ev)
