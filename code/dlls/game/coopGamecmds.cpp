@@ -79,14 +79,8 @@ qboolean G_coopCom_block(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - prevent spamming
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!block");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!block") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!block", level.time);
@@ -237,20 +231,15 @@ qboolean G_coopCom_class(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_drop(const gentity_t* ent)
 {
-	Player* player = (Player*)ent->entity;
-
-	//[b60014] chrissstrahl - prevent spamming
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!drop");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
-	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || sv_cinematic->integer){
 		return true;
 	}
-	player->entityVars.SetVariable("!drop", level.time);
+
+	Player* player = (Player*)ent->entity;
+
+	if (multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
 
 	//coop only command
 	if (!game.coop_isActive) {
@@ -258,15 +247,12 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 		return true;
 	}
 
-	//deny request during cinematic and in spec
-	if (sv_cinematic->integer || multiplayerManager.isPlayerSpectator(player)) {
+	//[b60014] chrissstrahl - prevent spamming
+	//deny usage of command if player executed command to quickly
+	if ((coop_returnEntityFloatVar((Entity*)player, "!drop") + 3) > level.time) {
 		return true;
 	}
-
-	//deny request during cinematic
-	if (sv_cinematic->integer) {
-		return true;
-	}
+	player->entityVars.SetVariable("!drop", level.time);
 
 	int i;
 	for (i = 0; i < MAX_ACTIVE_WEAPONS; i++)
@@ -345,17 +331,15 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_help(const gentity_t* ent)
 {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
+		return true;
+	}
+
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - prevent spamming
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!help");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!help") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!help", level.time);
@@ -460,19 +444,13 @@ qboolean G_coopCom_help(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_follow(const gentity_t* ent)
 {
-	if (g_gametype->integer != GT_MULTIPLAYER || !ent ) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
 		return true;
 	}
 
 	Player* player = (Player*)ent->entity;
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!follow");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time ) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!follow") + 3) > level.time ) {
 		return true;
 	}
 
@@ -506,9 +484,9 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 
 	//print message to all player huds of player being marked
 	for (int i = 0; i < maxclients->integer; i++) {
-		gentity_t* gentity = &g_entities[i];
-		if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
-			Player* currentPlayer = (Player*)gentity->entity;
+		gentity_t* gentity2 = &g_entities[i];
+		if (gentity2->inuse && gentity2->entity && gentity2->client && gentity2->entity->isSubclassOf(Player)) {
+			Player* currentPlayer = (Player*)gentity2->entity;
 			if (currentPlayer) {
 				str text = "^5Locaction marked ^2green ^5on Radar of^8";
 				if (coop_checkPlayerLanguageGerman(currentPlayer)) {
@@ -534,20 +512,14 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_leader(const gentity_t* ent)
 {
-	if (g_gametype->integer != GT_MULTIPLAYER) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
 		return true;
 	}
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!leader");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!leader") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!leader", level.time);
@@ -571,24 +543,19 @@ qboolean G_coopCom_info(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
-	if (gi.GetNumFreeReliableServerCommands(player->entnum) < 32 || g_gametype->integer == GT_SINGLE_PLAYER) {
+	//[b60014] chrissstrahl - add spam protection
+	//deny usage of command if player executed command to quickly
+	if (	gi.GetNumFreeReliableServerCommands(player->entnum) < 32 ||
+			g_gametype->integer == GT_SINGLE_PLAYER ||
+			!multiplayerManager.inMultiplayer() ||
+			(coop_returnEntityFloatVar((Entity*)player, "!info") + 10) > level.time	)
+	{
 		return true;
 	}
+	
+	player->entityVars.SetVariable("!info", level.time);
 
 	str s,s2;
-
-	//[b60014] chrissstrahl - add spam protection
-	float fData= 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!info");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
-	//deny usage of command if player executed command to quickly
-	if ((fData + 10) > level.time) {
-		return true;
-	}
-	player->entityVars.SetVariable("!info", level.time);
 
 	//[b60014] chrissstrahl printout the info to menu
 	if (player->coop_getInstalledVersion() >= 60014) {
@@ -694,14 +661,8 @@ qboolean G_coopCom_kickbots(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!kickbots");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!kickbots") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!kickbots", level.time);
@@ -762,14 +723,8 @@ qboolean G_coopCom_login(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!login");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!login") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!login", level.time);
@@ -817,14 +772,8 @@ qboolean G_coopCom_logout(const gentity_t* ent)
 	}
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!logout");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!logout") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!logout", level.time);
@@ -849,14 +798,8 @@ qboolean G_coopCom_mapname(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!mapname");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!mapname") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!mapname", level.time);
@@ -891,14 +834,8 @@ qboolean G_coopCom_origin(const gentity_t* ent)
 
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!origin");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 1) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!origin") + 1) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!origin", level.time);
@@ -931,14 +868,8 @@ qboolean G_coopCom_skill(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!skill");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!skill") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!skill", level.time);
@@ -1031,15 +962,8 @@ qboolean G_coopCom_stuck(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 	
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!stuck");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
-
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!stuck") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!stuck", level.time);
@@ -1098,15 +1022,8 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!transport");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
-
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player,"!transport") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!transport", level.time);
@@ -1187,14 +1104,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	}
 	//[b60014] chrissstrahl - prevent transport to target player if player has !notransport activated
 	else {
-		ScriptVariable* scriptVar2 = NULL;
-		scriptVar2 = targetPlayer->entityVars.GetVariable("!notransport_active");
-		float fData = 0;
-		if (scriptVar2 != NULL) {
-			fData = scriptVar2->floatValue();
-		}
-
-		if (fData != 0) {
+		if (coop_returnEntityIntegerVar((Entity*)targetPlayer,"!notransport_active") == 1) {
 			bTransportFailed = true;
 
 			if (coop_checkPlayerLanguageGerman(player)) {
@@ -1206,14 +1116,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 		}
 		//[b60014] chrissstrahl - prevent transport if player has !notransport activated - do not allow terrorising other players
 		else {
-			ScriptVariable* scriptVar3 = NULL;
-			scriptVar3 = player->entityVars.GetVariable("!notransport_active");
-			float fData = 0;
-			if (scriptVar3 != NULL) {
-				fData = scriptVar3->floatValue();
-			}
-
-			if (fData != 0) {
+			if (coop_returnEntityIntegerVar((Entity*)player, "!notransport_active") == 1) {
 				bTransportFailed = true;
 
 				if (coop_checkPlayerLanguageGerman(player)) {
@@ -1291,15 +1194,8 @@ qboolean G_coopCom_notransport(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!notransport");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
-
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!notransport") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!notransport", level.time);
@@ -1311,13 +1207,7 @@ qboolean G_coopCom_notransport(const gentity_t* ent)
 		return true;
 	}
 
-	ScriptVariable* scriptVar2 = NULL;
-	scriptVar2 = player->entityVars.GetVariable("!notransport_active");
-	if (scriptVar != NULL) {
-		fData = scriptVar2->floatValue();
-	}
-
-	if(fData == 0.0f){
+	if(coop_returnEntityFloatVar((Entity*)player, "!notransport_active") == 0.0f){
 		player->entityVars.SetVariable("!notransport_active", 1.0f);
 
 		if (coop_checkPlayerLanguageGerman(player)) {
@@ -1360,14 +1250,8 @@ qboolean G_coopCom_reboot(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!reboot");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 10) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!reboot") + 10) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!reboot", level.time);
@@ -1408,14 +1292,8 @@ qboolean G_coopCom_levelend(const gentity_t* ent)
 	}
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!levelend");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 10) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!levelend") + 10) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!levelend", level.time);
@@ -1453,14 +1331,8 @@ qboolean G_coopCom_targeted(const gentity_t* ent)
 	}
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!targeted");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!targeted") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!targeted", level.time);
@@ -1493,14 +1365,8 @@ qboolean G_coopCom_showspawn(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!showspawn");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!showspawn") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!showspawn", level.time);
@@ -1553,14 +1419,8 @@ qboolean G_coopCom_testspawn(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
-	float fData = 0.0f;
-	ScriptVariable* scriptVar = NULL;
-	scriptVar = player->entityVars.GetVariable("!testspawn");
-	if (scriptVar != NULL) {
-		fData = scriptVar->floatValue();
-	}
 	//deny usage of command if player executed command to quickly
-	if ((fData + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!testspawn") + 3) > level.time) {
 		return true;
 	}
 	player->entityVars.SetVariable("!testspawn", level.time);
