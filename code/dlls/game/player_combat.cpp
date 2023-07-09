@@ -314,11 +314,10 @@ bool Player::useWeapon( const char *weaponname, weaponhand_t hand )
 		return false;
 	}
 
-	//hzm coop mod chrissstrahl - remember the last weapon the player used, restore on mapchange
-	if ( (this->coopPlayer.lastTimeChangedClass + 1 ) < level.time ){
+	//[b60014] chrissstrahl - remember the last weapon the player used, restore on mapchange
+	if (multiplayerManager.inMultiplayer() && (this->coopPlayer.lastTimeChangedClass + 1 ) < level.time ){
 		coop_armoryRememberLastUsed( this , ( str )weaponname );
 	}
-	//hzm eof
 
 	return useWeapon( weapon, hand );
 }

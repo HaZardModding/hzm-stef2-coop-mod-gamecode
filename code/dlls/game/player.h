@@ -1879,6 +1879,8 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveInteger(&coopPlayer.installed);
 	//arc.ArchiveString(&coopPlayer.coopId);
 	//arc.ArchiveBool(&coopPlayer.armoryNeedstoBeEquiped);	//only used in singleplayer to prevent loss of inventory caused by code alterations - this might be fixable else where
+	//arc.ArchiveFloat(&coopPlayer.lastTimeChangedClass);
+	
 	arc.ArchiveSafePointer(&last_entityTargeted);
 	arc.ArchiveString(&kill_thread);
 	arc.ArchiveString(&coopPlayer.lastScanSendData);
@@ -1891,7 +1893,7 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
 	arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
-	arc.ArchiveFloat(&coopPlayer.lastTimeChangedClass);
+	
 	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);
 	arc.ArchiveFloat(&coopPlayer.diedLast);
 	arc.ArchiveFloat(&coopPlayer.timeEntered);
