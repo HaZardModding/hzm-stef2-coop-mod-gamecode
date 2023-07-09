@@ -119,8 +119,8 @@ bool Player::coop_isBot()
 //================================================================
 bool Player::coop_isHost()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer != GT_BOT_SINGLE_PLAYER) {
-		return true;
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		return false;
 	}
 
 	#ifdef WIN32
