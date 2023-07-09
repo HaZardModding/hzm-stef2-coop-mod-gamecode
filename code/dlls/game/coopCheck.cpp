@@ -242,10 +242,10 @@ void coop_checkPlayerHasCoop( Player *player )
 //================================================================
 void coop_checkPlayerHasCoopId(Player* player)
 {
-	#define COOP_MAX_ID_CHECK_TRIES 15
+	constexpr auto COOP_MAX_ID_CHECK_TRIES = 15;
 
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (player->coopPlayer.setupTriesCid == (COOP_MAX_ID_CHECK_TRIES + 1) || player->coopPlayer.coopId.length()) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || player->coopPlayer.setupTriesCid == (COOP_MAX_ID_CHECK_TRIES + 1) || player->coopPlayer.coopId.length()) {
 		return;
 	}
 
@@ -254,13 +254,13 @@ void coop_checkPlayerHasCoopId(Player* player)
 		player->coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
 			player->coopPlayer.setupTriesCid++;
-			gi.Printf(va("COOPDEBUG coop_checkDoesPlayerHaveCoopId %s checkNum: %d\n", player->client->pers.netname, player->coopPlayer.setupTriesCid));
+			//gi.Printf(va("COOPDEBUG coop_checkPlayerHasCoopId %s checkNum: %d\n", player->client->pers.netname, player->coopPlayer.setupTriesCid));
 		}
 	}
 	//player does not have coop mod - give up at this point
 	if (player->coopPlayer.setupTriesCid == COOP_MAX_ID_CHECK_TRIES) {
 		player->coopPlayer.setupTriesCid++;
-		gi.Printf(va("COOPDEBUG coop_checkDoesPlayerHaveCoopId %s failed: %d\n", player->client->pers.netname, player->coopPlayer.setupTriesCid));
+		gi.Printf(va("COOPDEBUG coop_checkPlayerHasCoopId %s failed: %d\n", player->client->pers.netname, player->coopPlayer.setupTriesCid));
 		coop_playerSaveNewPlayerId(player);
 		return;
 	}
