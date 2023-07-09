@@ -197,7 +197,7 @@ bool Player::coop_getInstalled()
 		}
 	}
 	else {
-		return false;
+		return true;
 	}
 }
 
@@ -1997,15 +1997,13 @@ void coop_playerThink( Player *player )
 		return;
 	}
 
-
 	coop_playerMakeSolidASAPThink( player );
-	coop_playerPlaceableThink(player);
+	//coop_playerPlaceableThink(player);	//[b60014] chrissstrahl - disabled as I don't have time to fix it right now
 
-	//[608] chrissstrahl - moved up here
-	//hzm coop mod chrissstrahl - update objectives every secound in sp
+	//[b60014] chrissstrahl - [SINGLEPLAYER] update objectives every secound in sp
 	if ( g_gametype->integer == GT_SINGLE_PLAYER ){
-		if ( ( player->coopPlayer.lastTimeThink + 1.0f ) < level.time ){
-			player->coopPlayer.lastTimeThink = level.time;
+		if ((coop_returnEntityFloatVar((Entity*)player, "_spLastTimeThink") + 1) < level.time) {
+			player->entityVars.SetVariable("_spLastTimeThink",level.time);
 			coop_objectivesUpdatePlayer( player );
 		}
 		return;
