@@ -197,7 +197,7 @@ bool Player::coop_getInstalled()
 		}
 	}
 	else {
-		return true;
+		return false;
 	}
 }
 
