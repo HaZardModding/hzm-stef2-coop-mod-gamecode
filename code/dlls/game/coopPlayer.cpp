@@ -876,16 +876,25 @@ void coop_playerSetupHost(Player* player)
 	player->coop_setInstalledVersion(player->coop_getInstalledVersion());
 	player->coop_setInstalled(true);
 
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER ){
-		player->coopPlayer.setupComplete = true;
+	//[b60014] chrissstrahl - move widget back into the correct place
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER){
 		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
+	}
+	
+	//[b60014] chrissstrahl - [SINGLEPLAYER] EXIT
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		return;
 	}
 
 	player->coop_setId(coop_checkPlayerCoopIdExistInIni(player, player->coop_getId()));
-	coop_playerRestore(player);
-
 	coop_playerSetupCoop(player);
+
+	//[b60014] chrissstrahl - [BOTMATCH] EXIT
+	if (g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
+		return;
+	}	
+
+	coop_playerRestore(player);
 }
 
 //================================================================
@@ -982,77 +991,68 @@ void coop_playerSaveNewPlayerId(Player *player)
 //================================================================
 void coop_playerSetupCoop( Player *player )
 {
-	if ( !player ){
-		return;
-	}
-
 	//hzm coop mod chrissstrahl - notify game about the client state
 	//can also be used on regular deathmatch by script check
 	player->coop_setInstalled(true);
 
 	//make sure the setup # executed while coop is not active
 	//because the command can and will be executed even if there is no coop
-	if ( !game.coop_isActive ){
-		return;
+	if (game.coop_isActive) {
+		gi.Printf("COOPDEBUG coop_playerSetupCoop\n");
+		if (multiplayerManager.inMultiplayer()) {
+			multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupCoop\n");
+		}
+
+		//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str())); //[b60012] chrissstrahl - fix missing .c_str()
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSkill title %s", coop_returnStringSkillname(skill->integer).c_str()));
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoMvSpd title %d", game.coop_maxspeed));
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoRspwt title %d", game.coop_respawnTime));
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoLms title %d", game.coop_lastmanstanding));
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAw title %d", (int)game.coop_awardsActive));
+
+		//[b607] chrissstrahl - deadbodies option
+		//[b607] chrissstrahl - teamicon option
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoDb title %d", game.coop_deadBodiesPerArea));
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoCh title %d", (short)coopChallenges.iCurrentChallenge));
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSt title %d", (int)game.coop_stasisTime));
+
+		//[b607] chrissstrahl - airaccelerate option
+		int iAccel;
+		if (world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != -1.0f) {
+			iAccel = (int)world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE);
+		}
+		else {
+			iAccel = (int)sv_airaccelerate->value;
+		}
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAa title %d", iAccel));
+
+		str sFF = va("%f", game.coop_friendlyFire);
+		coop_manipulateStringFromWithLength(sFF, 0, 4);
+		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoFF title %s", sFF.c_str()));
+
+		//hzm coop mod chrissstrahl - disable all other inactive blips
+		for (int i = 0; i < COOP_RADAR_MAX_BLIPS; i++) {
+			player->coopPlayer.radarBlipActive[i] = false;
+		}
+
+		//hzm coop mod chrissstrahl - reset objectives, so they may also work in singleplayer
+		coop_objectivesSetup(player);
+
+		//[b60014] chrissstrahl - fix class not applaying on local server because lastTimeChangedClass and lastTimeAppliedClass are both 999 at start
+		player->coopPlayer.lastTimeChangedClass = (player->coopPlayer.timeEntered - 42);
+
+		//[b60011] chrissstrahl 
+		coopChallenges.playerEnteredWarning(player);
 	}
 
-	gi.Printf("COOPDEBUG coop_playerSetupCoop\n");
-	if (multiplayerManager.inMultiplayer()) {
-		multiplayerManager.HUDPrint(player->entnum,"COOPDEBUG coop_playerSetupCoop\n");
-	}
-
-	//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMap title %s" , level.mapname.c_str() ) ); //[b60012] chrissstrahl - fix missing .c_str()
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesSkillValue title %s" , coop_returnStringSkillname(skill->integer).c_str() ) );
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname(skill->integer).c_str() ));
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoMvSpd title %d" , game.coop_maxspeed ) );
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoRspwt title %d" , game.coop_respawnTime ) );
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoLms title %d" , game.coop_lastmanstanding ) );
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoAw title %d" , (int)game.coop_awardsActive ) );
-
-	//[b607] chrissstrahl - deadbodies option
-	//[b607] chrissstrahl - teamicon option
-	DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoDb title %d", game.coop_deadBodiesPerArea));
-	DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoCh title %d",(short)coopChallenges.iCurrentChallenge));
-	DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSt title %d",(int)game.coop_stasisTime));
-
-	//[b607] chrissstrahl - airaccelerate option
-	int iAccel;
-	if (world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE) != -1.0f) {
-		iAccel = (int)world->getPhysicsVar(WORLD_PHYSICS_AIRACCELERATE);
-	}
-	else {
-		iAccel = (int)sv_airaccelerate->value;
-	}
-	DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAa title %d", iAccel));
-
-	str sFF = va( "%f" , game.coop_friendlyFire );
-	coop_manipulateStringFromWithLength( sFF , 0 , 4 );
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoFF title %s" , sFF.c_str() ) );
-	
-	//hzm coop mod chrissstrahl - disable all other inactive blips
-	for ( int i = 0; i < COOP_RADAR_MAX_BLIPS; i++ ){
-		player->coopPlayer.radarBlipActive[i] = false;
-	}
-
-	//hzm coop mod chrissstrahl - reset objectives, so they may also work in singleplayer
-	coop_objectivesSetup( player );
-	
-	if ( g_gametype->integer == GT_SINGLE_PLAYER ){
-		player->coopPlayer.setupComplete = true;
-		return;
-	}
-	
 	player->coopPlayer.setupComplete = true;
 
-	//[b60014] chrissstrahl - fix class not applaying on local server because lastTimeChangedClass and lastTimeAppliedClass are both 999 at start
-	player->coopPlayer.lastTimeChangedClass = (player->coopPlayer.timeEntered - 42);
-	
-	//[b60011] chrissstrahl - setupComplete needs to be true for this to work
-	coop_classSet( player , "current" );
-
-	//[b60011] chrissstrahl 
-	coopChallenges.playerEnteredWarning(player);
+	if (game.coop_isActive) {
+		//[b60011] chrissstrahl - setupComplete needs to be true for this to work
+		coop_classSet(player, "current");
+	}
 }
 
 
