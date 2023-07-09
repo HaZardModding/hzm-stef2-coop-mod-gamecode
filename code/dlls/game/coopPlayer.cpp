@@ -1827,12 +1827,12 @@ bool coop_playerMakeSolidASAPThink(Player* player)
 			player->_makeSolidASAP = true;
 			return false;
 		}
-		if ( g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager._playerData[player->entnum]._spectator ) {
+		if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() && !multiplayerManager._playerData[player->entnum]._spectator ) {
 			player->setSolidType( SOLID_BBOX );
 		}
 		player->_makeSolidASAP = false;
 	}
-	return true;//[b60011] chrissstrahl - moved
+	return true;
 }
 
 //================================================================
@@ -1996,6 +1996,8 @@ void coop_playerThink( Player *player )
 	if ( !player ){
 		return;
 	}
+
+
 	coop_playerMakeSolidASAPThink( player );
 	coop_playerPlaceableThink(player);
 
@@ -2032,8 +2034,8 @@ void coop_playerThink( Player *player )
 	//we don't want players to go to spectator and come back again, no no no, play fair
 	//this code needs work!
 	if ( !multiplayerManager.isPlayerSpectator( player ) ){
+		//make sure that the player does not respawn inside a door, this would be bad
 
-		//hzm coop mod chrissstrahl - make sure that the player does not respawn inside a door, this would be bad
 		if ( ( player->coopPlayer.lastTimeSpawned + 1 ) > level.time ) {
 			if ( coop_checkEntityInsideDoor( ( Entity * )player ) ) {
 				player->coopPlayer.respawnAtRespawnpoint = true;
