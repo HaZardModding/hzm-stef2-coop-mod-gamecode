@@ -826,9 +826,9 @@ void coop_playerSetupClient(Player* player)
 	}
 
 	gi.Printf("COOPDEBUG coop_playerSetupClient VSTR\n");
-	if (multiplayerManager.inMultiplayer()) {
-		multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupClient\n");
-	}
+	//if (multiplayerManager.inMultiplayer()) {
+		//multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupClient\n");
+	//}
 
 	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
 	//[b60012] chrissstrahl - fixed missing letter c
@@ -921,7 +921,7 @@ void coop_playerGenerateNewPlayerId(Player* player)
 	//even if two players join at the same instance
 	player->coopPlayer.coopId = sPlayerId.c_str();
 
-	gi.SendServerCommand(player->edict - g_entities, va("stufftext  \"seta coop_cId coopcid %s\"\n", sPlayerId.c_str()));
+	gi.SendServerCommand(player->entnum, va("stufftext \"seta coop_cId 0;set coop_cId coopcid %s\"\n", sPlayerId.c_str()));
 
 	gi.Printf("coop_playerGenerateNewPlayerId-> you got a new id by server\n");
 	if (multiplayerManager.inMultiplayer()) {
@@ -999,9 +999,9 @@ void coop_playerSetupCoop( Player *player )
 	//because the command can and will be executed even if there is no coop
 	if (game.coop_isActive) {
 		gi.Printf("COOPDEBUG coop_playerSetupCoop\n");
-		if (multiplayerManager.inMultiplayer()) {
-			multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupCoop\n");
-		}
+		//if (multiplayerManager.inMultiplayer()) {
+			//multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupCoop\n");
+		//}
 
 		//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
 		DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str())); //[b60012] chrissstrahl - fix missing .c_str()
