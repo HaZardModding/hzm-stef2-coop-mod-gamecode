@@ -40,7 +40,8 @@
 // Class:       -
 //              
 // Description: Checks and applies the selected class upon player if it should
-//              
+//              SHALL NOT BE USED IN [SINGLEPLAYER]
+// 
 // Parameters:  Player *player
 //              
 // Returns:     void
@@ -70,11 +71,12 @@ void coop_classCheckApplay( Player *player )
 void coop_classCeckUpdateStat( Player *player )
 {
 	if ( game.coop_classInfoSendAt > player->coopPlayer.lastTimeUpdatedClassStat ){
-		if ( player->coop_getInstalled() ) {
+		if ( player->coop_getInstalled() && player->coopPlayer.setupComplete) {
 			player->coopPlayer.lastTimeUpdatedClassStat = game.coop_classInfoSendAt;
 			gi.Printf(va("COOPDEBUG coop_classCeckUpdateStat sending to %s\n", player->client->pers.netname));
-			//[b60014] chrissstrahl - fused multiple commands to one data burst
-			DelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i" ,coop_classPlayersOfClass( "HeavyWeapon" ),coop_classPlayersOfClass( "Technician" ),coop_classPlayersOfClass( "Medic" )));
+			
+			//[b60014] chrissstrahl - fused multiple commands to one data burs
+			DelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i\n" ,coop_classPlayersOfClass( "HeavyWeapon" ),coop_classPlayersOfClass( "Technician" ),coop_classPlayersOfClass( "Medic" )));
 		}
 	}
 }
@@ -229,6 +231,7 @@ void coop_classNotifyOfInjured( Player *player )
 // Class:       -
 //              
 // Description: Sets the player class
+//              SHALL NOT BE USED IN [SINGLEPLAYER]
 //              
 // Parameters:  Player *player , str classToSet, bool setup
 //              
@@ -657,7 +660,7 @@ int coop_classPlayersOfClass(str className)
 		return -1;
 
 	//[b60014] chrissstrahl - return default value if not in multiplayer or coop
-	if (!multiplayerManager.inMultiplayer() || game.coop_isActive) {
+	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive) {
 		return 0;
 	}
 
