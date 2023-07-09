@@ -2010,12 +2010,11 @@ void coop_playerThink( Player *player )
 	}
 
 	//[b60011] chrissstrahl - put the code in dedicated functions
-	coop_checkDoesPlayerHaveCoopMod(player);
-	coop_checkDoesPlayerHaveCoopId(player);
+	coop_checkPlayerHasCoop(player);
+	coop_checkPlayerHasCoopId(player);
 
 	//[b607] chrissstrahl - moved here to prevent players staying solid in regular Multimatch
-	//hzm coop mod chrissstrahl - exit here if this is not coop
-	if (!game.coop_isActive) { //GT_SINGLE_PLAYER - see above
+	if (!game.coop_isActive || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
 		return;
 	}
 

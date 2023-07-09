@@ -205,7 +205,7 @@ bool coop_checkEntityInsideDoor( Entity *entity1 )
 // Returns:     void
 //              
 //================================================================
-void coop_checkDoesPlayerHaveCoopMod( Player *player )
+void coop_checkPlayerHasCoop( Player *player )
 {
 	//if player has coop or if there was a sufficent ammount of time passed
 	if (player->coop_getInstalled() || player->coopPlayer.setupTries == 12) {
@@ -247,7 +247,7 @@ void coop_checkDoesPlayerHaveCoopMod( Player *player )
 // Returns:     void
 //              
 //================================================================
-void coop_checkDoesPlayerHaveCoopId(Player* player)
+void coop_checkPlayerHasCoopId(Player* player)
 {
 	#define COOP_MAX_ID_CHECK_TRIES 15
 
