@@ -323,7 +323,8 @@ void coop_objectivesUpdatePlayer( Player* player )
 	if ( !player || level.mission_failed )
 		return;
 
-	if ( player->coopPlayer.setupComplete ){
+	//[b60014] chrissstrahl - singleplayer or when ready in mp/coop
+	if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() && player->coopPlayer.setupComplete ){
 		//if (player->coopPlayer.lastTimeUpdatedObjectives != game.coop_objectiveLastUpdate && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
 			//player->coopPlayer.lastTimeUpdatedObjectives = game.coop_objectiveLastUpdate;
 		if (player->coopPlayer.objectivesCycle != game.coop_objectiveCycle && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
@@ -703,18 +704,6 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 	if ( iObjectiveItem < 9){
 		sVariableName = "coop_string_objectiveItem";
 		sVariableName += iObjectiveItem;
-
-		//if ( iObjectiveItem == 1 && iObjectiveState == 1 && player->coop_getInstalled() == 1 || g_gametype->integer == GT_SINGLE_PLAYER ){
-			//str sStory = game.coop_story;
-			//if ( coop_checkPlayerLanguageGerman(player) ){
-				//if ( game.coop_story_deu.length() > 0){
-					//sStory = game.coop_story_deu;
-				//}else{
-					//gi.Printf( "WARNING: No German Backgroundstory set in uservar3 of $world OR in script: coop_string_story\n" );
-				//}
-			//}
-			//DelayedServerCommand( player->entnum , va( "set coop_story %s" , sStory.c_str() ) );
-		//}
 
 		if ( coop_checkPlayerLanguageGerman(player) && game.isStandardLevel == false ){
 			str sTempVar , sTempVar2;
