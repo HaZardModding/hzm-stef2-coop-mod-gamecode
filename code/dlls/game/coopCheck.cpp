@@ -195,7 +195,7 @@ bool coop_checkEntityInsideDoor( Entity *entity1 )
 }
 
 //================================================================
-// Name:        coop_checkDoesPlayerHaveCoopMod
+// Name:        coop_checkPlayerHasCoop
 // Class:       -
 //              
 // Description:  checks if the given player does have the coop mod installed or not
@@ -209,13 +209,6 @@ void coop_checkPlayerHasCoop( Player *player )
 {
 	//if player has coop or if there was a sufficent ammount of time passed
 	if (player->coop_getInstalled() || player->coopPlayer.setupTries == 12) {
-		return;
-	}
-
-	//if in singleplayer or botmatch, player does ofcourse have the coop mod
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
-		player->coop_setInstalled(true);
-		coop_playerSetupCoop(player);
 		return;
 	}
 
@@ -237,7 +230,7 @@ void coop_checkPlayerHasCoop( Player *player )
 }
 
 //================================================================
-// Name:        coop_checkDoesPlayerHaveCoopId
+// Name:        coop_checkPlayerHasCoopId
 // Class:       -
 //              
 // Description:  checks if the given player does have a coop mod id
