@@ -29,7 +29,7 @@ extern CoopSpawnlocation coopSpawnlocation;
 qboolean G_coopClientId(const gentity_t* ent)
 {
 	if (!ent || !ent->inuse || !ent->client || g_gametype->integer == GT_SINGLE_PLAYER)
-		return qfalse;
+		return qtrue;
 
 	Player* player = (Player*)ent->entity;
 
@@ -39,21 +39,19 @@ qboolean G_coopClientId(const gentity_t* ent)
 	str sClientId;
 	if (!sId.length()) {
 		//[b60012] chrissstrahl - have a printout
-		player->hudPrint("coop_cId - Bad or Empty: Rejected!\n");
 		gi.Printf(va("coop_cId - Bad or Empty: Rejected! For: %s\n",player->client->pers.netname));
 		return qtrue;
 	}
 
 	if ((player->coopPlayer.timeEntered + 10) > level.time) {
 		sClientId = coop_returnStringTrim(sId, " \t\r\n;[]=");
-		player->hudPrint(va("COOPDEBUG coop_cId - received: %s\n", sClientId.c_str()));
 		gi.Printf(va("COOPDEBUG coop_cId - received: %s\n", player->client->pers.netname));
 		str sClientIdNew = coop_checkPlayerCoopIdExistInIni(player, sClientId);
 		if (sClientIdNew != sClientId.c_str()) {
 			gi.Printf(va("COOPDEBUG coop_cId - NO MATCH: %s vs %s for %s\n", sClientId.c_str(), sClientIdNew.c_str(), player->client->pers.netname));
 		}
 		else {
-			gi.Printf(va("COOPDEBUG coop_cId - MATCH for: \n", player->client->pers.netname));
+			gi.Printf(va("COOPDEBUG coop_cId - MATCH for: %s\n", player->client->pers.netname));
 		}
 	}
 	else {
@@ -87,7 +85,7 @@ qboolean G_coopCom_block(const gentity_t* ent)
 
 
 	//coop only command
-	if (!game.coop_isActive) {
+	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
 		return true;
 	}
@@ -242,7 +240,7 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 	}
 
 	//coop only command
-	if (!game.coop_isActive) {
+	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
 		return true;
 	}
