@@ -207,8 +207,18 @@ bool coop_checkEntityInsideDoor( Entity *entity1 )
 //================================================================
 void coop_checkPlayerHasCoop( Player *player )
 {
+	constexpr auto COOP_MAX_MOD_CHECK_TRIES = 15;
+
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (player->coop_getInstalled() || player->coopPlayer.setupTries == 12) {
+	if (player->coop_getInstalled() || player->coopPlayer.setupTries >= COOP_MAX_MOD_CHECK_TRIES) {
+		return;
+	}
+
+	//[b60014] chrissstrahl - don't handle bots
+	if (player->coop_isBot()) {
+		player->coop_setInstalled(false);
+		player->coopPlayer.setupComplete = true;
+		player->coopPlayer.setupTries = (COOP_MAX_MOD_CHECK_TRIES + 1);
 		return;
 	}
 
@@ -216,13 +226,13 @@ void coop_checkPlayerHasCoop( Player *player )
 	//have some time delay and also make sure the player is even able to process any commands
 	if (player->coop_getInstalledCheckTime() < level.time) {
 		player->coop_setInstalledCheckTime(level.time + 0.25f);
-		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 96) { //[b60014] chrissstrahl - changed from 32 to 96
 			player->coopPlayer.setupTries++;
 		}
 	}
 
 	//player does not have coop mod - give up at this point
-	if (player->coopPlayer.setupTries == 11 || player->coop_isBot()) {
+	if (player->coopPlayer.setupTries == COOP_MAX_MOD_CHECK_TRIES ) {
 		coop_playerSetupNoncoop(player);
 		player->coopPlayer.setupTries++;
 		return;
@@ -245,22 +255,27 @@ void coop_checkPlayerHasCoopId(Player* player)
 	constexpr auto COOP_MAX_ID_CHECK_TRIES = 15;
 
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (g_gametype->integer == GT_SINGLE_PLAYER || player->coopPlayer.setupTriesCid == (COOP_MAX_ID_CHECK_TRIES + 1) || player->coopPlayer.coopId.length()) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || player->coopPlayer.setupTriesCid >= COOP_MAX_ID_CHECK_TRIES || player->coopPlayer.coopId.length()) {
+		return;
+	}
+
+	//[b60014] chrissstrahl - don't handle bots
+	if (player->coop_isBot()) {
+		player->coopPlayer.coopId = 0;
+		player->coopPlayer.setupTriesCid = (COOP_MAX_ID_CHECK_TRIES + 1);
 		return;
 	}
 
 	//have some time delay and also make sure the player is even able to process any commands
 	if (player->coopPlayer.setupTriesCidCheckTime < level.time) {
 		player->coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
-		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
+		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 96) { //[b60014] chrissstrahl - chnaged from 32 to 96
 			player->coopPlayer.setupTriesCid++;
-			//gi.Printf(va("COOPDEBUG coop_checkPlayerHasCoopId %s checkNum: %d\n", player->client->pers.netname, player->coopPlayer.setupTriesCid));
 		}
 	}
 	//player does not have coop mod - give up at this point
 	if (player->coopPlayer.setupTriesCid == COOP_MAX_ID_CHECK_TRIES) {
 		player->coopPlayer.setupTriesCid++;
-		gi.Printf(va("COOPDEBUG coop_checkPlayerHasCoopId %s failed: %d\n", player->client->pers.netname, player->coopPlayer.setupTriesCid));
 		coop_playerSaveNewPlayerId(player);
 		return;
 	}
