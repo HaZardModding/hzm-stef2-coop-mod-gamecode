@@ -75,6 +75,16 @@ qboolean G_coopClientId(const gentity_t* ent)
 qboolean G_coopCom_block(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+	//[b60014] chrissstrahl - print info
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+		return true;
+	}
+
+	//[b60014] chrissstrahl - deny request during cinematic and in spec
+	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
 
 	//[b60014] chrissstrahl - prevent spamming
 	//deny usage of command if player executed command to quickly
@@ -84,16 +94,6 @@ qboolean G_coopCom_block(const gentity_t* ent)
 	player->entityVars.SetVariable("!block", level.time);
 
 
-	//coop only command
-	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive) {
-		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
-		return true;
-	}
-
-	//deny request during cinematic and in spec
-	if (sv_cinematic->integer || multiplayerManager.isPlayerSpectator(player)) {
-		return true;
-	}
 
 	//[b60011] chrissstrahl - set a cooldown time for !block
 	if (player->coopPlayer.cmdBlockCooldownTime > (level.time + 9)) {
@@ -141,8 +141,8 @@ qboolean G_coopCom_block(const gentity_t* ent)
 qboolean G_coopCom_class(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	//[b60014] chrissstrahl - coop only command
-	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive){	
+	//[b60014] chrissstrahl - print info
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
 		return true;
 	}
@@ -229,19 +229,15 @@ qboolean G_coopCom_class(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_drop(const gentity_t* ent)
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || sv_cinematic->integer){
-		return true;
-	}
-
 	Player* player = (Player*)ent->entity;
-
-	if (multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+	//[b60014] chrissstrahl - print info
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
 		return true;
 	}
 
-	//coop only command
-	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive) {
-		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+	//[b60014] chrissstrahl - deny request during cinematic and in spec
+	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
 
@@ -329,11 +325,18 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_help(const gentity_t* ent)
 {
+	Player* player = (Player*)ent->entity;
+	//[b60014] chrissstrahl - print info
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
 		return true;
 	}
 
-	Player* player = (Player*)ent->entity;
+	//[b60014] chrissstrahl - deny request during cinematic and in spec
+	if (sv_cinematic->integer) {
+		player->hudPrint(COOP_TEXT_NOT_POSSIBLE_DURING_CINEMATIC);
+		return true;
+	}
 
 	//[b60014] chrissstrahl - prevent spamming
 	//deny usage of command if player executed command to quickly
@@ -442,7 +445,15 @@ qboolean G_coopCom_help(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_follow(const gentity_t* ent)
 {
+	Player* player = (Player*)ent->entity;
+	//[b60014] chrissstrahl - print info
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+		return true;
+	}
+
+	//[b60014] chrissstrahl - deny request during cinematic and in spec
+	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
 
@@ -510,10 +521,17 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_leader(const gentity_t* ent)
 {
+	Player* player = (Player*)ent->entity;
+	//[b60014] chrissstrahl - print info
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
 		return true;
 	}
-	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - deny request during cinematic and in spec
+	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
+		return true;
+	}
 
 	//[b60014] chrissstrahl - add spam protection
 	//deny usage of command if player executed command to quickly
@@ -540,14 +558,27 @@ qboolean G_coopCom_leader(const gentity_t* ent)
 qboolean G_coopCom_info(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
+	//[b60014] chrissstrahl - print info
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+		return true;
+	}
+	
+	//[b60014] chrissstrahl - deny request
+	if (gi.GetNumFreeReliableServerCommands(player->entnum) < 48 ||
+		multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)){
+		return true;
+	}
+
+	//[b60014] chrissstrahl - deny request during cinematic and in spec
+	if (sv_cinematic->integer) {
+		player->hudPrint(COOP_TEXT_NOT_POSSIBLE_DURING_CINEMATIC);
+		return true;
+	}
+	
 	//[b60014] chrissstrahl - add spam protection
 	//deny usage of command if player executed command to quickly
-	if (	gi.GetNumFreeReliableServerCommands(player->entnum) < 32 ||
-			g_gametype->integer == GT_SINGLE_PLAYER ||
-			!multiplayerManager.inMultiplayer() ||
-			(coop_returnEntityFloatVar((Entity*)player, "!info") + 10) > level.time	)
-	{
+	if ((coop_returnEntityFloatVar((Entity*)player, "!info") + 10) > level.time) {
 		return true;
 	}
 	
@@ -652,7 +683,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_kickbots(const gentity_t* ent)
 {
-	if (g_gametype->integer == GT_MULTIPLAYER) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
 		return true;
 	}
 
