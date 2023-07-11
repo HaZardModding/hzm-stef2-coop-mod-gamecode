@@ -1131,13 +1131,6 @@ bool coop_playerSay( Player *player , str sayString)
 	}
 	sayString = sayString.tolower();
 
-	//[b60011] gameupdate add ! as command start inside say strings
-	if (sayString[0] == '!') {
-		//send back to client and client console will decide if it wants to send it again without say infront of it
-		gi.SendServerCommand(player->entnum, va("stufftext \"%s \"\n", sayString.c_str()));
-		return true;
-	}
-
 	//[b60011] chrissstrahl - clientid backwardscompatibility - supress text
 	if (Q_stricmpn(sayString.c_str(), "cid.", 4) == 0) {
 		return true;
@@ -1156,7 +1149,7 @@ bool coop_playerSay( Player *player , str sayString)
 	}
 
 	//hzm gameupdate chrissstrahl - detect player cl_maxpackets
-	if (player->checkingClMaxPackets) {		
+	if (player->checkingClMaxPackets) {
 		int iClMaxPack = atoi(sayString.c_str());
 		if (iClMaxPack >= 15) {
 			if (iClMaxPack < 60) {
