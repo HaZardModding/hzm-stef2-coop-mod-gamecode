@@ -1205,9 +1205,9 @@ void coop_serverCoop()
 		str sLibrarayName = "gamex86.dll";
 	#endif
 
-	gi.Printf( va( "==== HaZardModding Coop Mod %s %i ====\n" , sLibrarayName.c_str(), COOP_BUILD) );
+	gi.Printf( va( "=============================================\n=== HaZardModding Coop Mod %i\n=== %s build %s @ %s\n=============================================\n", COOP_BUILD, sLibrarayName.c_str(), __DATE__, __TIME__) );
 	if ( game.isCoopIncludedLevel  ) {
-		gi.Printf( va( "==== %s is included in this coop build! ====\n" , level.mapname.c_str() ) );
+		gi.Printf( va( "=== %s is included in this build!\n=============================================\n" , level.mapname.c_str() ) );
 	}
 
 	//hzm coop mod chrissstrahl - NO MORE - Gallifrey Falls No More
