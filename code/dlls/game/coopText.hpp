@@ -49,6 +49,7 @@
 #define COOP_TEXT_WEAPON_WAS_DROPPED_DEU "^5Ihre Waffe wurde ablegt.\n"
 #define COOP_TEXT_WEAPON_WAS_DROPPED_ENG "^5Your Weapon was dropped.\n"
 
+#define COOP_TEXT_NOT_POSSIBLE_DURING_CINEMATIC "^3Not possible during cinematic sequence.\n"
 #define COOP_TEXT_COOP_COMMAND_ONLY "^3This command is only usable during Coop.\n"
 #define COOP_TEXT_LOGIN_NEEDLOGINASADMIN "^3You need to !login as Coop Admin to use this command.\n"
 
