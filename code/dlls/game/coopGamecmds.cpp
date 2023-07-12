@@ -39,24 +39,17 @@ qboolean G_coopClientId(const gentity_t* ent)
 	str sClientId;
 	if (!sId.length()) {
 		//[b60012] chrissstrahl - have a printout
-		gi.Printf(va("coop_cId - Bad or Empty: Rejected! For: %s\n",player->client->pers.netname));
+		gi.Printf(va("COOPDEBUG: coop_cId - Bad or Empty: Rejected! For: %s\n",player->client->pers.netname));
 		return qtrue;
 	}
 
 	if ((player->coopPlayer.timeEntered + 10) > level.time) {
 		sClientId = coop_returnStringTrim(sId, " \t\r\n;[]=");
-		gi.Printf(va("COOPDEBUG coop_cId - received: %s\n", player->client->pers.netname));
 		str sClientIdNew = coop_checkPlayerCoopIdExistInIni(player, sClientId);
-		if (sClientIdNew != sClientId.c_str()) {
-			gi.Printf(va("COOPDEBUG coop_cId - NO MATCH: %s vs %s for %s\n", sClientId.c_str(), sClientIdNew.c_str(), player->client->pers.netname));
-		}
-		else {
-			gi.Printf(va("COOPDEBUG coop_cId - MATCH for: %s\n", player->client->pers.netname));
-		}
 	}
 	else {
-		player->hudPrint("coop_cId - Timed Out: Rejected!\n");
-		gi.Printf(va("coop_cId - Timed Out: Rejected! For: %s\n", player->client->pers.netname));
+		player->hudPrint("COOPDEBUG: coop_cId - Timed Out: Rejected!\n");
+		gi.Printf(va("COOPDEBUG: coop_cId - Timed Out: Rejected! For: %s\n", player->client->pers.netname));
 	}
 	return qtrue;
 }
@@ -211,8 +204,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 	//hzm coop mod chrissstrahl - set new class on player
 	coop_classSet(player, classSelected);
 	coop_classApplayAttributes(player, true);
-
-	gi.Printf(va("COOPDEBUG G_coopCom_class changed class for %s to %s\n", player->client->pers.netname, classSelected.c_str()));
+	
 	return true;
 }
 
@@ -230,6 +222,14 @@ qboolean G_coopCom_class(const gentity_t* ent)
 qboolean G_coopCom_drop(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - prevent spamming
+	//deny usage of command if player executed command to quickly
+	if ((coop_returnEntityFloatVar((Entity*)player, "!drop") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!drop", level.time);
+
 	//[b60014] chrissstrahl - print info
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
@@ -240,13 +240,6 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
-
-	//[b60014] chrissstrahl - prevent spamming
-	//deny usage of command if player executed command to quickly
-	if ((coop_returnEntityFloatVar((Entity*)player, "!drop") + 3) > level.time) {
-		return true;
-	}
-	player->entityVars.SetVariable("!drop", level.time);
 
 	int i;
 	for (i = 0; i < MAX_ACTIVE_WEAPONS; i++)
@@ -326,6 +319,13 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 qboolean G_coopCom_help(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+	//[b60014] chrissstrahl - prevent spamming
+	//deny usage of command if player executed command to quickly
+	if ((coop_returnEntityFloatVar((Entity*)player, "!help") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!help", level.time);
+
 	//[b60014] chrissstrahl - print info
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
@@ -337,13 +337,6 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		player->hudPrint(COOP_TEXT_NOT_POSSIBLE_DURING_CINEMATIC);
 		return true;
 	}
-
-	//[b60014] chrissstrahl - prevent spamming
-	//deny usage of command if player executed command to quickly
-	if ((coop_returnEntityFloatVar((Entity*)player, "!help") + 3) > level.time) {
-		return true;
-	}
-	player->entityVars.SetVariable("!help", level.time);
 
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) < 32)
 		return true;
@@ -446,6 +439,12 @@ qboolean G_coopCom_help(const gentity_t* ent)
 qboolean G_coopCom_follow(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+	//deny usage of command if player executed command to quickly
+	if ((coop_returnEntityFloatVar((Entity*)player, "!follow") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!follow", level.time);
+
 	//[b60014] chrissstrahl - print info
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
@@ -456,14 +455,6 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
-
-	Player* player = (Player*)ent->entity;
-	//deny usage of command if player executed command to quickly
-	if ((coop_returnEntityFloatVar((Entity*)player, "!follow") + 3) > level.time ) {
-		return true;
-	}
-
-	player->entityVars.SetVariable("!follow", level.time);
 
 	//remember if player using command is currently shown on radar (as missionobjective blip)
 	bool bDisable = (bool)ent->entity->edict->s.missionObjective;
@@ -522,6 +513,13 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 qboolean G_coopCom_leader(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+	//[b60014] chrissstrahl - add spam protection
+	//deny usage of command if player executed command to quickly
+	if ((coop_returnEntityFloatVar((Entity*)player, "!leader") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!leader", level.time);
+
 	//[b60014] chrissstrahl - print info
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
@@ -532,13 +530,6 @@ qboolean G_coopCom_leader(const gentity_t* ent)
 	if (sv_cinematic->integer || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player)) {
 		return true;
 	}
-
-	//[b60014] chrissstrahl - add spam protection
-	//deny usage of command if player executed command to quickly
-	if ((coop_returnEntityFloatVar((Entity*)player, "!leader") + 3) > level.time) {
-		return true;
-	}
-	player->entityVars.SetVariable("!leader", level.time);
 
 	multiplayerManager.callVote(player, "leader", va("%i",player->entnum));
 	return true;
@@ -558,6 +549,13 @@ qboolean G_coopCom_leader(const gentity_t* ent)
 qboolean G_coopCom_info(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
+	//[b60014] chrissstrahl - add spam protection
+	//deny usage of command if player executed command to quickly
+	if ((coop_returnEntityFloatVar((Entity*)player, "!info") + 10) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!info", level.time);
+
 	//[b60014] chrissstrahl - print info
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !game.coop_isActive) {
 		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
@@ -575,14 +573,6 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		player->hudPrint(COOP_TEXT_NOT_POSSIBLE_DURING_CINEMATIC);
 		return true;
 	}
-	
-	//[b60014] chrissstrahl - add spam protection
-	//deny usage of command if player executed command to quickly
-	if ((coop_returnEntityFloatVar((Entity*)player, "!info") + 10) > level.time) {
-		return true;
-	}
-	
-	player->entityVars.SetVariable("!info", level.time);
 
 	str s,s2;
 
@@ -1354,18 +1344,17 @@ qboolean G_coopCom_targeted(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
 
-	if (!coop_playerCheckAdmin(player)) {
-		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
-		return true;
-	}
-
 	//[b60014] chrissstrahl - add spam protection
 	//deny usage of command if player executed command to quickly
 	if ((coop_returnEntityFloatVar((Entity*)player, "!targeted") + 3) > level.time) {
-		return true;
+		return qtrue;
 	}
 	player->entityVars.SetVariable("!targeted", level.time);
 
+	if (!coop_playerCheckAdmin(player)) {
+		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
+		return qtrue;
+	}
 
 	if (player->coopPlayer.showTargetedEntity) {
 		player->coopPlayer.showTargetedEntity = false;
@@ -1375,7 +1364,7 @@ qboolean G_coopCom_targeted(const gentity_t* ent)
 		player->coopPlayer.showTargetedEntity = true;
 		player->hudPrint("^5Info^8: Show Targetnames - ^2enabled.\n");
 	}
-	return true;
+	return qtrue;
 }
 
 //================================================================
@@ -1396,17 +1385,17 @@ qboolean G_coopCom_showspawn(const gentity_t* ent)
 	//[b60014] chrissstrahl - add spam protection
 	//deny usage of command if player executed command to quickly
 	if ((coop_returnEntityFloatVar((Entity*)player, "!showspawn") + 3) > level.time) {
-		return true;
+		return qtrue;
 	}
 	player->entityVars.SetVariable("!showspawn", level.time);
 
 	if (!coop_playerCheckAdmin(player)) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
-		return true;
+		return qtrue;
 	}
 
 	ExecuteThread("globalCoop_level_showSpawn", true, (Entity*)player);
-	return true;
+	return qtrue;
 }
 
 //================================================================
@@ -1630,8 +1619,9 @@ qboolean G_coopInstalled(const gentity_t* ent)
 qboolean G_coopItem(const gentity_t* ent)
 //[b60011] chrissstrahl - allowing to place objects like mines and turrets
 {
+	return qtrue;
 	if (!ent || !ent->inuse || !ent->client)
-		return qfalse;
+		return qtrue;
 
 	Player* player = (Player*)ent->entity;
 
