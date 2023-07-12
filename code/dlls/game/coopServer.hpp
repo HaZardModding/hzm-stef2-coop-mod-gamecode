@@ -62,6 +62,8 @@ public:
 	void enforceLevelSpecificSettings();
 	void flushTikis();
 	void mapLoadEnforce();
+	void svFloodProtectDisable();
+	void svFloodProtectEnable();
 };
 
 int coop_serverConfigstringRemoveCombatSounds(str sActorname);//[b607] chrissstrahl - used to remove combatsounds for named actor

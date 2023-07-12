@@ -48,6 +48,82 @@ extern Event EV_ScriptThread_StuffCommand;
 #define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 80 to fix a game bug on this level.\n"
 #define COOP_SERVER_MASTERSERVER "master.hazardmodding.com"
 
+//========================================================[b60014]
+// Name:        svFloodProtectDisable
+// Class:       -
+//              
+// Description: Disables sv_floodprotect to receive language/id/version commands
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+// Called from:	coop_playerSetup
+//================================================================
+void CoopServer::svFloodProtectDisable()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		return;
+	}
+
+	//[b60014] chrissstrahl - allow sv_floodprotect toggeling to receive language/id/version
+	game.coop_floodprotectToggle = true;
+	
+	cvar_t* cvar = gi.cvar_get("sv_floodprotect");
+	if ((cvar ? cvar->integer : 0.0f) == 1) {
+		gi.SendConsoleCommand("set sv_floodprotect 0\n");
+		coop_parserIniSet("serverData.ini", "sv_floodprotect", "1", "server");
+	}
+}
+
+//========================================================[b60014]
+// Name:        svFloodProtectEnable
+// Class:       -
+//              
+// Description: Enables sv_floodprotect again when setup for all players is done
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+// Called from:	coop_serverThink
+//================================================================
+void CoopServer::svFloodProtectEnable()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !game.coop_floodprotectToggle) {
+		return;
+	}
+
+	if (!game.coop_isActive) {
+		//[b60014] chrissstrahl - regular multiplayer - we have to toggle floodprotect to receive some commands on player join
+		if (multiplayerManager.inMultiplayer() && game.coop_floodprotectToggle) {
+			Player* player = NULL;
+			int iPlayerTotal = 0;
+			int iPlayerDone = 0;
+			for (int i = 0; i < maxclients->integer; i++) {
+				player = (Player*)g_entities[i].entity;
+				if (player) {
+					iPlayerTotal++;
+					if (player->coopPlayer.setupComplete) {
+						iPlayerDone++;
+					}
+				}
+			}
+
+			//all players are done reenable sv_floodprotect
+			if (iPlayerDone == iPlayerTotal) {
+				game.coop_floodprotectToggle = false;
+				if (coop_parserIniGet("serverData.ini", "sv_floodprotect", "server") == "1") {
+					gi.SendConsoleCommand("set sv_floodprotect 1\n");
+				}
+			}
+		}
+	}
+}
+
+
+
+
 //================================================================
 // Name:        maploadEnforce
 // Class:       -
@@ -208,6 +284,8 @@ void CoopServer::enforceLevelSpecificSettings()
 //================================================================
 void coop_serverInizializeGameVars(void)
 {
+	//[b60014] chrissstrahl - allow sv_floodprotect toggeling to receive language/id/version
+	game.coop_floodprotectToggle = false;
 	game.coop_author = "";
 	game.coop_story = "";
 	game.coop_story_deu = "";
@@ -546,7 +624,7 @@ bool coop_serverLmsCheckFailure( void )
 		}
 	}
 
-gi.Printf("COOPDEBUG coop_serverLmsCheckFailure: all[%i] vs active[%i]\n", iAll, iActive);
+	//gi.Printf("COOPDEBUG coop_serverLmsCheckFailure: all[%i] vs active[%i]\n", iAll, iActive);
 
 	//fail mission if all are dead
 	if ( iAll > 0 && iActive == 0 )
@@ -1579,8 +1657,13 @@ void coop_serverThink( void )
 {
 	//[b60011] chrissstrahl - make sure certain settings are forced for levels that won't work right without it
 	coopServer.enforceLevelSpecificSettings();
+	
+	//[b60014] chrissstrahl - reenable sv_floodprotect after it was turned off before
+	coopServer.svFloodProtectEnable();
 
-	if (!game.coop_isActive) { return; }
+	if (!game.coop_isActive) {
+		return;
+	}
 
 	//hzm coop mod chrissstrahl - quit server if requested
 	if ( game.coop_reboot && game.coop_restartServerEarliestAt < level.time ){ 

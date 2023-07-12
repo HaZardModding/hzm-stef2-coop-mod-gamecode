@@ -126,6 +126,8 @@ class Game : public Class
 	   int			coop_stasisTime;
 //[b607] chrissstrahl - if this is true pending missionfailure event will be stoped (auto fail if sv empty)
 	   bool			coop_autoFailPending;
+//[b60014] chrissstrahl - allow sv_floodprotect toggeling to receive language/id/version
+	   bool			coop_floodprotectToggle;
 	Game() { Init(); }
 
 	void              Init( void );

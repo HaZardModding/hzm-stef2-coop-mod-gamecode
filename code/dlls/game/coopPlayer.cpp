@@ -602,15 +602,12 @@ void coop_playerRestore( Player *player )
 
 	//if it is not a mission or custom coop map do not restore
 	if (game.levelType != MAPTYPE_MISSION && game.levelType != MAPTYPE_CUSTOM) {
-		gi.Printf("COOPDEBUG coop_playerRestore MAPTYPE EXIT\n");
 		return;
 	}
 
 	str sData = coop_parserIniGet("serverData.ini", player->coopPlayer.coopId, "client");
 	//[b60012] chrissstrahl - fix missing .c_str()
-	if (!Q_stricmp(sData.c_str(), ""))
-	{
-		gi.Printf("COOPDEBUG coop_playerRestore CLIENT data empty\n");
+	if (!Q_stricmp(sData.c_str(), "")){
 		return;
 	}
 	
@@ -618,8 +615,8 @@ void coop_playerRestore( Player *player )
 	if (!gi.areSublevels(level.mapname.c_str(), coop_playerGetDataSegment(player, 8).c_str()))
 		return;
 
-	//health armor phaser plasma fed idryll timestamp
-	//100 200 200 200 200 200 1465368163
+	//health armor phaser plasma fed idryll timestamp mapname/enviroment
+	//100 200 200 200 200 200 1465368163 mapname
 
 	//trim/clean
 	coop_trimM( sData," \t\r\n" );
@@ -752,6 +749,10 @@ bool coop_playerSetup(Player* player)
 		return true;
 	}
 
+	//[b60014] chrissstrahl - temorarly disable sv_floodprotect to allow setup commands
+	//from client which are send fast in groups, floodprotect actually discards them (as it should)
+	coopServer.svFloodProtectDisable();
+
 	//needs only to be send to players that played the coop mod in singleplayer on a custom map before, so only send to players with coop mod
 	DelayedServerCommand(player->entnum, "bind TAB +objectives_score");
 	
@@ -821,11 +822,9 @@ void coop_playerSetupClient(Player* player)
 {
 	//[b60014] chrissstrahl
 	if (player->coop_isBot()) {
-		gi.Printf("COOPDEBUG coop_playerSetupClient %s BOT - abborted\n", player->client->pers.netname);
+		gi.Printf("COOPDEBUG coop_playerSetupClient %s [Is a BOT - abborted]\n", player->client->pers.netname);
 		return;
 	}
-
-	gi.Printf("COOPDEBUG coop_playerSetupClient VSTR\n");
 	//if (multiplayerManager.inMultiplayer()) {
 		//multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupClient\n");
 	//}
@@ -863,11 +862,6 @@ void coop_playerSetupClient(Player* player)
 //================================================================
 void coop_playerSetupHost(Player* player)
 {
-	gi.Printf("COOPDEBUG coop_playerSetupHost\n");
-	if (multiplayerManager.inMultiplayer()) {
-		multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupHost\n");
-	}
-
 	cvar_t* cvar = gi.cvar_get("local_language");
 	str sCvar = (cvar ? cvar->string : "Eng");
 	player->setLanguage(sCvar);
@@ -922,11 +916,6 @@ void coop_playerGenerateNewPlayerId(Player* player)
 	player->coopPlayer.coopId = sPlayerId.c_str();
 
 	gi.SendServerCommand(player->entnum, va("stufftext \"seta coop_cId 0;set coop_cId coopcid %s\"\n", sPlayerId.c_str()));
-
-	gi.Printf("coop_playerGenerateNewPlayerId-> you got a new id by server\n");
-	if (multiplayerManager.inMultiplayer()) {
-		multiplayerManager.HUDPrint(player->entnum,va("COOPDEBUG you got a new id by server: %s\n", sPlayerId.c_str()));
-	}
 }
 
 //================================================================
@@ -944,25 +933,12 @@ void coop_playerSaveNewPlayerId(Player *player)
 {
 	//[b60014] chrissstrahl - don't handle Bots
 	if (player->coop_isBot()) {
-		gi.Printf(va("COOPDEBUG coop_playerSaveNewPlayerId %s is a bot, abborting\n", player->client->pers.netname));
 		return;
 	}
 
 	//if player has no id send from his config, generate one
 	if (!player->coopPlayer.coopId.length()) {
-		gi.Printf(va("COOPDEBUG coop_playerSaveNewPlayerId %s did not send a id from cfg\n", player->client->pers.netname));
-		if (multiplayerManager.inMultiplayer()) {
-			multiplayerManager.HUDPrint(player->entnum,va("COOPDEBUG You did not send a id from cfg [coop_playerSaveNewPlayerId]\n"));
-		}
-		
 		coop_playerGenerateNewPlayerId(player);
-	}
-	else {
-		str sPrint = va("COOPDEBUG coop_playerSaveNewPlayerId: %s %s", player->coopPlayer.coopId.c_str(), player->client->pers.netname);
-		gi.Printf(va("%s\n", sPrint.c_str()));
-		if (multiplayerManager.inMultiplayer()) {
-			multiplayerManager.HUDPrint(player->entnum, va("%s\n", sPrint.c_str()));
-		}
 	}
 
 	//write id of player to server ini
@@ -998,11 +974,6 @@ void coop_playerSetupCoop( Player *player )
 	//make sure the setup # executed while coop is not active
 	//because the command can and will be executed even if there is no coop
 	if (game.coop_isActive) {
-		gi.Printf("COOPDEBUG coop_playerSetupCoop\n");
-		//if (multiplayerManager.inMultiplayer()) {
-			//multiplayerManager.HUDPrint(player->entnum, "COOPDEBUG coop_playerSetupCoop\n");
-		//}
-
 		//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
 		DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str())); //[b60012] chrissstrahl - fix missing .c_str()
 		DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
@@ -1076,11 +1047,6 @@ void coop_playerSetupNoncoop( Player *player)
 	if (player->coop_isBot()) {
 		player->coopPlayer.setupComplete = true;
 		return;
-	}
-
-	gi.Printf("COOPDEBUG coop_playerSetupNoncoop\n");
-	if (multiplayerManager.inMultiplayer()) {
-		multiplayerManager.HUDPrint(player->entnum,"COOPDEBUG coop_playerSetupNoncoop NO-COOP-MOD\n");
 	}
 
 	//hzm coop mod chrissstrahl - tell player that it would be so much better if he has the coop mod
