@@ -2429,7 +2429,7 @@ void MultiplayerManager::checkVote( void )
 			//hzm gameupdate - don't display the message if there is only 1 player on the server, and don't display message when a cinematic is skipped, it spoils the mood
 			if ( level.cinematic == false){ //[b607] chrissstrahl - removed that he message is not shown if only one player is on the server
 				multiplayerManager.HUDPrintAllClients( va("$$VotePassed$$: %s\n", _voteString.c_str()) );
-gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes, _numVoters));
+				gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes, _numVoters));
 			}
 
 			//allow vote for skipping cinematics
@@ -2471,7 +2471,7 @@ gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VotePassed$$ [%i][%i]\n", _voteYes,
 		{
 			// Vote failed - same behavior as a timeout
 			multiplayerManager.HUDPrintAllClients( "$$VoteFailed$$\n" );
-gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VoteFailed$$ [%i][%i]\n", _voteYes, _numVoters));
+			gi.Printf(va("COOPDEBUG CALLVOTE checkVote $$VoteFailed$$ [%i][%i]\n", _voteYes, _numVoters));
 		}
 		else
 		{
