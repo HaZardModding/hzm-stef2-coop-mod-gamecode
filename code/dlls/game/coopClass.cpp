@@ -68,7 +68,7 @@ void coop_classCheckApplay( Player *player )
 // Returns:     void
 //              
 //================================================================
-void coop_classCeckUpdateStat( Player *player )
+void coop_classCheckUpdateStat( Player *player )
 {
 	if ( game.coop_classInfoSendAt > player->coopPlayer.lastTimeUpdatedClassStat ){
 		if ( player->coop_getInstalled() && player->coopPlayer.setupComplete) {

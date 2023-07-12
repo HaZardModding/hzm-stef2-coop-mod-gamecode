@@ -72,7 +72,7 @@
 //#include "equipment.h"
 
 void coop_classCheckApplay( Player *player );
-void coop_classCeckUpdateStat( Player *player );
+void coop_classCheckUpdateStat( Player *player );
 void coop_classRegenerate(Player *player);
 //void coop_classNotifyOfInjured( Player *player );
 //void coop_classUpdateHealthStatFor( int iPlayerNum );

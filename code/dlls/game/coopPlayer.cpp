@@ -2037,7 +2037,7 @@ void coop_playerThink( Player *player )
 		coop_objectivesUpdatePlayer( player );
 		coop_classRegenerate( player );
 		coop_classCheckApplay( player );
-		coop_classCeckUpdateStat( player );
+		coop_classCheckUpdateStat( player );
 
 		//[b60011] chrissstrahl - handle NPC / AI Teammates
 		coopNpcTeam.playerReadyCheck(player);
