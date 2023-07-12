@@ -73,7 +73,7 @@ void coop_classCeckUpdateStat( Player *player )
 	if ( game.coop_classInfoSendAt > player->coopPlayer.lastTimeUpdatedClassStat ){
 		if ( player->coop_getInstalled() && player->coopPlayer.setupComplete) {
 			player->coopPlayer.lastTimeUpdatedClassStat = game.coop_classInfoSendAt;
-			gi.Printf(va("COOPDEBUG coop_classCeckUpdateStat sending to %s\n", player->client->pers.netname));
+			//gi.Printf(va("COOPDEBUG coop_classCheckUpdateStat sending to %s\n", player->client->pers.netname));
 			
 			//[b60014] chrissstrahl - fused multiple commands to one data burs
 			DelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i\n" ,coop_classPlayersOfClass( "HeavyWeapon" ),coop_classPlayersOfClass( "Technician" ),coop_classPlayersOfClass( "Medic" )));
@@ -240,7 +240,6 @@ void coop_classNotifyOfInjured( Player *player )
 //================================================================
 void coop_classSet( Player *player , str classToSet )
 {
-	gi.Printf(va("COOPDEBUG coop_classSet trying to set %s to %s\n", player->client->pers.netname, classToSet.c_str()));
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
 	if ( player && multiplayerManager.inMultiplayer() && game.coop_isActive )
 	{	
@@ -294,8 +293,6 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	}
 	coop_classSet( player , "current" );
 	str currentClass = player->coopPlayer.className;
-
-	gi.Printf(va("COOPDEBUG coop_classApplayAttributes applaying to %s changeOnly(%b)\n", player->client->pers.netname, changeOnly));
 
 	//hzm coop mod chrissstrahl - we do no longer attach model, class is now shown with the player name when targeted
 	//hzm coop mod chrissstrahl - remove class indicator model
