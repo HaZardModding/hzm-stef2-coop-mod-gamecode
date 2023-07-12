@@ -1071,7 +1071,7 @@ Entity* coop_returnEntityPlayerFavored( void )
 				playerFirstValid = player;
 			}
 		//see if player is NOT a spectator
-			if ( !multiplayerManager.isPlayerSpectator( ( Player * )player ) )
+			if (multiplayerManager.inMultiplayer() && !multiplayerManager.isPlayerSpectator( ( Player * )player ) )
 			{
 				if ( playerNoSpectator == NULL )
 				{
