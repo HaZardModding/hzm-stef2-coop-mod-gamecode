@@ -185,7 +185,8 @@ public:
 	str adminAuthString = "";
 	bool adminAuthStarted = false;
 	bool adminAuthWeaponsGiven = false;
-	str adminAuthWeaponsLast = "";
+	int adminAuthStringLengthLast = 0;
+	short int adminAuthAtempts = 0;
 };
 
 

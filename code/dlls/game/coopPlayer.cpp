@@ -69,69 +69,56 @@ extern int iSPRITES;
 //================================================================
 void Player::coop_playerThinkLogin()
 {
-	if (coopPlayer.adminAuthStarted && !coopPlayer.admin) {
-		str weaponName;
-		weaponhand_t hand = WEAPON_ANY;
-		
+	if (coopPlayer.adminAuthStarted && !coopPlayer.admin) {		
 		//give the mom weapons to the player - in the future we might want to upgrade this
 		if (!coopPlayer.adminAuthWeaponsGiven) {
 			coopPlayer.adminAuthWeaponsGiven = true;
-
-			SafeHolster(qtrue);
-			DelayedServerCommand(entnum,"pushmenu mom_codepanel");
-
-			for (short int i = 0; i < 16; i++) {
-				giveItem(va("models/weapons/%i.tik", i), 1);
-			}
-			
-			getActiveWeaponName(hand, weaponName);
-
-			coopPlayer.adminAuthWeaponsLast = weaponName;
+			DelayedServerCommand(entnum, "pushmenu coop_com");
+			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login Started - Please enter the code.").c_str()));
+			coopPlayer.adminAuthStringLengthLast = coopPlayer.adminAuthString.length();
 			return;
 		}
 
-		//same weapon - no change
-		getActiveWeaponName(hand, weaponName);
-		if (coopPlayer.adminAuthWeaponsLast == weaponName) {
+		//exit here if there is no new input
+		//using coopinput / G_coopInput to grab and construct input
+		if (coopPlayer.adminAuthStringLengthLast == coopPlayer.adminAuthString.length()) {
 			return;
 		}
-
-		//weapon changed, update
-		coopPlayer.adminAuthWeaponsLast = weaponName;
-
-		//if no weapon is active, we don't need to go any further than this
-		if (weaponName == "None") {
-			return;
-		}
-
-		coopPlayer.adminAuthString = va("%s%s", coopPlayer.adminAuthString.c_str(), weaponName.c_str());
-		gi.Printf(va("coopPlayer.adminAuthString: '%s'\n", coopPlayer.adminAuthString.c_str()));
+		coopPlayer.adminAuthStringLengthLast = coopPlayer.adminAuthString.length();
 
 		//the coop_admin cvar is empty, can't log in then
 		str sCvar = "";
 		cvar_t* cvar = gi.cvar_get("coop_admin");
 		if (cvar) { sCvar = cvar->string; }
-		if (!sCvar.length()) {
-			gi.SendServerCommand(entnum, "stufftext \"popmenu mom_codepanel\"");
-			hudPrint("!login - Cvar 'coop_admin' is empty, can't log in!\n");
+		if (sCvar.length() < 3) {
+			DelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Error: 'coop_admin' is empty or shorter than 3 digits - Aborting").c_str()));
+			return;
+		}
+		if (sCvar.length() > 10) {
+			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Error: 'coop_admin' is longer than 10 digits - Aborting").c_str()));
 			return;
 		}
 
 		//login succsessful
 		if (coopPlayer.adminAuthString == sCvar) {
 			coopPlayer.admin = true;
-			hudPrint("!login - Successful\n");
+			coopPlayer.adminAuthAtempts = 0;
+			coopPlayer.adminAuthStarted = false;
+			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login succsessful - Accsess granted!\n").c_str()));
 			//ePlayer.playsound( "sound/environment/computer/lcars_yes.wav" ,1);
-			gi.SendServerCommand(entnum, "stufftext \"popmenu mom_codepanel\"");
 			return;
 		}
 
 		//login failed
 		if (coopPlayer.adminAuthString.length() > 9) {
-			gi.SendServerCommand(entnum, "stufftext \"popmenu mom_codepanel\"");
-			hudPrint("!login - Failed\n");
-			//ePlayer.playsound("sound/environment/computer/access_denied.wav", 1);
-			gi.SendServerCommand(entnum, "stufftext \"popmenu mom_codepanel\"");
+			coopPlayer.adminAuthAtempts++;
+			coopPlayer.adminAuthString = "";
+			DelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login failed - Accsess denied!\n").c_str()));
+			//gi.SendServerCommand(entnum,"stufftext \"playsound sound/environment/computer/access_denied.wav\"\n");
+
+			if (coopPlayer.adminAuthAtempts > 5) {
+				gi.SendConsoleCommand(va("kick %d\n",entnum));
+			}
 			return;
 		}
 	}

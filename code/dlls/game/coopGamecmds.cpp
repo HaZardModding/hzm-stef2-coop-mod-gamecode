@@ -748,12 +748,6 @@ qboolean G_coopCom_login(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!login", level.time);
 
-	//[b60014] chrissstrahl - added printout that this feature is only working on coop maps
-	if (!game.coop_isActive) {
-		player->hudPrint("^5Login:^8 ^1Failed^8, you can only login on ^5Coop^8 Maps!\n");
-		return true;
-	}
-
 	if (coop_playerCheckAdmin(player)) {
 		player->hudPrint("^3You are already logged in - use ^2!logout^3 to log out.\n");
 		return true;
@@ -761,11 +755,6 @@ qboolean G_coopCom_login(const gentity_t* ent)
 
 	player->hudPrint("^5login started\n");
 	player->coopPlayer.adminAuthStarted = true;
-
-	//player->entityVars.SetVariable("uservar1", "mom_codepanel2");
-	//player->entityVars.SetVariable("uservar2", "coop_login");
-	////player->setStringVar("uservar3","no coop mod thread (get latest coop mod to use this)");
-	//ExecuteThread("mom_basic", true, (Entity*)player);
 	return true;
 }
 
@@ -1498,7 +1487,7 @@ qboolean G_coopInput(const gentity_t* ent)
 
 	// Get the thread name
 	if (!gi.argc())
-		return false;
+		return true;
 
 	inputData = gi.argv(1);
 
@@ -1518,6 +1507,20 @@ qboolean G_coopInput(const gentity_t* ent)
 		return false;
 
 	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - if !login is active add input to coopPlayer.adminAuthString instead
+	//also update the cvar that is shown in teh login menu of the communicator
+	if (multiplayerManager.inMultiplayer() && player->coopPlayer.adminAuthStarted) {
+		if (inputData == "clear") {
+			player->coopPlayer.adminAuthString = "";
+		}
+		else {
+			player->coopPlayer.adminAuthString = va("%s%s", player->coopPlayer.adminAuthString.c_str(), inputData.c_str());
+		}
+		
+		DelayedServerCommand(player->entnum,va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n",player->coopPlayer.adminAuthString.c_str()));
+		return true;
+	}
 
 	//limit of data that can be actually used
 	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
