@@ -2045,7 +2045,7 @@ void coop_playerThink( Player *player )
 
 	//[b60011] chrissstrahl - put the code in dedicated functions
 	coop_playerPlayerDetectCoop(player);
-	coop_checkPlayerHasCoopId(player);
+	coop_playerThinkDetectCoopId(player);
 	player->coop_playerThinkLogin();
 
 	//[b607] chrissstrahl - moved here to prevent players staying solid in regular Multimatch

@@ -252,7 +252,7 @@ void coop_playerPlayerDetectCoop( Player *player )
 // Returns:     void
 //              
 //================================================================
-void coop_checkPlayerHasCoopId(Player* player)
+void coop_playerThinkDetectCoopId(Player* player)
 {
 	constexpr auto COOP_MAX_ID_CHECK_TRIES = 15;
 
