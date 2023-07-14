@@ -70,7 +70,8 @@ void coop_classCheckApplay( Player *player )
 //================================================================
 void coop_classCheckUpdateStat( Player *player )
 {
-	if ( game.coop_classInfoSendAt > player->coopPlayer.lastTimeUpdatedClassStat ){
+	//[b60014] chrissstrahl
+	if (!multiplayerManager.inMultiplayer() && game.coop_classInfoSendAt > player->coopPlayer.lastTimeUpdatedClassStat ){
 		if ( player->coop_getInstalled() && player->coopPlayer.setupComplete) {
 			player->coopPlayer.lastTimeUpdatedClassStat = game.coop_classInfoSendAt;
 			//gi.Printf(va("COOPDEBUG coop_classCheckUpdateStat sending to %s\n", player->client->pers.netname));

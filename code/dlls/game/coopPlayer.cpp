@@ -1128,6 +1128,11 @@ void coop_playerSaveNewPlayerId(Player *player)
 //================================================================
 void coop_playerSetupCoop( Player *player )
 {
+	//[b60014] chrissstrahl
+	if (!multiplayerManager.inMultiplayer() || g_gametype->integer == GT_SINGLE_PLAYER) {
+		return;
+	}
+
 	//hzm coop mod chrissstrahl - notify game about the client state
 	//can also be used on regular deathmatch by script check
 	player->coop_setInstalled(true);
