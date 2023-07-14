@@ -12,6 +12,7 @@
 #include "coopParser.hpp"
 #include "coopScripting.hpp"
 CoopScripting coopScripting;
+extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerDataIniFilename()
 
 
 #define COOP_SCRIPTING_FILENAME_COOPMODMAIN "coop_mod/matrix/main.scr"
@@ -106,11 +107,11 @@ void CoopScripting::checkFuncCall(str sFunctioname,str parameterString[16])
 	}
 	else if (sFunctioname == "globalcoop_server_itemunlockedset_dll") {
 		str sKey = va("unlocked.%s", coop_armoryReturnWeaponName(parameterString[0]).c_str());
-		coop_parserIniSet("serverData.ini", sKey, "true", "server");
+		coop_parserIniSet(coopServer.getServerDataIniFilename(), sKey, "true", "server");
 	}
 	else if (sFunctioname == "globalcoop_server_itemlockedset_dll") {
 		str sKey = va("unlocked.%s", coop_armoryReturnWeaponName(parameterString[0]).c_str());
-		coop_parserIniSet("serverData.ini", sKey, "false", "server");
+		coop_parserIniSet(coopServer.getServerDataIniFilename(), sKey, "false", "server");
 	}
 	else if (	sFunctioname == "coop_endlevel" ||
 				sFunctioname == "globalcoop_mission_accomplished" ||

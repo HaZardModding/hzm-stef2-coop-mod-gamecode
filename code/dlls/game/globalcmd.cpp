@@ -1822,7 +1822,8 @@ void CThread::getMapByServerIp(Event* ev)
 			sServerIpEncoded += sServerIp[i];
 		}
 	}
-	if (coop_returnCvarString("username") == "Chrissstrahl") {
+	//[b60014] chrissstrahl - use cvar to allow testing on a local server
+	if (coop_returnCvarInteger("coop_dlSvLocal") == 1) {
 		winShellExecuteOpen(va("http://localhost/gameq/?data=%s&t=%i", sServerIpEncoded.c_str(), level.time));
 	}
 	else {
@@ -1967,7 +1968,7 @@ str CThread::getIniData(str sFilename,str sKeyname,str sCategoryname)
 	//prevent certain ini files to be accsessed
 	//do not allow reading/writing specific files
 	const char* forBiddenFiles[1] = {
-		"serverdata.ini",
+		"serverData_"
 		//"deathlist.ini",
 		//"maplist.ini",
 		//"vote_maplist.ini"
@@ -4802,7 +4803,8 @@ void CThread::VectorForwardEvent( Event *ev )
 	
 	if ( ev->NumArgs() != 1 )
 	{
-		ev->Error( "Usage: floatvariable = %s( vector )\n", ev->getName());
+		//[b60014] chrisstrahl - fixed bad error message
+		ev->Error( "Usage: vectorvariable = %s( vector )\n", ev->getName());
 		return ;
 	}
 	
@@ -4831,7 +4833,8 @@ void CThread::VectorLeftEvent( Event *ev )
 	
 	if ( ev->NumArgs() != 1 )
 	{
-		ev->Error( "Usage: floatvariable = %s( vector )\n", ev->getName());
+		//[b60014] chrisstrahl - fixed bad error message
+		ev->Error( "Usage: vectorvariable = %s( vector )\n", ev->getName());
 		return ;
 	}
 	
@@ -4860,7 +4863,8 @@ void CThread::VectorUpEvent( Event *ev )
 	
 	if ( ev->NumArgs() != 1 )
 	{
-		ev->Error( "Usage: floatvariable = %s( vector )\n", ev->getName());
+		//[b60014] chrisstrahl - fixed bad error message
+		ev->Error( "Usage: vectorvariable = %s( vector )\n", ev->getName());
 		return ;
 	}
 	

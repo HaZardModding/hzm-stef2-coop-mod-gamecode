@@ -22,6 +22,8 @@
 #include "interpreter.h"
 #include "program.h"
 
+extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerDataIniFilename()
+
 //================================================================
 // Name:        coop_checkPlayerLanguageGerman
 // Class:       -
@@ -312,7 +314,7 @@ str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId)
 
 	//check if it is in ini
 	//client id was provided
-	str sData = coop_parserIniGet("serverData.ini", sClientId.c_str(), "client");
+	str sData = coop_parserIniGet(coopServer.getServerDataIniFilename(), sClientId.c_str(), "client");
 	//client id is not known on the server
 	if (!sData.length()) {
 		coop_playerSaveNewPlayerId(player);		

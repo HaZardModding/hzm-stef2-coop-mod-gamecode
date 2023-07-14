@@ -27,6 +27,7 @@
 #include "worldspawn.h"
 #include "scriptmaster.h"
 #include "mp_manager.hpp"
+extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerDataIniFilename()
 
 #elif defined( CGAME_DLL )
 
@@ -2162,7 +2163,7 @@ void Event::Error( const char *fmt, ... )
 			}
 			//[b607] chrissstrahl - set errorevent key and value to serverData.ini
 			str sError = va("%s(%d): '%s' :%s", filename, info.linenumber, getName(), text);
-			coop_parserIniSet("serverData.ini", "errorevent", sError, "server");
+			coop_parserIniSet(coopServer.getServerDataIniFilename(), "errorevent", sError, "server");
 
 			EVENT_DPrintf( "%s(%d): '%s' :\n%s\n", filename, info.linenumber, getName(), text );
 		}

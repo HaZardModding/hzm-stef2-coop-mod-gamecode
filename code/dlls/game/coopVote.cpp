@@ -178,7 +178,7 @@ int coop_vote_quitserverValidate(Player* player, const str& command, const str& 
 	}
 
 	//[b60011] chrissstrahl - save changes directly to ini
-	int iDisallowQuit = coop_returnBool(coop_parserIniGet("serverData.ini", "votedisallowserverquit", "server"));
+	int iDisallowQuit = coop_returnBool(coop_parserIniGet(coopServer.getServerDataIniFilename(), "votedisallowserverquit", "server"));
 	iDisallowQuit = coop_returnIntWithinOrDefault(iDisallowQuit, 0, 1, 0);
 
 	if (iDisallowQuit) {
@@ -211,7 +211,7 @@ int coop_vote_lastmanstandingValidate(Player* player, const str &command, const 
 	if (Q_stricmp(command.c_str(), "coop_lms") != 0) {
 		return 0;
 	}
-	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet("serverData.ini", "lastmanstanding", "server"), 0, 10, (int)COOP_DEFAULT_LASTMANSTANDING);
+	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet(coopServer.getServerDataIniFilename(), "lastmanstanding", "server"), 0, 10, (int)COOP_DEFAULT_LASTMANSTANDING);
 	if (!stricmp(arg.c_str(), "")) {
 		multiplayerManager.HUDPrint(player->entnum, va("Current LMS Status: %d\nRange: 0 - 10\n", game.coop_lastmanstanding));
 		return 1;
@@ -1253,7 +1253,7 @@ bool coop_vote_quitserverSet(const str _voteString)
 	}
 
 	//[b60011] chrissstrahl - save changes directly to ini
-	int iDisallowQuit = atoi(coop_parserIniGet("serverData.ini", "votedisallowserverquit", "server"));
+	int iDisallowQuit = atoi(coop_parserIniGet(coopServer.getServerDataIniFilename(), "votedisallowserverquit", "server"));
 	iDisallowQuit = coop_returnIntWithinOrDefault(iDisallowQuit, 0, 1, 0);
 	
 	if (iDisallowQuit == 0) {
@@ -1298,7 +1298,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 	iValueNew =	coop_returnIntWithinOrDefault(iValueNew,0,10,0);
 
 	//[b60011] chrissstrahl - save changes directly to ini
-	coop_parserIniSet("serverData.ini", "lastmanstanding", (str)iValueNew, "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "lastmanstanding", (str)iValueNew, "server");
 	game.coop_lastmanstanding = iValueNew;
 
 	Player *player = NULL;
@@ -1383,7 +1383,7 @@ bool coop_vote_respawntimeSet(const str _voteString)
 	game.coop_respawnTime = atoi(sMultiplier.c_str());
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("serverData.ini", "respawntime", (int)multiplayerManager.getRespawnTime(), "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "respawntime", (int)multiplayerManager.getRespawnTime(), "server");
 
 	coop_huds_callvoteOptionChangedUI("Respawn Time", sMultiplier.c_str(), "coopGpoRspwt");
 	return true;
@@ -1420,7 +1420,7 @@ bool coop_vote_airaccelerateSet(const str _voteString)
 	world->setPhysicsVar("airAccelerate", (float)iVal);
 
 	//save changes directly to ini
-	coop_parserIniSet("serverData.ini", "airaccelerate", iVal , "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "airaccelerate", iVal , "server");
 
 	//update callvote ui
 	coop_huds_callvoteOptionChangedUI("airaccelerate", sMultiplier.c_str(), "coopGpoAa");
@@ -1462,7 +1462,7 @@ bool coop_vote_stasistimeSet(const str _voteString)
 		game.coop_stasisTime = 30;
 	}
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("serverData.ini", "stasistime", game.coop_stasisTime, "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "stasistime", game.coop_stasisTime, "server");
 
 	//update callvote ui
 	coop_huds_callvoteOptionChangedUI("Stasis Time", sMultiplier.c_str(), "coopGpoSt");
@@ -1504,7 +1504,7 @@ bool coop_vote_awardsSet(const str _voteString)
 	gameVars.SetVariable("awards", game.coop_awardsActive); //[b607] chrissstrahl - fixed wrong var being used
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("serverData.ini", "awards", sValue, "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "awards", sValue, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Awards", sValue.c_str(), "coopGpoAw");
@@ -1544,7 +1544,7 @@ bool coop_vote_friendlyfireSet(const str _voteString)
 	gameVars.SetVariable("friendlyFire", game.coop_friendlyFire);
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("serverData.ini", "friendlyFire", sMultiplier, "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "friendlyFire", sMultiplier, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Friendly Fire", sMultiplier.c_str(), "coopGpoFF");
@@ -1588,7 +1588,7 @@ bool coop_vote_maxspeedSet(const str _voteString)
 	gameVars.SetVariable("maxSpeed", game.coop_maxspeed);
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
-	coop_parserIniSet("serverData.ini", "maxSpeed", game.coop_maxspeed, "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "maxSpeed", game.coop_maxspeed, "server");
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Max Speed", speed.c_str(), "coopGpoMvSpd");
@@ -1625,7 +1625,7 @@ bool coop_vote_challengeSet(const str _voteString)
 
 	//hzm coop mod chrissstrahl - save changes directly to ini
 	sChallenge = (short)atoi(sChallenge);
-	coop_parserIniSet("serverData.ini", "challenge", sChallenge.c_str(), "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "challenge", sChallenge.c_str(), "server");
 
 	//hzm coop mod chrissstrahl - set global var
 	coopChallenges.iCurrentChallenge = (bool)atoi(sChallenge);
@@ -1665,7 +1665,7 @@ bool coop_vote_deadbodiesSet(const str _voteString)
 
 	//save to ini
 	icon = atoi(icon);
-	coop_parserIniSet("serverData.ini", "deadbodies", icon.c_str(), "server");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "deadbodies", icon.c_str(), "server");
 
 	//set to glkobal var
 	game.coop_deadBodiesPerArea = atoi(icon);

@@ -18,6 +18,7 @@
 #include "_pch_cpp.h"
 #include "lexer.h"
 #include "coopParser.hpp"
+extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerDataIniFilename()
 
 // longer symbols must be before a shorter partial match
 static const char *pr_punctuation[] =
@@ -528,7 +529,7 @@ void Lexer::ParseError( const char *error, ... )
 	if (!bErrorSourceSet) {
 		bErrorSourceSet = true;		
 		str sError = va("%s(%i) : %s", program.s_file.c_str(), source_line, string);
-		coop_parserIniSet("serverData.ini", "errorscript", sError, "server");
+		coop_parserIniSet(coopServer.getServerDataIniFilename(), "errorscript", sError, "server");
 	}
 	throw "Error";
 }
