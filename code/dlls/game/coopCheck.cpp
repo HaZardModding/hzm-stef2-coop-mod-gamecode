@@ -207,7 +207,7 @@ bool coop_checkEntityInsideDoor( Entity *entity1 )
 // Returns:     void
 //              
 //================================================================
-void coop_playerPlayerDetectCoop( Player *player )
+void coop_playerThinkDetectCoop( Player *player )
 {
 	constexpr auto COOP_MAX_MOD_CHECK_TRIES = 15;
 
