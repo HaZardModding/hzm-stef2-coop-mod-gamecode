@@ -200,6 +200,7 @@ class Player : public Sentient
 		void				coop_setInstalledVersion(int iVer);
 		int					coop_getInstalledCheckTime();
 		void				coop_setInstalledCheckTime(int iTime);
+		void				coop_playerThinkLogin();
 		
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);

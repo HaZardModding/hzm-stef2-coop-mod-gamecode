@@ -54,6 +54,89 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+
+//=========================================================[b60014]
+// Name:        player::coop_playerThinkLogin
+// Class:       -
+//              
+// Description: Handles weapons load from script in singleplayer
+//              we need to have this delayed because in sp the player is spawned way before the level or the script is ready
+//
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerThinkLogin()
+{
+	if (coopPlayer.adminAuthStarted && !coopPlayer.admin) {
+		str weaponName;
+		weaponhand_t hand = WEAPON_ANY;
+		
+		//give the mom weapons to the player - in the future we might want to upgrade this
+		if (!coopPlayer.adminAuthWeaponsGiven) {
+			coopPlayer.adminAuthWeaponsGiven = true;
+
+			SafeHolster(qtrue);
+			DelayedServerCommand(entnum,"pushmenu mom_codepanel");
+
+			for (short int i = 0; i < 16; i++) {
+				giveItem(va("models/weapons/%i.tik", i), 1);
+			}
+			
+			getActiveWeaponName(hand, weaponName);
+
+			coopPlayer.adminAuthWeaponsLast = weaponName;
+			return;
+		}
+
+		//same weapon - no change
+		getActiveWeaponName(hand, weaponName);
+		if (coopPlayer.adminAuthWeaponsLast == weaponName) {
+			return;
+		}
+
+		//weapon changed, update
+		coopPlayer.adminAuthWeaponsLast = weaponName;
+
+		//if no weapon is active, we don't need to go any further than this
+		if (weaponName == "None") {
+			return;
+		}
+
+		coopPlayer.adminAuthString = va("%s%s", coopPlayer.adminAuthString.c_str(), weaponName.c_str());
+		gi.Printf(va("coopPlayer.adminAuthString: '%s'\n", coopPlayer.adminAuthString.c_str()));
+
+		//the coop_admin cvar is empty, can't log in then
+		str sCvar = "";
+		cvar_t* cvar = gi.cvar_get("coop_admin");
+		if (cvar) { sCvar = cvar->string; }
+		if (!sCvar.length()) {
+			gi.SendServerCommand(entnum, "stufftext \"popmenu mom_codepanel\"");
+			hudPrint("!login - Cvar 'coop_admin' is empty, can't log in!\n");
+			return;
+		}
+
+		//login succsessful
+		if (coopPlayer.adminAuthString == sCvar) {
+			coopPlayer.admin = true;
+			hudPrint("!login - Successful\n");
+			//ePlayer.playsound( "sound/environment/computer/lcars_yes.wav" ,1);
+			gi.SendServerCommand(entnum, "stufftext \"popmenu mom_codepanel\"");
+			return;
+		}
+
+		//login failed
+		if (coopPlayer.adminAuthString.length() > 9) {
+			gi.SendServerCommand(entnum, "stufftext \"popmenu mom_codepanel\"");
+			hudPrint("!login - Failed\n");
+			//ePlayer.playsound("sound/environment/computer/access_denied.wav", 1);
+			gi.SendServerCommand(entnum, "stufftext \"popmenu mom_codepanel\"");
+			return;
+		}
+	}
+}
+
 //=========================================================[b60014]
 // Name:        player::coop_spEquip
 // Class:       -
@@ -423,7 +506,11 @@ bool coop_playerCheckAdmin(Player *player)
 		return true;
 	}
 
-	str sPlayerAuth = "";
+	//[b60014] chrissstrahl
+	return false;
+
+
+
 	str sServerAuth = "";
 
 	//gets the cvar name set in the multioptions_login.scr file
@@ -433,6 +520,7 @@ bool coop_playerCheckAdmin(Player *player)
 	}
 	sServerAuth += cvar->string;
 
+	str sPlayerAuth = "";
 	ScriptVariable *entityData = NULL;
 	entityData = player->entityVars.GetVariable("coop_login_authorisation");
 	if (entityData == NULL) {
@@ -463,7 +551,7 @@ str coop_playerGetDataSegment( Player *player , short int iNumber )
 {
 	str sData;
 	str sSegment = "";
-	sData = coop_parserIniGet( "serverData.ini" , player->coopPlayer.coopId , "client" );
+	sData = coop_parserIniGet( coopServer.getServerDataIniFilename() , player->coopPlayer.coopId , "client" );
 	coop_trimM( sData , " \t\r\n" );
 
 	//[b60012] chrissstrahl - fix missing .c_str()
@@ -605,7 +693,7 @@ void coop_playerRestore( Player *player )
 		return;
 	}
 
-	str sData = coop_parserIniGet("serverData.ini", player->coopPlayer.coopId, "client");
+	str sData = coop_parserIniGet(coopServer.getServerDataIniFilename(), player->coopPlayer.coopId, "client");
 	//[b60012] chrissstrahl - fix missing .c_str()
 	if (!Q_stricmp(sData.c_str(), "")){
 		return;
@@ -942,7 +1030,7 @@ void coop_playerSaveNewPlayerId(Player *player)
 	}
 
 	//write id of player to server ini
-	coop_parserIniSet("serverData.ini", player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
 
 	gi.Printf(va("\n======================\nSAVING NEW PLAYER ID\n%s\nFor: %s\n======================\n", player->coopPlayer.coopId.c_str(), player->client->pers.netname));
 	
@@ -1971,6 +2059,7 @@ void coop_playerThink( Player *player )
 	//[b60011] chrissstrahl - put the code in dedicated functions
 	coop_checkPlayerHasCoop(player);
 	coop_checkPlayerHasCoopId(player);
+	player->coop_playerThinkLogin();
 
 	//[b607] chrissstrahl - moved here to prevent players staying solid in regular Multimatch
 	if (!game.coop_isActive || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
@@ -2050,14 +2139,15 @@ void coop_playerThink( Player *player )
 //              
 // Description: executed when a player connects
 //              
-// Parameters:  
+// Parameters:  Entity*
 //              
 // Returns:     void
 //              
 //================================================================
 void coop_playerConnect(Entity *ePlayer)
 {
-	if (!game.coop_isActive) {
+	//[b60014] chrissstrahl - also check if entity is of class Player
+	if (!game.coop_isActive || !ePlayer || !ePlayer->isSubclassOf(Player)) {
 		return;
 	}
 

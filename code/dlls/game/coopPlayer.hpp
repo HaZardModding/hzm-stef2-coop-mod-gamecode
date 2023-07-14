@@ -181,6 +181,11 @@ public:
 	bool classChangingDisabled = false;
 	//[b60011] chrissstrahl - player is already handled by CoopNpcTeam
 	bool coopNpcTeamHandled = false;
+	//[b60014] chrissstrahl - used for admin login
+	str adminAuthString = "";
+	bool adminAuthStarted = false;
+	bool adminAuthWeaponsGiven = false;
+	str adminAuthWeaponsLast = "";
 };
 
 

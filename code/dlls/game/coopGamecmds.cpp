@@ -760,10 +760,12 @@ qboolean G_coopCom_login(const gentity_t* ent)
 	}
 
 	player->hudPrint("^5login started\n");
-	player->entityVars.SetVariable("uservar1", "mom_codepanel2");
-	player->entityVars.SetVariable("uservar2", "coop_login");
-	//player->setStringVar("uservar3","no coop mod thread (get latest coop mod to use this)");
-	ExecuteThread("mom_basic", true, (Entity*)player);
+	player->coopPlayer.adminAuthStarted = true;
+
+	//player->entityVars.SetVariable("uservar1", "mom_codepanel2");
+	//player->entityVars.SetVariable("uservar2", "coop_login");
+	////player->setStringVar("uservar3","no coop mod thread (get latest coop mod to use this)");
+	//ExecuteThread("mom_basic", true, (Entity*)player);
 	return true;
 }
 
