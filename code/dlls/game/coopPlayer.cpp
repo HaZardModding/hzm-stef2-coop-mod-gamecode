@@ -54,6 +54,92 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+//================================================================
+// Name:        coop_playerThinkDetectCoopId
+// Class:       -
+//              
+// Description:  checks if the given player does have a coop mod id
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerThinkDetectCoopId()
+{
+	constexpr auto COOP_MAX_ID_CHECK_TRIES = 15;
+
+	//if player has coop or if there was a sufficent ammount of time passed
+	if (g_gametype->integer == GT_SINGLE_PLAYER || coopPlayer.setupTriesCid >= COOP_MAX_ID_CHECK_TRIES || coopPlayer.coopId.length()) {
+		return;
+	}
+
+	//[b60014] chrissstrahl - don't handle bots
+	if (coop_isBot()) {
+		coopPlayer.coopId = 0;
+		coopPlayer.setupTriesCid = (COOP_MAX_ID_CHECK_TRIES + 1);
+		return;
+	}
+
+	//have some time delay and also make sure the player is even able to process any commands
+	if (coopPlayer.setupTriesCidCheckTime < level.time) {
+		coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
+		if (gi.GetNumFreeReliableServerCommands(entnum) > 96) { //[b60014] chrissstrahl - chnaged from 32 to 96
+			coopPlayer.setupTriesCid++;
+		}
+	}
+	//player does not have coop mod - give up at this point
+	if (coopPlayer.setupTriesCid == COOP_MAX_ID_CHECK_TRIES) {
+		coopPlayer.setupTriesCid++;
+		coop_playerSaveNewPlayerId(this);
+		return;
+	}
+}
+
+//================================================================
+// Name:        coop_playerThinkDetectCoop
+// Class:       -
+//              
+// Description:  checks if the given player does have the coop mod installed or not
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerThinkDetectCoop()
+{
+	constexpr auto COOP_MAX_MOD_CHECK_TRIES = 15;
+
+	//if player has coop or if there was a sufficent ammount of time passed
+	if (coop_getInstalled() || coopPlayer.setupTries >= COOP_MAX_MOD_CHECK_TRIES) {
+		return;
+	}
+
+	//[b60014] chrissstrahl - don't handle bots
+	if (coop_isBot()) {
+		coop_setInstalled(false);
+		coopPlayer.setupComplete = true;
+		coopPlayer.setupTries = (COOP_MAX_MOD_CHECK_TRIES + 1);
+		return;
+	}
+
+	//in multiplayer do the checking procedure
+	//have some time delay and also make sure the player is even able to process any commands
+	if (coop_getInstalledCheckTime() < level.time) {
+		coop_setInstalledCheckTime(level.time + 0.25f);
+		if (gi.GetNumFreeReliableServerCommands(entnum) > 96) { //[b60014] chrissstrahl - changed from 32 to 96
+			coopPlayer.setupTries++;
+		}
+	}
+
+	//player does not have coop mod - give up at this point
+	if (coopPlayer.setupTries == COOP_MAX_MOD_CHECK_TRIES) {
+		coop_playerSetupNoncoop(this);
+		coopPlayer.setupTries++;
+		return;
+	}
+}
 
 //=========================================================[b60014]
 // Name:        player::coop_playerThinkLogin
@@ -2044,8 +2130,8 @@ void coop_playerThink( Player *player )
 	}
 
 	//[b60011] chrissstrahl - put the code in dedicated functions
-	coop_playerThinkDetectCoop(player);
-	coop_playerThinkDetectCoopId(player);
+	player->coop_playerThinkDetectCoop(player);
+	player->coop_playerThinkDetectCoopId(player);
 	player->coop_playerThinkLogin();
 
 	//[b607] chrissstrahl - moved here to prevent players staying solid in regular Multimatch
