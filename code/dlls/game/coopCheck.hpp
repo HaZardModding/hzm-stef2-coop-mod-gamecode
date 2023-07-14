@@ -25,7 +25,7 @@
 bool coop_checkPlayerLanguageGerman(Player *player);
 bool coop_checkCharsInsideString( str sSource , str sObjectsOfIntrest );
 bool coop_checkInsidePlayerOrActor( Entity *entity1 );
-void coop_checkPlayerHasCoop( Player *player );
+void coop_playerPlayerDetectCoop( Player *player );
 void coop_checkPlayerHasCoopId( Player *player );
 str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId);
 bool coop_checkStringInUservarsOf( Entity * ent , str sStringPart );

@@ -2044,7 +2044,7 @@ void coop_playerThink( Player *player )
 	}
 
 	//[b60011] chrissstrahl - put the code in dedicated functions
-	coop_checkPlayerHasCoop(player);
+	coop_playerPlayerDetectCoop(player);
 	coop_checkPlayerHasCoopId(player);
 	player->coop_playerThinkLogin();
 
