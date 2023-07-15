@@ -66,9 +66,12 @@ str CoopServer::getServerDataIniFilename()
 	static str iniFilename = "";
 
 	if (!iniFilename.length()) {
+		//changed, because we had issues with linux servers
 		cvar_t* cvar1 = gi.cvar_get("username");
 		cvar_t* cvar2 = gi.cvar_get("config");
-		iniFilename = va("serverData_%s_%s.ini", (cvar1 ? cvar1->string : ""), (cvar2 ? coop_returnStringPathFileNoExtension(cvar2->string) : ""));
+		str sUsername = (cvar1 ? cvar1->string : "");
+		str sConfig = (cvar2 ? coop_returnStringPathFileNoExtension(cvar2->string) : "");
+		iniFilename = va("serverData_%s_%s.ini", sUsername.c_str(), sConfig.c_str());
 	}
 	return iniFilename;
 }
