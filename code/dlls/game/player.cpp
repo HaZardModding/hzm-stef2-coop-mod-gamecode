@@ -7036,7 +7036,7 @@ void Player::CheckForTargetedEntity(void)
 		playerTargeted = (Player*)viewTrace.ent->entity;
 		
 		//[b60014] chrissstrahl - Handle Class stuff only in coop, if player has the coop mod
-		if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.installed) {
+		if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coop_getInstalled()) {
 			str sShader = "weapons/empty";
 
 			//target player class changed
@@ -7058,7 +7058,7 @@ void Player::CheckForTargetedEntity(void)
 			gi.SendServerCommand(entnum, "stufftext \"cg_targetedPlayerName ^0\"\n");
 			
 			//[b60014] chrissstrahl - reset also the class symbol, in multiplayer
-			if (multiplayerManager.inMultiplayer() && this->coopPlayer.installed) {
+			if (multiplayerManager.inMultiplayer() && this->coop_getInstalled()) {
 				DelayedServerCommand(entnum,"globalwidgetcommand targetNameHudS shader weapons/empty");
 				this->coopPlayer.lastTargetedEntityClass = "";
 			}
@@ -7152,7 +7152,7 @@ void Player::SetTargetedEntity( EntityPtr entity )
 		*/
 	}
 	//hzm coop mod chrissstrahl - remove hud if we have no tricorder in use(scanning)
-	if ( this->coopPlayer.installed && this->coopPlayer.scanHudActive ) {
+	if ( this->coop_getInstalled() && this->coopPlayer.scanHudActive ) {
 		Weapon* currentWeapon = this->GetActiveWeapon( WEAPON_ANY );//WEAPON_ANY WEAPON_DUAL
 		if ( currentWeapon ) {
 			Equipment* e;
@@ -14255,7 +14255,7 @@ void Player::Score( Event *ev )
 			this->coopPlayer.clickFireHudActive = true;
 			gi.SendServerCommand(this->entnum, "stufftext \"-objectives_score\"\n");
 			//[b610] chrissstrahl - added check if player is even allowed to spawn befor telling the player he could
-			if (this->coopPlayer.installed && coop_playerSpawnLms(this)) {
+			if (this->coop_getInstalled() && coop_playerSpawnLms(this)) {
 				this->addHud("coop_fireToSpawn");
 			}
 		}
@@ -15674,7 +15674,7 @@ void Player::clearVoteText( void )
 	//- if I don't fore the curser to go away it will stay active and players can't move until twice escape
 	//
 	//[b608] chrissstrahl - moved here to instead of all over the place. remove extra coop mod cinematic overlay hud
-	//if (coopPlayer.installed) {
+	//if (coop_getInstalled()) {
 		//gi.SendServerCommand(entnum, "popmenu coop_voteText 0\n");
 		////multiplayerManager.HUDPrint(entnum, "votemenu was removed for you\n");
 	//}

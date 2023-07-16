@@ -468,7 +468,7 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 	{
 		//hzm coop mod chrissstrahl - remove hud if player has coop mod and hud active
 		if ( !this->isScanning() && playerCur->_targetedEntity != 0 ) {
-			if ( playerCur->coopPlayer.installed && playerCur->coopPlayer.scanHudActive ) {
+			if ( playerCur->coop_getInstalled() && playerCur->coopPlayer.scanHudActive ) {
 				playerCur->coopPlayer.scanHudActive = false;
 				gi.SendServerCommand( playerCur->entnum , "stufftext \"ui_removehud coop_scan\"\n" );
 			}
@@ -552,7 +552,7 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 		//add modified wider variant of hud for high res in coop mod pk3 download
 		//add modified wider variant of hud for high res in coop mod pk3 download
 
-		if ( playerCur->coopPlayer.installed ) {
+		if ( playerCur->coop_getInstalled()) {
 			if ( ( playerCur->coopPlayer.lastScanSend + 0.5 ) < level.time ) {
 				playerCur->coopPlayer.lastScanSend = ( int )level.time;
 				if ( playerCur->_targetedEntity != 0 ) {
@@ -637,7 +637,7 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 		//- if targeted entity does no longer exist and player is NOT scanning
 		long timeElapsed = ( long )( level.time - scanTime );
 
-		if ( playerCur->coopPlayer.installed && playerCur->coopPlayer.scanHudActive ) {
+		if ( playerCur->coop_getInstalled() && playerCur->coopPlayer.scanHudActive ) {
 			if ( timeElapsed >= 0.1 || timeElapsed <= 0.1 && playerCur->_targetedEntity == 0 ) {
 				playerCur->coopPlayer.scanHudActive = false;
 				gi.SendServerCommand( playerCur->entnum , "stufftext \"ui_removehud coop_scan\"\n" );

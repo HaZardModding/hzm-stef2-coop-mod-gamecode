@@ -2227,7 +2227,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 			if ( playerCurrent ) {
 				//[b608] chrissstrahl - disabled the coop_voteText menu, as it had mouse curser issues that I could not resolve
 				//hzm coop mod chrissstrahl - use a menu to show vote stringon center screen
-				//if ( playerCurrent->coopPlayer.installed ) {
+				//if ( playerCurrent->coop_getInstalled() ) {
 					//DelayedServerCommand( playerCurrent->entnum , "showmenu coop_voteText" );
 				//}
 				//else {
