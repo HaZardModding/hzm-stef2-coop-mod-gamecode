@@ -55,6 +55,41 @@ extern int iSKAS;
 extern int iSPRITES;
 
 //================================================================
+// Name:        coop_playerSetupComplete
+// Class:       -
+//              
+// Description:  Sets Coop setup done for player
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerSetupComplete(bool bComplete)
+{
+	coopPlayer.setupComplete = bComplete;
+}
+
+//================================================================
+// Name:        coop_playerSetupComplete
+// Class:       -
+//              
+// Description:  checks if setup for player is done
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_playerSetupComplete()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.setupComplete;
+	}
+	return true;
+}
+
+//================================================================
 // Name:        coop_playerThinkDetectCoopId
 // Class:       -
 //              
@@ -70,7 +105,7 @@ void Player::coop_playerThinkDetectCoopId()
 	constexpr auto COOP_MAX_ID_CHECK_TRIES = 15;
 
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (g_gametype->integer == GT_SINGLE_PLAYER || coopPlayer.setupTriesCid >= COOP_MAX_ID_CHECK_TRIES || coopPlayer.coopId.length()) {
+	if (!multiplayerManager.inMultiplayer() || coopPlayer.setupTriesCid >= COOP_MAX_ID_CHECK_TRIES || coopPlayer.coopId.length()) {
 		return;
 	}
 
@@ -1184,7 +1219,7 @@ void coop_playerSetupCoop( Player *player )
 		coopChallenges.playerEnteredWarning(player);
 	}
 
-	player->coopPlayer.setupComplete = true;
+	player->coop_playerSetupComplete(true);
 
 	if (game.coop_isActive) {
 		//[b60011] chrissstrahl - setupComplete needs to be true for this to work
@@ -1211,7 +1246,7 @@ void coop_playerSetupNoncoop( Player *player)
 
 	//[b60014] chrissstrahl - don't handle bots
 	if (player->coop_isBot()) {
-		player->coopPlayer.setupComplete = true;
+		player->coop_playerSetupComplete(true);
 		return;
 	}
 
@@ -1229,7 +1264,7 @@ void coop_playerSetupNoncoop( Player *player)
 	//hzm coop mod chrissstrahl - do the regular setup here after coop has or has not been detected
 	coop_objectivesSetup( player );
 
-	player->coopPlayer.setupComplete = true;
+	player->coop_playerSetupComplete(true);
 
 	//[b60011] chrissstrahl - setupComplete needs to be true for this to work
 	coop_classSet(player, "current");
