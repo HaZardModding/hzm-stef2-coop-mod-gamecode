@@ -1512,13 +1512,13 @@ qboolean G_coopInput(const gentity_t* ent)
 	//also update the cvar that is shown in teh login menu of the communicator
 	if (multiplayerManager.inMultiplayer() && player->coopPlayer.adminAuthStarted) {
 		if (inputData == "clear") {
-			player->coopPlayer.adminAuthString = "";
+			player->coop_playerAdminAuthString("");
 		}
 		else {
-			player->coopPlayer.adminAuthString = va("%s%s", player->coopPlayer.adminAuthString.c_str(), inputData.c_str());
+			player->coop_playerAdminAuthString(va("%s%s", player->coop_playerAdminAuthString().c_str(), inputData.c_str()));
 		}
 		
-		DelayedServerCommand(player->entnum,va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n",player->coopPlayer.adminAuthString.c_str()));
+		DelayedServerCommand(player->entnum,va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n",player->coop_playerAdminAuthString().c_str()));
 		return true;
 	}
 

@@ -85,6 +85,44 @@ bool Player::coop_playerCheckAdmin()
 }
 
 //========================================================[b60014]
+// Name:        coop_playerAdminAuthString
+// Class:       -
+//              
+// Description:  return player admin auth string
+//              
+// Parameters:  void
+//              
+// Returns:     str
+//              
+//================================================================
+str Player::coop_playerAdminAuthString()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.adminAuthString;
+	}
+	return "";
+}
+
+//========================================================[b60014]
+// Name:        coop_playerAdminAuthString
+// Class:       -
+//              
+// Description:  sets player admin auth string
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerAdminAuthString(str sAuth)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthString used in singleplayer\n");
+	}
+	coopPlayer.adminAuthString = sAuth;
+}
+
+//========================================================[b60014]
 // Name:        coop_playerAdmin
 // Class:       -
 //              

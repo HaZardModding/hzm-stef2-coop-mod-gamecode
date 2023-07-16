@@ -212,6 +212,8 @@ class Player : public Sentient
 		bool				coop_playerCheckAdmin();
 		bool				coop_playerAdmin();
 		void				coop_playerAdmin(bool bAdmin);
+		str					coop_playerAdminAuthString();
+		void				coop_playerAdminAuthString(str sAuth);
 		
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);
