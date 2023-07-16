@@ -419,22 +419,22 @@ void Player::coop_playerThinkDetectCoop()
 //================================================================
 void Player::coop_playerThinkLogin()
 {
-	if (coopPlayer.adminAuthStarted && !coopPlayer.admin) {		
+	if (coop_playerAdminAuthStarted() && !coop_playerAdmin()) {
 		//give the mom weapons to the player - in the future we might want to upgrade this
 		if (!coopPlayer.adminAuthWeaponsGiven) {
 			coopPlayer.adminAuthWeaponsGiven = true;
 			DelayedServerCommand(entnum, "pushmenu coop_com");
 			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login Started - Please enter the code.").c_str()));
-			coopPlayer.adminAuthStringLengthLast = coopPlayer.adminAuthString.length();
+			coopPlayer.adminAuthStringLengthLast = coop_playerAdminAuthString().length();
 			return;
 		}
 
 		//exit here if there is no new input
 		//using coopinput / G_coopInput to grab and construct input
-		if (coopPlayer.adminAuthStringLengthLast == coopPlayer.adminAuthString.length()) {
+		if (coopPlayer.adminAuthStringLengthLast == coop_playerAdminAuthString().length()) {
 			return;
 		}
-		coopPlayer.adminAuthStringLengthLast = coopPlayer.adminAuthString.length();
+		coopPlayer.adminAuthStringLengthLast = coop_playerAdminAuthString().length();
 
 		//the coop_admin cvar is empty, can't log in then
 		str sCvar = "";
@@ -450,19 +450,19 @@ void Player::coop_playerThinkLogin()
 		}
 
 		//login succsessful
-		if (coopPlayer.adminAuthString == sCvar) {
+		if (coop_playerAdminAuthString() == sCvar) {
 			coopPlayer.admin = true;
 			coopPlayer.adminAuthAtempts = 0;
-			coopPlayer.adminAuthStarted = false;
+			coop_playerAdminAuthStarted(false);
 			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login succsessful - Accsess granted!\n").c_str()));
 			//ePlayer.playsound( "sound/environment/computer/lcars_yes.wav" ,1);
 			return;
 		}
 
 		//login failed
-		if (coopPlayer.adminAuthString.length() > 9) {
+		if (coop_playerAdminAuthString().length() > 9) {
 			coopPlayer.adminAuthAtempts++;
-			coopPlayer.adminAuthString = "";
+			coop_playerAdminAuthString("");
 			DelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login failed - Accsess denied!\n").c_str()));
 			//gi.SendServerCommand(entnum,"stufftext \"playsound sound/environment/computer/access_denied.wav\"\n");
 
