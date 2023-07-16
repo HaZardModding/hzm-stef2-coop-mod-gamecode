@@ -205,6 +205,13 @@ class Player : public Sentient
 		void				coop_playerThinkDetectCoopId();
 		void				coop_playerSetupComplete(bool bComplete);
 		bool				coop_playerSetupComplete();
+		int					coop_playerSetupTries();
+		void				coop_playerSetupTriesIncremment();
+		int					coop_playerSetupTriesCid();
+		void				coop_playerSetupTriesCidIncremment();
+		bool				coop_playerCheckAdmin();
+		bool				coop_playerAdmin();
+		void				coop_playerAdmin(bool bAdmin);
 		
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);

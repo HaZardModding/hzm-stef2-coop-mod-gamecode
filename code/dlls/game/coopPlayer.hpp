@@ -37,8 +37,6 @@ class CoopPlayer
 	//[b60014] chrissstrahl - needed to get cleaner code, seperating coop/stock game better
 	friend class		Player;
 public:
-	//hzm coop mod chrissstrahl - used to count how many tries happened to check player for coop mod
-	int		setupTries = 0;
 	//hzm coop mod chrissstrahl - used to store chat message limit data
 	float	chatTimeLimit = 0.0f;
 	//hzm coop mod chrissstrahl - used to send the exec command to player within a certain timeframe
@@ -61,10 +59,26 @@ public:
 	bool	respawnAtRespawnpoint = false;
 	//hzm coop mod chrissstrahl - used to saveoff the viewangle when the player dies, to restore it when the player respawns at the same location he died
 	int		deathViewangleY = 0;
+
+
+	//[b60014] chrissstrahl - moved here to make sure it is not illegally accsessed
 private:
-	//hzm coop mod chrissstrahl - used to save if player setup is complete
+	//used to count how many tries happened to check player for coop mod
+	int		setupTries = 0;
+	//used to save if player setup is complete
 	bool	setupComplete = false;
+	//used for coopID detection setup timeout in coopPlayerThink()
+	int setupTriesCid = 0;
+	//[b60014] chrissstrahl - used for admin login
+	bool admin = false;
+	str adminAuthString = "";
+	bool adminAuthStarted = false;
+	bool adminAuthWeaponsGiven = false;
+	int adminAuthStringLengthLast = 0;
+	short int adminAuthAtempts = 0;
 public:
+
+
 	//hzm coop mod chrissstrahl - used to store if a medic was notified to heal this now critically injured player
 	str		lastTargetedClassSend = "";
 
@@ -165,14 +179,10 @@ public:
 	str scanData0 = ""; //[b60011]
 	str scanData1 = "";
 	str scanData2 = "";
-	//[b607] chrissstrahl - addad coop admin check var
-	bool admin = false;
 	//[b60011] chrissstrahl - used to allow placing of objects - this will be the temp model used to visualize where a object will be placed
 	EntityPtr ePlacable = NULL;
 	//[b60011] chrissstrahl - used to keep track of the class ability of a player to place a class specific station
 	EntityPtr eClassPlacable = NULL;
-	//[b60011] chrissstrahl - used for coopID detection setup timeout in coopPlayerThink()
-	int setupTriesCid = 0;
 	//[b60011] chrissstrahl - used to check if player has a coopid, within a certain timeframe
 	float setupTriesCidCheckTime = 0.0f;
 	//[b60011] chrissstrahl - cooldown for taunts
@@ -185,12 +195,6 @@ public:
 	bool classChangingDisabled = false;
 	//[b60011] chrissstrahl - player is already handled by CoopNpcTeam
 	bool coopNpcTeamHandled = false;
-	//[b60014] chrissstrahl - used for admin login
-	str adminAuthString = "";
-	bool adminAuthStarted = false;
-	bool adminAuthWeaponsGiven = false;
-	int adminAuthStringLengthLast = 0;
-	short int adminAuthAtempts = 0;
 };
 
 

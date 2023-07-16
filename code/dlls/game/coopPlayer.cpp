@@ -54,7 +54,151 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+
 //================================================================
+// Name:        coop_playerCheckAdmin
+// Class:       -
+//              
+// Description: [b607] added login authorisation stuff for coop admin login menu
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_playerCheckAdmin()
+{
+	//already logged in
+	if (coop_playerAdmin()) {
+		return true;
+	}
+
+	//[b610] chrissstrahl - auto login if player is host
+	if (coop_isHost()) {
+		coop_playerAdmin(true);
+		hudPrint("^3You are now logged in (Host auto-!login).\n");
+		return true;
+	}
+
+	//[b60014] chrissstrahl
+	return false;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerAdmin
+// Class:       -
+//              
+// Description:  return player admin var
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_playerAdmin()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.admin;
+	}
+	return false;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerAdmin
+// Class:       -
+//              
+// Description:  sets player admin var
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerAdmin(bool bAdmin)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.admin used in singleplayer\n");
+	}
+	coopPlayer.admin = bAdmin;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerSetupComplete
+// Class:       -
+//              
+// Description:  Returns number of tried for coop player setup
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+int Player::coop_playerSetupTriesCid()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.setupTriesCid;
+	}
+	return 9999;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerSetupTriesCidIncremment
+// Class:       -
+//              
+// Description:  Sets Coop setup done for player
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerSetupTriesCidIncremment()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTriesCid used in singleplayer\n");
+	}
+	coopPlayer.setupTriesCid++;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerSetupComplete
+// Class:       -
+//              
+// Description:  Returns number of tried for coop player setup
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+int Player::coop_playerSetupTries()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.setupTries;
+	}
+	return 9999;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerSetupTriesIncremment
+// Class:       -
+//              
+// Description:  Increments number of tries for setup - used for failsafe
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerSetupTriesIncremment()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTries used in singleplayer\n");
+	}
+	coopPlayer.setupTries++;
+}
+
+//========================================================[b60014]
 // Name:        coop_playerSetupComplete
 // Class:       -
 //              
@@ -67,10 +211,13 @@ extern int iSPRITES;
 //================================================================
 void Player::coop_playerSetupComplete(bool bComplete)
 {
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupComplete used in singleplayer\n");
+	}
 	coopPlayer.setupComplete = bComplete;
 }
 
-//================================================================
+//========================================================[b60014]
 // Name:        coop_playerSetupComplete
 // Class:       -
 //              
@@ -105,14 +252,17 @@ void Player::coop_playerThinkDetectCoopId()
 	constexpr auto COOP_MAX_ID_CHECK_TRIES = 15;
 
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (!multiplayerManager.inMultiplayer() || coopPlayer.setupTriesCid >= COOP_MAX_ID_CHECK_TRIES || coopPlayer.coopId.length()) {
+	if (!multiplayerManager.inMultiplayer() || coop_playerSetupTriesCid() >= COOP_MAX_ID_CHECK_TRIES || coopPlayer.coopId.length()) {
 		return;
 	}
 
 	//[b60014] chrissstrahl - don't handle bots
 	if (coop_isBot()) {
 		coopPlayer.coopId = 0;
-		coopPlayer.setupTriesCid = (COOP_MAX_ID_CHECK_TRIES + 1);
+
+		for (int i = coop_playerSetupTries(); i < (COOP_MAX_ID_CHECK_TRIES + 1); i++) {
+			coop_playerSetupTriesCidIncremment();
+		}
 		return;
 	}
 
@@ -120,12 +270,12 @@ void Player::coop_playerThinkDetectCoopId()
 	if (coopPlayer.setupTriesCidCheckTime < level.time) {
 		coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
 		if (gi.GetNumFreeReliableServerCommands(entnum) > 96) { //[b60014] chrissstrahl - chnaged from 32 to 96
-			coopPlayer.setupTriesCid++;
+			coop_playerSetupTriesCidIncremment();
 		}
 	}
 	//player does not have coop mod - give up at this point
-	if (coopPlayer.setupTriesCid == COOP_MAX_ID_CHECK_TRIES) {
-		coopPlayer.setupTriesCid++;
+	if (coop_playerSetupTriesCid() == COOP_MAX_ID_CHECK_TRIES) {
+		coop_playerSetupTriesCidIncremment();
 		coop_playerSaveNewPlayerId(this);
 		return;
 	}
@@ -147,7 +297,7 @@ void Player::coop_playerThinkDetectCoop()
 	constexpr auto COOP_MAX_MOD_CHECK_TRIES = 15;
 
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (coop_getInstalled() || coopPlayer.setupTries >= COOP_MAX_MOD_CHECK_TRIES) {
+	if (coop_getInstalled() || coop_playerSetupTries() >= COOP_MAX_MOD_CHECK_TRIES) {
 		return;
 	}
 
@@ -155,7 +305,10 @@ void Player::coop_playerThinkDetectCoop()
 	if (coop_isBot()) {
 		coop_setInstalled(false);
 		coopPlayer.setupComplete = true;
-		coopPlayer.setupTries = (COOP_MAX_MOD_CHECK_TRIES + 1);
+		
+		for (int i = coop_playerSetupTries(); i < (COOP_MAX_MOD_CHECK_TRIES + 1);i++) {
+			coop_playerSetupTriesIncremment();
+		}
 		return;
 	}
 
@@ -164,14 +317,14 @@ void Player::coop_playerThinkDetectCoop()
 	if (coop_getInstalledCheckTime() < level.time) {
 		coop_setInstalledCheckTime(level.time + 0.25f);
 		if (gi.GetNumFreeReliableServerCommands(entnum) > 96) { //[b60014] chrissstrahl - changed from 32 to 96
-			coopPlayer.setupTries++;
+			coop_playerSetupTriesIncremment();
 		}
 	}
 
 	//player does not have coop mod - give up at this point
-	if (coopPlayer.setupTries == COOP_MAX_MOD_CHECK_TRIES) {
+	if (coop_playerSetupTries() == COOP_MAX_MOD_CHECK_TRIES) {
 		coop_playerSetupNoncoop(this);
-		coopPlayer.setupTries++;
+		coop_playerSetupTriesIncremment();
 		return;
 	}
 }
@@ -586,61 +739,6 @@ void coop_playerCommunicator(Player* player, int iAdd)
 			//gi.Printf(va("COOPDEBUG [%s] coop_comTran%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
 		}
 	}
-}
-
-
-//================================================================
-// Name:        coop_playerCheckAdmin
-// Class:       -
-//              
-// Description: [b607] added login authorisation stuff for coop admin login menu
-//              
-// Parameters:  Player*
-//              
-// Returns:     bool
-//              
-//================================================================
-bool coop_playerCheckAdmin(Player *player)
-{
-	//already logged in
-	if (player->coopPlayer.admin) {
-		return true;
-	}
-
-	//[b610] chrissstrahl - auto login if player is host
-	if (player->coop_isHost()) {
-		player->coopPlayer.admin = true;
-		player->hudPrint("^3You are now logged in (Host auto-!login).\n");
-		return true;
-	}
-
-	//[b60014] chrissstrahl
-	return false;
-
-
-
-	str sServerAuth = "";
-
-	//gets the cvar name set in the multioptions_login.scr file
-	cvar_t *cvar = gi.cvar_get(coop_getStringScriptVariable("string_cvarNameForCoopAdminLoginCode"));
-	if (cvar == NULL) {
-		return false;
-	}
-	sServerAuth += cvar->string;
-
-	str sPlayerAuth = "";
-	ScriptVariable *entityData = NULL;
-	entityData = player->entityVars.GetVariable("coop_login_authorisation");
-	if (entityData == NULL) {
-		return false;
-	}
-	sPlayerAuth = entityData->stringValue();
-
-	if (sPlayerAuth == sServerAuth) {
-		player->coopPlayer.admin = true;
-		return true;
-	}
-	return false;
 }
 
 //================================================================
@@ -2350,7 +2448,7 @@ void coop_playerLeft( Player *player )
 int Player::coop_updateStatsCoopHealth(int statNum)
 {
 	int value = 0;
-	if (game.coop_isActive && coopPlayer.installed) {
+	if (game.coop_isActive && coop_getInstalled()) {
 		Entity* target;
 		if (statNum == STAT_MP_GENERIC4)
 		{
