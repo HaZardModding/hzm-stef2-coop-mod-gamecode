@@ -209,6 +209,8 @@ class Player : public Sentient
 		void				coop_playerSetupTriesIncremment();
 		int					coop_playerSetupTriesCid();
 		void				coop_playerSetupTriesCidIncremment();
+		int					coop_playerSetupTriesCidTime();
+		void				coop_playerSetupTriesCidTimeUpdate();
 		bool				coop_playerCheckAdmin();
 		bool				coop_playerAdmin();
 		void				coop_playerAdmin(bool bAdmin);
@@ -216,6 +218,7 @@ class Player : public Sentient
 		void				coop_playerAdminAuthString(str sAuth);
 		bool				coop_playerAdminAuthStarted();
 		void				coop_playerAdminAuthStarted(str sAuth);
+
 		
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);

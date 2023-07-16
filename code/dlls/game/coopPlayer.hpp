@@ -65,6 +65,8 @@ public:
 private:
 	//used to count how many tries happened to check player for coop mod
 	int		setupTries = 0;
+	//used to check if player has a coopid, within a certain timeframe
+	float setupTriesCidCheckTime = 0.0f;
 	//used to save if player setup is complete
 	bool	setupComplete = false;
 	//used for coopID detection setup timeout in coopPlayerThink()
@@ -183,8 +185,6 @@ public:
 	EntityPtr ePlacable = NULL;
 	//[b60011] chrissstrahl - used to keep track of the class ability of a player to place a class specific station
 	EntityPtr eClassPlacable = NULL;
-	//[b60011] chrissstrahl - used to check if player has a coopid, within a certain timeframe
-	float setupTriesCidCheckTime = 0.0f;
 	//[b60011] chrissstrahl - cooldown for taunts
 	float tauntCooldownTime = 0.0f;
 	//[b60011] chrissstrahl - cooldown for !block

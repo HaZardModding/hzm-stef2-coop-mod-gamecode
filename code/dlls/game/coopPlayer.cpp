@@ -209,6 +209,44 @@ void Player::coop_playerAdmin(bool bAdmin)
 // Returns:     bool
 //              
 //================================================================
+int Player::coop_playerSetupTriesCidTime()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		return coopPlayer.setupTriesCidCheckTime;
+	}
+	return 0;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerSetupTriesCidIncremment
+// Class:       -
+//              
+// Description:  Sets Coop setup done for player
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerSetupTriesCidTimeUpdate()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTriesCidCheckTime used in singleplayer\n");
+	}
+	coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
+}
+
+//========================================================[b60014]
+// Name:        coop_playerSetupComplete
+// Class:       -
+//              
+// Description:  Returns number of tried for coop player setup
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
 int Player::coop_playerSetupTriesCid()
 {
 	if (multiplayerManager.inMultiplayer()) {
@@ -343,8 +381,8 @@ void Player::coop_playerThinkDetectCoopId()
 	}
 
 	//have some time delay and also make sure the player is even able to process any commands
-	if (coopPlayer.setupTriesCidCheckTime < level.time) {
-		coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
+	if (coop_playerSetupTriesCidTime() < level.time) {
+		coop_playerSetupTriesCidTimeUpdate();
 		if (gi.GetNumFreeReliableServerCommands(entnum) > 96) { //[b60014] chrissstrahl - chnaged from 32 to 96
 			coop_playerSetupTriesCidIncremment();
 		}
