@@ -351,7 +351,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 	if (coop_checkPlayerLanguageGerman(player)) {
 		//gi.SendConsoleCommand(va("echo %s\n", ));
 
-		if (player->coopPlayer.admin) {
+		if (player->coop_playerAdmin()) {
 			gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!noclip^8 - Schaltet keine Kollision an/aus ^3Admin\"\n");
 			gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!reboot^8 - Rebootet den Server sofort ^3Admin\"\n");
 			gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!levelend^8 - Startet die level end Funktion ^3Admin\"\n");
@@ -387,7 +387,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 		player->hudPrint(COOP_TEXT_HELP_COMMAND_LIST_ENTER_TAB_DEU);
 	}
 	else {
-		if (player->coopPlayer.admin) {
+		if (player->coop_playerAdmin()) {
 			gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!noclip^8 - Turns no clipping on/off ^3Admin\"\n");
 			gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!reboot^8 - Reboots the Server right now ^3Admin\"\n");
 			gi.SendServerCommand(player->entnum, "stufftext \"echo ^5!levelend^8 - Runs the level end function now ^3Admin\"\n");
@@ -775,7 +775,7 @@ qboolean G_coopCom_logout(const gentity_t* ent)
 	str sMessage = "^3You are already logged out.\n";
 	//[b60014] chrissstrahl - fixed login check
 	if (coop_playerCheckAdmin(player)) {
-		player->coopPlayer.admin = false;
+		player->coop_playerAdmin(false);
 		//[b60014] chrissstrahl - fixed auth string being retained keeping player loged in
 		player->entityVars.SetVariable("coop_login_authorisation","*");
 		sMessage = "^3You are now logged out.\n";
@@ -1549,7 +1549,7 @@ qboolean G_coopInput(const gentity_t* ent)
 qboolean G_coopThread(const gentity_t* ent)
 {
 	if (!ent || !ent->inuse || !ent->client)
-		return qfalse;
+		return true;
 
 	str		threadName;
 
@@ -1560,10 +1560,11 @@ qboolean G_coopThread(const gentity_t* ent)
 	threadName = gi.argv(1);
 
 	// Check to make sure player is allowed to run this thread
-	// Need to do this part
-	// Run the thread - if set 
 	Player* player = (Player*)ent->entity;
-	if (!threadName.length() || g_gametype->integer != GT_SINGLE_PLAYER && coop_returnIntFind(threadName, "coopThread_") != 0 && player->coopPlayer.admin != true) {
+	if (	g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer() ||
+			!threadName.length() || coop_returnIntFind(threadName, "coopThread_") != 0 ||
+			!player->coop_playerCheckAdmin())
+	{
 		return true;
 	}
 	
@@ -1571,7 +1572,7 @@ qboolean G_coopThread(const gentity_t* ent)
 	pThread = player->RunThread(threadName.c_str());
 
 	//if a admin executes a thread, give feedback
-	if (g_gametype->integer != GT_SINGLE_PLAYER && coop_returnIntFind(threadName, "coopThread_") != 0 && player->coopPlayer.admin == true) {
+	if (coop_returnIntFind(threadName, "coopThread_") != 0) {
 		str sPrint = "^5Succsessfully ran func";
 		if (pThread == NULL) {
 			sPrint = "^2FAILED to run func";
