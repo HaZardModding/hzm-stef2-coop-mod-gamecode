@@ -132,7 +132,7 @@ void CoopServer::svFloodProtectEnable()
 				player = (Player*)g_entities[i].entity;
 				if (player) {
 					iPlayerTotal++;
-					if (player->coopPlayer.setupComplete) {
+					if (player->coop_playerSetupComplete()) {
 						iPlayerDone++;
 					}
 				}

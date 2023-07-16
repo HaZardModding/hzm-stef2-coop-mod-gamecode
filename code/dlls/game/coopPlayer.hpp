@@ -34,6 +34,8 @@ typedef struct pendingServerCommand_s
 
 class CoopPlayer
 {
+	//[b60014] chrissstrahl - needed to get cleaner code, seperating coop/stock game better
+	friend class		Player;
 public:
 	//hzm coop mod chrissstrahl - used to count how many tries happened to check player for coop mod
 	int		setupTries = 0;
@@ -59,8 +61,10 @@ public:
 	bool	respawnAtRespawnpoint = false;
 	//hzm coop mod chrissstrahl - used to saveoff the viewangle when the player dies, to restore it when the player respawns at the same location he died
 	int		deathViewangleY = 0;
+private:
 	//hzm coop mod chrissstrahl - used to save if player setup is complete
 	bool	setupComplete = false;
+public:
 	//hzm coop mod chrissstrahl - used to store if a medic was notified to heal this now critically injured player
 	str		lastTargetedClassSend = "";
 

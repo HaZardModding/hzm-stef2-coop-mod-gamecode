@@ -184,7 +184,7 @@ void coop_hudsUpdateNotification( Player *player )
 					level.cinematic != qtrue &&
 					level.mission_failed != qtrue &&
 					level.playerfrozen != qtrue &&
-					player->coopPlayer.setupComplete != false )
+					player->coop_playerSetupComplete() != false )
 				{
 					player->coopPlayer.updateHudDisplayed = true;
 					player->hudPrint( va( "^5Coop info^8: Please ^5update^8 the HZM Coop Mod!\nYour version:^3 %d ^8- server version:^5 %d\n" , player->coop_getInstalledVersion() , COOP_BUILD ) );

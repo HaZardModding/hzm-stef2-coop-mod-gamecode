@@ -72,7 +72,7 @@ void coop_classCheckUpdateStat( Player *player )
 {
 	//[b60014] chrissstrahl
 	if (!multiplayerManager.inMultiplayer() && game.coop_classInfoSendAt > player->coopPlayer.lastTimeUpdatedClassStat ){
-		if ( player->coop_getInstalled() && player->coopPlayer.setupComplete) {
+		if ( player->coop_getInstalled() && player->coop_playerSetupComplete()) {
 			player->coopPlayer.lastTimeUpdatedClassStat = game.coop_classInfoSendAt;
 			//gi.Printf(va("COOPDEBUG coop_classCheckUpdateStat sending to %s\n", player->client->pers.netname));
 			
@@ -288,7 +288,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 			!multiplayerManager.inMultiplayer() ||
 			multiplayerManager.isPlayerSpectator( player ) ||
 			level.time < mp_warmUpTime->integer ||
-			!player->coopPlayer.setupComplete)
+			!player->coop_playerSetupComplete())
 	{
 		return;
 	}

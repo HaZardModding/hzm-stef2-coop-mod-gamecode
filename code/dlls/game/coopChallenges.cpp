@@ -156,7 +156,7 @@ void CoopChallenges::playerEntered(Player* player)
 		//give the players some time to regroup
 		
 		//inform all players to regroup
-		if (player->coopPlayer.setupComplete) {
+		if (player->coop_playerSetupComplete()) {
 			playerEnteredWarning(player);
 		}
 		break;
