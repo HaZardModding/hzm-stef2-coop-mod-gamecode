@@ -458,15 +458,6 @@ void Player::coop_playerThinkDetectCoop()
 void Player::coop_playerThinkLogin()
 {
 	if (coop_playerAdminAuthStarted() && !coop_playerAdmin()) {
-		//give the mom weapons to the player - in the future we might want to upgrade this
-		if (!coopPlayer.adminAuthWeaponsGiven) {
-			coopPlayer.adminAuthWeaponsGiven = true;
-			DelayedServerCommand(entnum, "pushmenu coop_com");
-			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login Started - Please enter the code.").c_str()));
-			coopPlayer.adminAuthStringLengthLast = coop_playerAdminAuthString().length();
-			return;
-		}
-
 		//exit here if there is no new input
 		//using coopinput / G_coopInput to grab and construct input
 		if (coopPlayer.adminAuthStringLengthLast == coop_playerAdminAuthString().length()) {
