@@ -687,7 +687,7 @@ qboolean G_coopCom_kickbots(const gentity_t* ent)
 	player->entityVars.SetVariable("!kickbots", level.time);
 
 
-	if (!coop_playerCheckAdmin(player)) {
+	if (!player->coop_playerCheckAdmin()) {
 		multiplayerManager.callVote(player, "kick", "kickbots");
 		return true;
 	}
@@ -748,13 +748,13 @@ qboolean G_coopCom_login(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!login", level.time);
 
-	if (coop_playerCheckAdmin(player)) {
+	if (player->coop_playerCheckAdmin()) {
 		player->hudPrint("^3You are already logged in - use ^2!logout^3 to log out.\n");
 		return true;
 	}
 
 	player->hudPrint("^5login started\n");
-	player->coopPlayer.adminAuthStarted = true;
+	player->coop_playerAdminAuthStarted(true);
 	return true;
 }
 
@@ -774,7 +774,7 @@ qboolean G_coopCom_logout(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 	str sMessage = "^3You are already logged out.\n";
 	//[b60014] chrissstrahl - fixed login check
-	if (coop_playerCheckAdmin(player)) {
+	if (player->coop_playerCheckAdmin()) {
 		player->coop_playerAdmin(false);
 		//[b60014] chrissstrahl - fixed auth string being retained keeping player loged in
 		player->entityVars.SetVariable("coop_login_authorisation","*");
@@ -1266,7 +1266,7 @@ qboolean G_coopCom_reboot(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!reboot", level.time);
 
-	if (!coop_playerCheckAdmin(player)) {
+	if (!player->coop_playerCheckAdmin()) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
 	}
@@ -1296,7 +1296,7 @@ qboolean G_coopCom_reboot(const gentity_t* ent)
 qboolean G_coopCom_levelend(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	if (!coop_playerCheckAdmin(player)) {
+	if (!player->coop_playerCheckAdmin()) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
 	}
@@ -1342,7 +1342,7 @@ qboolean G_coopCom_targeted(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!targeted", level.time);
 
-	if (!coop_playerCheckAdmin(player)) {
+	if (!player->coop_playerCheckAdmin()) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return qtrue;
 	}
@@ -1380,7 +1380,7 @@ qboolean G_coopCom_showspawn(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!showspawn", level.time);
 
-	if (!coop_playerCheckAdmin(player)) {
+	if (!player->coop_playerCheckAdmin()) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return qtrue;
 	}
@@ -1403,7 +1403,7 @@ qboolean G_coopCom_showspawn(const gentity_t* ent)
 qboolean G_coopCom_hidespawn(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	if (!coop_playerCheckAdmin(player)) {
+	if (!player->coop_playerCheckAdmin()) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
 	}
@@ -1434,7 +1434,7 @@ qboolean G_coopCom_testspawn(const gentity_t* ent)
 	}
 	player->entityVars.SetVariable("!testspawn", level.time);
 
-	if (!coop_playerCheckAdmin(player)) {
+	if (!player->coop_playerCheckAdmin()) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
 	}
@@ -1457,7 +1457,7 @@ qboolean G_coopCom_testspawn(const gentity_t* ent)
 qboolean G_coopCom_noclip(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	if (!coop_playerCheckAdmin(player)) {
+	if (!player->coop_playerCheckAdmin()) {
 		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
 		return true;
 	}
@@ -1510,7 +1510,7 @@ qboolean G_coopInput(const gentity_t* ent)
 
 	//[b60014] chrissstrahl - if !login is active add input to coopPlayer.adminAuthString instead
 	//also update the cvar that is shown in teh login menu of the communicator
-	if (multiplayerManager.inMultiplayer() && player->coopPlayer.adminAuthStarted) {
+	if (multiplayerManager.inMultiplayer() && player->coop_playerAdminAuthStarted()) {
 		if (inputData == "clear") {
 			player->coop_playerAdminAuthString("");
 		}
