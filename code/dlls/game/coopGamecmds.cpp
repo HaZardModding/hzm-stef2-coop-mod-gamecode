@@ -757,7 +757,7 @@ qboolean G_coopCom_login(const gentity_t* ent)
 	player->coop_playerAdminAuthStarted(true);
 	DelayedServerCommand(player->entnum, "pushmenu coop_com");
 	DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login Started - Please enter the code.").c_str()));
-	player->coopPlayer.adminAuthStringLengthLast = coop_playerAdminAuthString().length();
+	player->coop_playerAdminAuthStringLastLengthUpdate();
 
 	return true;
 }

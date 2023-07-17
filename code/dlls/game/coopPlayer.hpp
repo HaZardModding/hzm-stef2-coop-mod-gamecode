@@ -75,7 +75,6 @@ private:
 	bool admin = false;
 	str adminAuthString = "";
 	bool adminAuthStarted = false;
-	bool adminAuthWeaponsGiven = false;
 	int adminAuthStringLengthLast = 0;
 	short int adminAuthAtempts = 0;
 public:

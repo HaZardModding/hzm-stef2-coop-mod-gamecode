@@ -85,6 +85,46 @@ bool Player::coop_playerCheckAdmin()
 }
 
 //========================================================[b60014]
+// Name:        coop_playerAdminAuthStringLastLength
+// Class:       -
+//              
+// Description:  return player if current and last auth strings are in the same length
+//              
+// Parameters:  void
+//              
+// Returns:     false
+//              
+//================================================================
+bool Player::coop_playerAdminAuthStringChanged()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		if (coopPlayer.adminAuthStringLengthLast != coopPlayer.adminAuthString.length()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerAdminAuthStringLastLengthUpdate
+// Class:       -
+//              
+// Description:  sets player admin auth string last to current auth string
+//              
+// Parameters:  str
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerAdminAuthStringLastLengthUpdate()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthStringLengthLast used in singleplayer\n");
+	}
+	coopPlayer.adminAuthStringLengthLast = coopPlayer.adminAuthString.length();
+}
+
+//========================================================[b60014]
 // Name:        coop_playerAdminAuthStarted
 // Class:       -
 //              
@@ -221,9 +261,9 @@ int Player::coop_playerSetupTriesCidTime()
 // Name:        coop_playerSetupTriesCidIncremment
 // Class:       -
 //              
-// Description:  Sets Coop setup done for player
+// Description:  Updates time to when next check for cid
 //              
-// Parameters:  bool
+// Parameters:  void
 //              
 // Returns:     void
 //              
@@ -237,14 +277,14 @@ void Player::coop_playerSetupTriesCidTimeUpdate()
 }
 
 //========================================================[b60014]
-// Name:        coop_playerSetupComplete
+// Name:        coop_playerSetupTriesCid
 // Class:       -
 //              
 // Description:  Returns number of tried for coop player setup
 //              
 // Parameters:  void
 //              
-// Returns:     bool
+// Returns:     int
 //              
 //================================================================
 int Player::coop_playerSetupTriesCid()
@@ -275,14 +315,14 @@ void Player::coop_playerSetupTriesCidIncremment()
 }
 
 //========================================================[b60014]
-// Name:        coop_playerSetupComplete
+// Name:        coop_playerSetupTries
 // Class:       -
 //              
-// Description:  Returns number of tried for coop player setup
+// Description:  Returns number of tries for coop player setup
 //              
 // Parameters:  void
 //              
-// Returns:     bool
+// Returns:     int
 //              
 //================================================================
 int Player::coop_playerSetupTries()
@@ -316,7 +356,7 @@ void Player::coop_playerSetupTriesIncremment()
 // Name:        coop_playerSetupComplete
 // Class:       -
 //              
-// Description:  Sets Coop setup done for player
+// Description:  Sets Coop setup complete status for player
 //              
 // Parameters:  bool
 //              
@@ -444,7 +484,7 @@ void Player::coop_playerThinkDetectCoop()
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_playerThinkLogin
+// Name:        coop_playerThinkLogin
 // Class:       -
 //              
 // Description: Handles weapons load from script in singleplayer
@@ -460,10 +500,10 @@ void Player::coop_playerThinkLogin()
 	if (coop_playerAdminAuthStarted() && !coop_playerAdmin()) {
 		//exit here if there is no new input
 		//using coopinput / G_coopInput to grab and construct input
-		if (coopPlayer.adminAuthStringLengthLast == coop_playerAdminAuthString().length()) {
+		if (!coop_playerAdminAuthStringChanged()) {
 			return;
 		}
-		coopPlayer.adminAuthStringLengthLast = coop_playerAdminAuthString().length();
+		coop_playerAdminAuthStringLastLengthUpdate();
 
 		//the coop_admin cvar is empty, can't log in then
 		str sCvar = "";
