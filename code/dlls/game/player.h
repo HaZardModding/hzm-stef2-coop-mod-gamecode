@@ -1896,7 +1896,6 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveFloat(&coopPlayer.lastTimeNeutralized);			//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lastTimeRevived);				//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lastTimeUsing);					//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeTransported);			//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveBool(&coopPlayer.startedVote);						//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveString(&coopPlayer.transportUnholster);			//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveString(&coopPlayer.transportUnholsterWeaponName);	//used in multiplayer only - not relevant for zingleplaya

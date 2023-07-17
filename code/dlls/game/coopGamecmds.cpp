@@ -1032,11 +1032,15 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 
 	//[b60014] chrissstrahl - add spam protection
 	//deny usage of command if player executed command to quickly
-	if ((coop_returnEntityFloatVar((Entity*)player,"!transport") + 3) > level.time) {
+	if ((coop_returnEntityFloatVar((Entity*)player, "!transport") + 5) > level.time) {
+		if (coop_checkPlayerLanguageGerman(player)) {
+			player->hudPrint("^5Coop:^8 Ihr mobiler ^3Heisenberg Kompensator rekalibriert^8 gerade, bitte warten!\n");
+		}
+		else {
+			player->hudPrint("^5Coop:^8 Your mobile ^3Heisenberg Compensator is recalibrating^8, please wait!\n");
+		}
 		return true;
 	}
-	player->entityVars.SetVariable("!transport", level.time);
-
 
 	//coop only command
 	if (!game.coop_isActive) {
@@ -1046,16 +1050,6 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 
 	//deny request during cinematic and in spec [b607] chrissstrahl - moved health check here
 	if (sv_cinematic->integer || multiplayerManager.isPlayerSpectator(player) || player->health <= 0) {
-		return true;
-	}
-	//deny beaming when to fast
-	if (player->coopPlayer.lastTimeTransported + 3 > level.time) {
-		if (coop_checkPlayerLanguageGerman(player)) {
-			player->hudPrint("^5Coop:^8 Ihr mobiler ^3Heisenberg Kompensator rekalibriert^8 (2 sek) gerade, bitte warten!\n");
-		}
-		else {
-			player->hudPrint("^5Coop:^8 Your mobile ^3Heisenberg Compensator is recalibrating^8 (2 sec), please wait!\n");
-		}
 		return true;
 	}
 
@@ -1155,8 +1149,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	//hzm coop mod chrissstrahl - make sure players do not get stuck inside each other
 	player->_makeSolidASAP = true;
 
-	//remember tarnsport time
-	player->coopPlayer.lastTimeTransported = level.time;
+	player->entityVars.SetVariable("!transport", level.time);
 
 	//holster weapon, prevent beam killing
 	weaponhand_t	hand = WEAPON_ANY;//get player weapon, we might want to utilize that further

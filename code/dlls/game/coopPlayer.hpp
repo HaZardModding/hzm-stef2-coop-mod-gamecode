@@ -89,13 +89,14 @@ public:
 	//hzm coop mod chrissstrahl - used to store if a medic was notified to heal this now critically injured player
 	str		lastTargetedClassSend = "";
 
-	//hzm coop mod chrissstrahl - keep track of the objective blips from the radar - so that it will only be resend if nessary
+	//keep track of the objective blips from the radar - so that it will only be resend if nessary
 	bool	radarBlipActive[COOP_RADAR_MAX_BLIPS];
 	bool	radarSelectedActive = false;
 	Vector	radarBlipLastPosition[COOP_RADAR_MAX_BLIPS];
-	//bool	radarFirstResetDone = false
-	//bool	radarBlipSetInactive[COOP_RADAR_MAX_BLIPS];
-	
+	//hzm coop mod chrissstrahl - used to saveoff the player his last radar update time
+	float	lastTimeRadarUpdated = 0.0f;
+	//hzm coop mod chrissstrahl - used to saveoff the player his last transmitted radar angle
+	int		lastRadarAngle = 0;
 
 	//hzm coop mod chrissstrahl - used to store last player mass value, needed to restore it after player has been revived
 	int		lastMass = 0;
@@ -112,10 +113,7 @@ public:
 	float	lastTimeSpawned = -998.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last think time
 	float	lastTimeThink = -997.0f;
-	//hzm coop mod chrissstrahl - used to saveoff the player his last radar update time
-	float	lastTimeRadarUpdated = 0.0f;
-	//hzm coop mod chrissstrahl - used to saveoff the player his last transmitted radar angle
-	int		lastRadarAngle = 0;
+
 	//hzm coop mod chrissstrahl - used to saveoff the player his last class change time
 	float	lastTimeAppliedClass = -996.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last class info update time
@@ -144,8 +142,6 @@ public:
 	bool	showTargetedEntity = false;
 	//hzm coop mod chrissstrahl - keeps track of last targeted entity its class
 	str		lastTargetedEntityClass = "";
-	//hzm coop mod chrissstrahl - keeps track of when the player last used !transport
-	float	lastTimeTransported = -991.0f;
 	//hzm coop mod chrissstrahl - remember when player pressed escape during this cinematic
 	float	lastTimeSkipCinematic = -990.0f;
 	//hzm coop mod chrissstrahl - remember when player caused the last time a message to the hud, prevent him from spamming, used for events like rejoining when dead in lms and so forth
