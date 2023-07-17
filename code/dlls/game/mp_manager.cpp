@@ -1821,6 +1821,11 @@ void MultiplayerManager::score( Player *player )
 	if ( !_inMultiplayerGame )
 		return;
 
+	//[b60014] chrissstrahl -  do not force the scoreboard when player is dead (show only for a few sec), also show "Press fire to spawn" hud
+	if (player->coop_playerScore()) {
+		return;
+	}
+
 	// Tell the game to send the current score to the player
 
 	_multiplayerGame->score( player );

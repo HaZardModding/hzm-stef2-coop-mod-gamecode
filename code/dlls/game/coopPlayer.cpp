@@ -614,6 +614,33 @@ bool Player::coop_playerSetupComplete()
 	return true;
 }
 
+//========================================================[b60014]
+// Name:        coop_playerScore
+// Class:       -
+//              
+// Description:  handles player score command in coop, removes score hud after few sec and shows press fire to spawn hud
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_playerScore()
+{
+	if (!multiplayerManager.inMultiplayer() || !game.coop_isActive || health > 0 || (coop_playerDiedLast() + 10) > level.time) { return false; }
+	
+	if (!this->coopPlayer.clickFireHudActive) {
+		this->coopPlayer.clickFireHudActive = true;
+		gi.SendServerCommand(this->entnum, "stufftext \"-objectives_score\"\n");
+		
+		//Show Press Fire to Spawn Hud - but only if he really could (LMS!)
+		if (this->coop_getInstalled() && coop_playerSpawnLms(this)) {
+			this->addHud("coop_fireToSpawn");
+		}
+	}
+	return true;
+}
+
 //================================================================
 // Name:        coop_playerThinkDetectCoopId
 // Class:       -

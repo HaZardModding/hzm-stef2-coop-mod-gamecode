@@ -203,6 +203,7 @@ class Player : public Sentient
 		void				coop_playerThinkLogin();
 		void				coop_playerThinkDetectCoop();
 		void				coop_playerThinkDetectCoopId();
+		bool				coop_playerScore();
 		void				coop_playerSetupComplete(bool bComplete);
 		bool				coop_playerSetupComplete();
 		int					coop_playerSetupTries();
