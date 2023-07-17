@@ -220,7 +220,10 @@ class Player : public Sentient
 		void				coop_playerAdminAuthStarted(str sAuth);
 		bool				coop_playerAdminAuthStringChanged();
 		void				coop_playerAdminAuthStringLastLengthUpdate();
-		
+		int					coop_playerAdminAuthAttempts();
+		void				coop_playerAdminAuthAttemptsUpdate();
+		void				coop_playerAdminAuthAttemptsReset();
+
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);
 		void				cancelPuzzle(); //[b60012] chrissstrahl - allow cancellation of puzzles (used when player recives damade from sentients while modulating)

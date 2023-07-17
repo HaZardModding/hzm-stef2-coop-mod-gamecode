@@ -76,7 +76,7 @@ private:
 	str adminAuthString = "";
 	bool adminAuthStarted = false;
 	int adminAuthStringLengthLast = 0;
-	short int adminAuthAtempts = 0;
+	short int adminAuthAttempts = 0;
 public:
 
 

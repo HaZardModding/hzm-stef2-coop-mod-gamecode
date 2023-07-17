@@ -85,6 +85,65 @@ bool Player::coop_playerCheckAdmin()
 }
 
 //========================================================[b60014]
+// Name:        coop_playerAdminAuthAttempts
+// Class:       -
+//              
+// Description:  returns failed attempts of player using !login
+//              
+// Parameters:  void
+//              
+// Returns:     int
+//              
+//================================================================
+int Player::coop_playerAdminAuthAttempts()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		return 9999;
+	}
+	return coopPlayer.adminAuthAttempts;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerAdminAuthAttemptsUpdate
+// Class:       -
+//              
+// Description:  counts up failed attempts of player trying to use !login
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerAdminAuthAttemptsUpdate()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthAttempts used in singleplayer\n");
+		return;
+	}
+	coopPlayer.adminAuthAttempts++;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerAdminAuthAttemptsUpdateReset
+// Class:       -
+//              
+// Description:  reset failed attempts of player trying to use !login
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerAdminAuthAttemptsReset()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthAttempts used in singleplayer\n");
+		return;
+	}
+	coopPlayer.adminAuthAttempts = 0;
+}
+
+//========================================================[b60014]
 // Name:        coop_playerAdminAuthStringLastLength
 // Class:       -
 //              
@@ -92,7 +151,7 @@ bool Player::coop_playerCheckAdmin()
 //              
 // Parameters:  void
 //              
-// Returns:     false
+// Returns:     bool
 //              
 //================================================================
 bool Player::coop_playerAdminAuthStringChanged()
@@ -120,6 +179,7 @@ void Player::coop_playerAdminAuthStringLastLengthUpdate()
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthStringLengthLast used in singleplayer\n");
+		return;
 	}
 	coopPlayer.adminAuthStringLengthLast = coopPlayer.adminAuthString.length();
 }
@@ -158,6 +218,7 @@ void Player::coop_playerAdminAuthStarted(str sAuth)
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthStarted used in singleplayer\n");
+		return;
 	}
 	coopPlayer.adminAuthStarted = sAuth;
 }
@@ -196,6 +257,7 @@ void Player::coop_playerAdminAuthString(str sAuth)
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthString used in singleplayer\n");
+		return;
 	}
 	coopPlayer.adminAuthString = sAuth;
 }
@@ -234,6 +296,7 @@ void Player::coop_playerAdmin(bool bAdmin)
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.admin used in singleplayer\n");
+		return;
 	}
 	coopPlayer.admin = bAdmin;
 }
@@ -272,6 +335,7 @@ void Player::coop_playerSetupTriesCidTimeUpdate()
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTriesCidCheckTime used in singleplayer\n");
+		return;
 	}
 	coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
 }
@@ -310,6 +374,7 @@ void Player::coop_playerSetupTriesCidIncremment()
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTriesCid used in singleplayer\n");
+		return;
 	}
 	coopPlayer.setupTriesCid++;
 }
@@ -348,6 +413,7 @@ void Player::coop_playerSetupTriesIncremment()
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTries used in singleplayer\n");
+		return;
 	}
 	coopPlayer.setupTries++;
 }
@@ -367,6 +433,7 @@ void Player::coop_playerSetupComplete(bool bComplete)
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupComplete used in singleplayer\n");
+		return;
 	}
 	coopPlayer.setupComplete = bComplete;
 }
@@ -520,8 +587,8 @@ void Player::coop_playerThinkLogin()
 
 		//login succsessful
 		if (coop_playerAdminAuthString() == sCvar) {
-			coopPlayer.admin = true;
-			coopPlayer.adminAuthAtempts = 0;
+			coop_playerAdmin(true);
+			coopPlayer.adminAuthAttempts = 0;
 			coop_playerAdminAuthStarted(false);
 			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login succsessful - Accsess granted!\n").c_str()));
 			//ePlayer.playsound( "sound/environment/computer/lcars_yes.wav" ,1);
@@ -530,12 +597,12 @@ void Player::coop_playerThinkLogin()
 
 		//login failed
 		if (coop_playerAdminAuthString().length() > 9) {
-			coopPlayer.adminAuthAtempts++;
+			coopPlayer.adminAuthAttempts++;
 			coop_playerAdminAuthString("");
 			DelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login failed - Accsess denied!\n").c_str()));
 			//gi.SendServerCommand(entnum,"stufftext \"playsound sound/environment/computer/access_denied.wav\"\n");
 
-			if (coopPlayer.adminAuthAtempts > 5) {
+			if (coopPlayer.adminAuthAttempts > 5) {
 				gi.SendConsoleCommand(va("kick %d\n",entnum));
 			}
 			return;
