@@ -155,8 +155,8 @@ int Player::coop_playerAdminAuthAttempts()
 //================================================================
 void Player::coop_playerAdminAuthAttemptsUpdate()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthAttempts used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthAttempts Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.adminAuthAttempts++;
@@ -175,8 +175,8 @@ void Player::coop_playerAdminAuthAttemptsUpdate()
 //================================================================
 void Player::coop_playerAdminAuthAttemptsReset()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthAttempts used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthAttempts Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.adminAuthAttempts = 0;
@@ -216,8 +216,8 @@ bool Player::coop_playerAdminAuthStringChanged()
 //================================================================
 void Player::coop_playerAdminAuthStringLastLengthUpdate()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthStringLengthLast used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthStringLengthLast Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.adminAuthStringLengthLast = coopPlayer.adminAuthString.length();
@@ -255,8 +255,8 @@ bool Player::coop_playerAdminAuthStarted()
 //================================================================
 void Player::coop_playerAdminAuthStarted(str sAuth)
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthStarted used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthStarted Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.adminAuthStarted = sAuth;
@@ -294,8 +294,8 @@ str Player::coop_playerAdminAuthString()
 //================================================================
 void Player::coop_playerAdminAuthString(str sAuth)
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthString used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.adminAuthString Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.adminAuthString = sAuth;
@@ -333,8 +333,8 @@ bool Player::coop_playerAdmin()
 //================================================================
 void Player::coop_playerAdmin(bool bAdmin)
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.admin used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.admin Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.admin = bAdmin;
@@ -372,8 +372,8 @@ int Player::coop_playerSetupTriesCidTime()
 //================================================================
 void Player::coop_playerSetupTriesCidTimeUpdate()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTriesCidCheckTime used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTriesCidCheckTime Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.setupTriesCidCheckTime = (level.time + 0.15f);
@@ -411,8 +411,8 @@ int Player::coop_playerSetupTriesCid()
 //================================================================
 void Player::coop_playerSetupTriesCidIncremment()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTriesCid used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTriesCid Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.setupTriesCid++;
@@ -450,8 +450,8 @@ int Player::coop_playerSetupTries()
 //================================================================
 void Player::coop_playerSetupTriesIncremment()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTries used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupTries Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.setupTries++;
@@ -470,8 +470,8 @@ void Player::coop_playerSetupTriesIncremment()
 //================================================================
 void Player::coop_playerSetupComplete(bool bComplete)
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupComplete used in singleplayer\n");
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.setupComplete Access VIOLATION!\n");
 		return;
 	}
 	coopPlayer.setupComplete = bComplete;
