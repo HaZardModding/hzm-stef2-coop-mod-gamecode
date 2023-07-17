@@ -79,7 +79,7 @@ void coop_modelDisplayInjuredSprite( Player *player )
 			Entity *eAttached;
 			eAttached = coop_returnEntityAttachedByTargetname( ( Entity * )player , "globalCoop_playerInjured" );
 
-			if ( eAttached && player->coopPlayer.neutralized == true ){
+			if ( eAttached && player->coop_playerNeutralized()){
 				player->removeAttachedModelByTargetname( "globalCoop_playerInjured" );
 				player->coopPlayer.injuredSymbolVisible = false;
 			}
@@ -103,7 +103,7 @@ void coop_modelDisplayInjuredSprite( Player *player )
 				attachEvent->AddString( "sysimg/icons/items/rune_deathquad.spr" );
 
 				//hover above head when down
-				if ( player->coopPlayer.neutralized == true ){
+				if ( player->coop_playerNeutralized() ){
 					attachEvent->AddString( "tag_head" );
 					vAttachOffset[2] = 30.0f;
 				}

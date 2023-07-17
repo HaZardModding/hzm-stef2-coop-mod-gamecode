@@ -212,9 +212,9 @@ void Actor::coop_Killed(Player *player)
 	multiplayerManager.addKills(player->entnum, 1);
 
 	//hzm coop mod chrissstrahl, if player is down, this is his chance to get up again
-	if (player->coopPlayer.neutralized == true)
+	if (player->coop_playerNeutralized())
 	{
-		player->coopPlayer.neutralized = false;
+		player->coop_playerNeutralized(false);
 		player->health = (player->max_health / 2);
 		player->disableUseWeapon(false);
 		player->coopPlayer.reviveCounter = 0;

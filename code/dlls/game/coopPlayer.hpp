@@ -76,16 +76,13 @@ private:
 	short	adminAuthAttempts = 0;
 	//used to store player Anonymous idendity! Don't want admins have to much power, seen it far to often to go wrong
 	str		coopId = "";
+	//used to signal the game that this player is currently neutralized
+	bool	neutralized = false;
 public:
 
 
 	//hzm coop mod chrissstrahl - used to store if a medic was notified to heal this now critically injured player
 	str		lastTargetedClassSend = "";
-
-	//hzm coop mod chrissstrahl - used to store previouse health status//float	previouseHealth;
-
-	//hzm coop mod chrissstrahl - used to signal the game that this player is currently neutralized
-	bool	neutralized = false;
 
 	//hzm coop mod chrissstrahl - keep track of the objective blips from the radar - so that it will only be resend if nessary
 	bool	radarBlipActive[COOP_RADAR_MAX_BLIPS];

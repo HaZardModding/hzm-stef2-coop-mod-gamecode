@@ -5615,7 +5615,7 @@ void Player::CheckGround( void )
 	Pmove_GroundTrace( &pm );
 	GetMoveInfo( &pm );
 	//hzm coop mod chrissstrahl - set bbox size to a minimal height so that we can actually use that player without having to crouch our self
-	if ( game.coop_isActive && !multiplayerManager.isPlayerSpectator( this ) && this->coopPlayer.neutralized ){
+	if ( game.coop_isActive && !multiplayerManager.isPlayerSpectator( this ) && coop_playerNeutralized()){
 		this->setSize( Vector( -22 , -22 , 0 ) , Vector( 22 , 22 , 62 ) );//use 62, because we can then still jump on the player
 	}
 }
@@ -6426,7 +6426,7 @@ void Player::ClientMoveFlagsAndSpeeds( int moveSpeed , int noclipSpeed , int cro
 	}
 
 	//hzm coop mod chrissstrahl - coop and player is neutralized, so do not allow him to move or stand up
-	if ( game.coop_isActive == true && this->coopPlayer.neutralized == true ){
+	if ( game.coop_isActive && coop_playerNeutralized()){
 		client->ps.pm_flags |= PMF_DUCKED;
 		client->ps.speed = 0;
 

@@ -223,6 +223,8 @@ class Player : public Sentient
 		int					coop_playerAdminAuthAttempts();
 		void				coop_playerAdminAuthAttemptsUpdate();
 		void				coop_playerAdminAuthAttemptsReset();
+		bool				coop_playerNeutralized();
+		void				coop_playerNeutralized(bool bNeutralized);
 
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);
@@ -1903,20 +1905,19 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveString(&coopPlayer.coopId);
 	//arc.ArchiveBool(&coopPlayer.armoryNeedstoBeEquiped);	//only used in singleplayer to prevent loss of inventory caused by code alterations - this might be fixable else where
 	//arc.ArchiveFloat(&coopPlayer.lastTimeChangedClass);
-	
+	//arc.ArchiveBool(&coopPlayer.neutralized);
+
 	arc.ArchiveSafePointer(&last_entityTargeted);
 	arc.ArchiveString(&kill_thread);
 	arc.ArchiveString(&coopPlayer.lastScanSendData);
 	arc.ArchiveBool(&coopPlayer.showTargetedEntity);		
-	//these should be reviewd properly - I was in a hurry so I added em anyway
-	arc.ArchiveBool(&coopPlayer.neutralized);
+	//these should be reviewed properly - I was in a hurry so I added em anyway
 	arc.ArchiveBool(&coopPlayer.scanning);
 	arc.ArchiveBool(&coopPlayer.scanHudActive);
 	arc.ArchiveFloat(&coopPlayer.lastTimeThink);
 	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
 	arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
-	
 	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);
 	arc.ArchiveFloat(&coopPlayer.diedLast);
 	arc.ArchiveFloat(&coopPlayer.timeEntered);

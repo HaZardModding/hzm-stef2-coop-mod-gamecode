@@ -85,6 +85,45 @@ bool Player::coop_playerCheckAdmin()
 }
 
 //========================================================[b60014]
+// Name:        coop_playerNeutralized
+// Class:       -
+//              
+// Description:  returns if player is currently neutralized or not
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_playerNeutralized()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		return false;
+	}
+	return coopPlayer.neutralized;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerNeutralized
+// Class:       -
+//              
+// Description:  sets if player is currently neutralized or not
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerNeutralized(bool bNeutralized)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.neutralized Access VIOLATION!\n");
+		return;
+	}
+	coopPlayer.neutralized = bNeutralized;
+}
+
+//========================================================[b60014]
 // Name:        coop_playerAdminAuthAttempts
 // Class:       -
 //              
@@ -1881,7 +1920,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		if ( game.coop_gametype == 1 ){
 			//keep alive
 			playerPrey->health = 1;
-			if ( playerPrey->coopPlayer.neutralized ){
+			if ( playerPrey->coop_playerNeutralized()){
 				return false;
 			}
 			//this should make the ai ignore this player
@@ -1893,7 +1932,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 			playerPrey->mass = 9999;
 
 			//used to signal the game that this player is currently neutralized
-			playerPrey->coopPlayer.neutralized = true;
+			playerPrey->coop_playerNeutralized(true);
 			// Give the player the phaser, just to be safe
 			playerPrey->giveItem( "models/weapons/worldmodel-phaser-stx.tik" );
 			//use phaser when neutralized
@@ -2510,7 +2549,7 @@ void coop_playerThink( Player *player )
 		}
 
 		if ( player->health > 1 ){
-			player->coopPlayer.neutralized = false;
+			player->coop_playerNeutralized(false);
 			player->disableUseWeapon( false );
 		//do no longer ignore this player
 			if ( ( player->flags & FL_NOTARGET ) ){
