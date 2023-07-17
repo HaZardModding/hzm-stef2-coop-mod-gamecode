@@ -43,8 +43,7 @@ public:
 	float	installedCheckTime = 0.0f;
 	//hzm coop mod chrissstrahl - used to determin which version the player has of the coop mod
 	int		installedVersion = 0;
-	//hzm coop mod chrissstrahl - used to determin if player has coop mod installed or not
-	int		installed = 0;
+
 	//hzm coop mod chrissstrahl - used to determin what class the player does have
 	str		className = "";
 	//hzm coop mod chrissstrahl - used to store player Anonymous idendity! Don't want admins have to much power, seen it far to often to go wrong
@@ -61,22 +60,24 @@ public:
 	int		deathViewangleY = 0;
 
 
-	//[b60014] chrissstrahl - moved here to make sure it is not illegally accsessed
+//[b60014] chrissstrahl - moved here to make sure it is not illegally accessed
 private:
+	//used to determin if player has coop mod installed or not
+	int		installed = 0;
 	//used to count how many tries happened to check player for coop mod
 	int		setupTries = 0;
 	//used to check if player has a coopid, within a certain timeframe
-	float setupTriesCidCheckTime = 0.0f;
+	float	setupTriesCidCheckTime = 0.0f;
 	//used to save if player setup is complete
 	bool	setupComplete = false;
 	//used for coopID detection setup timeout in coopPlayerThink()
-	int setupTriesCid = 0;
+	int		setupTriesCid = 0;
 	//[b60014] chrissstrahl - used for admin login
-	bool admin = false;
-	str adminAuthString = "";
-	bool adminAuthStarted = false;
-	int adminAuthStringLengthLast = 0;
-	short int adminAuthAttempts = 0;
+	bool	admin = false;
+	str		adminAuthString = "";
+	bool	adminAuthStarted = false;
+	int		adminAuthStringLengthLast = 0;
+	short	adminAuthAttempts = 0;
 public:
 
 
@@ -184,8 +185,6 @@ public:
 	EntityPtr ePlacable = NULL;
 	//[b60011] chrissstrahl - used to keep track of the class ability of a player to place a class specific station
 	EntityPtr eClassPlacable = NULL;
-	//[b60011] chrissstrahl - cooldown for taunts
-	float tauntCooldownTime = 0.0f;
 	//[b60011] chrissstrahl - collision
 	float callange_LastCollisionTime = 0.0f;
 	//[b60011] chrissstrahl - disable ability to change class
