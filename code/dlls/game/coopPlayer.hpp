@@ -81,6 +81,8 @@ private:
 	float	diedLast = -985.0f;
 	//inventory and health status to compare if the ini file should be updated
 	str		coopStatus = "";
+	//contains the current cyle the 
+	int		objectivesCycle = -994;
 public:
 
 
@@ -120,7 +122,6 @@ public:
 	float	lastTimeUpdatedClassStat = -995.0f;
 	//hzm coop mod chrissstrahl - used to save when the player has recived the last time the mission objectives
 	float	lastTimeUpdatedObjectives = -1.0f;
-	int		objectivesCycle = -994;
 	//[b60011] chrissstrahl - when the Missionobjectives Title text was last printed
 	float	lastTimePrintedObjectivesTitle = -1.0f;
 	//hzm coop mod chrissstrahl - used to save when the player was used the last time by another player

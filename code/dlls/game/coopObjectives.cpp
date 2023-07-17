@@ -327,8 +327,8 @@ void coop_objectivesUpdatePlayer( Player* player )
 	if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() && player->coop_playerSetupComplete() ){
 		//if (player->coopPlayer.lastTimeUpdatedObjectives != game.coop_objectiveLastUpdate && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
 			//player->coopPlayer.lastTimeUpdatedObjectives = game.coop_objectiveLastUpdate;
-		if (player->coopPlayer.objectivesCycle != game.coop_objectiveCycle && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
-			player->coopPlayer.objectivesCycle = game.coop_objectiveCycle;
+		if (!player->coop_playerObjectivesCycleEqual() && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
+			player->coop_playerObjectivesCycleUpdate();
 
 			coop_objectivesNotify( player );
 			

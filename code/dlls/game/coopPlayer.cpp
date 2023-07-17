@@ -85,6 +85,46 @@ bool Player::coop_playerCheckAdmin()
 }
 
 //========================================================[b60014]
+// Name:        coop_playerObjectivesCycleEqual
+// Class:       -
+//              
+// Description:  check if player is up to date on the latest objectives
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_playerObjectivesCycleEqual()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return true;
+	}
+
+	return (coopPlayer.objectivesCycle == game.coop_objectiveCycle) ? true : false;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerObjectivesCycleUpdate
+// Class:       -
+//              
+// Description:  sets player objectives as up to date
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerObjectivesCycleUpdate()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.objectivesCycle Access VIOLATION!\n");
+		return;
+	}
+	coopPlayer.objectivesCycle = game.coop_objectiveCycle;
+}
+
+//========================================================[b60014]
 // Name:        coop_playerStatus
 // Class:       -
 //              
@@ -109,7 +149,7 @@ str Player::coop_playerCoopStatus()
 //              
 // Description:  sets player status used for restoring upon reconnect
 //              
-// Parameters:  float
+// Parameters:  str
 //              
 // Returns:     void
 //              
@@ -143,12 +183,12 @@ float Player::coop_playerDiedLast()
 }
 
 //========================================================[b60014]
-// Name:        coop_playerDiedLast
+// Name:        coop_playerDiedLastUpdate
 // Class:       -
 //              
 // Description:  sets level.time player died last
 //              
-// Parameters:  float
+// Parameters:  void
 //              
 // Returns:     void
 //              
