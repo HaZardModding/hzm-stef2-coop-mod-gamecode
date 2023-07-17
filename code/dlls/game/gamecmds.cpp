@@ -741,16 +741,20 @@ qboolean G_TauntCmd( const gentity_t *ent )
 	{
 		Player *player = (Player *)ent->entity;
 
+		float fLastTauntTime = 0;
+		ScriptVariable* entityData = NULL;
+		entityData = player->entityVars.GetVariable("_mpTauntCool");
+		if (entityData != NULL) { fLastTauntTime = entityData->floatValue(); }
+
 		//[b60011] chrissstrahl - set a cooldown time for taunt - also don't play during cinematic
-		if (level.cinematic || player->coopPlayer.tauntCooldownTime > level.time) {
+		if (level.cinematic || fLastTauntTime > level.time) {
 			return true;
 		}
 
 		if ( multiplayerManager.inMultiplayer() && !multiplayerManager.isPlayerSpectator( player ) )
 		{
 			//[b60011] chrissstrahl - update a cooldown time for taunt
-			player->coopPlayer.tauntCooldownTime = (level.time + 5.0f);
-			//player->hudPrint(va("G_TauntCmd: %f -> %f\n", player->coopPlayer.tauntCooldownTime,level.time));
+			player->entityVars.SetVariable("_mpTauntCool", level.time);
 
 			//ent->entity->Sound( tauntName, CHAN_TAUNT, DEFAULT_VOL, LEVEL_WIDE_MIN_DIST );
 			ent->entity->Sound( tauntName, CHAN_TAUNT, DEFAULT_VOL, 250.0f );
