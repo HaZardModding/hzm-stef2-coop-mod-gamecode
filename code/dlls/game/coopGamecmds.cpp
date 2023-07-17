@@ -80,19 +80,14 @@ qboolean G_coopCom_block(const gentity_t* ent)
 	}
 
 	//[b60014] chrissstrahl - prevent spamming
+	constexpr auto COOP_COOLDOWN_CMD_BLOCK = 9;
 	//deny usage of command if player executed command to quickly
-	if ((coop_returnEntityFloatVar((Entity*)player, "!block") + 3) > level.time) {
+	float fCoolDownTime = coop_returnEntityFloatVar((Entity*)player, "!block");
+	if ((fCoolDownTime + COOP_COOLDOWN_CMD_BLOCK) > level.time) {
+		player->hudPrint(va("^5!hudprint^8, has a Cooldown please wait %d sec\n",((fCoolDownTime + COOP_COOLDOWN_CMD_BLOCK) - level.time )));
 		return true;
 	}
 	player->entityVars.SetVariable("!block", level.time);
-
-
-
-	//[b60011] chrissstrahl - set a cooldown time for !block
-	if (player->coopPlayer.cmdBlockCooldownTime > (level.time + 9)) {
-		return true;
-	}
-	player->coopPlayer.cmdBlockCooldownTime += (level.time + 3);
 	
 	//hzm coop mod chrissstrahl - allow to walk trugh a player that is currently blocking, this player needs to aim at the blocking player
 	Entity* target;

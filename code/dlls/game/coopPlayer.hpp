@@ -186,8 +186,6 @@ public:
 	EntityPtr eClassPlacable = NULL;
 	//[b60011] chrissstrahl - cooldown for taunts
 	float tauntCooldownTime = 0.0f;
-	//[b60011] chrissstrahl - cooldown for !block
-	float cmdBlockCooldownTime = 0.0f;
 	//[b60011] chrissstrahl - collision
 	float callange_LastCollisionTime = 0.0f;
 	//[b60011] chrissstrahl - disable ability to change class
