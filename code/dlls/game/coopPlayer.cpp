@@ -137,7 +137,7 @@ void Player::coop_playerObjectivesCycleUpdate()
 //================================================================
 str Player::coop_playerCoopStatus()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
 		return "";
 	}
 	return coopPlayer.coopStatus;
@@ -176,7 +176,7 @@ void Player::coop_playerCoopStatus(str sStatus)
 //================================================================
 float Player::coop_playerDiedLast()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
 		return -1.0f;
 	}
 	return coopPlayer.diedLast;
@@ -215,7 +215,7 @@ void Player::coop_playerDiedLastUpdate()
 //================================================================
 bool Player::coop_playerNeutralized()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
 		return false;
 	}
 	return coopPlayer.neutralized;
@@ -254,7 +254,7 @@ void Player::coop_playerNeutralized(bool bNeutralized)
 //================================================================
 int Player::coop_playerAdminAuthAttempts()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
 		return 9999;
 	}
 	return coopPlayer.adminAuthAttempts;
