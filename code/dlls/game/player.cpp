@@ -14250,7 +14250,7 @@ str	Player::GetCurrentCallVolume()
 void Player::Score( Event *ev )
 {
 	//[b607] chrissstrahl - do not force the scoreboard when player is dead (show only for a few sec)
-	if (game.coop_isActive && this->health <= 0.0f && (this->coopPlayer.diedLast + 10) < level.time) {
+	if (game.coop_isActive && this->health <= 0.0f && (coop_playerDiedLast() + 10) < level.time) {
 		if (!this->coopPlayer.clickFireHudActive) {
 			this->coopPlayer.clickFireHudActive = true;
 			gi.SendServerCommand(this->entnum, "stufftext \"-objectives_score\"\n");

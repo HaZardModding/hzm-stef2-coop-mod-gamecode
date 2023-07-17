@@ -85,6 +85,45 @@ bool Player::coop_playerCheckAdmin()
 }
 
 //========================================================[b60014]
+// Name:        coop_playerDiedLast
+// Class:       -
+//              
+// Description:  returns level.time when player died last
+//              
+// Parameters:  void
+//              
+// Returns:     float
+//              
+//================================================================
+float Player::coop_playerDiedLast()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		return -1.0f;
+	}
+	return coopPlayer.diedLast;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerDiedLast
+// Class:       -
+//              
+// Description:  sets level.time player died last
+//              
+// Parameters:  float
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerDiedLastUpdate()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.diedLast Access VIOLATION!\n");
+		return;
+	}
+	coopPlayer.diedLast = level.time;
+}
+
+//========================================================[b60014]
 // Name:        coop_playerNeutralized
 // Class:       -
 //              
@@ -1867,7 +1906,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	localtime( &result );
 	playerPrey->coopPlayer.deathTime = ( int )result;
 	//[b607] chrissstrahl - remember when this player died last in this level
-	playerPrey->coopPlayer.diedLast = level.time;
+	playerPrey->coop_playerDiedLastUpdate();
 
 	//[b60011] chrissstrahl - count up deaths
 	playerPrey->coopPlayer.lmsDeaths++;

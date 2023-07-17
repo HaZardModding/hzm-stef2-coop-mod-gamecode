@@ -78,6 +78,8 @@ private:
 	str		coopId = "";
 	//used to signal the game that this player is currently neutralized
 	bool	neutralized = false;
+	//used to store last level.time this player died
+	float diedLast = -985.0f;
 public:
 
 
@@ -164,8 +166,6 @@ public:
 	float lastScanSend = -987.0f;
 	//hzm coop mod chrissstrahl - used to store real time when player last died
 	int deathTime = -986;
-	//[b607] chrissstrahl - used to store last level.time this player died
-	float diedLast = -985.0f;
 	//[b60011] chrissstrahl - used to store deaths this player died during lms
 	int lmsDeaths = 0;
 	//hzm coop mod chrissstrahl - used to store data send 
