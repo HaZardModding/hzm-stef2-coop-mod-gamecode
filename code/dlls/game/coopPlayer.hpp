@@ -42,8 +42,7 @@ public:
 
 	//hzm coop mod chrissstrahl - used to determin what class the player does have
 	str		className = "";
-	//hzm coop mod chrissstrahl - inventory and health status to compare if the ini file should be updated
-	str		coopStatus = "";
+
 	//hzm coop mod chrissstrahl - used to determin if injured symbol is visbile on player
 	bool	injuredSymbolVisible = false;
 	//hzm coop mod chrissstrahl - used to determin if player spawned or respawned
@@ -79,7 +78,9 @@ private:
 	//used to signal the game that this player is currently neutralized
 	bool	neutralized = false;
 	//used to store last level.time this player died
-	float diedLast = -985.0f;
+	float	diedLast = -985.0f;
+	//inventory and health status to compare if the ini file should be updated
+	str		coopStatus = "";
 public:
 
 

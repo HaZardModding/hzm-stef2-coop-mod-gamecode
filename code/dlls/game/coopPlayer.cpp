@@ -85,6 +85,45 @@ bool Player::coop_playerCheckAdmin()
 }
 
 //========================================================[b60014]
+// Name:        coop_playerStatus
+// Class:       -
+//              
+// Description:  returns player status used for restoring upon reconnect
+//              
+// Parameters:  void
+//              
+// Returns:     str
+//              
+//================================================================
+str Player::coop_playerCoopStatus()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		return "";
+	}
+	return coopPlayer.coopStatus;
+}
+
+//========================================================[b60014]
+// Name:        coop_playerStatus
+// Class:       -
+//              
+// Description:  sets player status used for restoring upon reconnect
+//              
+// Parameters:  float
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_playerCoopStatus(str sStatus)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.coopStatus Access VIOLATION!\n");
+		return;
+	}
+	coopPlayer.coopStatus = sStatus;
+}
+
+//========================================================[b60014]
 // Name:        coop_playerDiedLast
 // Class:       -
 //              

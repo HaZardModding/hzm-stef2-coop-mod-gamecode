@@ -227,6 +227,8 @@ class Player : public Sentient
 		void				coop_playerNeutralized(bool bNeutralized);
 		float				coop_playerDiedLast();
 		void				coop_playerDiedLastUpdate();
+		str					coop_playerCoopStatus();
+		void				coop_playerCoopStatus(str sStatus);
 
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);
@@ -1909,7 +1911,8 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveFloat(&coopPlayer.lastTimeChangedClass);
 	//arc.ArchiveBool(&coopPlayer.neutralized);
 	//arc.ArchiveFloat(&coopPlayer.diedLast);
-
+	//arc.ArchiveString(&coopPlayer.coopStatus);
+	
 	arc.ArchiveSafePointer(&last_entityTargeted);
 	arc.ArchiveString(&kill_thread);
 	arc.ArchiveString(&coopPlayer.lastScanSendData);
@@ -1928,7 +1931,7 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer
 	
-	arc.ArchiveString(&coopPlayer.coopStatus);
+	
 	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
 	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);
 	arc.ArchiveSafePointer(&coopPlayer.ePlacable);

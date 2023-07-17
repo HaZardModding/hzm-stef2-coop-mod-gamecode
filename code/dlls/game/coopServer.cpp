@@ -954,11 +954,11 @@ void coop_serverSaveClientDataWrite( Player *player )
 	}
 
 	//data already saved, or coopId is empty, we have no use for data that belongs to no id
-	if (player->coopPlayer.coopStatus == sData) {
+	if (player->coop_playerCoopStatus() == sData) {
 		return;
 	}
 
-	player->coopPlayer.coopStatus = sData;
+	player->coop_playerCoopStatus(sData);
 
 	coop_parserIniSet( coopServer.getServerDataIniFilename() , player->coop_getId(), sData, "client");
 	//gi.Printf( va( "=============================\nSAVED DATA FOR CLIENT: %s\n=============================\n" , sData.c_str() ) );
@@ -1203,10 +1203,10 @@ void coop_serverResetClientData( Player *player )
 	str sData = va("0 0 0 0 0 0");
 
 	//hzm coop mod chrissstrahl - don't save data if already saved
-	if ( player->coopPlayer.coopStatus == sData )
+	if ( player->coop_playerCoopStatus() == sData )
 		return;
 
-	player->coopPlayer.coopStatus = sData;
+	player->coop_playerCoopStatus(sData);
 
 	coop_parserIniSet( coopServer.getServerDataIniFilename() , player->coop_getId(), sData, "client");
 }
