@@ -2015,7 +2015,7 @@ void CThread::getIniDataPlayer(Event* ev)
 
 	Player* player;
 	player = (Player*)entity;
-	sPlayerId = player->coopPlayer.coopId;
+	sPlayerId = player->coop_getId();
 
 	if (ev->NumArgs() > 2) {
 		str sKey;
@@ -2070,7 +2070,7 @@ void CThread::setIniDataPlayer(Event* ev)
 
 	Player* player;
 	player = (Player*)entity;
-	sPlayerId = player->coopPlayer.coopId;
+	sPlayerId = player->coop_getId();
 
 	if (ev->NumArgs() > 2) {
 		str sKey;

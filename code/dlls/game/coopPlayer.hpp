@@ -39,15 +39,9 @@ class CoopPlayer
 public:
 	//hzm coop mod chrissstrahl - used to store chat message limit data
 	float	chatTimeLimit = 0.0f;
-	//hzm coop mod chrissstrahl - used to send the exec command to player within a certain timeframe
-	float	installedCheckTime = 0.0f;
-	//hzm coop mod chrissstrahl - used to determin which version the player has of the coop mod
-	int		installedVersion = 0;
 
 	//hzm coop mod chrissstrahl - used to determin what class the player does have
 	str		className = "";
-	//hzm coop mod chrissstrahl - used to store player Anonymous idendity! Don't want admins have to much power, seen it far to often to go wrong
-	str		coopId = "";
 	//hzm coop mod chrissstrahl - inventory and health status to compare if the ini file should be updated
 	str		coopStatus = "";
 	//hzm coop mod chrissstrahl - used to determin if injured symbol is visbile on player
@@ -62,8 +56,10 @@ public:
 
 //[b60014] chrissstrahl - moved here to make sure it is not illegally accessed
 private:
-	//used to determin if player has coop mod installed or not
+	//used to determin if player has coop mod installed and which version
 	int		installed = 0;
+	int		installedVersion = 0;
+	float	installedCheckTime = 0.0f;
 	//used to count how many tries happened to check player for coop mod
 	int		setupTries = 0;
 	//used to check if player has a coopid, within a certain timeframe
@@ -78,6 +74,8 @@ private:
 	bool	adminAuthStarted = false;
 	int		adminAuthStringLengthLast = 0;
 	short	adminAuthAttempts = 0;
+	//used to store player Anonymous idendity! Don't want admins have to much power, seen it far to often to go wrong
+	str		coopId = "";
 public:
 
 

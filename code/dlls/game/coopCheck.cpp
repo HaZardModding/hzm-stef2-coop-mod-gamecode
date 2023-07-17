@@ -218,26 +218,26 @@ str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId)
 	
 	//if it could be a valid id - acceept it on this server
 	if (sClientId.length() <= 11 && sClientId.length() > 5 && IsNumeric(sClientId)) {
-		player->coopPlayer.coopId = sClientId;
+		player->coop_setId(sClientId);
 	}
 	//make sure it is empty
 	else {
-		player->coopPlayer.coopId = "";
+		player->coop_setId("");
 	}
 
 	//check if it is in ini
 	//client id was provided
-	str sData = coop_parserIniGet(coopServer.getServerDataIniFilename(), sClientId.c_str(), "client");
+	str sData = coop_parserIniGet(coopServer.getServerDataIniFilename(), sClientId, "client");
 	//client id is not known on the server
 	if (!sData.length()) {
 		coop_playerSaveNewPlayerId(player);		
 	}
 	//client is in ini, restore
 	else {
-		player->coopPlayer.coopId = sClientId.c_str();
+		player->coop_setId(sClientId);
 		coop_playerRestore(player);
 	}
-	return player->coopPlayer.coopId;
+	return player->coop_getId();
 }
 
 //================================================================

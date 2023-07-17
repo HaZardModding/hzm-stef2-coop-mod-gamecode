@@ -473,13 +473,13 @@ void Player::coop_playerThinkDetectCoopId()
 	constexpr auto COOP_MAX_ID_CHECK_TRIES = 15;
 
 	//if player has coop or if there was a sufficent ammount of time passed
-	if (!multiplayerManager.inMultiplayer() || coop_playerSetupTriesCid() >= COOP_MAX_ID_CHECK_TRIES || coopPlayer.coopId.length()) {
+	if (!multiplayerManager.inMultiplayer() || coop_playerSetupTriesCid() >= COOP_MAX_ID_CHECK_TRIES || coop_getId().length()) {
 		return;
 	}
 
 	//[b60014] chrissstrahl - don't handle bots
 	if (coop_isBot()) {
-		coopPlayer.coopId = 0;
+		coop_setId("0");
 
 		for (int i = coop_playerSetupTries(); i < (COOP_MAX_ID_CHECK_TRIES + 1); i++) {
 			coop_playerSetupTriesCidIncremment();
@@ -969,7 +969,7 @@ str coop_playerGetDataSegment( Player *player , short int iNumber )
 {
 	str sData;
 	str sSegment = "";
-	sData = coop_parserIniGet( coopServer.getServerDataIniFilename() , player->coopPlayer.coopId , "client" );
+	sData = coop_parserIniGet( coopServer.getServerDataIniFilename() , player->coop_getId(), "client");
 	coop_trimM( sData , " \t\r\n" );
 
 	//[b60012] chrissstrahl - fix missing .c_str()
@@ -1075,7 +1075,7 @@ bool coop_playerSpawnLms( Player *player )
 void coop_playerRestore( Player *player )
 {
 	//[b60012] chrissstrahl - fix missing .c_str()
-	if ( !player || !game.coop_isActive || !Q_stricmp( player->coopPlayer.coopId.c_str(), ""))
+	if ( !player || !game.coop_isActive || !Q_stricmp( player->coop_getId().c_str(), ""))
 		return;
 
 	if ( multiplayerManager.isPlayerSpectator( player ) )
@@ -1111,7 +1111,7 @@ void coop_playerRestore( Player *player )
 		return;
 	}
 
-	str sData = coop_parserIniGet(coopServer.getServerDataIniFilename(), player->coopPlayer.coopId, "client");
+	str sData = coop_parserIniGet(coopServer.getServerDataIniFilename(), player->coop_getId(), "client");
 	//[b60012] chrissstrahl - fix missing .c_str()
 	if (!Q_stricmp(sData.c_str(), "")){
 		return;
@@ -1415,11 +1415,9 @@ void coop_playerGenerateNewPlayerId(Player* player)
 	time(&curTime);
 	str sPlayerId = va("%d%d", (int)curTime, player->entnum);
 
-	gi.Printf(va("\n======================\nSENDING NEW ID TO PLAYER\n%s\n======================\n", player->client->pers.netname));
-	gi.Printf(va("%s\n", sPlayerId.c_str()));
 	//add current client number to make sure we add a absolute uniqe player id
 	//even if two players join at the same instance
-	player->coopPlayer.coopId = sPlayerId.c_str();
+	player->coop_setId(sPlayerId);
 
 	gi.SendServerCommand(player->entnum, va("stufftext \"seta coop_cId 0;set coop_cId coopcid %s\"\n", sPlayerId.c_str()));
 }
@@ -1443,14 +1441,12 @@ void coop_playerSaveNewPlayerId(Player *player)
 	}
 
 	//if player has no id send from his config, generate one
-	if (!player->coopPlayer.coopId.length()) {
+	if (!player->coop_getId().length()) {
 		coop_playerGenerateNewPlayerId(player);
 	}
 
 	//write id of player to server ini
-	coop_parserIniSet(coopServer.getServerDataIniFilename(), player->coopPlayer.coopId, "100 40 0 0 0 0", "client");
-
-	gi.Printf(va("\n======================\nSAVING NEW PLAYER ID\n%s\nFor: %s\n======================\n", player->coopPlayer.coopId.c_str(), player->client->pers.netname));
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), player->coop_getId(), "100 40 0 0 0 0", "client");
 	
 	//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
 	if (multiplayerManager.inMultiplayer()) {

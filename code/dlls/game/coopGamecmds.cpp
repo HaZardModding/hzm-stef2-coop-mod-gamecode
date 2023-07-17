@@ -577,7 +577,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		sInfoPrint += va("Coop Ver.: %i, C-Id: %d\n",player->coop_getInstalledVersion(),player->entnum);
 		sInfoPrint += va("Coop Class: %s\n", player->coopPlayer.className.c_str());
 		sInfoPrint += va("Lang.: %s, Entered: %.2f\n", player->getLanguage().c_str(),player->client->pers.enterTime);
-		sInfoPrint += va("Pers.Id: %s\n", player->coopPlayer.coopId.c_str());
+		sInfoPrint += va("Pers.Id: %s\n", player->coop_getId().c_str());
 	
 		sInfoPrint += "\nSERVER:\n";
 		cvar_t* cvarTemp = gi.cvar_get("local_language");
@@ -618,7 +618,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	player->hudPrint(va("^5Client-Id^8: %d\n", player->entnum));
 
 	player->hudPrint(va("^5Entred game at^8: %.2f, ", player->client->pers.enterTime));
-	player->hudPrint(va("^5Personal Id^8: %s\n", player->coopPlayer.coopId.c_str()));
+	player->hudPrint(va("^5Personal Id^8: %s\n", player->coop_getId().c_str()));
 	
 	player->hudPrint("===SERVER Informations ===\n");
 	player->hudPrint(va("^5Map:^8 %s\n", level.mapname.c_str()));
