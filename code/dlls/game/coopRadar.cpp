@@ -87,7 +87,7 @@ void coop_radarUpdateBlip(Player* player,
 	if (player->client->ps.pm_flags & PMF_CAMERA_VIEW) { // 3rd person automatic camera
 		vorg = player->client->ps.camera_origin;
 	}
-	else if (!player->checkthirdperson()) { // First person
+	else if (!player->ugpPlayerInThirdPerson()) { // First person
 		vorg = player->origin;
 		vorg.z += player->client->ps.viewheight;
 	}

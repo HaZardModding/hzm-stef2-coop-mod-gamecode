@@ -2035,7 +2035,7 @@ void Weapon::Shoot( Event *ev )
 
 		GetMuzzlePosition( &pos, &forward, &right, &up );
 		//if (g_aimviewangles->integer || ( player->client->ps.pm_type == PM_SECRET_MOVE_MODE ) ) // use viewangles to aim instead of player muzzle orientation thing
-		if ((g_aimviewangles->integer && player->checkthirdperson()) || (player->client->ps.pm_type == PM_SECRET_MOVE_MODE)) //[b607] daggolin - fixing +aim not working in first person (still not working in cg_3rd_person)
+		if ((g_aimviewangles->integer && player->ugpPlayerInThirdPerson()) || (player->client->ps.pm_type == PM_SECRET_MOVE_MODE)) //[b607] daggolin - fixing +aim not working in first person (still not working in cg_3rd_person)
 		{
 			vec3_t fwd;
 			AngleVectors(owner->client->ps.viewangles,fwd,NULL,NULL);

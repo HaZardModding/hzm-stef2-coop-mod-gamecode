@@ -334,7 +334,7 @@ class Player : public Sentient
 		void				widgetCommand(str sWidget, str sParameters);
 		//[b607] chrissstrahl
 		void				upgPlayerGetTargetedEntity(Event* ev);
-		qboolean			checkthirdperson();
+		qboolean			ugpPlayerInThirdPerson();
 		//[UNKNOWN VERSION] chrissstrahl
 		void				gamefix_WorldEffects(void);
 		void				getScriptVariablesCommand(Event* ev);
@@ -757,7 +757,7 @@ class Player : public Sentient
 		qboolean			checkincomingmeleeattack( Conditional &condition );
 		qboolean			checkfinishingmove( Conditional &condition );
 		qboolean			checkusingentity( Conditional &condition );
-		qboolean			checkthirdperson( Conditional &condition );
+		qboolean			ugpPlayerInThirdPerson( Conditional &condition );
 		qboolean			checkPropChance( Conditional &condition );
 		qboolean			checkPropExists( Conditional &condition );
 		qboolean			checkEndAnimChain( Conditional &condition );

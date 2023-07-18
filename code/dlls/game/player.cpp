@@ -3379,7 +3379,7 @@ qboolean Player::checkusingentity( Conditional &condition )
 // Returns:			qboolean
 //
 //--------------------------------------------------------------
-qboolean Player::checkthirdperson( Conditional &condition )
+qboolean Player::ugpPlayerInThirdPerson( Conditional &condition )
 {
 	return _isThirdPerson;
 }
@@ -3647,7 +3647,7 @@ Condition<Player> Player::Conditions[] =
 	{ "INCOMING_MELEE" , &Player::checkincomingmeleeattack } ,
 	{ "FINISHINGMOVE" , &Player::checkfinishingmove } ,
 	{ "USINGENTITY" , &Player::checkusingentity } ,
-	{ "IS_THIRDPERSON" , &Player::checkthirdperson } ,
+	{ "IS_THIRDPERSON" , &Player::ugpPlayerInThirdPerson } ,
 	{ "PROP_CHANCE" , &Player::checkPropChance } ,
 	{ "PROP_EXISTS" , &Player::checkPropExists } ,
 	{ "ANIMCHAIN_END" , &Player::checkEndAnimChain } ,

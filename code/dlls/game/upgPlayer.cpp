@@ -196,16 +196,16 @@ void Player::upgPlayerGetTargetedEntity(Event* ev)
 }
 
 //==========================================================[b607]
-// Name:        player::checkthirdperson
+// Name:        player::ugpPlayerInThirdPerson
 // Class:       -
 //              
 // Description: returns if player is in third person or not
 //              
-// Parameters:  event
+// Parameters:  void
 //              
-// Returns:     void
+// Returns:     qboolean
 //================================================================
-qboolean Player::checkthirdperson()
+qboolean Player::ugpPlayerInThirdPerson()
 {
 	return _isThirdPerson;
 }
