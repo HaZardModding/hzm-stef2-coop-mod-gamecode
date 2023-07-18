@@ -28,7 +28,7 @@
 // Returns:     bool
 //              
 //================================================================
-bool Player::coop_isHost()
+bool Player::upgPlayerIsHost()
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
 		return true;

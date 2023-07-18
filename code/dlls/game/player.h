@@ -286,7 +286,7 @@ class Player : public Sentient
 		void				getViewtraceEndpos(Event* ev);
 		void				coop_spEquip();
 		bool				upgPlayerIsBot();
-		bool				coop_isHost();
+		bool				upgPlayerIsHost();
 		void				getUserFov(Event* ev);
 		void				setKillThread(Event* ev);
 		void				killThread();

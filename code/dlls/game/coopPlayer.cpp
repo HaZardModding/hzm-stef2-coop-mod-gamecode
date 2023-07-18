@@ -156,7 +156,7 @@ bool Player::coop_playerCheckAdmin()
 	}
 
 	//[b610] chrissstrahl - auto login if player is host
-	if (coop_isHost()) {
+	if (upgPlayerIsHost()) {
 		coop_playerAdmin(true);
 		hudPrint("^3You are now logged in (Host auto-!login).\n");
 		return true;
@@ -923,7 +923,7 @@ void Player::coop_spEquip()
 //================================================================
 str Player::coop_getId()
 {
-	if (multiplayerManager.inMultiplayer() && !coop_isHost()) {
+	if (multiplayerManager.inMultiplayer() && !upgPlayerIsHost()) {
 		return coopPlayer.coopId;
 	}
 	else {
@@ -1484,7 +1484,7 @@ bool coop_playerSetup(Player* player)
 	//because starting a local dedicated server and joing it from the same installation
 	//is detected as a player who is joining as host, while technically right this is
 	//not how we want it to go
-	if (player->coop_isHost()) {
+	if (player->upgPlayerIsHost()) {
 		coop_playerSetupHost(player);
 	}
 	else {
