@@ -78,7 +78,6 @@ bool Player::upgPlayerSay(str sayString)
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) { return false; }
 
-
 	//filter bad chars
 	for (int i = 0; i < sayString.length(); i++) {
 		if (sayString[i] == '%') { sayString[i] = '.'; }
@@ -101,25 +100,18 @@ bool Player::upgPlayerSay(str sayString)
 	if		(Q_stricmpn(sayString.c_str(), "eng", 3) == 0) { setLanguage("Eng");return true; }
 	else if	(Q_stricmpn(sayString.c_str(), "deu", 3) == 0) { setLanguage("Deu");return true; }
 
-
 	//SPAM FILTER - this is our sv_floodprotect replacement, since flood protect also blocks multiplayer specific commands which we are in need of to work
-	if (sv_floodprotect->integer == 0) {
-		if (upgPlayer.chatTimeLimit < level.time) { upgPlayer.chatTimeLimit = level.time; }
-		upgPlayer.chatTimeLimit++;
-
-		if (upgPlayer.chatTimeLimit > (level.time + 3)) {
-			//display info that the player was spamming
-			if ((upgPlayer.chatTimeLastSpamInfo + 3.0f) < level.time) {
-				upgPlayer.chatTimeLastSpamInfo = level.time;
-				if (coop_checkPlayerLanguageGerman(this)) {
-					hudPrint("Sie chatten zu schnell, Nachricht blockiert durch Spamschutz!\nNutzen Sie die Pfeil nach oben Taste in chat um Nachricht zu wiederholen.\n");
-				}
-				else {
-					hudPrint("You chat to fast, message blocked by Spamprotection!\nUse Arrow UP while in text message mode to repeat last message\n");
-				}
-			}
-			return true;
+	if (upgPlayer.chatTimeLimit < level.time) { upgPlayer.chatTimeLimit = level.time; }
+	upgPlayer.chatTimeLimit++;
+	upgPlayer.chatTimeLimit++;
+	if (upgPlayer.chatTimeLimit > (level.time + 3)) {
+		//display info that the player was spamming
+		if ((upgPlayer.chatTimeLastSpamInfo + 3.0f) < level.time) {
+			upgPlayer.chatTimeLastSpamInfo = level.time;
+			if (coop_checkPlayerLanguageGerman(this)) { hudPrint("^3Sie chatten zu schnell, Nachricht blockiert durch ^5Spamschutz!\n"); }
+			else { hudPrint("^3You chat to fast, message blocked by ^5Spamprotection!\n"); }
 		}
+		return true;
 	}
 
 
@@ -158,7 +150,11 @@ void Player::upgPlayerSaySpamfilterCountdown()
 //================================================================
 void Player::upgPlayerClientThink()
 {
-	upgPlayerSaySpamfilterCountdown();
+	//this runs once per secound
+	if ((upgPlayer.clientThinkLastTime + 1) < level.time) {
+		upgPlayerSaySpamfilterCountdown();
+		upgPlayer.clientThinkLastTime = level.time;
+	}
 }
 
 //========================================================[b60014]

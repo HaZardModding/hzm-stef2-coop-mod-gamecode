@@ -9,6 +9,7 @@ private:
 	int		clMaxPackets = -1;
 	float	chatTimeLimit = 0.0f;
 	float	chatTimeLastSpamInfo = -999.0f;
+	float	clientThinkLastTime = -1;
 };
 
 #endif /* !__UPGPLAYER_HPP__ */
