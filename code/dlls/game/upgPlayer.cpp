@@ -18,7 +18,7 @@
 
 
 //=========================================================[b60014]
-// Name:        player::coop_isHost
+// Name:        player::upgPlayerIsHost
 // Class:       -
 //              
 // Description: Checks if player is host
@@ -48,7 +48,7 @@ bool Player::upgPlayerIsHost()
 }
 
 //=========================================================[b60014]
-// Name:        player::upgPlayerSay
+// Name:        player::upgPlayerSetup
 // Class:       -
 //              
 // Description: Handles Player Say stuff, filters and script execution, ect...
@@ -158,7 +158,7 @@ void Player::upgPlayerClientThink()
 }
 
 //========================================================[b60014]
-// Name:        player::coop_isBot
+// Name:        player::upgPlayerIsBot
 // Class:       -
 //              
 // Description: Checks if player is a bot
@@ -175,7 +175,16 @@ bool Player::upgPlayerIsBot()
 	return false;
 }
 
-//this has been implemented for script use (to target a enity and press use [rest is managed in script] )
+//========================================================[b60014]
+// Name:        player::upgPlayerGetTargetedEntity
+// Class:       -
+//              
+// Description: this has been implemented for script use
+//              
+// Parameters:  event
+//              
+// Returns:     void
+//================================================================
 void Player::upgPlayerGetTargetedEntity(Event* ev)
 {
 	Entity* target;
@@ -186,8 +195,16 @@ void Player::upgPlayerGetTargetedEntity(Event* ev)
 	ev->ReturnEntity(target);
 }
 
-//[b607] chrissstrahl - returns if player is in third person or not
-//--------------------------------------------------------------
+//==========================================================[b607]
+// Name:        player::checkthirdperson
+// Class:       -
+//              
+// Description: returns if player is in third person or not
+//              
+// Parameters:  event
+//              
+// Returns:     void
+//================================================================
 qboolean Player::checkthirdperson()
 {
 	return _isThirdPerson;
