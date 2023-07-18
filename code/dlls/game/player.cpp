@@ -4424,6 +4424,9 @@ void Player::Dead( Event *ev )
 
 void Player::Killed( Event *ev )
 {
+	//[GAMEUPGRADE][b60014] chrissstrahl - allow a own kill thread to be executed for each player
+	killThread();
+
 	Entity   *attacker;
 	Entity   *inflictor;
 	int      meansofdeath;
@@ -4439,9 +4442,6 @@ void Player::Killed( Event *ev )
 	damage_from = direction;
 
 	if ( multiplayerManager.inMultiplayer() ){
-		//[GAMEUPGRADE][b60014] chrissstrahl - allow a own kill thread to be executed for each player
-		killThread();
-
 		//[b607] chrissstrahl - this was modified to be executed on regular multi as well - we have our own death handling
 		if ( !coop_playerKilled( this , attacker , inflictor , meansofdeath ) ){
 			return;

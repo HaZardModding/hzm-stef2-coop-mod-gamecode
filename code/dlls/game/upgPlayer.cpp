@@ -331,14 +331,14 @@ void Player::getViewanglesEvent(Event* ev)
 //Allow individual killthread to be set by script for each player
 void Player::setKillThread(Event* ev)
 {
-	entityVars.SetVariable("_mpKillThread",ev->GetString(1));
+	entityVars.SetVariable("_killThread",ev->GetString(1));
 }
 
 //[GAMEUPGRADE][b60014] chrissstrahl - Execute individual killthread for this player
 void Player::killThread()
 {
 	ScriptVariable* entityData = NULL;
-	entityData = entityVars.GetVariable("_mpKillThread");
+	entityData = entityVars.GetVariable("_killThread");
 	str sThread = (entityData) ? entityData->stringValue() : "";
 	if (sThread.length()){ ExecuteThread(sThread.c_str(), true, this); }
 }
