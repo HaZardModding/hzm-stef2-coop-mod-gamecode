@@ -6,9 +6,12 @@
 //-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
-#include "upgCircleMenu.hpp"
 #include "player.h"
 #include "gamecmds.h"
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
 
 UpgCircleMenu upgCircleMenu;
 

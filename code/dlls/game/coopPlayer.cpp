@@ -54,6 +54,88 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+//[b60011] chrissstrahl - get coop class name - used for scripting
+//================================================================
+// HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
+//================================================================
+void Player::getCoopClass(Event* ev)
+{
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive) {
+		ev->ReturnString(this->coopPlayer.className);
+	}
+	else {
+		ev->ReturnString("");
+	}
+}
+
+
+//[b60011] chrissstrahl - check if coop class is technician
+//================================================================
+// HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
+//================================================================
+void Player::isCoopClassTechnician(Event* ev)
+{
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
+		ev->ReturnFloat(1.0f);
+	}
+	else {
+		ev->ReturnFloat(0.0f);
+	}
+}
+
+//[b60011] chrissstrahl - check if coop class is Medic
+//================================================================
+// HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
+//================================================================
+void Player::isCoopClassMedic(Event* ev)
+{
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_MEDIC) {
+		ev->ReturnFloat(1.0f);
+	}
+	else {
+		ev->ReturnFloat(0.0f);
+	}
+}
+
+//[b60011] chrissstrahl - check if coop class is HeavyWeapons
+//================================================================
+// HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
+//================================================================
+void Player::isCoopClassHeavyWeapons(Event* ev)
+{
+	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_HEAVYWEAPONS) {
+		ev->ReturnFloat(1.0f);
+		return;
+	}
+	else {
+		ev->ReturnFloat(0.0f);
+	}
+}
+
+//[b60011] chrissstrahl - set coop class restriction - allowing/preventing player from switching class
+//================================================================
+// HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
+//================================================================
+void Player::setClassLocked(Event* ev)
+{
+	//[b60014] chrissstrahl - accsess coopPlayer.classChangingDisabled only in multiplayer)
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive) {
+		coopPlayer.classChangingDisabled = (bool)ev->GetInteger(1);
+	}
+}
+
+//================================================================
+// HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
+//================================================================
+void Player::getCoopVersion(Event* ev)
+{
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	ev->ReturnFloat(coop_getInstalledVersion());
+}
 
 //================================================================
 // Name:        coop_playerCheckAdmin
@@ -806,6 +888,7 @@ void Player::coop_playerThinkLogin()
 // Returns:     void
 //              
 //================================================================
+//this should be split up and the gameupgrade for singleplayer and the coop stuff should go into sperate funcs
 void Player::coop_spEquip()
 {
 	if (g_gametype->integer != GT_SINGLE_PLAYER || !Director.PlayerReady() || coop_returnEntityIntegerVar(this,"_spArmoryEquiped") == 1) {
@@ -825,55 +908,6 @@ void Player::coop_spEquip()
 		DelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str()));
 		DelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
 	}
-}
-
-//=========================================================[b60014]
-// Name:        player::coop_isBot
-// Class:       -
-//              
-// Description: Checks if player is a bot
-//              
-// Parameters:  void
-//              
-// Returns:     bool
-//              
-//================================================================
-bool Player::coop_isBot()
-{
-	if (edict->svflags & SVF_BOT) {
-		return true;
-	}
-	return false;
-}
-
-//=========================================================[b60014]
-// Name:        player::coop_isHost
-// Class:       -
-//              
-// Description: Checks if player is host
-//              
-// Parameters:  void
-//              
-// Returns:     bool
-//              
-//================================================================
-bool Player::coop_isHost()
-{
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
-		return false;
-	}
-
-	#ifdef WIN32
-		bool bWindows = true;
-	#else
-		bool bWindows = false;
-	#endif
-
-	cvar_t* cl_running = gi.cvar_get("cl_running");
-	if (dedicated->integer == 0 && entnum == 0 && bWindows && (cl_running ? cl_running->integer : 0)) {
-		return true;
-	}
-	return false;
 }
 
 //=========================================================[b60014]
@@ -2909,6 +2943,72 @@ bool Player::coop_updateStats(void)
 
 	return true;
 }
+
+
+//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
+void Player::hasLanguageGerman(Event* ev)
+{
+	bool bLangMatch = false;
+	if (this->getLanguage() == "Deu") {
+		bLangMatch = true;
+	}
+	ev->ReturnFloat((float)bLangMatch);
+}
+
+
+//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
+void Player::hasLanguageEnglish(Event* ev)
+{
+	bool bLangMatch = false;
+	if (this->getLanguage() == "Eng") {
+		bLangMatch = true;
+	}
+	ev->ReturnFloat((float)bLangMatch);
+}
+
+
+//hzm gameupdate chrissstrahl [b60011]  - returns player language string
+void Player::getLanguageEvent(Event* ev)
+{
+	ev->ReturnString(this->getLanguage());
+}
+
+
+//hzm gameupdate chrissstrahl [b60011]  - returns player language string
+str Player::getLanguage()
+{
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (g_gametype->integer != GT_SINGLE_PLAYER && !multiplayerManager.inMultiplayer()) {
+		cvar_t* cvar = gi.cvar_get("local_language");
+		return (cvar ? cvar->string : "Eng");
+	}
+	return coopPlayer.language;
+}
+
+
+//hzm gameupdate chrissstrahl [b60011]  - sets player language string
+void Player::setLanguage(str sLang)
+{
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		if (sLang.length() < 1 || sLang.length() > 3) {
+			coopPlayer.language = "Eng";
+			gi.Printf(va("setLanguage(%s) - Bad string size for client %s\n", sLang.c_str(), entnum));
+			return;
+		}
+		if (sLang != "Eng" && sLang != "Deu") {
+			coopPlayer.language = "Eng";
+			gi.Printf(va("setLanguage(%s) - Unknown Language for client %s\n", sLang.c_str(), entnum));
+			return;
+		}
+		if (sLang != "Deu") {
+			coopPlayer.language = "Eng";
+			return;
+		}
+		coopPlayer.language = sLang;
+	}
+}
+
 
 //================================================================
 // Name:        DelayedServerCommand

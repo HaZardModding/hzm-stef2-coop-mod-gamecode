@@ -30,9 +30,13 @@ class HoldableItem;
 
 //[b60011] Chrissstrahl
 #include "coopChallenges.hpp"
-#include "upgCircleMenu.hpp"
 #include "coopPlayer.hpp"
 #include "coopServer.hpp"
+
+//GAMEUPGRADE
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
 
 #include "g_local.h"
 #include "vector.h"
@@ -185,13 +189,10 @@ inline void WeaponSetItem::Archive( Archiver &arc )
 class Player : public Sentient
 	{
 	public:
-		//[b60014] chrissstrahl - grab vector player for endpoint where player is aiming at
-		Vector				GetViewTraceEndVector(void);
-		void				getViewtraceEndpos(Event* ev);
-
-		void				coop_spEquip();
-		bool				coop_isBot();
-		bool				coop_isHost();
+		//--------------------------------------------------------------
+		// COOP PLAYER - Specific to the Coop Mod
+		//--------------------------------------------------------------
+		//[b60014] chrissstrahl
 		str					coop_getId();
 		void				coop_setId(str sId);
 		bool				coop_getInstalled();
@@ -232,64 +233,22 @@ class Player : public Sentient
 		void				coop_playerCoopStatus(str sStatus);
 		bool				coop_playerObjectivesCycleEqual();
 		void				coop_playerObjectivesCycleUpdate();
-		str					coop_playerLanguage();
-		void				coop_playerLanguage(str sLang);
-
-		//[b60014] chrissstrahl - grab player userfov from their settings
-		void				getUserFov(Event* ev);
-		void				cancelPuzzle(); //[b60012] chrissstrahl - allow cancellation of puzzles (used when player recives damade from sentients while modulating)
-		//hzm gameupdate chrissstrahl [b60011]  - remember if we are checking cl_maxpackets
-		bool				checkingClMaxPackets;
-		//hzm gamefix daggolin - new function to handle enviromental influences (like drowning)
-		void				gamefix_WorldEffects(void);
-		//hzm gameupdate chrissstrahl - we want to access them anywhere (they used to be private)
-		int					_objectiveNameIndex;
-		unsigned int		_objectiveStates;
-		unsigned int		_informationStates;
-		EntityPtr			_targetedEntity;
-		void				disableUseWeapon(bool bDiable);
-		//hzm gameupdate chrissstrahl - used to set a individual killthread for each player
-		str					kill_thread;
-	public:
-		//hzm gameupdate chrissstrahl - 
-		void				getScore(Event* ev);
-		void				addScore(Event* ev);
-		void				getDeaths(Event* ev);
-		void				getKills(Event* ev);
-		void				getLastDamaged(Event* ev);
-		void				getTeamName(Event* ev);
-		void				getTeamScore(Event* ev);
-		void				getCoopVersion(Event* ev);
-		//hzm gameupdate chrissstrahl - player language related
-		str					getLanguage(void);
-		void				setLanguage(str sLang);
-		void				getLanguageEvent(Event *ev);
-		//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
-		void				hasLanguageGerman(Event* ev);
-		void				hasLanguageEnglish(Event* ev);
-		//hzm gameupdate chrissstrahl - get player name
-		void				getNameEvent(Event* ev);
-		//hzm gameupdate chrissstrhal [b60011] - allow to set widgettext with SPACE and NEWLINE
-		void				widgetCommandEvent(Event* ev);
-		void				widgetCommand(str sWidget, str sParameters);
-		//hzm gameupdate chrissstrahl - sets specific camera for this player
-		void				setCameraEvent(Event *ev);
-		//hzm gameupdate chrissstrahl - make sure we handle the branchdialog stuff right
-		bool				branchdialog_active;
-		//hzm gameupdate chrissstrahl [b60011] - switch widgets - send in one burst to player
-		void				switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
-		//hzm gameupdate chrissstrahl - add new function returning the last time the player was hurt
-		float				getLastDamageTime(void);
-		//hzm gameupdate chrissstrahl - add new scripting functions
-		void				setKillThread(Event* ev);
-		//hzm gameupdate daggolin - new commands
-		void				getScriptVariablesCommand(Event* ev);
-		//hzm gameupdate chrissstrahl - added for message of the day ststus check
-		bool				messageOfTheDaySend;
-		//[b60011] chrissstrahl - handle multiplayer stats for coop seperate
+		//[b60011] chrissstrahl
+		CoopPlayer			coopPlayer;
+		friend class		CoopPlayer;
 		bool				coop_updateStats(void);
 		int					coop_updateStatsCoopHealth(int statNum);
-		//hzm gameupdate chrissstrahl [b60011] - circlemenu stuff
+		void				getCoopClass(Event* ev);
+		void				isCoopClassTechnician(Event* ev);
+		void				isCoopClassMedic(Event* ev);
+		void				isCoopClassHeavyWeapons(Event* ev);
+		void				setClassLocked(Event* ev);
+		//[UNKNOWN VERSION] chrissstrahl
+		void				getCoopVersion(Event* ev);
+		//--------------------------------------------------------------
+		// GAMEUPGRADE PLAYER CIRCLEMENU
+		//--------------------------------------------------------------
+		//[b60011] - circlemenu stuff
 	public:
 		UpgCircleMenu		upgCircleMenu;
 		friend class		UpgCircleMenu;
@@ -311,25 +270,44 @@ class Player : public Sentient
 		void				circleMenuDialogSetEvent(Event* ev);
 		void				circleMenuDialogClearEvent(Event* ev);
 		void				circleMenuEvent(Event* ev);
-		//circlemenu - end
-
-		//HaZardModding Coop Mod Added and Modified Stuff
-		//HaZardModding Coop Mod Added and Modified Stuff
-		//HaZardModding Coop Mod Added and Modified Stuff
-	private:
-		//[b60011] chrissstrahl - get coop class name
-		void				getCoopClass(Event* ev);
-		//[b60011] chrissstrahl - check if coop class is technician
-		void				isCoopClassTechnician(Event* ev);
-		//[b60011] chrissstrahl - check if coop class is Medic
-		void				isCoopClassMedic(Event* ev);
-		//[b60011] chrissstrahl - check if coop class is Medic
-		void				isCoopClassHeavyWeapons(Event* ev);
-		//[b60011] chrissstrahl - prevent/allow player from switching class - script command
-		void				setClassLocked(Event* ev);
+		void				switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
+		//--------------------------------------------------------------
+		// GAMEUPGRADE PLAYER
+		//--------------------------------------------------------------
 	public:
-		//[b60011] chrissstrahl - allow to get Holdable/Rune/Powerup/Item Model/Name from outside class
-		//already existing:	getHoldableItem()
+		//[b60014] chrissstrahl
+		Vector				GetViewTraceEndVector(void);
+		void				getViewtraceEndpos(Event* ev);
+		void				coop_spEquip();
+		bool				coop_isBot();
+		bool				coop_isHost();
+		void				getUserFov(Event* ev);
+		//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
+		void				getBackpackAttachOffset(Event* ev);
+		void				getBackpackAttachAngles(Event* ev);
+		void				getFlagAttachOffset(Event* ev);
+		void				getFlagAttachAngles(Event* ev);
+		//[b60013] chrissstrahl - checks if player is pressing a specific button
+		void				checkForward(Event* ev);
+		void				checkBackward(Event* ev);
+		void				checkLeft(Event* ev);
+		void				checkRight(Event* ev);
+		void				checkLeanRight(Event* ev);
+		void				checkLeanLeft(Event* ev);
+		void				checkDropRune(Event* ev);
+		void				checkRun(Event* ev);
+		void				checkReload(Event* ev);
+		void				checkCrouch(Event* ev);
+		void				checkJump(Event* ev);
+		void				checkUsePressing(Event* ev);
+		void				checkFire(Event* ev);
+		void				checkFirealt(Event* ev);
+		void				checkThirdperson(Event* ev);
+		//[b60012] chrissstrahl
+		void				cancelPuzzle();
+		//[b60011] chrissstrahl
+		void				RunThread(Event* ev);
+		CThread*			RunThread(const str& thread_name);
 		str					getHoldableName(void);
 		str					getHoldableModel(void);
 		Rune*				getRuneItem(void);
@@ -338,65 +316,45 @@ class Player : public Sentient
 		Powerup*			getPowerupItem(void);
 		str					getPowerupModel(void);
 		str					getPowerupName(void);
-
-		//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
-		void				getBackpackAttachOffset(Event* ev);
-		void				getBackpackAttachAngles(Event* ev);
-		void				getFlagAttachOffset(Event* ev);
-		void				getFlagAttachAngles(Event* ev);
-
-		//[b60013] chrissstrahl - checks if player is pressing backwards button
-		void				checkForward(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing backwards button
-		void				checkBackward(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing left turn or strafe button
-		void				checkLeft(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing right turn or strafe button
-		void				checkRight(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing lean right button
-		void				checkLeanRight(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing lean left button
-		void				checkLeanLeft(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing drop rune button
-		void				checkDropRune(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing run button
-		void				checkRun(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing reload button
-		void				checkReload(Event* ev);
-		//[b60013] chrissstrahl - checks if player is pressing crouch button
-		void				checkCrouch(Event* ev);
-		//[b60011] chrissstrahl - return if player is pressing jump or not
-		void				checkJump(Event* ev);
-
-		//[b60011] chrissstrahl - return if player is pressing use or not
-		void				checkUsePressing(Event* ev);
-		//[b60011] chrissstrahl - checks if player is pressing fire button
-		void				checkFire(Event* ev);
-		//[b60011] chrissstrahl - checks if player is pressing fire button
-		void				checkFirealt(Event* ev);
-		//[b60011] chrissstrahl - checks if player is in third person
-		void				checkThirdperson(Event* ev);
-
-		//[b60011] chrissstrahl - allow to run thread from player entity (sets currententity)
-		void				RunThread(Event* ev);
-		CThread*				RunThread(const str& thread_name);
-		//[b60011] chrissstrahl - get player viewangle
 		void				getViewanglesEvent(Event* ev);
-		//[b607] chrissstrahl - return targeted entity of player
+		void				hasLanguageGerman(Event* ev);
+		void				hasLanguageEnglish(Event* ev);
+		str					getLanguage(void);
+		void				setLanguage(str sLang);
+		void				getLanguageEvent(Event* ev);
+		void				widgetCommandEvent(Event* ev);
+		void				widgetCommand(str sWidget, str sParameters);
+		//[b607] chrissstrahl
 		void				getTargetedEntity(Event* ev);
-		//[b607] chrissstrahl - just fucking give me the data, i don't care for your conditions
 		qboolean			checkthirdperson();
-
-		//[b60011] chrissstrahl - containerize
-		CoopPlayer			coopPlayer;
-		friend class		CoopPlayer;
-	private:
-		//HaZardModding Coop Mod END
-		//HaZardModding Coop Mod END
-		//HaZardModding Coop Mod END
-
-
-
+		//[UNKNOWN VERSION] chrissstrahl
+		void				gamefix_WorldEffects(void);
+		void				getScriptVariablesCommand(Event* ev);
+		void				disableUseWeapon(bool bDiable);
+		void				getScore(Event* ev);
+		void				addScore(Event* ev);
+		void				getDeaths(Event* ev);
+		void				getKills(Event* ev);
+		void				getLastDamaged(Event* ev);
+		void				getTeamName(Event* ev);
+		void				getTeamScore(Event* ev);
+		void				getNameEvent(Event* ev);
+		void				setCameraEvent(Event *ev);
+		float				getLastDamageTime(void);
+		void				setKillThread(Event* ev);
+		//we want to access them anywhere (they used to be private)
+		int					_objectiveNameIndex;
+		unsigned int		_objectiveStates;
+		unsigned int		_informationStates;
+		EntityPtr			_targetedEntity;
+		//--------------------------------------------------------------
+		//--------------------------------------------------------------
+		// 
+		//hzm gameupdate chrissstrahl
+		bool				checkingClMaxPackets;
+		str					kill_thread;		
+		bool				branchdialog_active;
+		bool				messageOfTheDaySend;
 	public:
 		CLASS_PROTOTYPE( Player );
 		Player();

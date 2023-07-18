@@ -41,7 +41,14 @@ typedef SafePtr<Player> PlayerPtr;
 #include "coopText.hpp"
 #include "coopModel.hpp"
 #include "coopParser.hpp"
-#include "coopHuds.hpp" //added [b607]
+#include "coopHuds.hpp"
+#include "coopVote.hpp"
+#include "coopChallenges.hpp"
+extern CoopChallenges coopChallenges;
+
+#include "upgPlayer.hpp"
+#include "upgMp_manager.hpp"
+#include "upgCircleMenu.hpp"
 
 class MultiplayerManager;
 

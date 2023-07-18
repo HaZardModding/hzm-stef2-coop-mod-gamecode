@@ -7,10 +7,15 @@
 
 #include "_pch_cpp.h"
 
+#include "coopAlias.hpp"
 #include "coopReturn.hpp"
 #include "coopCheck.hpp"
 #include "coopAlias.hpp"
 #include "coopParser.hpp"
+
+#include "upgPlayer.hpp"
+#include "upgMp_manager.hpp"
+#include "upgCircleMenu.hpp"
 
 //[b60013] chrissstrahl - added rpg specific support
 #include "coopRPG.hpp"

@@ -12,9 +12,6 @@
 #ifndef __UPGCIRCLEMENU_HPP__
 #define __UPGCIRCLEMENU_HPP__
 
-#include "_pch_cpp.h"
-#include "player.h"
-
 #define CIRCLEMENU_STARTNUM 0
 #define CIRCLEMENU_MAX_OPTIONS 4
 #define CIRCLEMENU_MAX_OPTIONSDIALOG 4
