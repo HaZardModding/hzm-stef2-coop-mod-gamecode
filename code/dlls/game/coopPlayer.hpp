@@ -37,9 +37,6 @@ class CoopPlayer
 	//[b60014] chrissstrahl - needed to get cleaner code, seperating coop/stock game better
 	friend class		Player;
 public:
-	//hzm coop mod chrissstrahl - used to store chat message limit data
-	float	chatTimeLimit = 0.0f;
-
 	//hzm coop mod chrissstrahl - used to determin what class the player does have
 	str		className = "";
 
@@ -110,8 +107,6 @@ public:
 	//player might be moved by physics or WHAT EVA , which will result in the
 	//player respawning inside a wall or in a bad spot
 	Vector	lastAliveLocation = Vector(0,0,0);
-	//hzm coop mod chrissstrahl - used to saveoff info when the player was last notified about spamming
-	float	lastTimeSpamInfo = -999.0f;
 	//hzm coop mod chrissstrahl - used to determin when player spawned last
 	float	lastTimeSpawned = -998.0f;
 	//hzm coop mod chrissstrahl - used to saveoff the player his last think time

@@ -275,7 +275,13 @@ class Player : public Sentient
 		// GAMEUPGRADE PLAYER
 		//--------------------------------------------------------------
 	public:
+		UpgPlayer			upgPlayer;
+		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		void				upgPlayerSetup();
+		bool				upgPlayerSay(str sayString);
+		void				upgPlayerSaySpamfilterCountdown();
+		void				upgPlayerClientThink();
 		Vector				GetViewTraceEndVector(void);
 		void				getViewtraceEndpos(Event* ev);
 		void				coop_spEquip();
@@ -352,7 +358,6 @@ class Player : public Sentient
 		//--------------------------------------------------------------
 		// 
 		//hzm gameupdate chrissstrahl
-		bool				checkingClMaxPackets;	
 		bool				branchdialog_active;
 		bool				messageOfTheDaySend;
 	public:
@@ -1821,13 +1826,11 @@ inline void Player::Archive( Archiver &arc )
 	// Always load and save these - some vars are also used in singleplayer
 	// the coop mod does not seperate multiplayer and singleplayer quite clearly	
 	//coopPlayer.lastTargetedEntity
-	//arc.ArchiveInteger(&checkingClMaxPackets);					//used in multiplayer only - not relevant for zingleplaya
 //arc.ArchiveBool(&branchdialog_active);					//this needs review, this might not be used at all - will check after commit
 //arc.ArchiveFloat(coopPlayer.lastTimeModulatingPuzzle);	//this needs review, this might not be used at all - will check after commit
 	//arc.ArchiveBool(&messageOfTheDaySend);						//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveBool(&coopPlayer.admin);							//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveVector3(&coopPlayer.lastAliveLocation);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.chatTimeLimit);					//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveInteger(&coopPlayer.setupTries);					//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.installedCheckTime);				//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveBool(&coopPlayer.injuredSymbolVisible);			//used in multiplayer only - not relevant for zingleplaya
@@ -1843,7 +1846,6 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveFloat(&coopPlayer.lastTimeRadarUpdated);			//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lastTimeAppliedClass);			//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedClassStat);		//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeSpamInfo);				//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lastTimeUsedClassMsg);			//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lastTimeNeutralized);			//used in multiplayer only - not relevant for zingleplaya
 	//arc.ArchiveFloat(&coopPlayer.lastTimeRevived);				//used in multiplayer only - not relevant for zingleplaya

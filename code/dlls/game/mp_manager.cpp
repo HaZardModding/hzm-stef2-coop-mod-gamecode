@@ -2577,10 +2577,11 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 		name = "$$ServerName$$";
 	}
 
-	//hzm coop mod chrissstrahl - this handels the coop specific say commands
-	if (coop_playerSay(player, tempText)) {
-		return;
-	}
+	//[GAMEUPGRADE][b60014] chrissstrahl - handle say string
+	if (player && player->upgPlayerSay(tempText)) { return; }
+
+	//[b60014] chrissstrahl - this handels the coop specific say commands
+	if (player && coop_playerSay(player, tempText)) { return; }
 
 	realText = name;
 	realText += ":";

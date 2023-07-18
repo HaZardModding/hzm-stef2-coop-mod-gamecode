@@ -48,6 +48,120 @@ bool Player::coop_isHost()
 }
 
 //=========================================================[b60014]
+// Name:        player::upgPlayerSay
+// Class:       -
+//              
+// Description: Handles Player Say stuff, filters and script execution, ect...
+//				player::upgPlayerSay will retrive the player answer
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+void Player::upgPlayerSetup()
+{
+	//tell player to give us his cl_maxpackets and language
+	DelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
+}
+
+//=========================================================[b60014]
+// Name:        player::upgPlayerSay
+// Class:       -
+//              
+// Description: Handles Player Say stuff, filters and script execution, ect...
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool Player::upgPlayerSay(str sayString)
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) { return false; }
+
+
+	//filter bad chars
+	for (int i = 0; i < sayString.length(); i++) {
+		if (sayString[i] == '%') { sayString[i] = '.'; }
+	}
+
+	//detect player cl_maxpackets and filter this text
+	if (upgPlayer.clMaxPackets < 15) {
+		int iClMaxPack = atoi(sayString.c_str());
+		if (iClMaxPack >= 15) {
+			if (iClMaxPack < 60) {
+				iClMaxPack = 60;
+				DelayedServerCommand(entnum, "set cl_maxpackets 60");
+			}
+			upgPlayer.clMaxPackets = iClMaxPack;
+			return true;
+		}
+	}
+
+	//detect player language
+	if		(Q_stricmpn(sayString.c_str(), "eng", 3) == 0) { setLanguage("Eng");return true; }
+	else if	(Q_stricmpn(sayString.c_str(), "deu", 3) == 0) { setLanguage("Deu");return true; }
+
+
+	//SPAM FILTER - this is our sv_floodprotect replacement, since flood protect also blocks multiplayer specific commands which we are in need of to work
+	if (sv_floodprotect->integer == 0) {
+		if (upgPlayer.chatTimeLimit < level.time) { upgPlayer.chatTimeLimit = level.time; }
+		upgPlayer.chatTimeLimit++;
+
+		if (upgPlayer.chatTimeLimit > (level.time + 3)) {
+			//display info that the player was spamming
+			if ((upgPlayer.chatTimeLastSpamInfo + 3.0f) < level.time) {
+				upgPlayer.chatTimeLastSpamInfo = level.time;
+				if (coop_checkPlayerLanguageGerman(this)) {
+					hudPrint("Sie chatten zu schnell, Nachricht blockiert durch Spamschutz!\nNutzen Sie die Pfeil nach oben Taste in chat um Nachricht zu wiederholen.\n");
+				}
+				else {
+					hudPrint("You chat to fast, message blocked by Spamprotection!\nUse Arrow UP while in text message mode to repeat last message\n");
+				}
+			}
+			return true;
+		}
+	}
+
+
+	return false;
+}
+
+//================================================================
+// Name:        upgPlayerSaySpamfilterCountdown
+// Class:       -
+//              
+// Description: counts down after player has spammed until player is allowed to chat again
+//
+// Parameters:  void 
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::upgPlayerSaySpamfilterCountdown()
+{
+	if (upgPlayer.chatTimeLimit < level.time) { return; }
+
+	if ((upgPlayer.chatTimeLimit + -1) < level.time) { upgPlayer.chatTimeLimit = level.time; }
+	else { upgPlayer.chatTimeLimit--; }
+}
+
+//========================================================[b60014]
+// Name:        upgPlayerClientThink
+// Class:       -
+//              
+// Description: ClientThink, used to update/check stuff each frame
+//
+// Parameters:  void 
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::upgPlayerClientThink()
+{
+	upgPlayerSaySpamfilterCountdown();
+}
+
+//========================================================[b60014]
 // Name:        player::coop_isBot
 // Class:       -
 //              

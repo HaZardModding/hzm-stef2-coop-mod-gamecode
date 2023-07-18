@@ -3718,9 +3718,6 @@ Player::Player()
 	actor_camera = NULL;
 	cool_camera = NULL;
 
-	//[b60011] gameupdate chrissstrahl - used to detect when cl_maxpackets is checked
-	checkingClMaxPackets = false;
-
 	//HaZardModding Coop Mod
 	//HaZardModding Coop Mod
 	//HaZardModding Coop Mod
@@ -3904,10 +3901,10 @@ Player::Player()
 	_needToSendBranchDialog = false;
 	_branchDialogActor = NULL;
 
-	//HaZardModding Coop Mod - Run setup
-	//HaZardModding Coop Mod - Run setup
-	//HaZardModding Coop Mod - Run setup
-	//hzm coop mod chrissstrahl - make the coop mod setup this player
+	//[GAMEUPGRADE][b60014] chrissstrahl - run setup
+	upgPlayerSetup();
+
+	//[b60014] chrissstrahl - run setup
 	coop_playerSetup(this);
 }
 
@@ -6217,6 +6214,9 @@ void Player::ClientThink( Event *ev )
 	circleMenuThink();
 	//hzm coop mod chrissstrahl - handle coop specific stuff in here
 	coop_playerThink(this);
+
+	//[GAMEUPGRADE][b60014] chrissstrahl
+	upgPlayerClientThink();
 
 	if ( client->ps.pm_flags & PMF_CAMERA_VIEW )
 	{

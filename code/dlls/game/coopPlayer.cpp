@@ -1556,11 +1556,7 @@ void coop_playerSetupClient(Player* player)
 	//[b60011] chrissstrahl - get player langauge/clientid/clientCoopVersion
 	//[b60012] chrissstrahl - fixed missing letter c
 	//[b60014] chrissstrahl - put both commands together
-	gi.SendServerCommand(player->entnum, "stufftext \"vstr coop_cId;vstr local_language\"\n");
-	//[b60011] chrissstrahl - changed to avoid command being shown as text on older servers
-	player->checkingClMaxPackets = true;
-	//[b60014] chrissstrahl - put both commands together
-	DelayedServerCommand(player->entnum, "vstr cl_maxpackets;vstr coop_verInf");
+	gi.SendServerCommand(player->entnum, "stufftext \"vstr coop_cId;vstr coop_verInf\"\n");
 	
 	//Do this only during a active coop game
 	if (game.coop_isActive) {
@@ -1823,54 +1819,9 @@ bool coop_playerSay( Player *player , str sayString)
 	sayString = sayString.tolower();
 
 	//[b60011] chrissstrahl - clientid backwardscompatibility - supress text
-	if (Q_stricmpn(sayString.c_str(), "cid.", 4) == 0) {
-		return true;
-	}
+	if (Q_stricmpn(sayString.c_str(), "cid.", 4) == 0) { return true; }
 
-	//hzm coop mod chrissstrahl - detect player language
-	if (Q_stricmpn(sayString.c_str(), "deu", 3) == 0 || Q_stricmpn(sayString.c_str(), "eng", 3) == 0) {
-		//make sure player has now setup his language correctly
-		if (Q_stricmpn(sayString.c_str(), "deu", 3) == 0) {
-			player->setLanguage("Deu");
-		}
-		else {
-			player->setLanguage("Eng");
-		}
-		return true;
-	}
 
-	//hzm gameupdate chrissstrahl - detect player cl_maxpackets
-	if (player->checkingClMaxPackets) {
-		int iClMaxPack = atoi(sayString.c_str());
-		if (iClMaxPack >= 15) {
-			if (iClMaxPack < 60) {
-				DelayedServerCommand(player->entnum, "set cl_maxpackets 60");
-			}
-			player->checkingClMaxPackets = false;
-			return true;
-		}
-	}
-
-	//SPAM - FILTER - this is our sv_floodprotect replacement, since flood protect also blocks multiplayer specific commands which we are in need of to work
-	if (player->coopPlayer.chatTimeLimit < level.time) {
-		player->coopPlayer.chatTimeLimit = level.time;
-	}
-	player->coopPlayer.chatTimeLimit++;
-
-	if (player->coopPlayer.chatTimeLimit > (level.time + 3)) {
-		//display info that the player was spamming
-		if ((player->coopPlayer.lastTimeSpamInfo + 3.0f) < level.time) {
-			player->coopPlayer.lastTimeSpamInfo = level.time;
-			//[b60012][cleanup] chrissstrahl - this could be put into a func
-			if (coop_checkPlayerLanguageGerman(player)) {
-				player->hudPrint("Sie chatten zu schnell, Nachricht blockiert durch Spamschutz!\nNutzen Sie die Pfeil nach oben Taste in chat um Nachricht zu wiederholen.\n");
-			}
-			else {
-				player->hudPrint("You chat to fast, message blocked by Spamprotection!\nUse Arrow UP while in text message mode to repeat last message\n");
-			}
-		}
-		return true;
-	}
 	return false;
 }
 
@@ -2743,9 +2694,6 @@ void coop_playerThink( Player *player )
 //hzm coop mod chrissstrahl - check/do this each secound once
 	if ( ( player->coopPlayer.lastTimeThink + 1.0f ) < level.time ){
 		player->coopPlayer.lastTimeThink = level.time;
-
-		//count text counter down
-		coop_textChatTimeCountDown( player );
 
 		//display update notification menu if needed
 		coop_hudsUpdateNotification( player );

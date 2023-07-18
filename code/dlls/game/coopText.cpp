@@ -319,29 +319,6 @@ str coop_textReplaceWhithespaceBlack( str sText )
 }
 
 //================================================================
-// Name:        coop_textChatTimeCountDown
-// Class:       -
-//              
-// Description: counts down after player has spammed until player is allowed to chat again
-//
-// Parameters:  str sText 
-//              
-// Returns:     void
-//              
-//================================================================
-void coop_textChatTimeCountDown( Player *player )
-{
-	if ( player->coopPlayer.chatTimeLimit < level.time )return;
-
-	if ( ( player->coopPlayer.chatTimeLimit + -1 ) < level.time ){
-		player->coopPlayer.chatTimeLimit = level.time;
-	}else{
-		player->coopPlayer.chatTimeLimit--;
-	}
-}
-
-
-//================================================================
 // Name:        coop_textPhraseLocalStrUmlaute
 // Class:       -
 //              
