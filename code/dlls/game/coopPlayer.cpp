@@ -744,7 +744,7 @@ void Player::coop_playerThinkDetectCoopId()
 	}
 
 	//[b60014] chrissstrahl - don't handle bots
-	if (coop_isBot()) {
+	if (upgPlayerIsBot()) {
 		coop_setId("0");
 
 		for (int i = coop_playerSetupTries(); i < (COOP_MAX_ID_CHECK_TRIES + 1); i++) {
@@ -789,7 +789,7 @@ void Player::coop_playerThinkDetectCoop()
 	}
 
 	//[b60014] chrissstrahl - don't handle bots
-	if (coop_isBot()) {
+	if (upgPlayerIsBot()) {
 		coop_setInstalled(false);
 		coopPlayer.setupComplete = true;
 		
@@ -1452,7 +1452,7 @@ bool coop_playerSetup(Player* player)
 	player->coopPlayer.timeEntered = level.time;
 
 	//[b60011] chrissstrahl - make sure we do not handle bots
-	if (player->coop_isBot()) {
+	if (player->upgPlayerIsBot()) {
 		
 		cvar_t* cvar = gi.cvar_get("local_language");
 		str sCvar = (cvar ? cvar->string : "Eng");
@@ -1545,7 +1545,7 @@ bool coop_playerSetup(Player* player)
 void coop_playerSetupClient(Player* player)
 {
 	//[b60014] chrissstrahl
-	if (player->coop_isBot()) {
+	if (player->upgPlayerIsBot()) {
 		gi.Printf("COOPDEBUG coop_playerSetupClient %s [Is a BOT - abborted]\n", player->client->pers.netname);
 		return;
 	}
@@ -1650,7 +1650,7 @@ void coop_playerGenerateNewPlayerId(Player* player)
 void coop_playerSaveNewPlayerId(Player *player)
 {
 	//[b60014] chrissstrahl - don't handle Bots
-	if (player->coop_isBot()) {
+	if (player->upgPlayerIsBot()) {
 		return;
 	}
 
@@ -1765,7 +1765,7 @@ void coop_playerSetupNoncoop( Player *player)
 	player->coop_setInstalled(false);
 
 	//[b60014] chrissstrahl - don't handle bots
-	if (player->coop_isBot()) {
+	if (player->upgPlayerIsBot()) {
 		player->coop_playerSetupComplete(true);
 		return;
 	}

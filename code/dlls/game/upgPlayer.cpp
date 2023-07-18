@@ -171,7 +171,7 @@ void Player::upgPlayerClientThink()
 //              
 // Returns:     bool
 //================================================================
-bool Player::coop_isBot()
+bool Player::upgPlayerIsBot()
 {
 	if (edict->svflags & SVF_BOT) {
 		return true;

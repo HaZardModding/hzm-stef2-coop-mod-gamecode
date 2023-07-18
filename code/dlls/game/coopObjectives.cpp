@@ -181,7 +181,7 @@ void coop_objectivesMarkerRemove( Entity *eMaster )
 //================================================================
 void coop_objectivesSetup( Player *player)
 {
-	if ( !player || !player->coop_getInstalled() || player->coop_isBot()){
+	if ( !player || !player->coop_getInstalled() || player->upgPlayerIsBot()){
 		return;
 	}
 
