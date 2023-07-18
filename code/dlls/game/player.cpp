@@ -3734,8 +3734,6 @@ Player::Player()
 	messageOfTheDaySend = false;
 	//hzm gameupdate chrissstrahl - used to check if this player is suppose to take action in a branchdialog situation 
 	branchdialog_active = false;
-	//hzm coop mod chrissstrahl - used to set a individual killthread for each player
-	kill_thread = "";
 
 	//hzm coop mod chrissstrahl - used to store server time at wich the player died last
 	time_t result = time(NULL);
@@ -4441,6 +4439,9 @@ void Player::Killed( Event *ev )
 	damage_from = direction;
 
 	if ( multiplayerManager.inMultiplayer() ){
+		//[GAMEUPGRADE][b60014] chrissstrahl - allow a own kill thread to be executed for each player
+		killThread();
+
 		//[b607] chrissstrahl - this was modified to be executed on regular multi as well - we have our own death handling
 		if ( !coop_playerKilled( this , attacker , inflictor , meansofdeath ) ){
 			return;
@@ -4451,12 +4452,6 @@ void Player::Killed( Event *ev )
 			multiplayerManager.playerKilled( this , ( Player * )attacker , inflictor , meansofdeath );
 		else
 			multiplayerManager.playerKilled( this , NULL , inflictor , meansofdeath );
-
-		//hzm gameupdate chrissstrahl - this starts the killthread if player dies
-		if (kill_thread.length() > 0) {
-			ExecuteThread(kill_thread.c_str(), true, this);
-		}
-		//end of hzm
 	}
 
 	SpawnDamageEffect( ( meansOfDeath_t )meansofdeath );

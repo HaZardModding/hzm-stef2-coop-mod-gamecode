@@ -328,10 +328,19 @@ void Player::getViewanglesEvent(Event* ev)
 	ev->ReturnVector(vAngle);
 }
 
-//hzm gameupdate chrissstrahl - add new script functions
+//Allow individual killthread to be set by script for each player
 void Player::setKillThread(Event* ev)
 {
-	kill_thread = ev->GetString(1);
+	entityVars.SetVariable("_mpKillThread",ev->GetString(1));
+}
+
+//[GAMEUPGRADE][b60014] chrissstrahl - Execute individual killthread for this player
+void Player::killThread()
+{
+	ScriptVariable* entityData = NULL;
+	entityData = entityVars.GetVariable("_mpKillThread");
+	str sThread = (entityData) ? entityData->stringValue() : "";
+	if (sThread.length()){ ExecuteThread(sThread.c_str(), true, this); }
 }
 
 //hzm gameupdate chrissstrahl - return time at which player was last hurt

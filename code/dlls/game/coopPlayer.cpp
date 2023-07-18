@@ -2129,11 +2129,6 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		}
 	}
 
-	//[b607] chrissstrahl - copied here, so it will be executed also in coop
-	if (playerPrey->kill_thread.length() > 0) {
-		ExecuteThread(playerPrey->kill_thread.c_str(), true, playerPrey);
-	}
-
 	int i = 0;
 	bool idendified = false;
 
@@ -2155,7 +2150,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	//check if we are allowed to spawn players at the place they die or if we are forced to respawn them on a save respawnlocation
 	ScriptVariable *entityData = NULL;
 	ScriptVariable *entityData2 = NULL;
-	entityData = world->entityVars.GetVariable( "coop_respawnAtRespawnpoint" );
+	entityData = world->entityVars.GetVariable("coop_respawnAtRespawnpoint");
 	entityData2 = playerPrey->entityVars.GetVariable( "coop_respawnAtRespawnpoint" );
 	
 	if (	entityData != NULL && entityData->floatValue() == 1.0f ||

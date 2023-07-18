@@ -282,6 +282,8 @@ class Player : public Sentient
 		bool				coop_isBot();
 		bool				coop_isHost();
 		void				getUserFov(Event* ev);
+		void				setKillThread(Event* ev);
+		void				killThread();
 		//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
 		void				getBackpackAttachOffset(Event* ev);
 		void				getBackpackAttachAngles(Event* ev);
@@ -341,7 +343,6 @@ class Player : public Sentient
 		void				getNameEvent(Event* ev);
 		void				setCameraEvent(Event *ev);
 		float				getLastDamageTime(void);
-		void				setKillThread(Event* ev);
 		//we want to access them anywhere (they used to be private)
 		int					_objectiveNameIndex;
 		unsigned int		_objectiveStates;
@@ -351,8 +352,7 @@ class Player : public Sentient
 		//--------------------------------------------------------------
 		// 
 		//hzm gameupdate chrissstrahl
-		bool				checkingClMaxPackets;
-		str					kill_thread;		
+		bool				checkingClMaxPackets;	
 		bool				branchdialog_active;
 		bool				messageOfTheDaySend;
 	public:
@@ -1871,7 +1871,6 @@ inline void Player::Archive( Archiver &arc )
 	
 	
 	arc.ArchiveSafePointer(&last_entityTargeted);
-	arc.ArchiveString(&kill_thread);
 	arc.ArchiveString(&coopPlayer.lastScanSendData);
 	arc.ArchiveBool(&coopPlayer.showTargetedEntity);		
 	//these should be reviewed properly - I was in a hurry so I added em anyway
