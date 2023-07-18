@@ -2545,13 +2545,11 @@ void Player::getLanguageEvent(Event* ev)
 str Player::getLanguage()
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
-	if (multiplayerManager.inMultiplayer()) {
-		return language;
-	}
-	else {
+	if (g_gametype->integer != GT_SINGLE_PLAYER && !multiplayerManager.inMultiplayer()) {
 		cvar_t* cvar = gi.cvar_get("local_language");
-		return (cvar ? cvar->string : "");
+		return (cvar ? cvar->string : "Eng");		
 	}
+	return coopPlayer.language;
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - sets player language string
@@ -2560,20 +2558,20 @@ void Player::setLanguage(str sLang)
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (multiplayerManager.inMultiplayer()) {
 		if (sLang.length() < 1 || sLang.length() > 3) {
-			language = "Eng";
+			coopPlayer.language = "Eng";
 			gi.Printf(va("setLanguage(%s) - Bad string size for client %s\n", sLang.c_str(), entnum));
 			return;
 		}
 		if (sLang != "Eng" && sLang != "Deu") {
-			language = "Eng";
+			coopPlayer.language = "Eng";
 			gi.Printf(va("setLanguage(%s) - Unknown Language for client %s\n", sLang.c_str(), entnum));
 			return;
 		}
 		if (sLang != "Deu") {
-			language = "Eng";
+			coopPlayer.language = "Eng";
 			return;
 		}
-		language = sLang;
+		coopPlayer.language = sLang;
 	}
 }
 
@@ -4331,9 +4329,6 @@ Player::Player()
 	weapons_holstered_by_code = false;
 	actor_camera = NULL;
 	cool_camera = NULL;
-
-	//[b60012] chrissstrahl - well, I guess we should not have this uninitialised
-	language = "";
 
 	//[b60011] gameupdate chrissstrahl - used to detect when cl_maxpackets is checked
 	checkingClMaxPackets = false;

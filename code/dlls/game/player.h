@@ -232,6 +232,8 @@ class Player : public Sentient
 		void				coop_playerCoopStatus(str sStatus);
 		bool				coop_playerObjectivesCycleEqual();
 		void				coop_playerObjectivesCycleUpdate();
+		str					coop_playerLanguage();
+		void				coop_playerLanguage(str sLang);
 
 		//[b60014] chrissstrahl - grab player userfov from their settings
 		void				getUserFov(Event* ev);
@@ -248,9 +250,6 @@ class Player : public Sentient
 		void				disableUseWeapon(bool bDiable);
 		//hzm gameupdate chrissstrahl - used to set a individual killthread for each player
 		str					kill_thread;
-	private:
-		//hzm gameupdate chrissstrahl - used to manage player his game language
-		str					language;
 	public:
 		//hzm gameupdate chrissstrahl - 
 		void				getScore(Event* ev);
@@ -1854,11 +1853,6 @@ inline void Player::Archive( Archiver &arc )
 
 	arc.ArchiveBool( &_cameraCutThisFrame );
 
-
-	//hzm gameupdate chrissstrahl [b60011] - store player langauge
-	arc.ArchiveString(&language);
-
-
 	//[b60011] chrissstrahl - fix variables not being properly saved and loaded
 	// This is either a loadgame or a restart
 	if (LoadingSavegame) {}
@@ -1915,6 +1909,8 @@ inline void Player::Archive( Archiver &arc )
 	//arc.ArchiveFloat(&coopPlayer.diedLast);
 	//arc.ArchiveString(&coopPlayer.coopStatus);
 	//arc.ArchiveInteger(&coopPlayer.objectivesCycle);
+	//arc.ArchiveString(&language); //hzm gameupdate chrissstrahl [b60011] - store player langauge
+	
 	
 	arc.ArchiveSafePointer(&last_entityTargeted);
 	arc.ArchiveString(&kill_thread);
