@@ -2032,7 +2032,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60011] chrissstrahl - get player viewangle
 	{ &EV_Player_GetViewangles ,				&Player::getViewanglesEvent } ,
 	//[b607] chrissstrahl - return targeted entity of player
-	{ &EV_Player_GetTargetedEntity ,			&Player::getTargetedEntity },
+	{ &EV_Player_GetTargetedEntity ,			&Player::upgPlayerGetTargetedEntity },
 	//[b60011] chrissstrahl - allowing/preventing player from switching class
 	{ &EV_Player_SetClassLocked ,				&Player::setClassLocked },
 	//[b60011] chrissstrahl - get coop class name

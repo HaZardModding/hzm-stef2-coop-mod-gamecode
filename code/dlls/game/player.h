@@ -333,7 +333,7 @@ class Player : public Sentient
 		void				widgetCommandEvent(Event* ev);
 		void				widgetCommand(str sWidget, str sParameters);
 		//[b607] chrissstrahl
-		void				getTargetedEntity(Event* ev);
+		void				upgPlayerGetTargetedEntity(Event* ev);
 		qboolean			checkthirdperson();
 		//[UNKNOWN VERSION] chrissstrahl
 		void				gamefix_WorldEffects(void);

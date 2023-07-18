@@ -179,9 +179,8 @@ bool Player::upgPlayerIsBot()
 	return false;
 }
 
-//[b607] chrissstrahl - return targeted entity of player
 //this has been implemented for script use (to target a enity and press use [rest is managed in script] )
-void Player::getTargetedEntity(Event* ev)
+void Player::upgPlayerGetTargetedEntity(Event* ev)
 {
 	Entity* target;
 	target = this->GetTargetedEntity();
