@@ -4412,7 +4412,7 @@ void Player::Dead( Event *ev )
 void Player::Killed( Event *ev )
 {
 	//[GAMEUPGRADE][b60014] chrissstrahl - allow a own kill thread to be executed for each player
-	killThread();
+	upgPlayerRunKillThread();
 
 	Entity   *attacker;
 	Entity   *inflictor;

@@ -293,7 +293,7 @@ class Player : public Sentient
 		bool				upgPlayerIsHost();
 		void				upgPlayerGetUserFov(Event* ev);
 		void				upgPlayerSetKillThread(Event* ev);
-		void				killThread();
+		void				upgPlayerRunKillThread();
 		//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
 		void				upgPlayerGetBackpackAttachOffset(Event* ev);
 		void				upgPlayerGetBackpackAttachAngles(Event* ev);

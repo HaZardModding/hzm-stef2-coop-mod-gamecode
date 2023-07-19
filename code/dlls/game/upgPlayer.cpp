@@ -524,7 +524,7 @@ void Player::upgPlayerSetKillThread(Event* ev)
 }
 
 //[GAMEUPGRADE][b60014] chrissstrahl - Execute individual killthread for this player
-void Player::killThread()
+void Player::upgPlayerRunKillThread()
 {
 	ScriptVariable* entityData = NULL;
 	entityData = entityVars.GetVariable("_killThread");
