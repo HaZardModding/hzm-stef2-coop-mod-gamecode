@@ -296,7 +296,7 @@ void Player::upgPlayerCheckReload(Event* ev) { ev->ReturnFloat((last_ucmd.button
 void Player::upgPlayerCheckFire(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0); }
 void Player::upgPlayerCheckFirealt(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKRIGHT) != 0); }
 void Player::upgPlayerCheckThirdperson(Event* ev) { ev->ReturnFloat((int)_isThirdPerson); }
-void Player::checkUsePressing(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_USE) != 0); }
+void Player::upgPlayerCheckUsePressing(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_USE) != 0); }
 
 //[b60012] chrissstrahl - cancel player modulating event - if player gets hurt or so
 void Player::cancelPuzzle()
