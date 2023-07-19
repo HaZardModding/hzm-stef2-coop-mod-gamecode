@@ -331,7 +331,7 @@ class Player : public Sentient
 		void				upgPlayerGetViewanglesEvent(Event* ev);
 		void				upgPlayerHasLanguageGerman(Event* ev);
 		void				upgPlayerHasLanguageEnglish(Event* ev);
-		str					getLanguage(void);
+		str					upgPlayerGetLanguage(void);
 		void				setLanguage(str sLang);
 		void				getLanguageEvent(Event* ev);
 		void				widgetCommandEvent(Event* ev);

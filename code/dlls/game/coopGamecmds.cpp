@@ -576,7 +576,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		str sInfoPrint = "YOU:\n";
 		sInfoPrint += va("Coop Ver.: %i, C-Id: %d\n",player->coop_getInstalledVersion(),player->entnum);
 		sInfoPrint += va("Coop Class: %s\n", player->coopPlayer.className.c_str());
-		sInfoPrint += va("Lang.: %s, Entered: %.2f\n", player->getLanguage().c_str(),player->client->pers.enterTime);
+		sInfoPrint += va("Lang.: %s, Entered: %.2f\n", player->upgPlayerGetLanguage().c_str(),player->client->pers.enterTime);
 		sInfoPrint += va("Pers.Id: %s\n", player->coop_getId().c_str());
 	
 		sInfoPrint += "\nSERVER:\n";
@@ -614,7 +614,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		player->hudPrint("^5Coop Version^8: None detected\n");
 	}
 	player->hudPrint(va("^5Coop Class^8: %s, ", player->coopPlayer.className.c_str()));
-	player->hudPrint(va("^5Language^8: %s, ", player->getLanguage().c_str()));
+	player->hudPrint(va("^5Language^8: %s, ", player->upgPlayerGetLanguage().c_str()));
 	player->hudPrint(va("^5Client-Id^8: %d\n", player->entnum));
 
 	player->hudPrint(va("^5Entred game at^8: %.2f, ", player->client->pers.enterTime));

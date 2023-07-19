@@ -37,7 +37,7 @@ extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerD
 //================================================================
 bool coop_checkPlayerLanguageGerman(Player *player)
 {
-	if (player && player->getLanguage() == "Deu")
+	if (player && player->upgPlayerGetLanguage() == "Deu")
 	{
 		return true;
 	}

@@ -2889,7 +2889,7 @@ bool Player::coop_updateStats(void)
 void Player::upgPlayerHasLanguageGerman(Event* ev)
 {
 	bool bLangMatch = false;
-	if (this->getLanguage() == "Deu") {
+	if (this->upgPlayerGetLanguage() == "Deu") {
 		bLangMatch = true;
 	}
 	ev->ReturnFloat((float)bLangMatch);
@@ -2900,7 +2900,7 @@ void Player::upgPlayerHasLanguageGerman(Event* ev)
 void Player::upgPlayerHasLanguageEnglish(Event* ev)
 {
 	bool bLangMatch = false;
-	if (this->getLanguage() == "Eng") {
+	if (this->upgPlayerGetLanguage() == "Eng") {
 		bLangMatch = true;
 	}
 	ev->ReturnFloat((float)bLangMatch);
@@ -2910,12 +2910,12 @@ void Player::upgPlayerHasLanguageEnglish(Event* ev)
 //hzm gameupdate chrissstrahl [b60011]  - returns player language string
 void Player::getLanguageEvent(Event* ev)
 {
-	ev->ReturnString(this->getLanguage());
+	ev->ReturnString(this->upgPlayerGetLanguage());
 }
 
 
 //hzm gameupdate chrissstrahl [b60011]  - returns player language string
-str Player::getLanguage()
+str Player::upgPlayerGetLanguage()
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (g_gametype->integer != GT_SINGLE_PLAYER && !multiplayerManager.inMultiplayer()) {
