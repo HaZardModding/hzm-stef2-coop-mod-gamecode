@@ -419,7 +419,7 @@ str Player::upgPlayerGetHoldableModel(void)
 }
 
 //[b60011] chrissstrahl - allow to get Rune Item from outside class
-Rune* Player::getRuneItem(void)
+Rune* Player::upgPlayerGetRuneItem(void)
 {
 	if (_rune) {
 		return _rune;

@@ -1320,9 +1320,9 @@ Item *Sentient::FindItem( const char *itemname, Item *current )
 				}
 				if (player->hasRune() && player->getRuneModel() == itemname) {
 					//gi.Printf(va("RUNE: %s\n", player->getRuneName().c_str()));
-					return (Item*)player->getRuneItem();
+					return (Item*)player->upgPlayerGetRuneItem();
 				}
-				if (player->getRuneItem() && player->getPowerupModel() == itemname) {
+				if (player->upgPlayerGetRuneItem() && player->getPowerupModel() == itemname) {
 					//gi.Printf(va("POWERUP: %s\n", player->getPowerupName().c_str()));
 					return (Item*)player->getPowerupItem();
 				}
