@@ -2217,7 +2217,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 			bool bALt = false;
 
 			//hzm coop mod chrissstrahl - handle coop specific votes in a seperate function
-			bALt = coop_textModifyVoteText( _voteString , sVoteText , currentPlayer );
+			bALt = coop_vote_ModifyVoteText( _voteString , sVoteText , currentPlayer );
 
 			//hzm coop mod chrissstrahl - print it in german if player is using german game version
 			if ( currentPlayer->upgPlayerHasLanguageGerman() ){

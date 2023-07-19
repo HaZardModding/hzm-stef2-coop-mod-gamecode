@@ -7,10 +7,7 @@
 //associated with ::MultiplayerManager::callvote
 bool coop_vote_checkvalid(const str &command);
 void coop_vote_printcommands(Player *player);
-
-//check also func:
-//bool coop_textModifyVoteText( const str _voteString, str &sVoteText, Player* player )
-
+bool coop_vote_ModifyVoteText(const str _voteString, str& sVoteText, Player* player);
 int coop_vote_skipcinematicValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_lastmanstandingValidate(Player* player, const str &command, const str &arg, str &_voteString);
 int coop_vote_quitserverValidate(Player* player, const str &command, const str &arg, str &_voteString);

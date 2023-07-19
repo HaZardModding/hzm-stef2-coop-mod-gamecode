@@ -48,6 +48,111 @@ extern CoopChallenges coopChallenges;
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 
+
+
+//================================================================
+// Name:        coop_textModifyVoteText
+// Class:       -
+//              
+// Description: Return localized and optimized vote string
+//              
+// Parameters:  str sVoteText
+//              
+// Returns:     bool
+//              
+//================================================================
+bool coop_vote_ModifyVoteText(const str _voteString, str& sVoteText, Player* player)
+{
+	if (!game.coop_isActive)
+		return false;
+
+	bool bAltText = true;
+
+	//hzm coop mod chrissstrahl - print it in german if player is using german game version
+	if (player->upgPlayerHasLanguageGerman())
+	{
+		if (coop_returnIntFind(_voteString, "coop_maxspeed") > -1)
+		{
+			sVoteText = "Setze Laufgeschwindigkeit auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_ff") > -1)
+		{
+			sVoteText = "Setze Friendly Fire auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 7);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_next") > -1)
+		{
+			sVoteText = "Lade naechste Coop Karte - JETZT!"; sVoteText += coop_returnStringStartingFrom(_voteString, 9);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_prev") > -1)
+		{
+			sVoteText = "Lade vorherige Coop Karte - JETZT!"; sVoteText += coop_returnStringStartingFrom(_voteString, 9);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_skill") > -1)
+		{
+			sVoteText = "Setze Schwiergkeitsgrad auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 5);
+		}
+		//chrissstrahl - print readable string instead of command [b607]
+		else if (coop_returnIntFind(_voteString, "coop_challenge") > -1)
+		{
+			sVoteText = "Setze Herausforderung auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_lms") > -1)
+		{
+			sVoteText = "Setze Last Man Standing auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 8);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_awards") > -1)
+		{
+			sVoteText = "Setze Auszeichnungen auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 11);
+		}
+		//end of [b607] changes
+		else
+		{
+			bAltText = false;
+		}
+	}
+	else {
+		if (coop_returnIntFind(_voteString, "coop_maxspeed") > -1)
+		{
+			sVoteText = "Set Movement Speed to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_ff") > -1)
+		{
+			sVoteText = "Set Friendly Fire to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 7);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_next") > -1)
+		{
+			sVoteText = "Load Next Coop Map - NOW!"; sVoteText += coop_returnStringStartingFrom(_voteString, 9);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_prev") > -1)
+		{
+			sVoteText = "Load Previous Coop Map - NOW!"; sVoteText += coop_returnStringStartingFrom(_voteString, 9);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_skill") > -1)
+		{
+			sVoteText = "Set Dificulty to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 5);
+		}
+		//chrissstrahl - print readable string instead of command [b607]
+		else if (coop_returnIntFind(_voteString, "coop_teamicon") > -1)
+		{
+			sVoteText = "Set Challenge to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_lms") > -1)
+		{
+			sVoteText = "Set Last Man Standing to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 8);
+		}
+		else if (coop_returnIntFind(_voteString, "coop_awards") > -1)
+		{
+			sVoteText = "Set Awards to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 11);
+		}
+		//end of [b607] changes
+		else
+		{
+			bAltText = false;
+		}
+	}
+	return bAltText;
+}
+
 //========================================================= [b607]
 // Name:        coop_vote_checkvalid
 // Class:       -
