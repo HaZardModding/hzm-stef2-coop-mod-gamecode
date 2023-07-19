@@ -332,7 +332,7 @@ class Player : public Sentient
 		void				upgPlayerHasLanguageGerman(Event* ev);
 		void				upgPlayerHasLanguageEnglish(Event* ev);
 		str					upgPlayerGetLanguage(void);
-		void				setLanguage(str sLang);
+		void				upgPlayerSetLanguage(str sLang);
 		void				getLanguageEvent(Event* ev);
 		void				widgetCommandEvent(Event* ev);
 		void				widgetCommand(str sWidget, str sParameters);

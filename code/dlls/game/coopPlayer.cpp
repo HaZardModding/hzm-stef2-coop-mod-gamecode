@@ -1457,7 +1457,7 @@ bool coop_playerSetup(Player* player)
 		
 		cvar_t* cvar = gi.cvar_get("local_language");
 		str sCvar = (cvar ? cvar->string : "Eng");
-		player->setLanguage(sCvar);
+		player->upgPlayerSetLanguage(sCvar);
 
 		cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
 		int iCvar2 = (cvar2 ? cvar2->integer : 0);
@@ -1585,7 +1585,7 @@ void coop_playerSetupHost(Player* player)
 {
 	cvar_t* cvar = gi.cvar_get("local_language");
 	str sCvar = (cvar ? cvar->string : "Eng");
-	player->setLanguage(sCvar);
+	player->upgPlayerSetLanguage(sCvar);
 
 	//[b60014] chrissstrahl - changed to use functions that handle sp/mp/coop
 	player->coop_setInstalledVersion(player->coop_getInstalledVersion());
@@ -2927,7 +2927,7 @@ str Player::upgPlayerGetLanguage()
 
 
 //hzm gameupdate chrissstrahl [b60011]  - sets player language string
-void Player::setLanguage(str sLang)
+void Player::upgPlayerSetLanguage(str sLang)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (multiplayerManager.inMultiplayer()) {

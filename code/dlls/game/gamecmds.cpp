@@ -1605,7 +1605,7 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 qboolean G_LanguageEng(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	player->setLanguage("Eng");
+	player->upgPlayerSetLanguage("Eng");
 	if ((player->client->pers.enterTime + 5) < level.time) {
 		player->hudPrint("Your Language was set to English\n");
 	}
@@ -1630,7 +1630,7 @@ qboolean G_LanguageEng(const gentity_t* ent)
 qboolean G_LanguageDeu(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
-	player->setLanguage("Deu");
+	player->upgPlayerSetLanguage("Deu");
 	if ((player->client->pers.enterTime + 5) < level.time) {
 		player->hudPrint("Ihre Sprache wurde auf deutsch gesetzt\n");
 	}

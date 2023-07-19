@@ -168,8 +168,8 @@ bool Player::upgPlayerSay(str sayString)
 	}
 
 	//detect player language
-	if		(Q_stricmpn(sayString.c_str(), "eng", 3) == 0) { setLanguage("Eng");return true; }
-	else if	(Q_stricmpn(sayString.c_str(), "deu", 3) == 0) { setLanguage("Deu");return true; }
+	if		(Q_stricmpn(sayString.c_str(), "eng", 3) == 0) { upgPlayerSetLanguage("Eng");return true; }
+	else if	(Q_stricmpn(sayString.c_str(), "deu", 3) == 0) { upgPlayerSetLanguage("Deu");return true; }
 
 	//SPAM FILTER - this is our sv_floodprotect replacement, since flood protect also blocks multiplayer specific commands which we are in need of to work
 	if (upgPlayer.chatTimeLimit < level.time) { upgPlayer.chatTimeLimit = level.time; }
