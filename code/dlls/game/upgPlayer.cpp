@@ -464,7 +464,7 @@ str Player::upgPlayerGetPowerupModel(void)
 }
 
 //[b60011] chrissstrahl - allow to get Rune Name from outside class
-str Player::getPowerupName(void)
+str Player::upgPlayerGetPowerupName(void)
 {
 	if (_powerup) {
 		return _powerup->getName();
