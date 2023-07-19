@@ -888,7 +888,7 @@ void Player::upgPlayerWidgetCommand(str sWidget, str sParameters)
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - sets specific camera on player
-void Player::setCameraEvent(Event* ev)
+void Player::upgPlayerGetCameraEvent(Event* ev)
 {
 	Entity* camera;
 	float switchTime = 0;
