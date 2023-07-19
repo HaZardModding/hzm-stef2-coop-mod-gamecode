@@ -2026,7 +2026,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_checkThirdperson,				&Player::checkThirdperson },
 	//[b60011] chrissstrahl - checks if player is pressing fire/alternative fire button
 	{ &EV_Player_checkFire,						&Player::upgPlayerCheckFire },
-	{ &EV_Player_checkFirealt,					&Player::checkFirealt },
+	{ &EV_Player_checkFirealt,					&Player::upgPlayerCheckFirealt },
 	//[b60011] chrissstrahl - runs thread from player entity
 	{ &EV_Player_RunThread,						&Player::RunThread },
 	//[b60011] chrissstrahl - get player viewangle
