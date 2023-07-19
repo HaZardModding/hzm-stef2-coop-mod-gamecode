@@ -323,7 +323,7 @@ class Player : public Sentient
 		str					upgPlayerGetHoldableName(void);
 		str					upgPlayerGetHoldableModel(void);
 		Rune*				upgPlayerGetRuneItem(void);
-		str					getRuneModel(void);
+		str					upgPlayerGetRuneModel(void);
 		str					getRuneName(void);
 		Powerup*			getPowerupItem(void);
 		str					getPowerupModel(void);

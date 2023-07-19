@@ -428,7 +428,7 @@ Rune* Player::upgPlayerGetRuneItem(void)
 }
 
 //[b60011] chrissstrahl - allow to get Rune Model from outside class
-str Player::getRuneModel(void)
+str Player::upgPlayerGetRuneModel(void)
 {
 	if (_rune) {
 		return _rune->model;

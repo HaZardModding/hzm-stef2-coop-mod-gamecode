@@ -1318,7 +1318,7 @@ Item *Sentient::FindItem( const char *itemname, Item *current )
 					//gi.Printf(va("HOLDABLE: %s\n", player->getHoldableName().c_str()));
 					return (Item*)player->getHoldableItem();
 				}
-				if (player->hasRune() && player->getRuneModel() == itemname) {
+				if (player->hasRune() && player->upgPlayerGetRuneModel() == itemname) {
 					//gi.Printf(va("RUNE: %s\n", player->getRuneName().c_str()));
 					return (Item*)player->upgPlayerGetRuneItem();
 				}
