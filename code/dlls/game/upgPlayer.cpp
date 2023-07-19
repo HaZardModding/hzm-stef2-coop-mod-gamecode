@@ -780,7 +780,7 @@ void Player::upgPlayerGetLastDamaged(Event* ev)
 	ev->ReturnFloat(getLastDamageTime());
 }
 
-void Player::getTeamName(Event* ev)
+void Player::upgPLayerGetTeamName(Event* ev)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (multiplayerManager.inMultiplayer()) {
