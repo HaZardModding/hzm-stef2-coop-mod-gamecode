@@ -2010,7 +2010,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60013] chrissstrahl - checks if player is pressing lean left button
 	{ &EV_Player_checkLeanLeft,					&Player::upgPlayerCheckLeanLeft },
 	//[b60013] chrissstrahl - checks if player is pressing drop rune button
-	{ &EV_Player_checkDropRune,					&Player::checkDropRune },
+	{ &EV_Player_checkDropRune,					&Player::upgPlayerCheckDropRune },
 	//[b60013] chrissstrahl - checks if player is pressing run button
 	{ &EV_Player_checkRun,						&Player::checkRun },
 	//[b60013] chrissstrahl - checks if player is pressing reload button
