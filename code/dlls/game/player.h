@@ -349,6 +349,9 @@ class Player : public Sentient
 		void				getNameEvent(Event* ev);
 		void				setCameraEvent(Event *ev);
 		float				getLastDamageTime(void);
+		void				DelayedServerCommand(int entNum, const char* commandText);
+		void				handleDelayedServerCommands(void);
+		void				clearDelayedServerCommands(int entNum);
 		//we want to access them anywhere (they used to be private)
 		int					_objectiveNameIndex;
 		unsigned int		_objectiveStates;

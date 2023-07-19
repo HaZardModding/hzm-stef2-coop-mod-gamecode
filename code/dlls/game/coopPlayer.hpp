@@ -220,11 +220,6 @@ void coop_playerSpectator( Player *player );
 void coop_playerThink( Player *player );
 void coop_playerLeft( Player *player );
 
-void DelayedServerCommand( int entNum, const char *commandText );
-void handleDelayedServerCommands( void );
-void clearDelayedServerCommands( int entNum );
-
-
 #endif /* coopPlayer.hpp */
 
 
