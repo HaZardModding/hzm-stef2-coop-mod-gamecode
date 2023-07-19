@@ -349,7 +349,7 @@ class Player : public Sentient
 		void				upgPlayerGetKills(Event* ev);
 		void				upgPlayerGetLastDamaged(Event* ev);
 		void				upgPLayerGetTeamName(Event* ev);
-		void				getTeamScore(Event* ev);
+		void				upgPlayerGetTeamScore(Event* ev);
 		void				getNameEvent(Event* ev);
 		void				setCameraEvent(Event *ev);
 		float				getLastDamageTime(void);

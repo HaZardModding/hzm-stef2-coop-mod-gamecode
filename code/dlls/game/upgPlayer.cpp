@@ -797,7 +797,7 @@ void Player::upgPLayerGetTeamName(Event* ev)
 	}
 }
 
-void Player::getTeamScore(Event* ev)
+void Player::upgPlayerGetTeamScore(Event* ev)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (multiplayerManager.inMultiplayer()) {

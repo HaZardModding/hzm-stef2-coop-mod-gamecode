@@ -1988,7 +1988,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getKills,						&Player::upgPlayerGetKills },
 	{ &EV_Player_getLastDamaged,				&Player::upgPlayerGetLastDamaged },
 	{ &EV_Player_getTeamName,					&Player::upgPLayerGetTeamName },
-	{ &EV_Player_getTeamScore,					&Player::getTeamScore },
+	{ &EV_Player_getTeamScore,					&Player::upgPlayerGetTeamScore },
 	{ &EV_Player_getCoopVersion,				&Player::getCoopVersion },
 	
 	//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
