@@ -1195,7 +1195,7 @@ void ModeCaptureTheFlag::attachFlag( Player *player, Entity *obj )
 	if ( tagnum < 0 )
 		tagnum = gi.Tag_NumForName( player->edict->s.modelindex, "Bip01 Head" );
 
-	if ( ( tagnum < 0 ) || !obj->attach( player->entnum, tagnum, false, player->upgGetFlagAttachOffset(), player->upgPlayerGetFlagAttachAngles() ) )
+	if ( ( tagnum < 0 ) || !obj->attach( player->entnum, tagnum, false, player->upgPlayerGetFlagAttachOffset(), player->upgPlayerGetFlagAttachAngles() ) )
 	{
 		warning( "ModeCaptureTheFlag::attachFlag", "Could not attach model %s", obj->model.c_str() );
 		delete obj;
