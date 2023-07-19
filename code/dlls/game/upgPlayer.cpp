@@ -274,7 +274,7 @@ void Player::upgPlayerGetUserFov(Event* ev)
 }
 
 //[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
-void Player::getBackpackAttachOffset(Event* ev) { ev->ReturnVector(_backpackAttachOffset); }
+void Player::upgPlayerGetBackpackAttachOffset(Event* ev) { ev->ReturnVector(_backpackAttachOffset); }
 void Player::getBackpackAttachAngles(Event* ev) { ev->ReturnVector(_backpackAttachAngles); }
 void Player::getFlagAttachOffset(Event* ev) { ev->ReturnVector(_flagAttachOffset); }
 void Player::getFlagAttachAngles(Event* ev) { ev->ReturnVector(_flagAttachAngles); }
