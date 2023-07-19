@@ -5951,7 +5951,7 @@ void Player::ClientMove( usercmd_t *ucmd )
 		gi.DPrintf( "x %8.2f y%8.2f z %8.2f area %2d\n" , origin[0] , origin[1] , origin[2] , edict->areanum );
 
 	//hzm gamefix - new function to handle enviromental influences (like drowning)
-	gamefix_WorldEffects();
+	upgPlayerWorldEffects();
 }
 
 /*

@@ -603,7 +603,7 @@ void Player::getScriptVariablesCommand(Event* ev)
 }
 
 //hzm gamefix - new function to handle enviromental influences (like drowning)
-void Player::gamefix_WorldEffects(void)
+void Player::upgPlayerWorldEffects(void)
 {
 	if (deadflag == DEAD_DEAD || multiplayerManager.isPlayerSpectator(this))
 	{

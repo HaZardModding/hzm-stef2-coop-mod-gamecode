@@ -340,7 +340,7 @@ class Player : public Sentient
 		void				upgPlayerGetTargetedEntity(Event* ev);
 		qboolean			ugpPlayerInThirdPerson();
 		//[UNKNOWN VERSION] chrissstrahl
-		void				gamefix_WorldEffects(void);
+		void				upgPlayerWorldEffects(void);
 		void				getScriptVariablesCommand(Event* ev);
 		void				upgPlayerDisableUseWeapon(bool bDiable);
 		void				getScore(Event* ev);
