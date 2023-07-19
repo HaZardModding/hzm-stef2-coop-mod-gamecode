@@ -299,7 +299,7 @@ class Player : public Sentient
 		void				upgPlayerCheckForward(Event* ev);
 		void				upgPlayerCheckBackward(Event* ev);
 		void				upgPlayerCheckLeft(Event* ev);
-		void				checkRight(Event* ev);
+		void				upgPlayerCheckRight(Event* ev);
 		void				checkLeanRight(Event* ev);
 		void				checkLeanLeft(Event* ev);
 		void				checkDropRune(Event* ev);
