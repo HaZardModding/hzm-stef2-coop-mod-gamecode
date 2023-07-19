@@ -1324,7 +1324,7 @@ Item *Sentient::FindItem( const char *itemname, Item *current )
 				}
 				if (player->upgPlayerGetRuneItem() && player->getPowerupModel() == itemname) {
 					//gi.Printf(va("POWERUP: %s\n", player->getPowerupName().c_str()));
-					return (Item*)player->getPowerupItem();
+					return (Item*)player->upgPlayerGetPowerupItem();
 				}
 			}
 		}

@@ -325,7 +325,7 @@ class Player : public Sentient
 		Rune*				upgPlayerGetRuneItem(void);
 		str					upgPlayerGetRuneModel(void);
 		str					upgPlayerGetRuneName(void);
-		Powerup*			getPowerupItem(void);
+		Powerup*			upgPlayerGetPowerupItem(void);
 		str					getPowerupModel(void);
 		str					getPowerupName(void);
 		void				getViewanglesEvent(Event* ev);

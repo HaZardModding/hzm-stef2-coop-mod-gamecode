@@ -446,7 +446,7 @@ str Player::upgPlayerGetRuneName(void)
 }
 
 //[b60011] chrissstrahl - allow to get Rune Item from outside class
-Powerup* Player::getPowerupItem(void)
+Powerup* Player::upgPlayerGetPowerupItem(void)
 {
 	if (_powerup) {
 		return _powerup;
