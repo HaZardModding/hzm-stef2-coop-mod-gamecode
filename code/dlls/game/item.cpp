@@ -1127,7 +1127,7 @@ Item* SecretItem::ItemPickup( Entity *other, qboolean add_to_inventory = true, q
 
 				if (player) {
 					str sMessage = "^5Secret golden Starship^2 found by:^8 ";
-					if (coop_checkPlayerLanguageGerman(player)) {
+					if (player->upgPlayerHasLanguageGerman()) {
 						sMessage = "^5Geheimes goldenes Raumschiffe^2 gefunden von:^8 ";
 					}
 

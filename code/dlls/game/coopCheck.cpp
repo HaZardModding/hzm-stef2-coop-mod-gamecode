@@ -25,26 +25,6 @@
 extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerDataIniFilename()
 
 //================================================================
-// Name:        coop_checkPlayerLanguageGerman
-// Class:       -
-//              
-// Description:  check if player has german game version
-//              
-// Parameters:  Player *player
-//              
-// Returns:     bool
-//              
-//================================================================
-bool coop_checkPlayerLanguageGerman(Player *player)
-{
-	if (player && player->upgPlayerGetLanguage() == "Deu")
-	{
-		return true;
-	}
-	return false;
-}
-
-//================================================================
 // Name:        coop_checkCharsInsideString
 // Class:       -
 //              

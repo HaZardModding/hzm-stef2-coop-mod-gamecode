@@ -49,6 +49,88 @@ bool Player::upgPlayerIsHost()
 	return false;
 }
 
+//================================================================
+// Name:        coop_checkPlayerLanguageGerman
+// Class:       -
+//              
+// Description:  check if player has german game version
+//              
+// Parameters:  Player *player
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::upgPlayerHasLanguageGerman()
+{
+	if (upgPlayerGetLanguage() == "Deu")
+	{
+		return true;
+	}
+	return false;
+}
+
+
+//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
+void Player::upgPlayerHasLanguageGerman(Event* ev)
+{
+	bool bLangMatch = false;
+	if (upgPlayerHasLanguageGerman()) {
+		bLangMatch = true;
+	}
+	ev->ReturnFloat((float)bLangMatch);
+}
+
+
+//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
+void Player::upgPlayerHasLanguageEnglish(Event* ev)
+{
+	bool bLangMatch = false;
+	if (upgPlayerGetLanguage() == "Eng") {
+		bLangMatch = true;
+	}
+	ev->ReturnFloat((float)bLangMatch);
+}
+
+//hzm gameupdate chrissstrahl [b60011]  - returns player language string
+void Player::upgPlayerGetLanguageEvent(Event* ev)
+{
+	ev->ReturnString(upgPlayerGetLanguage());
+}
+
+//hzm gameupdate chrissstrahl [b60011]  - returns player language string
+str Player::upgPlayerGetLanguage()
+{
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (g_gametype->integer != GT_SINGLE_PLAYER && !multiplayerManager.inMultiplayer()) {
+		cvar_t* cvar = gi.cvar_get("local_language");
+		return (cvar ? cvar->string : "Eng");
+	}
+	return upgPlayer.language;
+}
+
+//hzm gameupdate chrissstrahl [b60011]  - sets player language string
+void Player::upgPlayerSetLanguage(str sLang)
+{
+	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
+	if (multiplayerManager.inMultiplayer()) {
+		if (sLang.length() < 1 || sLang.length() > 3) {
+			upgPlayer.language = "Eng";
+			gi.Printf(va("setLanguage(%s) - Bad string size for client %s\n", sLang.c_str(), entnum));
+			return;
+		}
+		if (sLang != "Eng" && sLang != "Deu") {
+			upgPlayer.language = "Eng";
+			gi.Printf(va("setLanguage(%s) - Unknown Language for client %s\n", sLang.c_str(), entnum));
+			return;
+		}
+		if (sLang != "Deu") {
+			upgPlayer.language = "Eng";
+			return;
+		}
+		upgPlayer.language = sLang;
+	}
+}
+
 //=========================================================[b60014]
 // Name:        player::upgPlayerDeathTimeUpdate
 // Class:       -
@@ -178,7 +260,7 @@ bool Player::upgPlayerSay(str sayString)
 		//display info that the player was spamming
 		if ((upgPlayer.chatTimeLastSpamInfo + 3.0f) < level.time) {
 			upgPlayer.chatTimeLastSpamInfo = level.time;
-			if (coop_checkPlayerLanguageGerman(this)) { hudPrint("^3Sie chatten zu schnell, Nachricht blockiert durch ^5Spamschutz!\n"); }
+			if (upgPlayerHasLanguageGerman()) { hudPrint("^3Sie chatten zu schnell, Nachricht blockiert durch ^5Spamschutz!\n"); }
 			else { hudPrint("^3You chat to fast, message blocked by ^5Spamprotection!\n"); }
 		}
 		return true;

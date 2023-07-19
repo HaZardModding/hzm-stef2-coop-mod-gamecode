@@ -22,7 +22,6 @@
 #include "_pch_cpp.h"
 
 //check if player has german game version
-bool coop_checkPlayerLanguageGerman(Player *player);
 bool coop_checkCharsInsideString( str sSource , str sObjectsOfIntrest );
 bool coop_checkInsidePlayerOrActor( Entity *entity1 );
 str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId);

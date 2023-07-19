@@ -247,7 +247,7 @@ void coop_objectivesUpdateUservar( int iUservar )
 			}else if ( iUservar == 2){
 				upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story.c_str() ) );
 			}else if ( iUservar == 3 ){
-				if ( coop_checkPlayerLanguageGerman(player) ){
+				if ( player->upgPlayerHasLanguageGerman() ){
 					upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story_deu.c_str() ) );
 				}
 			}
@@ -269,7 +269,7 @@ void coop_objectivesUpdateUservar( int iUservar )
 					upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story.c_str() ) );
 				}
 				else if ( iUservar == 3 ){
-					if ( coop_checkPlayerLanguageGerman(player) ){
+					if ( player->upgPlayerHasLanguageGerman() ){
 						upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story_deu.c_str() ) );
 					}
 				}
@@ -705,7 +705,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 		sVariableName = "coop_string_objectiveItem";
 		sVariableName += iObjectiveItem;
 
-		if ( coop_checkPlayerLanguageGerman(player) && game.isStandardLevel == false ){
+		if ( player->upgPlayerHasLanguageGerman() && game.isStandardLevel == false ){
 			str sTempVar , sTempVar2;
 			sTempVar2 = sVariableName;
 			sTempVar2 += "_deu";
@@ -757,7 +757,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 		sVariableName = "coop_string_objectiveTacticalInfo";
 		sVariableName += (iObjectiveItem - 8);
 		str sHintString;
-		if ( coop_checkPlayerLanguageGerman(player) ){
+		if ( player->upgPlayerHasLanguageGerman() ){
 			sHintString = sVariableName;
 			sHintString += "_deu";
 			sHint = program.getStringVariableValue( sHintString.c_str() );
@@ -797,7 +797,7 @@ void coop_objectives_tacticalShow( Player *player , int iTactical )
 
 		str sTacEng = program.getStringVariableValue( va("coop_string_objectiveTacticalInfo%d", iTactical ) );
 		str sTacDeu = program.getStringVariableValue( va( "coop_string_objectiveTacticalInfo%d_deu" , iTactical ) );
-		if ( coop_checkPlayerLanguageGerman( player ) && sTacDeu.length() ) {
+		if ( player->upgPlayerHasLanguageGerman() && sTacDeu.length() ) {
 			upgPlayerDelayedServerCommand( player->entnum , va( "set coop_t%d %s" , iTactical , sTacDeu.c_str() ) );
 		}
 		else if( sTacEng.length() ){

@@ -458,7 +458,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 			usedPlayer->coopPlayer.lastTimeUsedClassMsg = level.time;
 
 			if ( usedPlayer->coop_playerNeutralized() && !equipment ){ //[b60011] chrissstrahl - fixed forbidden check practise
-				if ( coop_checkPlayerLanguageGerman(usedPlayer) ){
+				if ( usedPlayer->upgPlayerHasLanguageGerman() ){
 					usedPlayer->hudPrint( va( "^5COOP^8 - You are beeing revived by: %s \n" , usingPlayer->client->pers.netname ) );
 				}else{
 					usedPlayer->hudPrint( va( "^5COOP^8 - Sie werden wiederbelebt von: %s \n" , usingPlayer->client->pers.netname ) );
@@ -471,7 +471,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 							return;
 						}
 
-						if ( coop_checkPlayerLanguageGerman(usedPlayer) ){
+						if ( usedPlayer->upgPlayerHasLanguageGerman() ){
 							usedPlayer->hudPrint( va( "^5COOP^8 - Sie wurden geheilt von: %s\n" , usingPlayer->client->pers.netname ) );
 						}else{
 							usedPlayer->hudPrint( va( "^5COOP^8 - You have been healed by: %s\n" , usingPlayer->client->pers.netname ) );
@@ -494,7 +494,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 							fArmorToGive -= ( ( fArmorCurrent + fArmorToGive_max ) - COOP_MAX_ARMOR );
 						}
 
-						if ( coop_checkPlayerLanguageGerman(usedPlayer) ){//CHEKME
+						if ( usedPlayer->upgPlayerHasLanguageGerman() ){//CHEKME
 							usedPlayer->hudPrint( va( "^5COOP^8 - Ihr Schild wurde aufgeladen von: %s\n" , usingPlayer->client->pers.netname ) );
 						}else{
 							usedPlayer->hudPrint( va( "^5COOP^8 - You shield was charged by: %s\n" , usingPlayer->client->pers.netname ) );
@@ -506,7 +506,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						usedPlayer->ProcessEvent( armorEvent );
 					}
 					else{
-						if ( coop_checkPlayerLanguageGerman(usedPlayer) ){
+						if ( usedPlayer->upgPlayerHasLanguageGerman() ){
 							usedPlayer->hudPrint( va( "^5COOP^8 - Ihre Waffen wurden geladen von: %s\n" , usingPlayer->client->pers.netname ) );
 						}else{
 							usedPlayer->hudPrint( va( "^5COOP^8 - Your Weapons have been charged by: %s\n" , usingPlayer->client->pers.netname ) );
@@ -548,7 +548,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 			usingPlayer->coopPlayer.lastTimeUsedClassMsg = level.time;
 
 			if ( usingPlayer->coop_playerNeutralized() && !equipment ){//[b60011] chrissstrahl - fixed forbidden check practise
-				if ( coop_checkPlayerLanguageGerman((usedPlayer)) ){
+				if ( usedPlayer->upgPlayerHasLanguageGerman() ){
 					usingPlayer->hudPrint( va( "^5COOP^8 - Wiederbeleben von: %s, bitte weitermachen!\n" , usedPlayer->client->pers.netname ) );
 				}else{
 					usingPlayer->hudPrint( va( "^5COOP^8 - You are reviving: %s, please continue!\n" , usedPlayer->client->pers.netname ) );
@@ -561,7 +561,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						if ( usedPlayer->health >= usedPlayer->max_health ){
 
 							//[b60012][cleanup] chrissstrahl - this could be put into a func
-							if ( coop_checkPlayerLanguageGerman((usingPlayer)) ){//[b607] chrissstrahl - using now correct entity
+							if ( usingPlayer->upgPlayerHasLanguageGerman() ){//[b607] chrissstrahl - using now correct entity
 								usingPlayer->hudPrint( "^5COOP^8 - Spieler bereits bei voller Gesundheit!\n" );
 							}
 							else{
@@ -571,7 +571,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						}
 
 						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if ( coop_checkPlayerLanguageGerman(( usingPlayer )) ){
+						if ( usingPlayer->upgPlayerHasLanguageGerman() ){
 							usingPlayer->hudPrint( va( "^5COOP^8 - Sie heilten: %s\n" , usedPlayer->client->pers.netname ) );
 						}else{
 							usingPlayer->hudPrint( va( "^5COOP^8 - You healed: %s\n" , usedPlayer->client->pers.netname ) );
@@ -596,7 +596,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						if ( usedPlayer->GetArmorValue() >= COOP_MAX_ARMOR ){
 
 							//[b60012][cleanup] chrissstrahl - this could be put into a func
-							if ( coop_checkPlayerLanguageGerman((usingPlayer)) ){//[b607] chrissstrahl - using now correct entity
+							if ( usingPlayer->upgPlayerHasLanguageGerman() ){//[b607] chrissstrahl - using now correct entity
 								usingPlayer->hudPrint( va( "^5COOP^8 - %ss Schild ist bereits bei maximler Kapazitaet\n" , usedPlayer->client->pers.netname ) );
 							}else{
 								usingPlayer->hudPrint( va( "^5COOP^8 - %ss Shield is already at maximum capacity\n" , usedPlayer->client->pers.netname ) );
@@ -605,7 +605,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						}
 
 						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if ( coop_checkPlayerLanguageGerman(( usingPlayer )) ){
+						if ( usingPlayer->upgPlayerHasLanguageGerman() ){
 							usingPlayer->hudPrint( va( "^5COOP^8 - Sie luden %ss Schild auf\n" , usedPlayer->client->pers.netname ) );
 						}else{
 							usingPlayer->hudPrint( va( "^5COOP^8 - You charged %ss shield\n" , usedPlayer->client->pers.netname ) );
@@ -614,7 +614,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 					else{
 
 						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if ( coop_checkPlayerLanguageGerman(( usingPlayer )) ){
+						if ( usingPlayer->upgPlayerHasLanguageGerman() ){
 							usingPlayer->hudPrint( va( "^5COOP^8 - Sie luden %ss Waffenenergie auf\n" , usedPlayer->client->pers.netname ) );
 						}else{
 							usingPlayer->hudPrint( va( "^5COOP^8 - You charged %ss ammo\n" , usedPlayer->client->pers.netname ) );

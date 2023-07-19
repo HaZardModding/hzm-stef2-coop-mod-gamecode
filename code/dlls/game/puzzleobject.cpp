@@ -12,15 +12,17 @@
 //
 
 #include "_pch_cpp.h"
-
-#include "coopReturn.hpp"
-
 #include "puzzleobject.hpp"
 #include "sentient.h"
 #include "player.h"
 #include "equipment.h"
 #include "gamecmds.h"
 
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+
+#include "coopReturn.hpp"
 
 Event EV_PuzzleObject_SetOpenDistance
 (
@@ -685,7 +687,7 @@ void PuzzleObject::useEvent(Event* event)
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
 						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if (coop_checkPlayerLanguageGerman(player)) {
+						if (player->upgPlayerHasLanguageGerman()) {
 							player->hudPrint(COOP_TEXT_CLASS_MEDIC_ONLY_DEU);
 						}
 						else {
@@ -702,7 +704,7 @@ void PuzzleObject::useEvent(Event* event)
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
 						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if (coop_checkPlayerLanguageGerman(player)) {
+						if (player->upgPlayerHasLanguageGerman()) {
 							player->hudPrint(COOP_TEXT_CLASS_TECHNICIAN_ONLY_DEU);
 						}
 						else {
@@ -718,7 +720,7 @@ void PuzzleObject::useEvent(Event* event)
 					if ((fLastMsgTime + 3) < level.time) {
 						player->entityVars.SetVariable("_puzzleLastMessage", level.time);
 						//[b60012][cleanup] chrissstrahl - this could be put into a func
-						if (coop_checkPlayerLanguageGerman(player)) {
+						if (player->upgPlayerHasLanguageGerman()) {
 							player->hudPrint(COOP_TEXT_CLASS_HEAVYWEAPONS_ONLY_DEU);
 						}
 						else {

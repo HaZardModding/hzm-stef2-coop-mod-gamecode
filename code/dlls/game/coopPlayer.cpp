@@ -1264,7 +1264,7 @@ bool coop_playerSpawnLms( Player *player )
 		if ( !level.mission_failed && ( player->coopPlayer.lastTimeHudMessage + 3 ) < level.time ){
 			player->coopPlayer.lastTimeHudMessage = level.time;
 
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Aktiv^8 - ^1Sie sind momentan ausgeschaltet.\n" );
 			}
 			else {
@@ -1770,7 +1770,7 @@ void coop_playerSetupNoncoop( Player *player)
 	//hzm coop mod chrissstrahl - tell player that it would be so much better if he has the coop mod
 	//this is not a priority message, we don't bother with it if the client has heavy traffic
 	if ( game.coop_isActive && !level.mission_failed ){
-		if ( coop_checkPlayerLanguageGerman(player) ) {
+		if ( player->upgPlayerHasLanguageGerman() ) {
 			upgPlayerDelayedServerCommand( player->entnum , "hudprint ^2Holen Sie sich den ^5HZM Coop Mod^2 fuer ein volles Erlebniss! ^5!help^8 eingeben fuer Befehle.\n" );
 		}
 		else {
@@ -1864,7 +1864,7 @@ void coop_playerEnterArena(int entnum, float health)
 		multiplayerManager.joinTeam(player, "Blue");
 		if ((player->coopPlayer.timeEntered + 2) < level.time && !multiplayerManager.isPlayerSpectator(player)) {
 			//[b60012][cleanup] chrissstrahl - this could be put into a func
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint("^5INFO:^2 Coop erlaubt nur blaues Team.\n");
 			}
 			else {
@@ -2880,67 +2880,3 @@ bool Player::coop_updateStats(void)
 	return true;
 }
 
-
-//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
-void Player::upgPlayerHasLanguageGerman(Event* ev)
-{
-	bool bLangMatch = false;
-	if (this->upgPlayerGetLanguage() == "Deu") {
-		bLangMatch = true;
-	}
-	ev->ReturnFloat((float)bLangMatch);
-}
-
-
-//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
-void Player::upgPlayerHasLanguageEnglish(Event* ev)
-{
-	bool bLangMatch = false;
-	if (this->upgPlayerGetLanguage() == "Eng") {
-		bLangMatch = true;
-	}
-	ev->ReturnFloat((float)bLangMatch);
-}
-
-
-//hzm gameupdate chrissstrahl [b60011]  - returns player language string
-void Player::upgPlayerGetLanguageEvent(Event* ev)
-{
-	ev->ReturnString(this->upgPlayerGetLanguage());
-}
-
-
-//hzm gameupdate chrissstrahl [b60011]  - returns player language string
-str Player::upgPlayerGetLanguage()
-{
-	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
-	if (g_gametype->integer != GT_SINGLE_PLAYER && !multiplayerManager.inMultiplayer()) {
-		cvar_t* cvar = gi.cvar_get("local_language");
-		return (cvar ? cvar->string : "Eng");
-	}
-	return coopPlayer.language;
-}
-
-
-//hzm gameupdate chrissstrahl [b60011]  - sets player language string
-void Player::upgPlayerSetLanguage(str sLang)
-{
-	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
-	if (multiplayerManager.inMultiplayer()) {
-		if (sLang.length() < 1 || sLang.length() > 3) {
-			coopPlayer.language = "Eng";
-			gi.Printf(va("setLanguage(%s) - Bad string size for client %s\n", sLang.c_str(), entnum));
-			return;
-		}
-		if (sLang != "Eng" && sLang != "Deu") {
-			coopPlayer.language = "Eng";
-			gi.Printf(va("setLanguage(%s) - Unknown Language for client %s\n", sLang.c_str(), entnum));
-			return;
-		}
-		if (sLang != "Deu") {
-			coopPlayer.language = "Eng";
-			return;
-		}
-		coopPlayer.language = sLang;
-	}
-}

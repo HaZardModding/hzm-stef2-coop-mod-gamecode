@@ -98,14 +98,14 @@ qboolean G_coopCom_block(const gentity_t* ent)
 		targetPlayer->_makeSolidASAPTime = (level.time + 7);
 		targetPlayer->_makeSolidASAP = true;
 
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint(COOP_TEXT_BLOCK_MARKED_PLAYER_DEU);
 		}
 		else {
 			player->hudPrint(COOP_TEXT_BLOCK_MARKED_PLAYER_ENG);
 		}
 	}else{
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint(COOP_TEXT_BLOCK_MARKED_PLAYER_NOTFOUND_DEU);
 		}
 		else {
@@ -138,7 +138,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 	//[b60011] chrissstrahl - if changing classes is disabled for this player, abbort
 	if (player->coopPlayer.classChangingDisabled) {
 		//[b60012][cleanup] chrissstrahl - this could be put into a func
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint(COOP_TEXT_CLASS_CANT_CHANGE_ANYMORE_DEU);
 		}else{
 			player->hudPrint(COOP_TEXT_CLASS_CANT_CHANGE_ANYMORE_ENG);
@@ -155,7 +155,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 	if (n == 1){
 		//[b60012][cleanup] chrissstrahl - this could be put into a func
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32){
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint(va("%s %s\n", COOP_TEXT_CLASS_YOUR_CLASS_IS_DEU, player->coopPlayer.className.c_str()));
 			}
 			else {
@@ -187,7 +187,7 @@ qboolean G_coopCom_class(const gentity_t* ent)
 		classSelected = COOP_CLASS_NAME_TECHNICIAN;
 		//[b60012][cleanup] chrissstrahl - this could be put into a func
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) >= 32) {
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint(COOP_TEXT_CLASS_INVALID_CLASSNAME_DEU);
 			}
 			else {
@@ -257,7 +257,7 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 					Q_stricmpn("Tricorder", weaponName.c_str(), 9) == 0)
 			{
 				//[b60012][cleanup] chrissstrahl - this could be put into a func
-				if (coop_checkPlayerLanguageGerman(player)) {
+				if (player->upgPlayerHasLanguageGerman()) {
 					player->hudPrint(COOP_TEXT_WEAPON_CANT_DROP_DEU);
 				}
 				else {
@@ -288,7 +288,7 @@ qboolean G_coopCom_drop(const gentity_t* ent)
 				player->animate->ClearTorsoAnim();
 
 				//[b60012][cleanup] chrissstrahl - this could be put into a func
-				if (coop_checkPlayerLanguageGerman(player)) {
+				if (player->upgPlayerHasLanguageGerman()) {
 					player->hudPrint(COOP_TEXT_WEAPON_WAS_DROPPED_DEU);
 				}
 				else {
@@ -343,7 +343,7 @@ qboolean G_coopCom_help(const gentity_t* ent)
 	}
 
 	//print to console if player does have outdated or no coop at all
-	if (coop_checkPlayerLanguageGerman(player)) {
+	if (player->upgPlayerHasLanguageGerman()) {
 		//gi.SendConsoleCommand(va("echo %s\n", ));
 
 		if (player->coop_playerAdmin()) {
@@ -466,7 +466,7 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 	//If blip is enabled for player disable (toggle)
 	if (bDisable) {
 		str text = "^5Locaction ^2green^5 location marker ^5on Radar ^1disabled";
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			text = "^2Gruene ^5Positions ^5Markerkierung ^5auf Radar ^1deaktiviert";
 		}
 		multiplayerManager.HUDPrint(player->entnum, va("%s\n", text.c_str()));
@@ -484,7 +484,7 @@ qboolean G_coopCom_follow(const gentity_t* ent)
 			Player* currentPlayer = (Player*)gentity2->entity;
 			if (currentPlayer) {
 				str text = "^5Locaction marked ^2green ^5on Radar of^8";
-				if (coop_checkPlayerLanguageGerman(currentPlayer)) {
+				if (currentPlayer->upgPlayerHasLanguageGerman()) {
 					text = "^5Position ^2gruen ^5markiert auf Radar von^8";
 				}
 				multiplayerManager.HUDPrint(currentPlayer->entnum,va("%s: %s\n", text.c_str(), player->client->pers.netname));
@@ -816,7 +816,7 @@ qboolean G_coopCom_mapname(const gentity_t* ent)
 
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
 	{
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint(va("Aktuelles Level ist:^5 %s.bsp\n", level.mapname.c_str()));
 		}
 		else {
@@ -899,7 +899,7 @@ qboolean G_coopCom_skill(const gentity_t* ent)
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
 			int currentSkill = (int)skill->value;
 			str printMe = "^5Coop^2: ";
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				printMe += "Schwierigkeit bei: ";
 			}
 			else {
@@ -933,7 +933,7 @@ qboolean G_coopCom_skill(const gentity_t* ent)
 	int iRange = atoi(sVal.c_str());
 	if (iRange < 0 || iRange > 3) {
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32) {
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint("^5Coop^2: Illegale Angabe! Optionen: 0^8[$$Easy$$]^2, bis 3^8[$$Very Hard$$]\n");
 			}
 			else {
@@ -1005,7 +1005,7 @@ qboolean G_coopCom_stuck(const gentity_t* ent)
 
 	if (gi.GetNumFreeReliableServerCommands(player->entnum) > 32)
 	{
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint("^5Coop^2: Sie wurden zu Ihrem Spawnpunkt geschoben.\n");
 		}
 		else {
@@ -1033,7 +1033,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	//[b60014] chrissstrahl - add spam protection
 	//deny usage of command if player executed command to quickly
 	if ((coop_returnEntityFloatVar((Entity*)player, "!transport") + 5) > level.time) {
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint("^5Coop:^8 Ihr mobiler ^3Heisenberg Kompensator rekalibriert^8 gerade, bitte warten!\n");
 		}
 		else {
@@ -1088,7 +1088,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 		}
 		else
 		{
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint("^5Coop^2: Kein Teammitglied als Transport Ziel gefunden.\n");
 			}
 			else {
@@ -1110,7 +1110,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 		if (coop_returnEntityIntegerVar((Entity*)targetPlayer,"!notransport_active") == 1) {
 			bTransportFailed = true;
 
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint("^5Coop^2: Spieler erlaubt keine direkt Transporte.\n");
 			}
 			else {
@@ -1122,7 +1122,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 			if (coop_returnEntityIntegerVar((Entity*)player, "!notransport_active") == 1) {
 				bTransportFailed = true;
 
-				if (coop_checkPlayerLanguageGerman(player)) {
+				if (player->upgPlayerHasLanguageGerman()) {
 					player->hudPrint("^5Coop^2: Ihr Transport Inhibitor ist aktiviert!!!\n");
 				}
 				else {
@@ -1133,7 +1133,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	}
 
 	if (targetPlayer == player) {
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint("^5Coop^2: Transport zu sich selbst nicht erlaubt.\n");
 		}
 		else {
@@ -1212,7 +1212,7 @@ qboolean G_coopCom_notransport(const gentity_t* ent)
 	if(coop_returnEntityFloatVar((Entity*)player, "!notransport_active") == 0.0f){
 		player->entityVars.SetVariable("!notransport_active", 1.0f);
 
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint("^5Coop^2: Transport Inhibitor aktiviert.\n");
 		}
 		else {
@@ -1222,7 +1222,7 @@ qboolean G_coopCom_notransport(const gentity_t* ent)
 	else {
 		player->entityVars.SetVariable("!notransport_active", 0.0f);
 
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint("^5Coop^2: Transport Inhibitor ausgeschaltet.\n");
 		}
 		else {

@@ -76,7 +76,7 @@ bool coop_textModifyVoteText( const str _voteString, str &sVoteText, Player* pla
 	bool bAltText = true;
 
 	//hzm coop mod chrissstrahl - print it in german if player is using german game version
-	if ( coop_checkPlayerLanguageGerman( player ) )
+	if ( player->upgPlayerHasLanguageGerman() )
 	{
 		if ( coop_returnIntFind( _voteString , "coop_maxspeed" ) > -1 )
 			{ sVoteText = "Setze Laufgeschwindigkeit auf:"; sVoteText += coop_returnStringStartingFrom( _voteString , 13 ); }

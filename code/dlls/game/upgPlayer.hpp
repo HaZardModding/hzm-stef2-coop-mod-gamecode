@@ -11,6 +11,7 @@ private:
 	float	chatTimeLastSpamInfo = -999.0f;
 	float	clientThinkLastTime = -1;
 	int		deathTime = -986;
+	str		language = "Eng";
 };
 
 void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);

@@ -1510,7 +1510,7 @@ void TriggerSecret::FoundSecret( Event *ev )
 
 				if (player) {
 					str sMessage = "^5Secret Area^2 found by:^8 ";
-					if (coop_checkPlayerLanguageGerman(player)) {
+					if (player->upgPlayerHasLanguageGerman()) {
 						sMessage = "^5Versteck^2 gefunden von:^8 ";
 					}
 

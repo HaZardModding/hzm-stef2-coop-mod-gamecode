@@ -122,7 +122,7 @@ int coop_vote_skipcinematicValidate(Player* player, const str &command, const st
 	}
 
 	if (level.cinematic != 1) {
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			multiplayerManager.HUDPrint(player->entnum, "Keine Sequenz aktiv.\n");
 		}
 		else {
@@ -410,7 +410,7 @@ int coop_vote_mapValidate(Player* player, const str &command, const str &arg, st
 				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"singlePlayerSecret") != true &&
 				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"coopIncluded") != true
 			) {
-				if (coop_checkPlayerLanguageGerman(player)) {
+				if (player->upgPlayerHasLanguageGerman()) {
 					multiplayerManager.HUDPrint(player->entnum, va("%s Ist kein Coop Level! Server erlaubt nur Coop Levels!\n", sMapRealName.c_str()));
 				}
 				else {
@@ -668,7 +668,7 @@ int coop_vote_execValidate(Player* player, const str &command, const str &arg, s
 
 	if (!stricmp(arg.c_str(), "")){
 		//[b607] chrissstrahl - added german text handling
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			multiplayerManager.HUDPrint(player->entnum, "^5Beispiel: callvote exec holomatch -> startet Datei: cfg/server/callvote/holomatch.cfg\n");
 		}
 		else {
@@ -684,7 +684,7 @@ int coop_vote_execValidate(Player* player, const str &command, const str &arg, s
 
 	if (!gi.FS_Exists(fullCFGName.c_str())){
 		multiplayerManager.HUDPrint(player->entnum, va("base/%s - $$NotFoundOnServer$$\n",fullCFGName.c_str()));
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			multiplayerManager.HUDPrint(player->entnum, "^2Zur Hilfe tippen Sie: ^5callvote exec\n");
 		}
 		else {
@@ -715,7 +715,7 @@ int coop_vote_skillValidate(Player* player, const str &command, const str &arg, 
 	}
 	if (!stricmp(arg.c_str(), "") || atoi(arg) < 0 || atoi(arg) > 3){
 		str currentSkill;
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			currentSkill = "^2$$Usage$$:^8 skill 0 = Easy, 1 = Normal, 2 = Hard, 3 = VeryHard. ^3Current skill: ";
 		}
 		else {
@@ -748,7 +748,7 @@ int coop_vote_addbotValidate(Player* player, const str &command, const str &arg,
 	}
 
 	if (!gi.Cvar_VariableIntegerValue("bot_enable")){
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint("Server: Diese Abstimmung erfordert dass bot_enable auf 1 gesetzt wird!\n");
 		}
 		else {
@@ -757,7 +757,7 @@ int coop_vote_addbotValidate(Player* player, const str &command, const str &arg,
 		return 1;
 	}
 	if (!gi.AAS_Initialized()){
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint("Server: Diese Karte hat keinen Bot-Support!\n");
 		}
 		else {
@@ -782,7 +782,7 @@ int coop_vote_addbotValidate(Player* player, const str &command, const str &arg,
 	}
 
 	if (coop_returnCvarInteger("sv_maxbots") >= iNumberOfBots) {
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint(va("Server: Maximale Bots erreicht, sv_maxbots ist gesetzt auf %i\n", coop_returnCvarInteger("sv_maxbots")));
 		}
 		else {
@@ -841,7 +841,7 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 	coop_parserGetItemsFromCategory("vote_maplist.ini", startCategories, endCategories, "categories");
 
 	if (!startCategories) {
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint("FEHLER: vote_maplist.ini sektion: categories, besch. oder fehlt.\n");
 		}
 		else {
@@ -880,7 +880,7 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 
 		//abbort on error///////////////////////////////////////////////////////
 		if (!start) {
-			if (coop_checkPlayerLanguageGerman(player)) {
+			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint(va("FEHLER: vote_maplist.ini sektion: %s, kaputt oder fehlt.\n", currentCategories->value.c_str()));
 			}
 			else {
@@ -1048,7 +1048,7 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 
 	//hzm coop mod chrissstrahl - current map not listed here - abort
 	if (stricmp(sMapToLoad.c_str(), "") == 0) {
-		if (coop_checkPlayerLanguageGerman(player)) {
+		if (player->upgPlayerHasLanguageGerman()) {
 			player->hudPrint(va("%s ist nicht aufgelistet in: vote_maplist.ini.\n", sMapRealName.c_str()));
 		}
 		else {
@@ -1319,14 +1319,14 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 
 				//[b60011] chrissstrahl - inform players of change
 				if (game.levelType < MAPTYPE_MISSION) {
-					if (coop_checkPlayerLanguageGerman(player)) {
+					if (player->upgPlayerHasLanguageGerman()) {
 						multiplayerManager.HUDPrint(player->entnum, "^5INFO^8: Last Man Standing nur auf Missionskarten aktiv!\n");
 					}
 					else {
 						multiplayerManager.HUDPrint(player->entnum, "^5INFO^8: Last Man Standing is only active on Missionmaps!\n");
 					}
 				}else{
-					if (coop_checkPlayerLanguageGerman(player)) {
+					if (player->upgPlayerHasLanguageGerman()) {
 						multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: Last Man Standing gesetzet auf:^5 %d\n", iValueNew));
 					}
 					else {

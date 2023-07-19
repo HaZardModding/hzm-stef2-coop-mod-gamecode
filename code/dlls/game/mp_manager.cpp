@@ -900,7 +900,7 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 				if ( !level.mission_failed )
 				{
 					if ( !game.coop_isActive || ( player->coopPlayer.lastTimeSpawned + 2 ) < level.time ) {
-						if (coop_checkPlayerLanguageGerman(player)) {
+						if (player->upgPlayerHasLanguageGerman()) {
 							centerPrint( player->entnum , va( "^3 %s %s" , modelName, COOP_TEXT_PLAYER_MODEL_NOT_ALLOWED_DEU) , CENTERPRINT_IMPORTANCE_NORMAL );
 						}
 						else {
@@ -2200,7 +2200,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 		if (currentPlayer == player ){
 			//hzm gamefix chrissstrahl - show info to player who started the vote
 			//[b607] chrissstrahl - now using _voteString, supporting modified votestring for votes like coop_next...
-			if ( coop_checkPlayerLanguageGerman( currentPlayer ) )
+			if ( currentPlayer->upgPlayerHasLanguageGerman() )
 				currentPlayer->setVoteText( va("Ihre Abstimmung ist aktiv:\n%s", _voteString.c_str()));
 			else
 				currentPlayer->setVoteText( va("Your Vote is in Progress:\n%s", _voteString.c_str()));
@@ -2220,7 +2220,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 			bALt = coop_textModifyVoteText( _voteString , sVoteText , currentPlayer );
 
 			//hzm coop mod chrissstrahl - print it in german if player is using german game version
-			if ( coop_checkPlayerLanguageGerman( currentPlayer ) ){
+			if ( currentPlayer->upgPlayerHasLanguageGerman() ){
 				if ( coop_returnIntFind( _voteString , "skipcinematic" ) > -1 ){
 					bALt = true; sVoteText = "Sequenz abbrechen ?";
 					sVoteText += coop_returnStringStartingFrom( _voteString , 13 );

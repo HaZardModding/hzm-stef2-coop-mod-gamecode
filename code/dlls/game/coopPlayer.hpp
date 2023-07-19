@@ -80,9 +80,6 @@ private:
 	str		coopStatus = "";
 	//contains the current cyle the 
 	int		objectivesCycle = -994;
-
-	//[b60014] chrissstrahl - gameupgrade
-	str		language = "Eng";
 public:
 
 

@@ -68,7 +68,7 @@ void coop_storySet( Player *player )
 	}
 	//get localized story
 	str sStory = "";
-	if (coop_checkPlayerLanguageGerman(player) && game.coop_story_deu.length()){
+	if (player->upgPlayerHasLanguageGerman() && game.coop_story_deu.length()){
 		sStory = game.coop_story_deu;
 	}
 	//if that failed or player has not a german version, set english story
