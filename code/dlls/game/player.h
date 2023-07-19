@@ -330,7 +330,7 @@ class Player : public Sentient
 		str					upgPlayerGetPowerupName(void);
 		void				upgPlayerGetViewanglesEvent(Event* ev);
 		void				upgPlayerHasLanguageGerman(Event* ev);
-		void				hasLanguageEnglish(Event* ev);
+		void				upgPlayerHasLanguageEnglish(Event* ev);
 		str					getLanguage(void);
 		void				setLanguage(str sLang);
 		void				getLanguageEvent(Event* ev);

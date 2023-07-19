@@ -2897,7 +2897,7 @@ void Player::upgPlayerHasLanguageGerman(Event* ev)
 
 
 //hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
-void Player::hasLanguageEnglish(Event* ev)
+void Player::upgPlayerHasLanguageEnglish(Event* ev)
 {
 	bool bLangMatch = false;
 	if (this->getLanguage() == "Eng") {

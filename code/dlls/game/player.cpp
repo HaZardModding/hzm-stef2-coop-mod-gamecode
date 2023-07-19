@@ -2045,7 +2045,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_IsHeavyWeapons ,				&Player::isCoopClassHeavyWeapons },
 	//[b60011] chrissstrahl - checks player has ger/eng langauge
 	{ &EV_Player_HasLanguageGerman ,			&Player::upgPlayerHasLanguageGerman },
-	{ &EV_Player_HasLanguageEnglish ,			&Player::hasLanguageEnglish },
+	{ &EV_Player_HasLanguageEnglish ,			&Player::upgPlayerHasLanguageEnglish },
 	{ NULL , NULL }
 };
 
