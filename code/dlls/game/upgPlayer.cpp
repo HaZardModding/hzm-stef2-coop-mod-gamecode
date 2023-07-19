@@ -299,7 +299,7 @@ void Player::upgPlayerCheckThirdperson(Event* ev) { ev->ReturnFloat((int)_isThir
 void Player::upgPlayerCheckUsePressing(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_USE) != 0); }
 
 //[b60012] chrissstrahl - cancel player modulating event - if player gets hurt or so
-void Player::cancelPuzzle()
+void Player::upgPlayerCancelPuzzle()
 {
 	Entity* puzzle;
 	puzzle = G_FindClass(NULL, "puzzle_object");

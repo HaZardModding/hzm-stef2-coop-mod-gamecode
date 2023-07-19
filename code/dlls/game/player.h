@@ -312,7 +312,7 @@ class Player : public Sentient
 		void				upgPlayerCheckFirealt(Event* ev);
 		void				upgPlayerCheckThirdperson(Event* ev);
 		//[b60012] chrissstrahl
-		void				cancelPuzzle();
+		void				upgPlayerCancelPuzzle();
 		//[b60011] chrissstrahl
 		void				RunThread(Event* ev);
 		CThread*			RunThread(const str& thread_name);

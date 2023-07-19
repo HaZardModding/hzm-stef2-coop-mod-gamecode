@@ -4629,7 +4629,7 @@ void Player::Pain( Event *ev )
 
 	//[b60012] chrissstrahl - cancel player modulating event if player gets hit by a Sentient
 	if (attacker && g_gametype->integer == GT_MULTIPLAYER && coop_returnPlayerQuantityInArena() >= 2 && attacker->isSubclassOf(Sentient)) {
-		this->cancelPuzzle();
+		this->upgPlayerCancelPuzzle();
 	}
 }
 
