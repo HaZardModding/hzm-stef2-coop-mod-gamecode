@@ -1984,7 +1984,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getScore,						&Player::upgPlayerGetScore },
 	{ &EV_Player_addScore,						&Player::upgPlayerAddScore },
-	{ &EV_Player_getDeaths,						&Player::getDeaths },
+	{ &EV_Player_getDeaths,						&Player::upgPlayerGetDeaths },
 	{ &EV_Player_getKills,						&Player::getKills },
 	{ &EV_Player_getLastDamaged,				&Player::getLastDamaged },
 	{ &EV_Player_getTeamName,					&Player::getTeamName },
@@ -9384,7 +9384,7 @@ void Player::UpdateStats( void )
 
 			client->ps.stats[STAT_SCORE] = multiplayerManager.getPoints(this);
 			client->ps.stats[STAT_KILLS] = multiplayerManager.getKills(this);
-			client->ps.stats[STAT_DEATHS] = multiplayerManager.getDeaths(this);
+			client->ps.stats[STAT_DEATHS] = multiplayerManager.upgPlayerGetDeaths(this);
 
 			client->ps.stats[STAT_MP_GENERIC1] = multiplayerManager.getStat(this, STAT_MP_GENERIC1);
 			client->ps.stats[STAT_MP_GENERIC2] = multiplayerManager.getStat(this, STAT_MP_GENERIC2);

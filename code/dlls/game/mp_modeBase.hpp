@@ -164,7 +164,7 @@ class MultiplayerModeBase : public Class
 
 		int									getPoints( Player *player );
 		int									getKills( Player *player );
-		int									getDeaths( Player *player );
+		int									upgPlayerGetDeaths( Player *player );
 		Team*								getPlayersTeam( const Player *player );
 		virtual int							getTeamPoints( Player *player ) { return 0; }
 		virtual int							getTeamPoints( const str & teamName ) { return 0; }

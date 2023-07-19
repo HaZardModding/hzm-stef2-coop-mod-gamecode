@@ -230,7 +230,7 @@ int MultiplayerModeBase::getKills( Player *player )
 	return 0;
 }
 
-int MultiplayerModeBase::getDeaths( Player *player )
+int MultiplayerModeBase::upgPlayerGetDeaths( Player *player )
 {
 	int index;
 

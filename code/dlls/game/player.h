@@ -345,7 +345,7 @@ class Player : public Sentient
 		void				upgPlayerDisableUseWeapon(bool bDiable);
 		void				upgPlayerGetScore(Event* ev);
 		void				upgPlayerAddScore(Event* ev);
-		void				getDeaths(Event* ev);
+		void				upgPlayerGetDeaths(Event* ev);
 		void				getKills(Event* ev);
 		void				getLastDamaged(Event* ev);
 		void				getTeamName(Event* ev);

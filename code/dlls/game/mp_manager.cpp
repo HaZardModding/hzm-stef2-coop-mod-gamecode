@@ -1771,7 +1771,7 @@ int MultiplayerManager::getKills( Player *player )
 	return _multiplayerGame->getKills( player );
 }
 
-int MultiplayerManager::getDeaths( Player *player )
+int MultiplayerManager::upgPlayerGetDeaths( Player *player )
 {
 	assert(player);
 	
@@ -1783,7 +1783,7 @@ int MultiplayerManager::getDeaths( Player *player )
 
 	// Get the player's current deaths from the game
 
-	return _multiplayerGame->getDeaths( player );
+	return _multiplayerGame->upgPlayerGetDeaths( player );
 }
 
 int MultiplayerManager::getTeamPoints( Player *player )
