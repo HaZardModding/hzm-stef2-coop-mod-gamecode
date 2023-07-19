@@ -460,7 +460,7 @@ void Player::circleMenuSelect(int iOption)
 //gi.Printf(va("circleMenuSelect: %i selected\n", (iOption + 1)));
 	
 	if (bIsScript) {
-		RunThread(sThread);
+		upgPlayerRunThread(sThread);
 	}
 	else {
 		DelayedServerCommand(entnum,va("%s", sThread.c_str()));

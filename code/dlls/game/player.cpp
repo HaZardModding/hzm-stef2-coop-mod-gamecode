@@ -2028,7 +2028,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_checkFire,						&Player::upgPlayerCheckFire },
 	{ &EV_Player_checkFirealt,					&Player::upgPlayerCheckFirealt },
 	//[b60011] chrissstrahl - runs thread from player entity
-	{ &EV_Player_RunThread,						&Player::RunThread },
+	{ &EV_Player_RunThread,						&Player::upgPlayerRunThread },
 	//[b60011] chrissstrahl - get player viewangle
 	{ &EV_Player_GetViewangles ,				&Player::getViewanglesEvent } ,
 	//[b607] chrissstrahl - return targeted entity of player

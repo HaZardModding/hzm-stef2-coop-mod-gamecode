@@ -1520,7 +1520,7 @@ qboolean G_coopInput(const gentity_t* ent)
 	}
 
 	ent->entity->entityVars.SetVariable("coopInputData", inputData.c_str());
-	player->RunThread("playerInput");
+	player->upgPlayerRunThread("playerInput");
 	return true;
 }
 
@@ -1561,7 +1561,7 @@ qboolean G_coopThread(const gentity_t* ent)
 	}
 	
 	CThread* pThread;
-	pThread = player->RunThread(threadName.c_str());
+	pThread = player->upgPlayerRunThread(threadName.c_str());
 
 	//if a admin executes a thread, give feedback
 	if (coop_returnIntFind(threadName, "coopThread_") != 0) {

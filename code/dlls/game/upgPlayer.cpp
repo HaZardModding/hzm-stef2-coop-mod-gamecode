@@ -314,15 +314,15 @@ void Player::upgPlayerCancelPuzzle()
 }
 
 //[b60011] chrissstrahl
-void Player::RunThread(Event* ev)
+void Player::upgPlayerRunThread(Event* ev)
 {
 	str thread_name = "";
 	thread_name = ev->GetString(1);
-	RunThread(thread_name);
+	upgPlayerRunThread(thread_name);
 }
 
 //[b60011] chrissstrahl
-CThread* Player::RunThread(const str& thread_name)
+CThread* Player::upgPlayerRunThread(const str& thread_name)
 {
 	if (thread_name.length() <= 0)
 		return NULL;
