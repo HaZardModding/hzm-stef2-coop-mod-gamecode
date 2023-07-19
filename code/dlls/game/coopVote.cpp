@@ -61,7 +61,7 @@ extern CoopChallenges coopChallenges;
 // Returns:     bool
 //              
 //================================================================
-bool coop_vote_ModifyVoteText(const str _voteString, str& sVoteText, Player* player)
+bool coop_vote_modifyVoteText(const str _voteString, str& sVoteText, Player* player)
 {
 	if (!game.coop_isActive)
 		return false;

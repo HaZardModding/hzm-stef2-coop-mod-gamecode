@@ -69,7 +69,7 @@ void MultiplayerManager::updateVotes(Player* player, bool bLeaving)
 			bool bALt = false;
 
 			//hzm coop mod chrissstrahl - handle coop specific votes in a seperate function
-			bALt = coop_vote_ModifyVoteText(multiplayerManager.getVoteString(), sVoteText, player);
+			bALt = coop_vote_modifyVoteText(multiplayerManager.getVoteString(), sVoteText, player);
 
 			//hzm coop mod chrissstrahl - print it in german if player is using german game version
 			if (player->upgPlayerHasLanguageGerman()) {
