@@ -282,7 +282,7 @@ class Player : public Sentient
 		bool				upgPlayerSay(str sayString);
 		void				upgPlayerSaySpamfilterCountdown();
 		void				upgPlayerClientThink();
-		Vector				GetViewTraceEndVector(void);
+		Vector				upgPlayerGetViewTraceEndVector(void);
 		void				getViewtraceEndpos(Event* ev);
 		void				coop_spEquip();
 		bool				upgPlayerIsBot();

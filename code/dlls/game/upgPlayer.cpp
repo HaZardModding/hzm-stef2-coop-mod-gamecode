@@ -212,6 +212,7 @@ qboolean Player::ugpPlayerInThirdPerson()
 
 //================================================================
 // Name:		Player::upgPlayerDisableUseWeapon
+// Class:		-
 //
 // Description:	Can disable the use of a new weapon
 //
@@ -228,33 +229,26 @@ void Player::upgPlayerDisableUseWeapon(bool bDisable)
 //[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
 void Player::getViewtraceEndpos(Event* ev)
 {
-	ev->ReturnVector(GetViewTraceEndVector());
+	ev->ReturnVector(upgPlayerGetViewTraceEndVector());
 }
 
 //================================================================
-// Name:        GetViewTraceEndVector
+// Name:        upgPlayerGetViewTraceEndVector
 // Class:       -
 //              
-// Description: 
+// Description: Gets end vector location of player view/target
 //              
 // Parameters:  void
 //              
 // Returns:     Vector
 //              
 //================================================================
-// GAMEUPGRADE
-//================================================================
-Vector Player::GetViewTraceEndVector(void)
+Vector Player::upgPlayerGetViewTraceEndVector(void)
 {
 	trace_t viewTrace;
-
 	memset(&viewTrace, 0, sizeof(trace_t));
 	GetViewTrace(viewTrace, MASK_SHOT | CONTENTS_TARGETABLE);
-
-	if (!viewTrace.ent) {
-		return origin;
-	}
-
+	if (!viewTrace.ent) { return origin; }
 	return viewTrace.endpos;
 }
 
