@@ -1998,7 +1998,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getFlagAttachAngles,					&Player::upgPlayerGetFlagAttachAngles },
 
 	//[b60013] chrissstrahl - checks if player is pressing fowrward button
-	{ &EV_Player_checkForward,					&Player::checkForward },
+	{ &EV_Player_checkForward,					&Player::upgPlayerCheckForward },
 	//[b60013] chrissstrahl - checks if player is pressing backward button
 	{ &EV_Player_checkBackward,					&Player::checkBackward },
 	//[b60013] chrissstrahl - checks if player is pressing left turn or strafe button
