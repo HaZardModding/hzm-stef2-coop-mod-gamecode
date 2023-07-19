@@ -298,7 +298,7 @@ class Player : public Sentient
 		//[b60013] chrissstrahl - checks if player is pressing a specific button
 		void				upgPlayerCheckForward(Event* ev);
 		void				upgPlayerCheckBackward(Event* ev);
-		void				checkLeft(Event* ev);
+		void				upgPlayerCheckLeft(Event* ev);
 		void				checkRight(Event* ev);
 		void				checkLeanRight(Event* ev);
 		void				checkLeanLeft(Event* ev);
