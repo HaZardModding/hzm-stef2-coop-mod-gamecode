@@ -570,7 +570,7 @@ extern	type_t	type_vector;
 extern	type_t	type_entity;
 extern	type_t	type_function;
 
-void Player::getScriptVariablesCommand(Event* ev)
+void Player::upgPlayerGetScriptVariablesCommand(Event* ev)
 {
 	str		 type = ev->GetString(1);
 	def_t* def;

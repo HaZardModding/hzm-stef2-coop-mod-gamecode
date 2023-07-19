@@ -1970,7 +1970,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_circleMenuSet,					&Player::circleMenuSetEvent },
 	{ &EV_Player_circleMenuClear,				&Player::circleMenuClearEvent },
 	//hzm gameupdate daggolin - new commands
-	{ &EV_Player_GetScriptVariablesCommand ,	&Player::getScriptVariablesCommand } ,
+	{ &EV_Player_GetScriptVariablesCommand ,	&Player::upgPlayerGetScriptVariablesCommand } ,
 	//hzm gameupdate chrissstrahl - sets specific camera on player
 	{ &EV_Player_setCamera ,					&Player::setCameraEvent } ,
 	//hzm gameupdate chrissstrahl - add new commands for script use

@@ -341,7 +341,7 @@ class Player : public Sentient
 		qboolean			ugpPlayerInThirdPerson();
 		//[UNKNOWN VERSION] chrissstrahl
 		void				upgPlayerWorldEffects(void);
-		void				getScriptVariablesCommand(Event* ev);
+		void				upgPlayerGetScriptVariablesCommand(Event* ev);
 		void				upgPlayerDisableUseWeapon(bool bDiable);
 		void				getScore(Event* ev);
 		void				addScore(Event* ev);
