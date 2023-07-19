@@ -103,7 +103,6 @@ bool Player::upgPlayerSay(str sayString)
 	//SPAM FILTER - this is our sv_floodprotect replacement, since flood protect also blocks multiplayer specific commands which we are in need of to work
 	if (upgPlayer.chatTimeLimit < level.time) { upgPlayer.chatTimeLimit = level.time; }
 	upgPlayer.chatTimeLimit++;
-	upgPlayer.chatTimeLimit++;
 	if (upgPlayer.chatTimeLimit > (level.time + 3)) {
 		//display info that the player was spamming
 		if ((upgPlayer.chatTimeLastSpamInfo + 3.0f) < level.time) {
