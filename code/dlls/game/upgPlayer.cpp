@@ -210,28 +210,19 @@ qboolean Player::ugpPlayerInThirdPerson()
 	return _isThirdPerson;
 }
 
-//-----------------------------------------------------
-//
-// Name:		disableUseWeapon
-// Class:		Player
+//================================================================
+// Name:		Player::upgPlayerDisableUseWeapon
 //
 // Description:	Can disable the use of a new weapon
 //
 // Parameters:	bool that sets the disableUseWeapon
 //
-// Returns:		None
-//-----------------------------------------------------
-//hzm gameupdate chrissstrahl - added so we can change this within the gamecode without issuing a event
-void Player::disableUseWeapon(bool bDisable)
+// Returns:		void
+//================================================================
+void Player::upgPlayerDisableUseWeapon(bool bDisable)
 {
-	if (bDisable)
-	{
-		_disableUseWeapon = true;
-	}
-	else
-	{
-		_disableUseWeapon = false;
-	}
+	if (bDisable){ _disableUseWeapon = true; }
+	else{ _disableUseWeapon = false; }
 }
 
 //[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu

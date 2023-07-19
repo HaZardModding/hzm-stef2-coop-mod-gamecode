@@ -216,7 +216,7 @@ void Actor::coop_Killed(Player *player)
 	{
 		player->coop_playerNeutralized(false);
 		player->health = (player->max_health / 2);
-		player->disableUseWeapon(false);
+		player->upgPlayerDisableUseWeapon(false);
 		player->coopPlayer.reviveCounter = 0;
 		if (player->coopPlayer.lastMass > 0) {
 			player->mass = player->coopPlayer.lastMass;

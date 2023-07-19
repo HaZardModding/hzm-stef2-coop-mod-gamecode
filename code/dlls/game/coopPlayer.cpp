@@ -2675,7 +2675,7 @@ void coop_playerThink( Player *player )
 
 		if ( player->health > 1 ){
 			player->coop_playerNeutralized(false);
-			player->disableUseWeapon( false );
+			player->upgPlayerDisableUseWeapon( false );
 		//do no longer ignore this player
 			if ( ( player->flags & FL_NOTARGET ) ){
 				player->flags ^= FL_NOTARGET;
@@ -2685,7 +2685,7 @@ void coop_playerThink( Player *player )
 			if ( (player->coopPlayer.lastTimeNeutralized + 0.25f) > level.time ){
 				if ( stricmp( weaponName , "phaser-stx" ) == 0 ){
 					//disable weapon use from now on - means player can no longer change his weapon
-					player->disableUseWeapon( true );
+					player->upgPlayerDisableUseWeapon( true );
 				}
 			}
 		}

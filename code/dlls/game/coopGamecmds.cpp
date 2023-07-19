@@ -1156,7 +1156,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	player->getActiveWeaponName(hand, player->coopPlayer.transportUnholsterWeaponName);
 	player->coopPlayer.transportUnholster = true;
 	player->SafeHolster(true);
-	player->disableUseWeapon(true);
+	player->upgPlayerDisableUseWeapon(true);
 
 	player->client->ps.pm_time = 100;
 	player->client->ps.pm_flags |= PMF_TIME_TELEPORT;

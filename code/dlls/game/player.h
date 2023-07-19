@@ -338,7 +338,7 @@ class Player : public Sentient
 		//[UNKNOWN VERSION] chrissstrahl
 		void				gamefix_WorldEffects(void);
 		void				getScriptVariablesCommand(Event* ev);
-		void				disableUseWeapon(bool bDiable);
+		void				upgPlayerDisableUseWeapon(bool bDiable);
 		void				getScore(Event* ev);
 		void				addScore(Event* ev);
 		void				getDeaths(Event* ev);

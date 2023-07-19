@@ -174,14 +174,14 @@ void Player::circleMenu(int iType)
 		circleMenuHud(true);
 
 		disableInventory();
-		disableUseWeapon(true);
+		upgPlayerDisableUseWeapon(true);
 	}
 	else {
 		circleMenuHud(false);
 		upgCircleMenu.active = 0;
 
 		enableInventory();
-		disableUseWeapon(false);
+		upgPlayerDisableUseWeapon(false);
 	}
 }
 
