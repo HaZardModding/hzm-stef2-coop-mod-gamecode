@@ -297,7 +297,7 @@ void Player::upgPlayerDisableUseWeapon(bool bDisable)
 }
 
 //[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
-void Player::getViewtraceEndpos(Event* ev)
+void Player::upgPlayerGetViewtraceEndpos(Event* ev)
 {
 	ev->ReturnVector(upgPlayerGetViewTraceEndVector());
 }

@@ -287,7 +287,7 @@ class Player : public Sentient
 		void				upgPlayerSaySpamfilterCountdown();
 		void				upgPlayerClientThink();
 		Vector				upgPlayerGetViewTraceEndVector(void);
-		void				getViewtraceEndpos(Event* ev);
+		void				upgPlayerGetViewtraceEndpos(Event* ev);
 		void				coop_spEquip();
 		bool				upgPlayerIsBot();
 		bool				upgPlayerIsHost();

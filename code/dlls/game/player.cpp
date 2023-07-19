@@ -1958,7 +1958,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 
 	//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
-	{ &EV_Player_getViewtraceEndpos,			&Player::getViewtraceEndpos },
+	{ &EV_Player_getViewtraceEndpos,			&Player::upgPlayerGetViewtraceEndpos },
 
 	//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
 	{ &EV_Player_getUserFov,					&Player::upgPlayerGetUserFov},
