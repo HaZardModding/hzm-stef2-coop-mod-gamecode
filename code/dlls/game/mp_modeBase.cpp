@@ -216,7 +216,7 @@ int MultiplayerModeBase::getPoints( Player *player )
 	return 0;
 }
 
-int MultiplayerModeBase::getKills( Player *player )
+int MultiplayerModeBase::upgPlayerGetKills( Player *player )
 {
 	int index;
 

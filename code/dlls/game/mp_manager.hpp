@@ -237,7 +237,7 @@ class MultiplayerManager : public Class
 		void							playerSpawned( Player *player );
 
 		int								getPoints( Player *player );
-		int								getKills( Player *player );
+		int								upgPlayerGetKills( Player *player );
 		int								upgPlayerGetDeaths( Player *player );
 		int								getTeamPoints( Player *player );
 		int								getTeamPoints( const str & teamName );

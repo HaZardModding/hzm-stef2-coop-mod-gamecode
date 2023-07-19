@@ -2853,7 +2853,7 @@ bool Player::coop_updateStats(void)
 	// Deathmatch stats for arena mode
 	if (multiplayerManager.inMultiplayer()) {
 		client->ps.stats[STAT_SCORE] = multiplayerManager.getPoints(this);
-		client->ps.stats[STAT_KILLS] = multiplayerManager.getKills(this);
+		client->ps.stats[STAT_KILLS] = multiplayerManager.upgPlayerGetKills(this);
 		client->ps.stats[STAT_DEATHS] = multiplayerManager.upgPlayerGetDeaths(this);
 
 		client->ps.stats[STAT_MP_SPECTATING_ENTNUM] = multiplayerManager.getStat(this, STAT_MP_SPECTATING_ENTNUM);

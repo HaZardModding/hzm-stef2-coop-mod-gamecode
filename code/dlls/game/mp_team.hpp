@@ -95,7 +95,7 @@ class Team : public Class
 
 		// Gets
 		const str&                          getName()                           { return _name ; }
-		unsigned int                        getKills()                          { return _kills ; }
+		unsigned int                        upgPlayerGetKills()                          { return _kills ; }
 		unsigned int                        upgPlayerGetDeaths()                         { return _deaths ; }
 		int			                        getPoints()                         { return _points ; }
 		unsigned int                        getWins()                           { return _wins ; }

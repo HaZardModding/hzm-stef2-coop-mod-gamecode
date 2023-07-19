@@ -764,11 +764,11 @@ void Player::upgPlayerWorldEffects(void)
 	}
 }
 
-void Player::getKills(Event* ev)
+void Player::upgPlayerGetKills(Event* ev)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (multiplayerManager.inMultiplayer()) {
-		ev->ReturnFloat(multiplayerManager.getKills(this));
+		ev->ReturnFloat(multiplayerManager.upgPlayerGetKills(this));
 	}
 	else {
 		ev->ReturnFloat(0.0f);

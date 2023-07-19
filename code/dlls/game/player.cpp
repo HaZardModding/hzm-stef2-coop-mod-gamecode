@@ -1985,7 +1985,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getScore,						&Player::upgPlayerGetScore },
 	{ &EV_Player_addScore,						&Player::upgPlayerAddScore },
 	{ &EV_Player_getDeaths,						&Player::upgPlayerGetDeaths },
-	{ &EV_Player_getKills,						&Player::getKills },
+	{ &EV_Player_getKills,						&Player::upgPlayerGetKills },
 	{ &EV_Player_getLastDamaged,				&Player::getLastDamaged },
 	{ &EV_Player_getTeamName,					&Player::getTeamName },
 	{ &EV_Player_getTeamScore,					&Player::getTeamScore },
@@ -9383,7 +9383,7 @@ void Player::UpdateStats( void )
 			client->ps.stats[STAT_BLUE_TEAM_SCORE] = multiplayerManager.getTeamPoints("Blue");
 
 			client->ps.stats[STAT_SCORE] = multiplayerManager.getPoints(this);
-			client->ps.stats[STAT_KILLS] = multiplayerManager.getKills(this);
+			client->ps.stats[STAT_KILLS] = multiplayerManager.upgPlayerGetKills(this);
 			client->ps.stats[STAT_DEATHS] = multiplayerManager.upgPlayerGetDeaths(this);
 
 			client->ps.stats[STAT_MP_GENERIC1] = multiplayerManager.getStat(this, STAT_MP_GENERIC1);

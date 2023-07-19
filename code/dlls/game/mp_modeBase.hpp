@@ -163,7 +163,7 @@ class MultiplayerModeBase : public Class
 		inline unsigned int					getTimeLimit( void )							{ return (unsigned int) _timeLimit ; }
 
 		int									getPoints( Player *player );
-		int									getKills( Player *player );
+		int									upgPlayerGetKills( Player *player );
 		int									upgPlayerGetDeaths( Player *player );
 		Team*								getPlayersTeam( const Player *player );
 		virtual int							getTeamPoints( Player *player ) { return 0; }
