@@ -533,7 +533,7 @@ void Player::upgPlayerRunKillThread()
 }
 
 //hzm gameupdate chrissstrahl - return time at which player was last hurt
-float Player::getLastDamageTime(void)
+float Player::upgPlayerGetLastDamageTime(void)
 {
 	float fValue1;
 	float fValue2;
@@ -777,7 +777,7 @@ void Player::upgPlayerGetKills(Event* ev)
 
 void Player::upgPlayerGetLastDamaged(Event* ev)
 {
-	ev->ReturnFloat(getLastDamageTime());
+	ev->ReturnFloat(upgPlayerGetLastDamageTime());
 }
 
 void Player::upgPLayerGetTeamName(Event* ev)

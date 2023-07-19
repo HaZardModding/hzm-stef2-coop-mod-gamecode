@@ -102,7 +102,7 @@ void coop_classRegenerate( Player *player )
 			!multiplayerManager.inMultiplayer() ||
 			game.coop_isActive ||
 			player->coop_playerNeutralized() ||
-			(player->getLastDamageTime() + COOP_CLASS_HURT_WAITTIME) > level.time )
+			(player->upgPlayerGetLastDamageTime() + COOP_CLASS_HURT_WAITTIME) > level.time )
 	{
 		return;
 	}

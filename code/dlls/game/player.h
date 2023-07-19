@@ -352,7 +352,7 @@ class Player : public Sentient
 		void				upgPlayerGetTeamScore(Event* ev);
 		void				upgPlayerGetNameEvent(Event* ev);
 		void				upgPlayerGetCameraEvent(Event *ev);
-		float				getLastDamageTime(void);
+		float				upgPlayerGetLastDamageTime(void);
 		//we want to access them anywhere (they used to be private)
 		int					_objectiveNameIndex;
 		unsigned int		_objectiveStates;

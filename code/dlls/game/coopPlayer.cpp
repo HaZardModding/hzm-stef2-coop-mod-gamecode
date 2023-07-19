@@ -2485,7 +2485,7 @@ void coop_playerPlaceableThink(Player* player)
 	}
 
 	//abbort in certain conditions are meet
-	if (	(player->getLastDamageTime() + 0.5f) > level.time	||
+	if (	(player->upgPlayerGetLastDamageTime() + 0.5f) > level.time	||
 			multiplayerManager.isPlayerSpectator(player)		||
 			player->client->ps.jumped							||
 			level.cinematic == 1								||

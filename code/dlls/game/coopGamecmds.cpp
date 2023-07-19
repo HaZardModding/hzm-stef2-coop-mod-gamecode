@@ -1624,7 +1624,7 @@ qboolean G_coopItem(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 
 	//do not allow spawning if certain criteria are not meet
-	if ((player->getLastDamageTime() + 0.5f) > level.time ||
+	if ((player->upgPlayerGetLastDamageTime() + 0.5f) > level.time ||
 		level.cinematic != qfalse ||
 		multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(player) ||
 		player->health <= 0)
