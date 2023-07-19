@@ -1307,7 +1307,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 	for (int i = 0; i < maxclients->integer; i++) {
 		player = (Player*)g_entities[i].entity;
 		if (player && player->client && player->isSubclassOf(Player) && player->coop_getInstalled()) {
-			player->widgetCommand("coopGpoLms", va("title %d", iValueNew));
+			player->upgPlayerWidgetCommand("coopGpoLms", va("title %d", iValueNew));
 		}
 	}
 

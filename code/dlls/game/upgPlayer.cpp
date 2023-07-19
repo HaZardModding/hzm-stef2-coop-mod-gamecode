@@ -867,11 +867,11 @@ void Player::upgPlayerWidgetCommandEvent(Event* ev)
 		str sTemp = ev->GetString(3);
 		sParameters += sTemp;
 	}
-	widgetCommand(ev->GetString(1), sParameters);
+	upgPlayerWidgetCommand(ev->GetString(1), sParameters);
 }
 
 //[b60011] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
-void Player::widgetCommand(str sWidget, str sParameters)
+void Player::upgPlayerWidgetCommand(str sWidget, str sParameters)
 {
 	//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
 	//str sTemp;
