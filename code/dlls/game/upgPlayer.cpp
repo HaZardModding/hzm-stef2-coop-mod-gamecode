@@ -518,7 +518,7 @@ void Player::getViewanglesEvent(Event* ev)
 }
 
 //Allow individual killthread to be set by script for each player
-void Player::setKillThread(Event* ev)
+void Player::upgPlayerSetKillThread(Event* ev)
 {
 	entityVars.SetVariable("_killThread",ev->GetString(1));
 }

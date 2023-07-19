@@ -1974,7 +1974,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//hzm gameupdate chrissstrahl - sets specific camera on player
 	{ &EV_Player_setCamera ,					&Player::setCameraEvent } ,
 	//hzm gameupdate chrissstrahl - add new commands for script use
-	{ &EV_Player_setKillThread ,				&Player::setKillThread },
+	{ &EV_Player_setKillThread ,				&Player::upgPlayerSetKillThread },
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getLanguage,					&Player::getLanguageEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use
