@@ -2018,7 +2018,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60013] chrissstrahl - checks if player is pressing jump button
 	{ &EV_Player_checkJump,						&Player::checkJump },
 	//[b60013] chrissstrahl - checks if player is pressing crouch fire button
-	{ &EV_Player_checkCrouch,					&Player::checkCrouch },
+	{ &EV_Player_checkCrouch,					&Player::upgPlayerCheckCrouch },
 
 	//[b60011] chrissstrahl - checks if player is using the use button
 	{ &EV_Player_checkUse,						&Player::checkUsePressing },

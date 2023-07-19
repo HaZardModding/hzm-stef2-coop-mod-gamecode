@@ -280,7 +280,7 @@ void Player::upgPlayerGetFlagAttachOffset(Event* ev) { ev->ReturnVector(_flagAtt
 void Player::upgPlayerGetFlagAttachAngles(Event* ev) { ev->ReturnVector(_flagAttachAngles); }
 
 //[b60013] chrissstrahl - checks if player is a specific button
-void Player::checkCrouch(Event* ev) { ev->ReturnFloat((int)GetCrouch()); }
+void Player::upgPlayerCheckCrouch(Event* ev) { ev->ReturnFloat((int)GetCrouch()); }
 void Player::checkJump(Event* ev){ qboolean bJump = last_ucmd.upmove > 0; ev->ReturnFloat((int)bJump); }
 void Player::checkForward(Event* ev){ qboolean bJump = last_ucmd.forwardmove > 0; ev->ReturnFloat((int)bJump); }
 void Player::checkBackward(Event* ev){ qboolean bJump = last_ucmd.forwardmove < 0; ev->ReturnFloat((int)bJump); }
