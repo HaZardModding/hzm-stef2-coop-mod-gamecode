@@ -1976,7 +1976,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_setKillThread ,				&Player::upgPlayerSetKillThread },
 	//hzm gameupdate chrissstrahl - add new commands for script use
-	{ &EV_Player_getLanguage,					&Player::getLanguageEvent },
+	{ &EV_Player_getLanguage,					&Player::upgPlayerGetLanguageEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getName ,						&Player::getNameEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use

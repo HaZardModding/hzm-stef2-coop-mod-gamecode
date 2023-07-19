@@ -2908,7 +2908,7 @@ void Player::upgPlayerHasLanguageEnglish(Event* ev)
 
 
 //hzm gameupdate chrissstrahl [b60011]  - returns player language string
-void Player::getLanguageEvent(Event* ev)
+void Player::upgPlayerGetLanguageEvent(Event* ev)
 {
 	ev->ReturnString(this->upgPlayerGetLanguage());
 }
