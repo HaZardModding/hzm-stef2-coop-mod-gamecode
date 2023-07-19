@@ -485,7 +485,7 @@ void Player::upgPlayerGetScore(Event* ev)
 }
 
 //hzm gameupdate chrissstrahl - add new commands for script use
-void Player::addScore(Event* ev)
+void Player::upgPlayerAddScore(Event* ev)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (multiplayerManager.inMultiplayer()) {
