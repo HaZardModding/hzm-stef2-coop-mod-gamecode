@@ -6203,7 +6203,7 @@ void Player::ClientThink( Event *ev )
 	client->cmd_angles[2] = SHORT2ANGLE(current_ucmd->angles[2]);
 
 	//[b60014] chrissstrahl - check if player needs to be equiped
-	coop_spEquip();
+	upgPlayerSpEquip();
 
 	//[b60011] chrissstrahl - check if circle menu is active, if so react
 	circleMenuThink();

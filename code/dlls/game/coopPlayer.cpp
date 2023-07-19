@@ -890,7 +890,7 @@ void Player::coop_playerThinkLogin()
 //              
 //================================================================
 //this should be split up and the gameupgrade for singleplayer and the coop stuff should go into sperate funcs
-void Player::coop_spEquip()
+void Player::upgPlayerSpEquip()
 {
 	if (g_gametype->integer != GT_SINGLE_PLAYER || !Director.PlayerReady() || coop_returnEntityIntegerVar(this,"_spArmoryEquiped") == 1) {
 		return;

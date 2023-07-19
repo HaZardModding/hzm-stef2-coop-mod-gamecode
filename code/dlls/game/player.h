@@ -288,7 +288,7 @@ class Player : public Sentient
 		void				upgPlayerClientThink();
 		Vector				upgPlayerGetViewTraceEndVector(void);
 		void				upgPlayerGetViewtraceEndpos(Event* ev);
-		void				coop_spEquip();
+		void				upgPlayerSpEquip();
 		bool				upgPlayerIsBot();
 		bool				upgPlayerIsHost();
 		void				upgPlayerGetUserFov(Event* ev);
