@@ -49,6 +49,24 @@ extern Event EV_ScriptThread_StuffCommand;
 #define COOP_SERVER_MASTERSERVER "master.hazardmodding.com"
 
 //========================================================[b60014]
+// Name:        coopIsActive
+// Class:       CoopServer
+//              
+// Description: used to check if game is currently in coop
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool CoopServer::coopIsActive()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return false;
+	}
+	return game.coop_isActive;
+}
+
+//========================================================[b60014]
 // Name:        getServerDataIniFilename
 // Class:       -
 //              

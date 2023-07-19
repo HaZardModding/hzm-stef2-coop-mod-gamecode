@@ -16,6 +16,22 @@
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
 
+//included to accsess
+//coopIsActive()
+extern CoopServer coopServer;
+#include "coopServer.hpp"
+
+//coop_returnIntFind
+//coop_returnStringUntilWhithspace
+//coop_textPhraseLocalStrUmlaute
+#include "coopReturn.hpp"
+//coop_returnIntFind
+//coop_replaceForLabelText
+#include "coopReturn.hpp"
+//coop_textPhraseLocalStrUmlaute
+#include "coopText.hpp"
+
+
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
 
@@ -340,7 +356,7 @@ bool Player::upgPlayerIsBot()
 void Player::upgPlayerGetTargetedEntity(Event* ev)
 {
 	Entity* target;
-	target = this->GetTargetedEntity();
+	target = GetTargetedEntity();
 	if (!target) {
 		target = world;
 	}
@@ -417,7 +433,10 @@ void Player::upgPlayerGetUserFov(Event* ev)
 {
 	float fov = (float)atof(Info_ValueForKey(client->pers.userinfo, "userFov"));
 	if (fov < 1.0f) {
-		fov = atof(coop_returnCvarString("sv_defaultFov"));
+		str sCvarValue = "";
+		cvar_t* cvar = gi.cvar_get("sv_defaultFov");
+		if (cvar) { sCvarValue = cvar->string; }
+		fov = atof(sCvarValue.c_str());
 	}
 	else if (fov > 160.0f) {
 		fov = 160.0f;
@@ -715,7 +734,7 @@ void Player::upgPlayerWorldEffects(void)
 
 				// Damage-Multiplier
 				float damageMultiplier = 1;
-				if (!multiplayerManager.inMultiplayer() || game.coop_isActive)
+				if (!multiplayerManager.inMultiplayer() || coopServer.coopIsActive())
 				{
 					GameplayManager* gpm;
 					int skillLevel;
@@ -794,13 +813,13 @@ void Player::upgPlayerWorldEffects(void)
 	else
 	{
 		//hzm gameupdate daggolin - air in dm/coop/sp
-		if (game.coop_isActive) air_finished = level.time + 15.0f;
+		if (coopServer.coopIsActive()) air_finished = level.time + 15.0f;
 		else					  air_finished = level.time + 10.0f;
 		drown_damage = 2.0f;
 
 		//hzm gameupdate chrissstrahl - take the Damage-Multiplier in account, when restoring health
 		float damageMultiplier = 1;
-		if (!multiplayerManager.inMultiplayer() || game.coop_isActive)
+		if (!multiplayerManager.inMultiplayer() || coopServer.coopIsActive())
 		{
 			GameplayManager* gpm;
 			int skillLevel;

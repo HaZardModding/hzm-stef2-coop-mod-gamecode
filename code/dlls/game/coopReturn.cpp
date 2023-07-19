@@ -1565,19 +1565,10 @@ int coop_returnCvarInteger( str cvarName )
 //================================================================
 str coop_returnCvarString( str cvarName )
 {
-	if ( strlen( cvarName ) < 1 )
-		return "";
+	if (!strlen(cvarName)) { return ""; }
 
-	cvar_t *value;
-	str variableValue;
-	value = gi.cvar( cvarName.c_str() , "" , 0 );
-
-	variableValue = value->string;
-
-	if ( strlen( variableValue.c_str() ) < 1 )
-		return "";
-
-	return variableValue.c_str();
+	cvar_t* cvar = gi.cvar_get(cvarName.c_str());
+	(cvar) ? cvar->string : "";
 }
 
 //================================================================
