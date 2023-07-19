@@ -473,7 +473,7 @@ str Player::upgPlayerGetPowerupName(void)
 }
 
 //hzm gameupdate chrissstrahl - add new commands for script use
-void Player::getScore(Event* ev)
+void Player::upgPlayerGetScore(Event* ev)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (multiplayerManager.inMultiplayer()) {

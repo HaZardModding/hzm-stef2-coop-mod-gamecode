@@ -343,7 +343,7 @@ class Player : public Sentient
 		void				upgPlayerWorldEffects(void);
 		void				upgPlayerGetScriptVariablesCommand(Event* ev);
 		void				upgPlayerDisableUseWeapon(bool bDiable);
-		void				getScore(Event* ev);
+		void				upgPlayerGetScore(Event* ev);
 		void				addScore(Event* ev);
 		void				getDeaths(Event* ev);
 		void				getKills(Event* ev);
