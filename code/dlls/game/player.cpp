@@ -2016,7 +2016,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60013] chrissstrahl - checks if player is pressing reload button
 	{ &EV_Player_checkReload,					&Player::checkReload },
 	//[b60013] chrissstrahl - checks if player is pressing jump button
-	{ &EV_Player_checkJump,						&Player::checkJump },
+	{ &EV_Player_checkJump,						&Player::upgPlayerCheckJump },
 	//[b60013] chrissstrahl - checks if player is pressing crouch fire button
 	{ &EV_Player_checkCrouch,					&Player::upgPlayerCheckCrouch },
 

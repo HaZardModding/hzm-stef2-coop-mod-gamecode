@@ -306,7 +306,7 @@ class Player : public Sentient
 		void				checkRun(Event* ev);
 		void				checkReload(Event* ev);
 		void				upgPlayerCheckCrouch(Event* ev);
-		void				checkJump(Event* ev);
+		void				upgPlayerCheckJump(Event* ev);
 		void				checkUsePressing(Event* ev);
 		void				checkFire(Event* ev);
 		void				checkFirealt(Event* ev);
