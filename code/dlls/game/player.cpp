@@ -2023,7 +2023,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60011] chrissstrahl - checks if player is using the use button
 	{ &EV_Player_checkUse,						&Player::checkUsePressing },
 	//[b60011] chrissstrahl - checks if player is in third person
-	{ &EV_Player_checkThirdperson,				&Player::checkThirdperson },
+	{ &EV_Player_checkThirdperson,				&Player::upgPlayerCheckThirdperson },
 	//[b60011] chrissstrahl - checks if player is pressing fire/alternative fire button
 	{ &EV_Player_checkFire,						&Player::upgPlayerCheckFire },
 	{ &EV_Player_checkFirealt,					&Player::upgPlayerCheckFirealt },

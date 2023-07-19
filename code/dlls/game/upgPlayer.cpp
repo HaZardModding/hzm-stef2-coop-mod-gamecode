@@ -295,7 +295,7 @@ void Player::upgPlayerCheckReload(Event* ev) { ev->ReturnFloat((last_ucmd.button
 //[b60011] chrissstrahl - checks if player is pressing a specific button
 void Player::upgPlayerCheckFire(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0); }
 void Player::upgPlayerCheckFirealt(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKRIGHT) != 0); }
-void Player::checkThirdperson(Event* ev) { ev->ReturnFloat((int)_isThirdPerson); }
+void Player::upgPlayerCheckThirdperson(Event* ev) { ev->ReturnFloat((int)_isThirdPerson); }
 void Player::checkUsePressing(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_USE) != 0); }
 
 //[b60012] chrissstrahl - cancel player modulating event - if player gets hurt or so

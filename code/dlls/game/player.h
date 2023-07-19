@@ -310,7 +310,7 @@ class Player : public Sentient
 		void				checkUsePressing(Event* ev);
 		void				upgPlayerCheckFire(Event* ev);
 		void				upgPlayerCheckFirealt(Event* ev);
-		void				checkThirdperson(Event* ev);
+		void				upgPlayerCheckThirdperson(Event* ev);
 		//[b60012] chrissstrahl
 		void				cancelPuzzle();
 		//[b60011] chrissstrahl
