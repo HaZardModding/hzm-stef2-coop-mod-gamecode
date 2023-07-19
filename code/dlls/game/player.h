@@ -334,7 +334,7 @@ class Player : public Sentient
 		str					upgPlayerGetLanguage(void);
 		void				upgPlayerSetLanguage(str sLang);
 		void				upgPlayerGetLanguageEvent(Event* ev);
-		void				widgetCommandEvent(Event* ev);
+		void				upgPlayerWidgetCommandEvent(Event* ev);
 		void				widgetCommand(str sWidget, str sParameters);
 		//[b607] chrissstrahl
 		void				upgPlayerGetTargetedEntity(Event* ev);

@@ -1980,7 +1980,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getName ,						&Player::getNameEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use
-	{ &EV_Player_WidgetCommand ,				&Player::widgetCommandEvent },
+	{ &EV_Player_WidgetCommand ,				&Player::upgPlayerWidgetCommandEvent },
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getScore,						&Player::getScore },
 	{ &EV_Player_addScore,						&Player::addScore },

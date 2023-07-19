@@ -852,7 +852,7 @@ void Player::getNameEvent(Event* ev)
 
 //[b60011] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
 //widgetname,commandparameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter,parameter
-void Player::widgetCommandEvent(Event* ev)
+void Player::upgPlayerWidgetCommandEvent(Event* ev)
 {
 	//make sure we have at least widgetname and a commandparameter
 	if (ev->NumArgs() < 2) {
