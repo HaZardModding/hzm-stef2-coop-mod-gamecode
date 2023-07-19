@@ -293,7 +293,7 @@ void Player::upgPlayerCheckRun(Event* ev) { ev->ReturnFloat((last_ucmd.buttons &
 void Player::upgPlayerCheckReload(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_RELOAD) != 0); }
 
 //[b60011] chrissstrahl - checks if player is pressing a specific button
-void Player::checkFire(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0); }
+void Player::upgPlayerCheckFire(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0); }
 void Player::checkFirealt(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKRIGHT) != 0); }
 void Player::checkThirdperson(Event* ev) { ev->ReturnFloat((int)_isThirdPerson); }
 void Player::checkUsePressing(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_USE) != 0); }
