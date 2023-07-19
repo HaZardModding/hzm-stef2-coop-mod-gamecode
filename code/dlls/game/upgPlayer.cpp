@@ -817,7 +817,7 @@ void Player::upgPlayerGetTeamScore(Event* ev)
 }
 
 //hzm gameupdate chrissstrahl - get player name
-void Player::getNameEvent(Event* ev)
+void Player::upgPlayerGetNameEvent(Event* ev)
 {
 	//[b60014] chrissstrahl - return also player name when not in multiplayer instead of crashing
 	if (!multiplayerManager.inMultiplayer()) {
