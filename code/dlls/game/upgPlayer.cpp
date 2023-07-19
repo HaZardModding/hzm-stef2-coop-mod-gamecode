@@ -437,7 +437,7 @@ str Player::upgPlayerGetRuneModel(void)
 }
 
 //[b60011] chrissstrahl - allow to get Rune Name from outside class
-str Player::getRuneName(void)
+str Player::upgPlayerGetRuneName(void)
 {
 	if (_rune) {
 		return _rune->getName();
