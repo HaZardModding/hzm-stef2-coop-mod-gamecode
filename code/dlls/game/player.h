@@ -278,7 +278,11 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		void				upgPlayerDeathTimeUpdate();
+		void				upgPlayerDeathTimeSet(int iTime);
+		int					upgPlayerDeathTime();
 		void				upgPlayerSetup();
+		bool				upgPlayerKilled(const Entity* attacker, const Entity* inflictor, const int meansOfDeath);
 		bool				upgPlayerSay(str sayString);
 		void				upgPlayerSaySpamfilterCountdown();
 		void				upgPlayerClientThink();
@@ -349,9 +353,6 @@ class Player : public Sentient
 		void				getNameEvent(Event* ev);
 		void				setCameraEvent(Event *ev);
 		float				getLastDamageTime(void);
-		void				DelayedServerCommand(int entNum, const char* commandText);
-		void				handleDelayedServerCommands(void);
-		void				clearDelayedServerCommands(int entNum);
 		//we want to access them anywhere (they used to be private)
 		int					_objectiveNameIndex;
 		unsigned int		_objectiveStates;
@@ -1887,7 +1888,6 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);
 	arc.ArchiveFloat(&coopPlayer.timeEntered);
-	arc.ArchiveInteger(&coopPlayer.deathTime);
 	arc.ArchiveString(&coopPlayer.scanData0);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer

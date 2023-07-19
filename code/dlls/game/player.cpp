@@ -3732,16 +3732,6 @@ Player::Player()
 	//hzm gameupdate chrissstrahl - used to check if this player is suppose to take action in a branchdialog situation 
 	branchdialog_active = false;
 
-	//hzm coop mod chrissstrahl - used to store server time at wich the player died last
-	time_t result = time(NULL);
-	localtime(&result);
-	coopPlayer.deathTime = (int)result;
-	//HaZardModding Coop Mod END
-	//HaZardModding Coop Mod END
-	//HaZardModding Coop Mod END
-
-
-
 	_started = false;
 
 	StopWatchingEntity();
@@ -4439,6 +4429,11 @@ void Player::Killed( Event *ev )
 	damage_from = direction;
 
 	if ( multiplayerManager.inMultiplayer() ){
+		//[GAMEUPGRADE][b60014] chrissstrahl - notify
+		if (upgPlayerKilled(attacker, inflictor, meansofdeath)) {
+			return;
+		}
+
 		//[b607] chrissstrahl - this was modified to be executed on regular multi as well - we have our own death handling
 		if ( !coop_playerKilled( this , attacker , inflictor , meansofdeath ) ){
 			return;

@@ -18,9 +18,14 @@
 //
 
 #include "_pch_cpp.h"
+#include "player.h"
 #include "mp_modeCtf.hpp"
 #include "mp_manager.hpp"
 
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
 
 //----------------------------------------------------------------
 //          C A P T U R E   T H E   F L A G   A R E N A

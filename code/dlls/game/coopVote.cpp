@@ -1334,8 +1334,8 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 					}
 				}
 
-				if (player->coopPlayer.deathTime > game.coop_levelStartTime) {
-					player->coopPlayer.deathTime = 0;
+				if (player->upgPlayerDeathTime() > game.coop_levelStartTime) {
+					player->upgPlayerDeathTimeSet(0);
 					if (multiplayerManager.isPlayerSpectator(player) &&
 						!multiplayerManager.isPlayerSpectatorByChoice(player) &&
 						game.levelType >= MAPTYPE_MISSION)

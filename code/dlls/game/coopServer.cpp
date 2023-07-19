@@ -939,7 +939,7 @@ void coop_serverSaveClientDataWrite( Player *player )
 		( int )player->AmmoCount( "Plasma" ) ,
 		( int )player->AmmoCount( "Fed" ) ,
 		( int )player->AmmoCount( "Idryll" ),
-		( int )player->coopPlayer.deathTime,
+		( int )player->upgPlayerDeathTime(),
 		sMapname.c_str()
 		);
 

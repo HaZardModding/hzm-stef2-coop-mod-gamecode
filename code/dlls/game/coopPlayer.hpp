@@ -160,8 +160,6 @@ public:
 	bool scanHudActive = false;
 	//hzm coop mod chrissstrahl - used to store tricorder scan last data send time
 	float lastScanSend = -987.0f;
-	//hzm coop mod chrissstrahl - used to store real time when player last died
-	int deathTime = -986;
 	//[b60011] chrissstrahl - used to store deaths this player died during lms
 	int lmsDeaths = 0;
 	//hzm coop mod chrissstrahl - used to store data send 

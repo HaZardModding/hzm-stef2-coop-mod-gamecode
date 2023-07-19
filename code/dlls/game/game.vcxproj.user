@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LocalDebuggerCommand>D:\OneDrive\GAMES\COOP EF2\quake3.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommand>D:\OneDrive\GAMES\COOP EF2\ef2 - Kopie.exe</LocalDebuggerCommand>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MP|Win32'">
     <LocalDebuggerCommand>D:\GAMES\Star Trek\Elite Force II\Server EF2\quake3.exe</LocalDebuggerCommand>
@@ -9,7 +9,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>D:\OneDrive\GAMES\COOP EF2\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>+r_fullscreen 0 +exec dev +cheats 1 +set logfile 1 +mp_warmuptime 0 +set g_gametype 1 +set dedicated 0 +set coop_diag 0 +set coop_dev 1+devmap ent-training1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set dedicated 2 +set g_gametype 1 +set bot_enable 1 +set mp_botcmmands "exec megabots.cfg" +set logfile 1 +set sv_maxclients 4 +set r_fullscreen 0 +set r_mode 6 +cheats 1 +mp_warmuptime 0 +set mp_gametype 0 +map dm_kw</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MP|Win32'">
     <LocalDebuggerWorkingDirectory>D:\GAMES\Star Trek\Elite Force II\Server EF2\</LocalDebuggerWorkingDirectory>
@@ -22,9 +22,9 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <LocalDebuggerCommand>A:\Games\Star Trek\Elite Force II\Master EF2\quake3.exe</LocalDebuggerCommand>
-    <LocalDebuggerCommandArguments>A:\Games\Star Trek\Elite Force II\Master EF2\quake3.exe +sv_maxclients 4 +g_gametype 1 +devmap secret1 +set logfile 1</LocalDebuggerCommandArguments>
-    <LocalDebuggerWorkingDirectory>A:\Games\Star Trek\Elite Force II\Master EF2\</LocalDebuggerWorkingDirectory>
+    <LocalDebuggerCommand>D:\OneDrive\GAMES\COOP EF2\quake3.exe</LocalDebuggerCommand>
+    <LocalDebuggerCommandArguments>+logfile 1 +r_fullscreen 0 +sv_maxclients 4 +g_gametype 1 +devmap m5l2b-drull_ruins1 +set dedicated 0</LocalDebuggerCommandArguments>
+    <LocalDebuggerWorkingDirectory>D:\OneDrive\GAMES\COOP EF2\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
 </Project>

@@ -16,6 +16,8 @@
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
 
+pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
+
 
 //=========================================================[b60014]
 // Name:        player::upgPlayerIsHost
@@ -48,6 +50,57 @@ bool Player::upgPlayerIsHost()
 }
 
 //=========================================================[b60014]
+// Name:        player::upgPlayerDeathTimeUpdate
+// Class:       -
+//              
+// Description: updates deathtime, used to store server time at wich the player died last
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void Player::upgPlayerDeathTimeUpdate()
+{
+	//used to store server time at wich the player died last
+	time_t result = time(NULL);
+	localtime(&result);
+	upgPlayer.deathTime = (int)result;
+}
+
+//=========================================================[b60014]
+// Name:        player::upgPlayerDeathTimeSet
+// Class:       -
+//              
+// Description: resest deathtime, used to store server time at wich the player died last
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void Player::upgPlayerDeathTimeSet(int iTime)
+{
+	upgPlayer.deathTime = iTime;
+}
+
+//=========================================================[b60014]
+// Name:        player::upgPlayerDeathTime
+// Class:       -
+//              
+// Description: returns at wich server time the player died last
+//              
+// Parameters:  void
+//              
+// Returns:     int
+//================================================================
+int Player::upgPlayerDeathTime()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return 1;
+	}
+	return upgPlayer.deathTime;
+}
+
+//=========================================================[b60014]
 // Name:        player::upgPlayerSetup
 // Class:       -
 //              
@@ -62,6 +115,24 @@ void Player::upgPlayerSetup()
 {
 	//tell player to give us his cl_maxpackets and language
 	DelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
+}
+
+//=========================================================[b60014]
+// Name:        player::upgPlayerKilled
+// Class:       -
+//              
+// Description: executed when player dies
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool Player::upgPlayerKilled(const Entity* attacker, const Entity* inflictor, const int meansOfDeath)
+{
+	//set last killed time to current time
+	upgPlayerDeathTimeUpdate();
+
+	return false;
 }
 
 //=========================================================[b60014]

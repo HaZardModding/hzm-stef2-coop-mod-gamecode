@@ -6,13 +6,6 @@
 //-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
-
-#include "coopPlayer.hpp"
-#include "coopClass.hpp"
-#include "coopArmory.hpp"
-#include "coopReturn.hpp"
-#include "coopParser.hpp"
-
 #include "level.h"
 #include "player.h"
 #include "weapon.h"
@@ -21,6 +14,18 @@
 #include "mp_modeTeamDm.hpp"
 #include "mp_modeCtf.hpp"
 #include "powerups.h"
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+
+#include "coopPlayer.hpp"
+#include "coopClass.hpp"
+#include "coopArmory.hpp"
+#include "coopReturn.hpp"
+#include "coopParser.hpp"
+
+
 
 
 

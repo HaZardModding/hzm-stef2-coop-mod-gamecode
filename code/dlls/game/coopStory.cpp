@@ -25,6 +25,10 @@
 #include "coopText.hpp"
 #include "coopReturn.hpp"
 
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+
 #include "entity.h"
 #include "player.h"
 #include "weapon.h"

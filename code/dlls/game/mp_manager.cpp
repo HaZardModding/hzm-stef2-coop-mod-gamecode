@@ -392,7 +392,7 @@ void MultiplayerManager::update( float frameTime )
 		//hzm coop mod chrissstrahl - if lms (last man standing) is active
 		if ( game.coop_lastmanstanding > 0 && game.levelType >= MAPTYPE_MISSION )
 		{
-			if ( player->coopPlayer.deathTime < game.coop_levelStartTime && multiplayerManager.isPlayerSpectator( player ) && !multiplayerManager.isPlayerSpectatorByChoice( player ) )
+			if ( player->upgPlayerDeathTime() < game.coop_levelStartTime && multiplayerManager.isPlayerSpectator( player ) && !multiplayerManager.isPlayerSpectatorByChoice( player ) )
 			{
 				if ( _gameStarted )
 				{
@@ -405,7 +405,7 @@ void MultiplayerManager::update( float frameTime )
 				time_t result = time( NULL );
 				localtime( &result );
 				
-				if ( (player->coopPlayer.deathTime + 6 ) <= ( int )result )
+				if ( (player->upgPlayerDeathTime() + 6 ) <= ( int )result )
 				{
 					makePlayerSpectator( player , SPECTATOR_TYPE_FOLLOW , false );
 				}

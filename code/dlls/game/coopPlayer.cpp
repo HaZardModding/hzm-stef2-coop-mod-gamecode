@@ -6,10 +6,18 @@
 //-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
-#include "coopPlayer.hpp"
+#include "level.h"
+#include "player.h"
+#include "weapon.h"
+#include "mp_manager.hpp"
+#include "mp_modeDm.hpp"
+#include "mp_modeTeamDm.hpp"
+#include "mp_modeCtf.hpp"
+#include <qcommon/gameplaymanager.h>
 
-//[b60011] chrissstrahl - gameupgrades
+#include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
 
 //[b60011] chrissstrahl
 #include "coopNpcTeam.hpp"
@@ -20,6 +28,7 @@ extern CoopServer coopServer;
 #include "coopSpawnlocation.hpp"
 extern CoopSpawnlocation coopSpawnlocation;
 
+#include "coopPlayer.hpp"
 #include "coopAlias.hpp"
 #include "coopParser.hpp"
 #include "coopModel.hpp"
@@ -34,21 +43,13 @@ extern CoopSpawnlocation coopSpawnlocation;
 #include "coopHuds.hpp"
 #include "coopReturn.hpp"
 
-#include "level.h"
-#include "player.h"
-#include "weapon.h"
-#include "mp_manager.hpp"
-#include "mp_modeDm.hpp"
-#include "mp_modeTeamDm.hpp"
-#include "mp_modeCtf.hpp"
-#include <qcommon/gameplaymanager.h>
-//#include "powerups.h"
-
 //[b60011] chrissstrahl - make avialable to use here
 extern Event EV_SetOriginEveryFrame;
 extern Event EV_World_AutoFailure;
 
-pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
+extern void DelayedServerCommand(int entNum, const char* commandText);
+
+extern pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
 
 extern int iTIKIS;
 extern int iSKAS;
@@ -1258,7 +1259,7 @@ bool coop_playerSpawnLms( Player *player )
 	//player died after this map was started and
 	//player is more than 3 sec on level and
 	//player dies more often than allowed
-	if (	player->coopPlayer.deathTime > game.coop_levelStartTime &&
+	if (	player->upgPlayerDeathTime() > game.coop_levelStartTime &&
 			(player->coopPlayer.timeEntered + 3 ) < level.time &&
 			player->coopPlayer.lmsDeaths >= game.coop_lastmanstanding
 	){
@@ -1299,12 +1300,12 @@ void coop_playerRestore( Player *player )
 	if ( multiplayerManager.isPlayerSpectator( player ) )
 	{
 		int iTime = atoi( coop_playerGetDataSegment( player , 7 ).c_str() );
-		player->coopPlayer.deathTime = iTime;
+		player->upgPlayerDeathTimeSet(iTime);
 		if ( game.coop_lastmanstanding )
 		{
 			if ( !multiplayerManager.isPlayerSpectatorByChoice( player ) )
 			{
-				if ( player->coopPlayer.deathTime < game.coop_levelStartTime && ( mp_warmUpTime->integer + 20 ) < level.time )
+				if ( player->upgPlayerDeathTime() < game.coop_levelStartTime && ( mp_warmUpTime->integer + 20 ) < level.time )
 				{
 					multiplayerManager.playerEnterArena( player->entnum , 666 );
 				}
@@ -1399,7 +1400,7 @@ void coop_playerRestore( Player *player )
 	iTempData = coop_returnIntFromFormatedString( sData , ' ' );
 	if ( sData.length() == 10 ) {
 		iTempData = atoi( sData );
-		player->coopPlayer.deathTime = iTempData;
+		player->upgPlayerDeathTimeSet(iTempData);
 		//try to respawnif data is restored
 		if ( multiplayerManager.isPlayerSpectator( player ) && !multiplayerManager.isPlayerSpectatorByChoice( player ) ) {
 			multiplayerManager.playerEnterArena( player->entnum , iTempData );
@@ -1664,7 +1665,7 @@ void coop_playerSaveNewPlayerId(Player *player)
 	
 	//hzm coop mod chrissstrahl - allow new players to join directly in on LMS and respawntime
 	if (multiplayerManager.inMultiplayer()) {
-		player->coopPlayer.deathTime = 0;
+		player->upgPlayerDeathTimeSet(0);
 		multiplayerManager._playerData[player->entnum]._waitingForRespawn = true;
 		multiplayerManager._playerData[player->entnum]._respawnTime = 0.0f;
 	}
@@ -1992,10 +1993,6 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	Entity *entityAttacker = ( Entity * )g_entities[attacker->entnum].entity;
 	Entity *entityInflictor = ( Entity * )g_entities[inflictor->entnum].entity;
 
-	//hzm coop mod chrissstrahl - used to store server time at wich the player died last
-	time_t result = time( NULL );
-	localtime( &result );
-	playerPrey->coopPlayer.deathTime = ( int )result;
 	//[b607] chrissstrahl - remember when this player died last in this level
 	playerPrey->coop_playerDiedLastUpdate();
 
