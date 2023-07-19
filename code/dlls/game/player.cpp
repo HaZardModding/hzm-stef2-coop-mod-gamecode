@@ -2006,7 +2006,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60013] chrissstrahl - checks if player is pressing right turn or strafe button
 	{ &EV_Player_checkRight,					&Player::upgPlayerCheckRight },
 	//[b60013] chrissstrahl - checks if player is pressing lean right button
-	{ &EV_Player_checkLeanRight,				&Player::checkLeanRight },
+	{ &EV_Player_checkLeanRight,				&Player::upgPlayerCheckLeanRight },
 	//[b60013] chrissstrahl - checks if player is pressing lean left button
 	{ &EV_Player_checkLeanLeft,					&Player::upgPlayerCheckLeanLeft },
 	//[b60013] chrissstrahl - checks if player is pressing drop rune button
