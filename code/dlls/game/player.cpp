@@ -1994,7 +1994,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
 	{ &EV_Player_getBackpackAttachOffset,				&Player::upgPlayerGetBackpackAttachOffset },
 	{ &EV_Player_getBackpackAttachAngles,				&Player::upgPlayerGetBackpackAttachAngles },
-	{ &EV_Player_getFlagAttachOffset,					&Player::getFlagAttachOffset },
+	{ &EV_Player_getFlagAttachOffset,					&Player::upgGetFlagAttachOffset },
 	{ &EV_Player_getFlagAttachAngles,					&Player::getFlagAttachAngles },
 
 	//[b60013] chrissstrahl - checks if player is pressing fowrward button
@@ -15117,7 +15117,7 @@ void Player::setFlagAttachAngles( Event *ev )
 	_flagAttachAngles = ev->GetVector( 1 );
 }
 
-Vector Player::getFlagAttachOffset( void )
+Vector Player::upgGetFlagAttachOffset( void )
 {
 	return _flagAttachOffset;
 }
