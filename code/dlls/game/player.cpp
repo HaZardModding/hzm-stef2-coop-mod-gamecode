@@ -1961,7 +1961,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getViewtraceEndpos,			&Player::getViewtraceEndpos },
 
 	//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
-	{ &EV_Player_getUserFov,					&Player::getUserFov},
+	{ &EV_Player_getUserFov,					&Player::upgPlayerGetUserFov},
 
 	//hzm gameupdate chrissstrahl [b60011] circlemenu
 	{ &EV_Player_circleMenu,					&Player::circleMenuEvent},

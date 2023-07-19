@@ -240,8 +240,7 @@ void Player::getViewtraceEndpos(Event* ev)
 //              
 // Parameters:  void
 //              
-// Returns:     Vector
-//              
+// Returns:     Vector   
 //================================================================
 Vector Player::upgPlayerGetViewTraceEndVector(void)
 {
@@ -252,8 +251,17 @@ Vector Player::upgPlayerGetViewTraceEndVector(void)
 	return viewTrace.endpos;
 }
 
-//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
-void Player::getUserFov(Event* ev)
+//========================================================[b60014]
+// Name:        upgPlayerGetUserFov
+// Class:       -
+//              
+// Description: grab player userfov, basically the fov the player has set in menu
+//              
+// Parameters:  void
+//              
+// Returns:     void   
+//================================================================
+void Player::upgPlayerGetUserFov(Event* ev)
 {
 	float fov = (float)atof(Info_ValueForKey(client->pers.userinfo, "userFov"));
 	if (fov < 1.0f) {
