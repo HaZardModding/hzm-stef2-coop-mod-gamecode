@@ -2012,7 +2012,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60013] chrissstrahl - checks if player is pressing drop rune button
 	{ &EV_Player_checkDropRune,					&Player::upgPlayerCheckDropRune },
 	//[b60013] chrissstrahl - checks if player is pressing run button
-	{ &EV_Player_checkRun,						&Player::checkRun },
+	{ &EV_Player_checkRun,						&Player::upgPlayerCheckRun },
 	//[b60013] chrissstrahl - checks if player is pressing reload button
 	{ &EV_Player_checkReload,					&Player::checkReload },
 	//[b60013] chrissstrahl - checks if player is pressing jump button
