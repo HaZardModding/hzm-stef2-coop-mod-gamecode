@@ -277,7 +277,7 @@ void Player::upgPlayerGetUserFov(Event* ev)
 void Player::upgPlayerGetBackpackAttachOffset(Event* ev) { ev->ReturnVector(_backpackAttachOffset); }
 void Player::upgPlayerGetBackpackAttachAngles(Event* ev) { ev->ReturnVector(_backpackAttachAngles); }
 void Player::upgGetFlagAttachOffset(Event* ev) { ev->ReturnVector(_flagAttachOffset); }
-void Player::getFlagAttachAngles(Event* ev) { ev->ReturnVector(_flagAttachAngles); }
+void Player::upgPlayerGetFlagAttachAngles(Event* ev) { ev->ReturnVector(_flagAttachAngles); }
 
 //[b60013] chrissstrahl - checks if player is a specific button
 void Player::checkCrouch(Event* ev) { ev->ReturnFloat((int)GetCrouch()); }

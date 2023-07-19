@@ -294,7 +294,7 @@ class Player : public Sentient
 		void				upgPlayerGetBackpackAttachOffset(Event* ev);
 		void				upgPlayerGetBackpackAttachAngles(Event* ev);
 		void				upgGetFlagAttachOffset(Event* ev);
-		void				getFlagAttachAngles(Event* ev);
+		void				upgPlayerGetFlagAttachAngles(Event* ev);
 		//[b60013] chrissstrahl - checks if player is pressing a specific button
 		void				checkForward(Event* ev);
 		void				checkBackward(Event* ev);
@@ -1313,7 +1313,7 @@ class Player : public Sentient
 		void				setFlagAttachAngles( Event *ev );
 
 		Vector				upgGetFlagAttachOffset( void );
-		Vector				getFlagAttachAngles( void );
+		Vector				upgPlayerGetFlagAttachAngles( void );
 
 		bool				canRegenerate( void );
 

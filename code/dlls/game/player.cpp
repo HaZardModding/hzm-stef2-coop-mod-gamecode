@@ -1995,7 +1995,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getBackpackAttachOffset,				&Player::upgPlayerGetBackpackAttachOffset },
 	{ &EV_Player_getBackpackAttachAngles,				&Player::upgPlayerGetBackpackAttachAngles },
 	{ &EV_Player_getFlagAttachOffset,					&Player::upgGetFlagAttachOffset },
-	{ &EV_Player_getFlagAttachAngles,					&Player::getFlagAttachAngles },
+	{ &EV_Player_getFlagAttachAngles,					&Player::upgPlayerGetFlagAttachAngles },
 
 	//[b60013] chrissstrahl - checks if player is pressing fowrward button
 	{ &EV_Player_checkForward,					&Player::checkForward },
@@ -15122,7 +15122,7 @@ Vector Player::upgGetFlagAttachOffset( void )
 	return _flagAttachOffset;
 }
 
-Vector Player::getFlagAttachAngles( void )
+Vector Player::upgPlayerGetFlagAttachAngles( void )
 {
 	return _flagAttachAngles;
 }
