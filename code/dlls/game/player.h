@@ -316,7 +316,7 @@ class Player : public Sentient
 		//[b60011] chrissstrahl
 		void				upgPlayerRunThread(Event* ev);
 		CThread*			upgPlayerRunThread(const str& thread_name);
-		str					getHoldableName(void);
+		str					upgPlayerGetHoldableName(void);
 		str					getHoldableModel(void);
 		Rune*				getRuneItem(void);
 		str					getRuneModel(void);

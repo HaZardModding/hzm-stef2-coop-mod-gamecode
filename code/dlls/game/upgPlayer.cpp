@@ -330,7 +330,7 @@ CThread* Player::upgPlayerRunThread(const str& thread_name)
 }
 
 //[b60011] chrissstrahl - allow to get Holdable Item Name from outside class
-str Player::getHoldableName(void)
+str Player::upgPlayerGetHoldableName(void)
 {
 	if (_holdableItem) {
 		return _holdableItem->getName();
