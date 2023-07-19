@@ -326,7 +326,7 @@ class Player : public Sentient
 		str					upgPlayerGetRuneModel(void);
 		str					upgPlayerGetRuneName(void);
 		Powerup*			upgPlayerGetPowerupItem(void);
-		str					getPowerupModel(void);
+		str					upgPlayerGetPowerupModel(void);
 		str					getPowerupName(void);
 		void				getViewanglesEvent(Event* ev);
 		void				hasLanguageGerman(Event* ev);

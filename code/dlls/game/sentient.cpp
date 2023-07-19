@@ -1322,7 +1322,7 @@ Item *Sentient::FindItem( const char *itemname, Item *current )
 					//gi.Printf(va("RUNE: %s\n", player->getRuneName().c_str()));
 					return (Item*)player->upgPlayerGetRuneItem();
 				}
-				if (player->upgPlayerGetRuneItem() && player->getPowerupModel() == itemname) {
+				if (player->upgPlayerGetRuneItem() && player->upgPlayerGetPowerupModel() == itemname) {
 					//gi.Printf(va("POWERUP: %s\n", player->getPowerupName().c_str()));
 					return (Item*)player->upgPlayerGetPowerupItem();
 				}

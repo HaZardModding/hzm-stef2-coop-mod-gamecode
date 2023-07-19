@@ -455,7 +455,7 @@ Powerup* Player::upgPlayerGetPowerupItem(void)
 }
 
 //[b60011] chrissstrahl - allow to get Rune Model from outside class
-str Player::getPowerupModel(void)
+str Player::upgPlayerGetPowerupModel(void)
 {
 	if (_powerup) {
 		return _powerup->model;
