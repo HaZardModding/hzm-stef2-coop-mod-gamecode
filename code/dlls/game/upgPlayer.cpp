@@ -510,7 +510,7 @@ void Player::getDeaths(Event* ev)
 }
 
 //[b60011] chrissstrahl - get player viewangle
-void Player::getViewanglesEvent(Event* ev)
+void Player::upgPlayerGetViewanglesEvent(Event* ev)
 {
 	Vector vAngle = Vector(0, 0, 0);
 	GetPlayerView(NULL, &vAngle);

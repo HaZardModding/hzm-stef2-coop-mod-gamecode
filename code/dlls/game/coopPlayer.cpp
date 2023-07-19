@@ -2886,7 +2886,7 @@ bool Player::coop_updateStats(void)
 
 
 //hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
-void Player::hasLanguageGerman(Event* ev)
+void Player::upgPlayerHasLanguageGerman(Event* ev)
 {
 	bool bLangMatch = false;
 	if (this->getLanguage() == "Deu") {

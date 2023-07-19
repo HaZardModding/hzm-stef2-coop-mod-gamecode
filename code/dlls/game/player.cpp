@@ -2030,7 +2030,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60011] chrissstrahl - runs thread from player entity
 	{ &EV_Player_RunThread,						&Player::upgPlayerRunThread },
 	//[b60011] chrissstrahl - get player viewangle
-	{ &EV_Player_GetViewangles ,				&Player::getViewanglesEvent } ,
+	{ &EV_Player_GetViewangles ,				&Player::upgPlayerGetViewanglesEvent } ,
 	//[b607] chrissstrahl - return targeted entity of player
 	{ &EV_Player_GetTargetedEntity ,			&Player::upgPlayerGetTargetedEntity },
 	//[b60011] chrissstrahl - allowing/preventing player from switching class
@@ -2044,7 +2044,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60011] chrissstrahl - check if coop class is HeavyWeapons
 	{ &EV_Player_IsHeavyWeapons ,				&Player::isCoopClassHeavyWeapons },
 	//[b60011] chrissstrahl - checks player has ger/eng langauge
-	{ &EV_Player_HasLanguageGerman ,			&Player::hasLanguageGerman },
+	{ &EV_Player_HasLanguageGerman ,			&Player::upgPlayerHasLanguageGerman },
 	{ &EV_Player_HasLanguageEnglish ,			&Player::hasLanguageEnglish },
 	{ NULL , NULL }
 };
