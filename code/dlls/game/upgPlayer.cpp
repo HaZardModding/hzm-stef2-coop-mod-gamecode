@@ -410,7 +410,7 @@ str Player::upgPlayerGetHoldableName(void)
 }
 
 //[b60011] chrissstrahl - allow to get Holdable Item Model from outside class
-str Player::getHoldableModel(void)
+str Player::upgPlayerGetHoldableModel(void)
 {
 	if (_holdableItem) {
 		return _holdableItem->model;

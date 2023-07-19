@@ -1314,7 +1314,7 @@ Item *Sentient::FindItem( const char *itemname, Item *current )
 			//[b60011] gameudate chrissstrahl - also find holable crap and rune and powerup
 			if (this->isSubclassOf(Player)) {
 				Player* player = (Player*)this;
-				if (player->getHoldableItem() && player->getHoldableModel() == itemname) {
+				if (player->getHoldableItem() && player->upgPlayerGetHoldableModel() == itemname) {
 					//gi.Printf(va("HOLDABLE: %s\n", player->getHoldableName().c_str()));
 					return (Item*)player->getHoldableItem();
 				}
