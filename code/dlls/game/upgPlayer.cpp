@@ -290,7 +290,7 @@ void Player::upgPlayerCheckLeanLeft(Event* ev){ qboolean bJump = last_ucmd.lean 
 void Player::upgPlayerCheckLeanRight(Event* ev){ qboolean bJump = last_ucmd.lean < 0; ev->ReturnFloat((int)bJump); }
 void Player::upgPlayerCheckDropRune(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_DROP_RUNE) != 0); }
 void Player::upgPlayerCheckRun(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_RUN) != 0); }
-void Player::checkReload(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_RELOAD) != 0); }
+void Player::upgPlayerCheckReload(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_RELOAD) != 0); }
 
 //[b60011] chrissstrahl - checks if player is pressing a specific button
 void Player::checkFire(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0); }
