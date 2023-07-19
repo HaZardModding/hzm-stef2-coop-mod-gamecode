@@ -2000,7 +2000,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60013] chrissstrahl - checks if player is pressing fowrward button
 	{ &EV_Player_checkForward,					&Player::upgPlayerCheckForward },
 	//[b60013] chrissstrahl - checks if player is pressing backward button
-	{ &EV_Player_checkBackward,					&Player::checkBackward },
+	{ &EV_Player_checkBackward,					&Player::upgPlayerCheckBackward },
 	//[b60013] chrissstrahl - checks if player is pressing left turn or strafe button
 	{ &EV_Player_checkLeft,						&Player::checkLeft },
 	//[b60013] chrissstrahl - checks if player is pressing right turn or strafe button

@@ -297,7 +297,7 @@ class Player : public Sentient
 		void				upgPlayerGetFlagAttachAngles(Event* ev);
 		//[b60013] chrissstrahl - checks if player is pressing a specific button
 		void				upgPlayerCheckForward(Event* ev);
-		void				checkBackward(Event* ev);
+		void				upgPlayerCheckBackward(Event* ev);
 		void				checkLeft(Event* ev);
 		void				checkRight(Event* ev);
 		void				checkLeanRight(Event* ev);

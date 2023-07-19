@@ -283,7 +283,7 @@ void Player::upgPlayerGetFlagAttachAngles(Event* ev) { ev->ReturnVector(_flagAtt
 void Player::upgPlayerCheckCrouch(Event* ev) { ev->ReturnFloat((int)GetCrouch()); }
 void Player::upgPlayerCheckJump(Event* ev){ qboolean bJump = last_ucmd.upmove > 0; ev->ReturnFloat((int)bJump); }
 void Player::upgPlayerCheckForward(Event* ev){ qboolean bJump = last_ucmd.forwardmove > 0; ev->ReturnFloat((int)bJump); }
-void Player::checkBackward(Event* ev){ qboolean bJump = last_ucmd.forwardmove < 0; ev->ReturnFloat((int)bJump); }
+void Player::upgPlayerCheckBackward(Event* ev){ qboolean bJump = last_ucmd.forwardmove < 0; ev->ReturnFloat((int)bJump); }
 void Player::checkLeft(Event* ev){ qboolean bJump = last_ucmd.rightmove < 0; ev->ReturnFloat((int)bJump); }
 void Player::checkRight(Event* ev){ qboolean bJump = last_ucmd.rightmove > 0; ev->ReturnFloat((int)bJump); }
 void Player::checkLeanLeft(Event* ev){ qboolean bJump = last_ucmd.lean > 0; ev->ReturnFloat((int)bJump); }
