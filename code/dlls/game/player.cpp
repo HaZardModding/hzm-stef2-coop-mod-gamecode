@@ -1986,7 +1986,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_addScore,						&Player::upgPlayerAddScore },
 	{ &EV_Player_getDeaths,						&Player::upgPlayerGetDeaths },
 	{ &EV_Player_getKills,						&Player::upgPlayerGetKills },
-	{ &EV_Player_getLastDamaged,				&Player::getLastDamaged },
+	{ &EV_Player_getLastDamaged,				&Player::upgPlayerGetLastDamaged },
 	{ &EV_Player_getTeamName,					&Player::getTeamName },
 	{ &EV_Player_getTeamScore,					&Player::getTeamScore },
 	{ &EV_Player_getCoopVersion,				&Player::getCoopVersion },

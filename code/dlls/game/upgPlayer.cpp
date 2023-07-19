@@ -775,7 +775,7 @@ void Player::upgPlayerGetKills(Event* ev)
 	}
 }
 
-void Player::getLastDamaged(Event* ev)
+void Player::upgPlayerGetLastDamaged(Event* ev)
 {
 	ev->ReturnFloat(getLastDamageTime());
 }
