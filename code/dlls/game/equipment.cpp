@@ -587,31 +587,31 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 						if(playerCur->coopPlayer.scanData0 != descr1){
 							playerCur->coopPlayer.scanData0 = descr1;
 							if (descr1 == "") {
-								DelayedServerCommand(playerCur->entnum, va("set coop_scan0 $$TriPuz_Default$$", descr1.c_str()));
+								upgPlayerDelayedServerCommand(playerCur->entnum, va("set coop_scan0 $$TriPuz_Default$$", descr1.c_str()));
 							}
 							else {
-								DelayedServerCommand(playerCur->entnum, va("globalwidgetcommand Descr1 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
-								DelayedServerCommand(playerCur->entnum, va("set coop_scan0 $$%s$$", descr1.c_str()));
+								upgPlayerDelayedServerCommand(playerCur->entnum, va("globalwidgetcommand Descr1 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
+								upgPlayerDelayedServerCommand(playerCur->entnum, va("set coop_scan0 $$%s$$", descr1.c_str()));
 							}
 						}
 						if (playerCur->coopPlayer.scanData1 != descr2) {
 							playerCur->coopPlayer.scanData1 = descr2;
 							if (descr2 == "") {
-								DelayedServerCommand(playerCur->entnum,"set coop_scan1 $$TriPuz_Default$$");
+								upgPlayerDelayedServerCommand(playerCur->entnum,"set coop_scan1 $$TriPuz_Default$$");
 							}
 							else {
-								DelayedServerCommand(playerCur->entnum, va("globalwidgetcommand Descr2 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
-								DelayedServerCommand(playerCur->entnum, va("set coop_scan1 $$%s$$", descr2.c_str()));
+								upgPlayerDelayedServerCommand(playerCur->entnum, va("globalwidgetcommand Descr2 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
+								upgPlayerDelayedServerCommand(playerCur->entnum, va("set coop_scan1 $$%s$$", descr2.c_str()));
 							}
 						}
 						if (playerCur->coopPlayer.scanData2 != descr3) {
 							playerCur->coopPlayer.scanData2 = descr3;
 							if (descr3 == "") {
-								DelayedServerCommand(playerCur->entnum, "set coop_scan2 $$TriPuz_Default$$");
+								upgPlayerDelayedServerCommand(playerCur->entnum, "set coop_scan2 $$TriPuz_Default$$");
 							}
 							else {
-								DelayedServerCommand(playerCur->entnum, va("globalwidgetcommand Descr3 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
-								DelayedServerCommand(playerCur->entnum, va("set coop_scan2 $$%s$$", descr3.c_str()));
+								upgPlayerDelayedServerCommand(playerCur->entnum, va("globalwidgetcommand Descr3 fgcolor %s %s %s 1", sRed.c_str(), sGreen.c_str(), sBlue.c_str()));
+								upgPlayerDelayedServerCommand(playerCur->entnum, va("set coop_scan2 $$%s$$", descr3.c_str()));
 							}
 						}
 					}

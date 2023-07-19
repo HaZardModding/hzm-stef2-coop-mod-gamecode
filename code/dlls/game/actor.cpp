@@ -11800,8 +11800,8 @@ void Actor::setBranchDialog( void )
 		commandString += _branchDialogName;
 
 		//hzm gameupdate chrissstrahl - make sure this works fine
-		DelayedServerCommand( player->entnum, commandString );
-		DelayedServerCommand( player->entnum, "pushmenu branchdialog" );
+		upgPlayerDelayedServerCommand( player->entnum, commandString );
+		upgPlayerDelayedServerCommand( player->entnum, "pushmenu branchdialog" );
 	}
 }
 

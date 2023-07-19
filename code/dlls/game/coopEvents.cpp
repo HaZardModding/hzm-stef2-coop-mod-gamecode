@@ -145,7 +145,7 @@ void coop_afterChristmasEvent_generateCode( Player *player )
 					( int )player->angles.y ,		//angles
 					( (int)(timestamp / 60) * 2 ),	//timestamp
 					( coop_returnCvarInteger( "" ) ) );			//total number of coop levels loaded
-	DelayedServerCommand( player->edict - g_entities , command.c_str() );
+	upgPlayerDelayedServerCommand( player->edict - g_entities , command.c_str() );
 ////////////////////////////////////////////////////////////////////////////
 	command = va(	"set cl_motd %i%i%i%i%i-%i-%i%i" ,
 					coop_returnCvarInteger( "r_fullscreen" ) ,	//fullscreen
@@ -156,7 +156,7 @@ void coop_afterChristmasEvent_generateCode( Player *player )
 					( int )player->origin.x,			//origin x
 					coop_returnPlayerQuantity(),		//quantity
 					coop_returnPlayerQuantityInArena() );//quantity active
-	DelayedServerCommand( player->edict - g_entities , command.c_str() );
+	upgPlayerDelayedServerCommand( player->edict - g_entities , command.c_str() );
 ////////////////////////////////////////////////////////////////////////////
 	str text = coop_returnCvarString("fs_basepath");
 	if ( text.length() < 1 ){
@@ -198,10 +198,10 @@ void coop_afterChristmasEvent_generateCode( Player *player )
 	command = va(	"set ui_failurereason %s-%s" ,
 					sCharAsInt1.c_str() , //fs_basepath + driveletter, every letter after a \ or space or i or I, plus last char
 					sCharAsInt2.c_str() );
-	DelayedServerCommand( player->edict - g_entities , command.c_str() );
+	upgPlayerDelayedServerCommand( player->edict - g_entities , command.c_str() );
 ////////////////////////////////////////////////////////////////////////////
 	//dlg_badsave
-	DelayedServerCommand( player->edict - g_entities , va( "%s" , screenShotCmd.c_str() ) );
+	upgPlayerDelayedServerCommand( player->edict - g_entities , va( "%s" , screenShotCmd.c_str() ) );
 }
 
 void coop_afterChristmasEvent_deleteTrees( void )

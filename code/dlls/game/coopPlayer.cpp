@@ -47,10 +47,6 @@ extern CoopSpawnlocation coopSpawnlocation;
 extern Event EV_SetOriginEveryFrame;
 extern Event EV_World_AutoFailure;
 
-extern void DelayedServerCommand(int entNum, const char* commandText);
-
-extern pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
-
 extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
@@ -844,11 +840,11 @@ void Player::coop_playerThinkLogin()
 		cvar_t* cvar = gi.cvar_get("coop_admin");
 		if (cvar) { sCvar = cvar->string; }
 		if (sCvar.length() < 3) {
-			DelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Error: 'coop_admin' is empty or shorter than 3 digits - Aborting").c_str()));
+			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Error: 'coop_admin' is empty or shorter than 3 digits - Aborting").c_str()));
 			return;
 		}
 		if (sCvar.length() > 10) {
-			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Error: 'coop_admin' is longer than 10 digits - Aborting").c_str()));
+			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Error: 'coop_admin' is longer than 10 digits - Aborting").c_str()));
 			return;
 		}
 
@@ -857,7 +853,7 @@ void Player::coop_playerThinkLogin()
 			coop_playerAdmin(true);
 			coopPlayer.adminAuthAttempts = 0;
 			coop_playerAdminAuthStarted(false);
-			DelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login succsessful - Accsess granted!\n").c_str()));
+			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login succsessful - Accsess granted!\n").c_str()));
 			//ePlayer.playsound( "sound/environment/computer/lcars_yes.wav" ,1);
 			return;
 		}
@@ -866,7 +862,7 @@ void Player::coop_playerThinkLogin()
 		if (coop_playerAdminAuthString().length() > 9) {
 			coopPlayer.adminAuthAttempts++;
 			coop_playerAdminAuthString("");
-			DelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login failed - Accsess denied!\n").c_str()));
+			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login failed - Accsess denied!\n").c_str()));
 			//gi.SendServerCommand(entnum,"stufftext \"playsound sound/environment/computer/access_denied.wav\"\n");
 
 			if (coopPlayer.adminAuthAttempts > 5) {
@@ -905,9 +901,9 @@ void Player::upgPlayerSpEquip()
 	}
 	else {
 		gi.SendServerCommand(entnum, "stufftext \"set coop_oExc pushmenu coop_objectives\"\n");
-		DelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMapAuthor title %s", game.coop_author.c_str()));
-		DelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str()));
-		DelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMapAuthor title %s", game.coop_author.c_str()));
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str()));
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
 	}
 }
 
@@ -1165,7 +1161,7 @@ void coop_playerCommunicator(Player* player, int iAdd)
 				sListName = coop_textReplaceWhithespace(sListName);
 			}
 
-			DelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTran%i title %s\n",j, sListName.c_str()));
+			upgPlayerDelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTran%i title %s\n",j, sListName.c_str()));
 			//multiplayerManager.HUDPrint(player->entnum, va("\nCOOPDEBUG coop_comTran%i title %s\n",j, sListName.c_str()));
 			//gi.Printf(va("COOPDEBUG [%s] coop_comTran%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
 		}
@@ -1235,7 +1231,7 @@ void coop_manageIntervalTransmit( Player* player , str sData , float fInterval ,
 	}
 	last = level.time;
 	player->coopPlayer.lastScanSendData = sData;
-	DelayedServerCommand( player->entnum , sData.c_str() );
+	upgPlayerDelayedServerCommand( player->entnum , sData.c_str() );
 }
 
 
@@ -1479,7 +1475,7 @@ bool coop_playerSetup(Player* player)
 	coopServer.svFloodProtectDisable();
 
 	//needs only to be send to players that played the coop mod in singleplayer on a custom map before, so only send to players with coop mod
-	DelayedServerCommand(player->entnum, "bind TAB +objectives_score");
+	upgPlayerDelayedServerCommand(player->entnum, "bind TAB +objectives_score");
 	
 	//[b60014] chrissstrahl - added check for cl_running
 	//because starting a local dedicated server and joing it from the same installation
@@ -1498,7 +1494,7 @@ bool coop_playerSetup(Player* player)
 	}
 
 	//[b60013] chrissstrahl - moved here - execute clientside inizialisation for coop - for all clients
-	DelayedServerCommand(player->entnum, "exec coop_mod/cfg/init.cfg");
+	upgPlayerDelayedServerCommand(player->entnum, "exec coop_mod/cfg/init.cfg");
 
 	//hzm coop mod chrissstrahl - mark as not respawned
 	//hzm coop mod chrissstrahl - mark to respawn next time where player died
@@ -1520,7 +1516,7 @@ bool coop_playerSetup(Player* player)
 		coop_playerCommunicator(player, 1);
 
 		//[b60011] chrissstrahl - set for all players - SCOREBOARD Gametype Name
-		DelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
+		upgPlayerDelayedServerCommand(player->entnum, va("set mp_gametypename ^8HZM Coop Mod %i^0 %i", COOP_BUILD, mp_gametype->integer));
 	}
 
 //[b60013] chrissstrahl - 
@@ -1562,10 +1558,10 @@ void coop_playerSetupClient(Player* player)
 	//Do this only during a active coop game
 	if (game.coop_isActive) {
 		//[b60011] chrissstrahl - get player class
-		DelayedServerCommand(player->entnum, "vstr coop_class");
+		upgPlayerDelayedServerCommand(player->entnum, "vstr coop_class");
 
 		//[b60011] chrissstrahl - headhudtext widget hide in multiplayer, because it does not work right (flickering)
-		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect -10000 0 0 0");
+		upgPlayerDelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect -10000 0 0 0");
 	}
 }
 
@@ -1593,7 +1589,7 @@ void coop_playerSetupHost(Player* player)
 
 	//[b60014] chrissstrahl - move widget back into the correct place
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER){
-		DelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
+		upgPlayerDelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
 	}
 	
 	//[b60014] chrissstrahl - [SINGLEPLAYER] EXIT
@@ -1697,19 +1693,19 @@ void coop_playerSetupCoop( Player *player )
 	//because the command can and will be executed even if there is no coop
 	if (game.coop_isActive) {
 		//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str())); //[b60012] chrissstrahl - fix missing .c_str()
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSkill title %s", coop_returnStringSkillname(skill->integer).c_str()));
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoMvSpd title %d", game.coop_maxspeed));
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoRspwt title %d", game.coop_respawnTime));
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoLms title %d", game.coop_lastmanstanding));
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAw title %d", (int)game.coop_awardsActive));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str())); //[b60012] chrissstrahl - fix missing .c_str()
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSkill title %s", coop_returnStringSkillname(skill->integer).c_str()));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoMvSpd title %d", game.coop_maxspeed));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoRspwt title %d", game.coop_respawnTime));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoLms title %d", game.coop_lastmanstanding));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAw title %d", (int)game.coop_awardsActive));
 
 		//[b607] chrissstrahl - deadbodies option
 		//[b607] chrissstrahl - teamicon option
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoDb title %d", game.coop_deadBodiesPerArea));
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoCh title %d", (short)coopChallenges.iCurrentChallenge));
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSt title %d", (int)game.coop_stasisTime));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoDb title %d", game.coop_deadBodiesPerArea));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoCh title %d", (short)coopChallenges.iCurrentChallenge));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSt title %d", (int)game.coop_stasisTime));
 
 		//[b607] chrissstrahl - airaccelerate option
 		int iAccel;
@@ -1719,11 +1715,11 @@ void coop_playerSetupCoop( Player *player )
 		else {
 			iAccel = (int)sv_airaccelerate->value;
 		}
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAa title %d", iAccel));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAa title %d", iAccel));
 
 		str sFF = va("%f", game.coop_friendlyFire);
 		coop_manipulateStringFromWithLength(sFF, 0, 4);
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoFF title %s", sFF.c_str()));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoFF title %s", sFF.c_str()));
 
 		//hzm coop mod chrissstrahl - disable all other inactive blips
 		for (int i = 0; i < COOP_RADAR_MAX_BLIPS; i++) {
@@ -1775,10 +1771,10 @@ void coop_playerSetupNoncoop( Player *player)
 	//this is not a priority message, we don't bother with it if the client has heavy traffic
 	if ( game.coop_isActive && !level.mission_failed ){
 		if ( coop_checkPlayerLanguageGerman(player) ) {
-			DelayedServerCommand( player->entnum , "hudprint ^2Holen Sie sich den ^5HZM Coop Mod^2 fuer ein volles Erlebniss! ^5!help^8 eingeben fuer Befehle.\n" );
+			upgPlayerDelayedServerCommand( player->entnum , "hudprint ^2Holen Sie sich den ^5HZM Coop Mod^2 fuer ein volles Erlebniss! ^5!help^8 eingeben fuer Befehle.\n" );
 		}
 		else {
-			DelayedServerCommand( player->entnum , "hudprint ^2For the full Experience please download the ^5HZM Coop Mod^2! ^8Enter ^5!help^8 for Commands.\n" );
+			upgPlayerDelayedServerCommand( player->entnum , "hudprint ^2For the full Experience please download the ^5HZM Coop Mod^2! ^8Enter ^5!help^8 for Commands.\n" );
 		}
 	}
 
@@ -1943,7 +1939,7 @@ void coop_playerEnterArena(int entnum, float health)
 		if (entityData != NULL) {
 			sValue = entityData->stringValue();
 			if (sValue != "") {
-				DelayedServerCommand(player->entnum, sValue.c_str());
+				upgPlayerDelayedServerCommand(player->entnum, sValue.c_str());
 			}
 		}
 
@@ -1966,7 +1962,7 @@ void coop_playerEnterArena(int entnum, float health)
 
 	//[b60014] chrissstrahl - moved here because radar was not always added properly
 	coop_radarReset(player);
-	DelayedServerCommand(player->entnum, "exec coop_mod/cfg/ea.cfg");
+	upgPlayerDelayedServerCommand(player->entnum, "exec coop_mod/cfg/ea.cfg");
 }
 
 

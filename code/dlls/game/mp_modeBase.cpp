@@ -892,7 +892,7 @@ void MultiplayerModeBase::setupMultiplayerUI( Player *player )
 	}
 
 	//use delayed server command so it will not be added to soon and then removed from the command above [b607]
-	DelayedServerCommand( player->entnum , "ui_addhud mp_console" );
+	upgPlayerDelayedServerCommand( player->entnum , "ui_addhud mp_console" );
 }
 
 //================================================================

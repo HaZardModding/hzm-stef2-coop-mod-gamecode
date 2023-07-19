@@ -237,8 +237,8 @@ void MultiplayerManager::update( float frameTime )
 			player = ( Player* )g_entities[j].entity;
 			if ( player && player->client && player->isSubclassOf( Player ) ){
 				if ( player->coop_getInstalled() ) {
-					DelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
-					DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesSkillValue title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesSkillValue title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
 				}
 			}
 		}
@@ -2149,7 +2149,7 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 				str s , s2;
 				s = coop_textReplaceWhithespace( multiplayerManager._voteOwner->client->pers.netname );
 				s2 = coop_textReplaceWhithespaceBlack( _voteString.c_str() );
-				DelayedServerCommand( playerCurrent->entnum , va( "locationprint 220 455 %s^0_^8$$CalledVote$$:^0_^8%s 0.8" , s.c_str() , s2.c_str() ) );
+				upgPlayerDelayedServerCommand( playerCurrent->entnum , va( "locationprint 220 455 %s^0_^8$$CalledVote$$:^0_^8%s 0.8" , s.c_str() , s2.c_str() ) );
 				//}
 			}
 		}
@@ -2323,7 +2323,7 @@ void MultiplayerManager::checkVote( void )
 			for ( i = 0; i < maxclients->integer; i++ ){
 				currentPlayer = getPlayer( i );
 				if ( currentPlayer ){
-					DelayedServerCommand( currentPlayer->entnum , "locationprint 220 455 ^0_^8$$VoteFailed$$ 0.8" );
+					upgPlayerDelayedServerCommand( currentPlayer->entnum , "locationprint 220 455 ^0_^8$$VoteFailed$$ 0.8" );
 				}
 			}
 		}

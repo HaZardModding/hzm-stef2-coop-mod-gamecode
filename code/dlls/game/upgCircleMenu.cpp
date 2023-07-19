@@ -154,8 +154,8 @@ void Player::circleMenu(int iType)
 		return;
 	}
 
-	DelayedServerCommand(entnum, "-attackLeft");
-	DelayedServerCommand(entnum, "-attackRight");
+	upgPlayerDelayedServerCommand(entnum, "-attackLeft");
+	upgPlayerDelayedServerCommand(entnum, "-attackRight");
 
 	Event* StopFireEvent;
 	StopFireEvent = new Event(EV_Sentient_StopFire);
@@ -463,7 +463,7 @@ void Player::circleMenuSelect(int iOption)
 		upgPlayerRunThread(sThread);
 	}
 	else {
-		DelayedServerCommand(entnum,va("%s", sThread.c_str()));
+		upgPlayerDelayedServerCommand(entnum,va("%s", sThread.c_str()));
 	}
 	//Close Menu
 	circleMenu(upgCircleMenu.active);
@@ -553,9 +553,9 @@ void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage
 	str sWidgetName = circleMenuGetWidgetName(iOptionToArrayNum);
 
 	//send commands to menu
-	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
+	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
 	sText = coop_replaceForLabelText(sText);
-	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
+	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - clears dialog options from circle menu
@@ -648,10 +648,10 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 	str sWidgetName = circleMenuGetWidgetName(iOptionToArrayNum);
 
 	//send commands to menu
-	DelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
+	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
 	//replace withespace and newline to make it work with labeltext
 	sText = coop_replaceForLabelText(sText);
-	DelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
+	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu

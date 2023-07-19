@@ -80,6 +80,6 @@ void coop_storySet( Player *player )
 		sStory = "$$Empty$$";
 	}
 	//send story
-	DelayedServerCommand( player->entnum , va( "set coop_story %s" , sStory.c_str() ) );
+	upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , sStory.c_str() ) );
 }
 

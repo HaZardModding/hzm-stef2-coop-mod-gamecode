@@ -77,7 +77,7 @@ void coop_classCheckUpdateStat( Player *player )
 			//gi.Printf(va("COOPDEBUG coop_classCheckUpdateStat sending to %s\n", player->client->pers.netname));
 			
 			//[b60014] chrissstrahl - fused multiple commands to one data burs
-			DelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i\n" ,coop_classPlayersOfClass( "HeavyWeapon" ),coop_classPlayersOfClass( "Technician" ),coop_classPlayersOfClass( "Medic" )));
+			upgPlayerDelayedServerCommand( player->entnum , va( "set coop_ch %i;set coop_ct %i;set coop_cm %i\n" ,coop_classPlayersOfClass( "HeavyWeapon" ),coop_classPlayersOfClass( "Technician" ),coop_classPlayersOfClass( "Medic" )));
 		}
 	}
 }
@@ -360,7 +360,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	//hzm coop mod chrissstrahl - add a background shader to the hud, this shows the player his current class
 	if ( player->coop_getInstalled() ) {
 		//DelayedServerCommand( player->entnum , va( "globalwidgetcommand classBg shader coop_%s" , currentClass.c_str() ) );
-		DelayedServerCommand( player->entnum , va( "exec coop_mod/cfg/%s.cfg" , currentClass.c_str() ) );
+		upgPlayerDelayedServerCommand( player->entnum , va( "exec coop_mod/cfg/%s.cfg" , currentClass.c_str() ) );
 	}
 
 	//hzm coop mod chrissstrahl - make sure we don't give more than we can

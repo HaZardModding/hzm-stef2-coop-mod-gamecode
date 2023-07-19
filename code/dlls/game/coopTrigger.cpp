@@ -4405,7 +4405,7 @@ void TriggerCoopPlayerHud::Activate( Event *ev )
 				continue;
 			
 			//remove first to avoid certain bugs after dieing and such
-			DelayedServerCommand( currentPlayer->entnum , va("ui_removehud %s", sHud.c_str())); //[b607] added c_str()
+			upgPlayerDelayedServerCommand( currentPlayer->entnum , va("ui_removehud %s", sHud.c_str())); //[b607] added c_str()
 
 			if ( spawnflags & REMOVE )
 			{
@@ -4413,7 +4413,7 @@ void TriggerCoopPlayerHud::Activate( Event *ev )
 			}
 			else
 			{
-				DelayedServerCommand( currentPlayer->entnum , va( "ui_addhud %s" , sHud.c_str())); //[b607] added c_str()
+				upgPlayerDelayedServerCommand( currentPlayer->entnum , va( "ui_addhud %s" , sHud.c_str())); //[b607] added c_str()
 			}
 		}
 	}
@@ -4426,7 +4426,7 @@ void TriggerCoopPlayerHud::Activate( Event *ev )
 			if ( currentPlayer && !multiplayerManager.isPlayerSpectator( currentPlayer ) && currentPlayer->health > 0 )
 			{
 				//remove first to avoid certain bugs after dieing and such
-				DelayedServerCommand( currentPlayer->entnum , va( "ui_removehud %s" , sHud.c_str()) ); //[b607] added c_str()
+				upgPlayerDelayedServerCommand( currentPlayer->entnum , va( "ui_removehud %s" , sHud.c_str()) ); //[b607] added c_str()
 
 				if ( spawnflags & REMOVE )
 				{
@@ -4434,7 +4434,7 @@ void TriggerCoopPlayerHud::Activate( Event *ev )
 				}
 				else
 				{
-					DelayedServerCommand( currentPlayer->entnum , va( "ui_addhud %s" , sHud.c_str() ) ); //[b607] added c_str()
+					upgPlayerDelayedServerCommand( currentPlayer->entnum , va( "ui_addhud %s" , sHud.c_str() ) ); //[b607] added c_str()
 				}
 			}
 		}

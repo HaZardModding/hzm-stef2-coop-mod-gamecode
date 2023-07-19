@@ -149,7 +149,7 @@ void coop_radarUpdateBlip(Player* player,
 	if (player->coopPlayer.radarBlipActive[iMiObjEntityItemNumber] == false) {
 		player->coopPlayer.radarBlipActive[iMiObjEntityItemNumber] = true;
 		//we need it to be reliable
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand cr%i enable", iMiObjEntityItemNumber));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand cr%i enable", iMiObjEntityItemNumber));
 	}
 }
 
@@ -171,7 +171,7 @@ void coop_radarUpdate( Player *player )
 	{
 		if (player->coopPlayer.radarSelectedActive) {
 			player->coopPlayer.radarSelectedActive = false;
-			DelayedServerCommand(player->entnum, "globalwidgetcommand crs disable");
+			upgPlayerDelayedServerCommand(player->entnum, "globalwidgetcommand crs disable");
 		}
 	}
 
@@ -258,7 +258,7 @@ void coop_radarUpdate( Player *player )
 		if ( player->coopPlayer.radarBlipActive[i] == true ){
 			player->coopPlayer.radarBlipActive[i] = false;
 			//we need it to be reliable
-			DelayedServerCommand( player->entnum , va( "globalwidgetcommand cr%i disable" , i ) );
+			upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand cr%i disable" , i ) );
 		}
 	}
 
@@ -284,7 +284,7 @@ void coop_radarUpdate( Player *player )
 			if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
 				Player* currentPlayer = (Player*)gentity->entity;
 				currentPlayer->coopPlayer.radarBlipActive[(COOP_RADAR_MAX_BLIPS - 1)] = false;
-				DelayedServerCommand(gentity->entity->entnum,va("globalwidgetcommand cr%i disable", (COOP_RADAR_MAX_BLIPS - 1)));
+				upgPlayerDelayedServerCommand(gentity->entity->entnum,va("globalwidgetcommand cr%i disable", (COOP_RADAR_MAX_BLIPS - 1)));
 			}
 		}
 	}
@@ -296,7 +296,7 @@ void coop_radarUpdate( Player *player )
 		if (!player->coopPlayer.radarSelectedActive) {
 			player->coopPlayer.radarSelectedActive = true;
 			//[b607] chrissstrahl - made seperate, because we need it to be reliable
-			DelayedServerCommand(player->entnum, "globalwidgetcommand crs enable");
+			upgPlayerDelayedServerCommand(player->entnum, "globalwidgetcommand crs enable");
 		}
 	}
 }

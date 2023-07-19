@@ -6412,7 +6412,7 @@ void Player::CheckForTargetedEntity(void)
 				if (playerTargeted->coopPlayer.className != "") {
 					sShader = va("sysimg/icons/mp/specialty_%s", playerTargeted->coopPlayer.className.c_str());
 				}
-				DelayedServerCommand(entnum,va("globalwidgetcommand targetNameHudS shader %s", sShader.c_str()));
+				upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand targetNameHudS shader %s", sShader.c_str()));
 				this->coopPlayer.lastTargetedEntityClass = playerTargeted->coopPlayer.className;
 				
 				//hudPrint(va("coop class has changed: %s\n", playerTargeted->coopPlayer.className.c_str()));
@@ -6427,7 +6427,7 @@ void Player::CheckForTargetedEntity(void)
 			
 			//[b60014] chrissstrahl - reset also the class symbol, in multiplayer
 			if (multiplayerManager.inMultiplayer() && this->coop_getInstalled()) {
-				DelayedServerCommand(entnum,"globalwidgetcommand targetNameHudS shader weapons/empty");
+				upgPlayerDelayedServerCommand(entnum,"globalwidgetcommand targetNameHudS shader weapons/empty");
 				this->coopPlayer.lastTargetedEntityClass = "";
 			}
 		}
@@ -14684,7 +14684,7 @@ void Player::hudPrint( const str &string )
 
 		// Send the HUD print command
 		//hzm gameupdate chrissstrahl - this makes sure we do not over do it - this is for smart networking
-		DelayedServerCommand( edict - g_entities , command.c_str() );
+		upgPlayerDelayedServerCommand( edict - g_entities , command.c_str() );
 	}
 	else{
 		gentity_t *gentity;

@@ -114,7 +114,7 @@ int Player::upgPlayerDeathTime()
 void Player::upgPlayerSetup()
 {
 	//tell player to give us his cl_maxpackets and language
-	DelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
+	upgPlayerDelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
 }
 
 //=========================================================[b60014]
@@ -160,7 +160,7 @@ bool Player::upgPlayerSay(str sayString)
 		if (iClMaxPack >= 15) {
 			if (iClMaxPack < 60) {
 				iClMaxPack = 60;
-				DelayedServerCommand(entnum, "set cl_maxpackets 60");
+				upgPlayerDelayedServerCommand(entnum, "set cl_maxpackets 60");
 			}
 			upgPlayer.clMaxPackets = iClMaxPack;
 			return true;
@@ -920,9 +920,8 @@ void Player::upgPlayerGetCameraEvent(Event* ev)
 	SetCamera((Camera*)camera, switchTime);
 }
 
-
 //================================================================
-// Name:        DelayedServerCommand
+// Name:        upgPlayerDelayedServerCommand
 // Class:       -
 //              
 // Description: This adds a serverCommand to a player's list of delayed commands.
@@ -932,7 +931,7 @@ void Player::upgPlayerGetCameraEvent(Event* ev)
 // Returns:     -
 //              
 //================================================================
-void DelayedServerCommand(int entNum, const char* commandText)
+void upgPlayerDelayedServerCommand(int entNum,const char* commandText)
 {
 	//hzm chrissstrahl - I have a hunch this fixes the current issue that this fuc causes
 	if (entNum < 0 || entNum >(game.maxclients - 1)) {
@@ -1006,7 +1005,7 @@ void DelayedServerCommand(int entNum, const char* commandText)
 // Returns:     -
 //              
 //================================================================
-void handleDelayedServerCommands(void)
+void upgPlayerHandleDelayedServerCommands(void)
 {
 	int i;
 	int j;
@@ -1097,7 +1096,7 @@ void handleDelayedServerCommands(void)
 // Returns:     -
 //              
 //================================================================
-void clearDelayedServerCommands(int entNum)
+void upgPlayerclearDelayedServerCommands(int entNum)
 {
 	pendingServerCommand* current;
 	pendingServerCommand* temp;

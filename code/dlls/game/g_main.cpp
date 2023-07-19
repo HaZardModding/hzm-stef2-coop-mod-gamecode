@@ -1535,7 +1535,7 @@ extern "C" void G_RunFrame( int levelTime, int frameTime )
 		L_ProcessPendingEvents();
 
 		//hzm gamefix daggolin - reliable commands
-		handleDelayedServerCommands();
+		upgPlayerHandleDelayedServerCommands();
 		
 		//
 		// treat each object in turn
@@ -2393,7 +2393,7 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 	}
 	
 	//hzm gamefix daggolin - pending server commands
-	clearDelayedServerCommands( clientNum );
+	upgPlayerclearDelayedServerCommands( clientNum );
 
 	return NULL;
 }

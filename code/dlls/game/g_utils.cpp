@@ -2453,12 +2453,12 @@ void G_MissionFailed( const str& reason )
 				//hzm coop mod chrissstrahl - show hud for coop clients and text for others
 				if ( player->coop_getInstalled() ){
 
-					DelayedServerCommand( player->entnum , va( "set ui_failureReason %s\n", sReason.c_str() ) );
-					DelayedServerCommand( player->entnum , "pushmenu coop_failure" );
+					upgPlayerDelayedServerCommand( player->entnum , va( "set ui_failureReason %s\n", sReason.c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , "pushmenu coop_failure" );
 				}
 				else {
-					DelayedServerCommand( player->entnum , "hudprint ^1=============^3$$MISSIONFAILED$$^1=============\n" );
-					DelayedServerCommand( player->entnum , va( "hudprint ^3%s\n" , sReason.c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , "hudprint ^1=============^3$$MISSIONFAILED$$^1=============\n" );
+					upgPlayerDelayedServerCommand( player->entnum , va( "hudprint ^3%s\n" , sReason.c_str() ) );
 				}
 			}
 		}
@@ -2660,13 +2660,13 @@ void G_StopCinematic( void )
 				//hzm gameupdate chrissstrahl - this should only be done in multiplayer - or chrash chrash goodbye
 				if ( g_gametype->integer > GT_SINGLE_PLAYER ){
 					//clear vote text cinematic overlay
-					DelayedServerCommand( player->entnum , "locationprint -1111 -1111 ^0 0" );
+					upgPlayerDelayedServerCommand( player->entnum , "locationprint -1111 -1111 ^0 0" );
 
 					//hzm coop mod chrissstrahl - sometimes the timer hud reactivates
 					//and also when the level was started with a cinematic sequence, so make sure this doesn't happen
 					//hzm coop mod chrissstrahl - make sure the radar is reset, and does not get stuck
 					if ( game.coop_isActive ) {
-						DelayedServerCommand( player->entnum , "globalwidgetcommand dmTimer disable" );
+						upgPlayerDelayedServerCommand( player->entnum , "globalwidgetcommand dmTimer disable" );
 						coop_radarReset( player );
 					}
 

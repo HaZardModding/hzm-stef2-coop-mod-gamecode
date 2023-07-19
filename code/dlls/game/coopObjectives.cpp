@@ -191,9 +191,9 @@ void coop_objectivesSetup( Player *player)
 	for ( i = 1; i < 12; i++ ){
 		sCvar = coop_returnObjectivesCvarName( i );
 		if ( i < 9){
-			DelayedServerCommand( player->entnum , va( "set %s_s 0" , sCvar.c_str() ) );
+			upgPlayerDelayedServerCommand( player->entnum , va( "set %s_s 0" , sCvar.c_str() ) );
 		}else{
-			DelayedServerCommand( player->entnum , va( "set %s ^0" , sCvar.c_str() ) );
+			upgPlayerDelayedServerCommand( player->entnum , va( "set %s ^0" , sCvar.c_str() ) );
 		}
 	}
 
@@ -211,7 +211,7 @@ void coop_objectivesSetup( Player *player)
 		}
 	}
 	game.coop_author = coop_replaceForLabelText(game.coop_author);
-	DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor labeltext %s" , game.coop_author.c_str() ) );
+	upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor labeltext %s" , game.coop_author.c_str() ) );
 	
 	//hzm coop mod chrissstrahl - set story right away, need to do this differently in mp see coop_playerSay
 	coop_storySet( player );
@@ -243,12 +243,12 @@ void coop_objectivesUpdateUservar( int iUservar )
 		player = ( Player * )g_entities[0].entity;
 		if ( player ){
 			if ( iUservar == 1){
-				DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor title %s" , game.coop_author.c_str() ) );
+				upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor title %s" , game.coop_author.c_str() ) );
 			}else if ( iUservar == 2){
-				DelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story.c_str() ) );
+				upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story.c_str() ) );
 			}else if ( iUservar == 3 ){
 				if ( coop_checkPlayerLanguageGerman(player) ){
-					DelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story_deu.c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story_deu.c_str() ) );
 				}
 			}
 		}
@@ -263,14 +263,14 @@ void coop_objectivesUpdateUservar( int iUservar )
 			player = ( Player * )gentity->entity;
 			if ( player && player->coop_getInstalled() ){
 				if ( iUservar == 1){
-					DelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor title %s" , game.coop_author.c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor title %s" , game.coop_author.c_str() ) );
 				}
 				else if ( iUservar == 2 ){
-					DelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story.c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story.c_str() ) );
 				}
 				else if ( iUservar == 3 ){
 					if ( coop_checkPlayerLanguageGerman(player) ){
-						DelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story_deu.c_str() ) );
+						upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story_deu.c_str() ) );
 					}
 				}
 			}
@@ -730,8 +730,8 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 				//phrase text replace umlaute הצהü and ß, allow german text to work right - using loc strings $$u$$
 				sObjective = sObjective;
 
-				DelayedServerCommand( player->entnum , va( "set %s %s%s%s" , sCvar.c_str() , sLocalString.c_str() , sObjective.c_str() , sLocalString.c_str() ) );
-				DelayedServerCommand( player->entnum , va( "set %s_s %i" , sCvar.c_str() , iObjectiveState ) );
+				upgPlayerDelayedServerCommand( player->entnum , va( "set %s %s%s%s" , sCvar.c_str() , sLocalString.c_str() , sObjective.c_str() , sLocalString.c_str() ) );
+				upgPlayerDelayedServerCommand( player->entnum , va( "set %s_s %i" , sCvar.c_str() , iObjectiveState ) );
 			}
 			//otherwhise display to chat hud
 			else{
@@ -766,7 +766,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 			sHint = program.getStringVariableValue( sVariableName.c_str() );
 		}
 		if ( sHint.length() > 0 && player->coop_getInstalled() == 1 ){
-			DelayedServerCommand( player->entnum , va( "set %s %s%s%s" , sCvar.c_str() , sLocalString.c_str() , sHint.c_str() , sLocalString.c_str() ) );
+			upgPlayerDelayedServerCommand( player->entnum , va( "set %s %s%s%s" , sCvar.c_str() , sLocalString.c_str() , sHint.c_str() , sLocalString.c_str() ) );
 		}
 	}
 }
@@ -798,10 +798,10 @@ void coop_objectives_tacticalShow( Player *player , int iTactical )
 		str sTacEng = program.getStringVariableValue( va("coop_string_objectiveTacticalInfo%d", iTactical ) );
 		str sTacDeu = program.getStringVariableValue( va( "coop_string_objectiveTacticalInfo%d_deu" , iTactical ) );
 		if ( coop_checkPlayerLanguageGerman( player ) && sTacDeu.length() ) {
-			DelayedServerCommand( player->entnum , va( "set coop_t%d %s" , iTactical , sTacDeu.c_str() ) );
+			upgPlayerDelayedServerCommand( player->entnum , va( "set coop_t%d %s" , iTactical , sTacDeu.c_str() ) );
 		}
 		else if( sTacEng.length() ){
-			DelayedServerCommand( player->entnum , va( "set coop_t%d %s" , iTactical , sTacEng.c_str() ) );
+			upgPlayerDelayedServerCommand( player->entnum , va( "set coop_t%d %s" , iTactical , sTacEng.c_str() ) );
 		}
 	}
 }

@@ -59,7 +59,7 @@ void coop_huds_callvoteOptionChangedUI(str sText, str sValue, str sWidget)
 		if (player && player->client && player->isSubclassOf(Player)) {
 			multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: %s set to^5 %s\n", sText.c_str(), sValue.c_str()));
 			if (player->coop_getInstalled()) {
-				DelayedServerCommand(player->entnum, va("globalwidgetcommand %s title %s", sWidget.c_str(), sValue.c_str()));
+				upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand %s title %s", sWidget.c_str(), sValue.c_str()));
 			}
 		}
 	}
@@ -88,8 +88,8 @@ void coop_huds_setupMultiplayerUI(Player *player) //chrissstrahl - added [b607]
 
 	//use delayed server command so it will not be added to soon and then removed from the command above
 	//issues often occur on a listen server
-	DelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer disable");
-	DelayedServerCommand(player->entnum, "ui_addhud mp_console");
+	upgPlayerDelayedServerCommand(player->entnum, "globalwidgetcommand dmTimer disable");
+	upgPlayerDelayedServerCommand(player->entnum, "ui_addhud mp_console");
 }
 
 //========================================================= [b607]
@@ -107,11 +107,11 @@ void coop_hudsKilled(Player *player) //chrissstrahl - added [b607]
 {
 	//if player does not have the coop mod installed handle [b607]
 	if (!player->coop_getInstalled()) {
-		DelayedServerCommand(player->entnum, "ui_removehud targetedhud"); //sniper red dot when being targeted
+		upgPlayerDelayedServerCommand(player->entnum, "ui_removehud targetedhud"); //sniper red dot when being targeted
 	}
 	//coop huds are handled in the cfg file
 	else {
-		DelayedServerCommand(player->entnum, "exec coop_mod/cfg/sod.cfg");
+		upgPlayerDelayedServerCommand(player->entnum, "exec coop_mod/cfg/sod.cfg");
 	}
 }
 
@@ -130,8 +130,8 @@ void coop_hudsAdd( Player *player , str hudName )
 {
 	if ( player && strlen( hudName ) > 0 )
 	{
-		DelayedServerCommand( player->entnum , va( "ui_removehud %s" , hudName.c_str() ) );
-		DelayedServerCommand( player->entnum , va( "ui_addhud %s" , hudName.c_str() ) );
+		upgPlayerDelayedServerCommand( player->entnum , va( "ui_removehud %s" , hudName.c_str() ) );
+		upgPlayerDelayedServerCommand( player->entnum , va( "ui_addhud %s" , hudName.c_str() ) );
 	}
 }
 
@@ -170,7 +170,7 @@ void coop_hudsRemove( Player *player , str hudName )
 {
 	if ( player && strlen( hudName ) > 0 )
 	{
-		DelayedServerCommand( player->entnum , va( "ui_removehud %s" , hudName.c_str() ) );
+		upgPlayerDelayedServerCommand( player->entnum , va( "ui_removehud %s" , hudName.c_str() ) );
 	}
 }
 

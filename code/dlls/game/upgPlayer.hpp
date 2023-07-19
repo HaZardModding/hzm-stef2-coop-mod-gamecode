@@ -13,8 +13,8 @@ private:
 	int		deathTime = -986;
 };
 
-void				DelayedServerCommand(int entNum, const char* commandText);
-void				handleDelayedServerCommands(void);
-void				clearDelayedServerCommands(int entNum);
+void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);
+void	upgPlayerHandleDelayedServerCommands(void);
+void	upgPlayerclearDelayedServerCommands(int entNum);
 
 #endif /* !__UPGPLAYER_HPP__ */

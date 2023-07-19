@@ -432,7 +432,7 @@ void coop_textCinematicHudprint( Player *player , str sText )
 	}
 	else{
 		sText = coop_textReplaceWhithespace( sText.c_str() );
-		DelayedServerCommand( player->entnum , va( "locationprint 220 455 %s 0.8" , sText.c_str() ) );
+		upgPlayerDelayedServerCommand( player->entnum , va( "locationprint 220 455 %s 0.8" , sText.c_str() ) );
 	}
 }
 

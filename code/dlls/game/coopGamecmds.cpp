@@ -603,7 +603,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		sInfoPrint += va("%i %s [%s %s]\n", COOP_BUILD, sys2.c_str(), __DATE__, __TIME__);
 		sInfoPrint += va("Map: %s\n", level.mapname.c_str());
 		sInfoPrint = coop_replaceForLabelText(sInfoPrint);
-		DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdI0 labeltext %s", sInfoPrint.c_str()));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdI0 labeltext %s", sInfoPrint.c_str()));
 		return true;
 	}
 	player->hudPrint(COOP_TEXT_HELP_YOUR_INFO_ENG);
@@ -750,8 +750,8 @@ qboolean G_coopCom_login(const gentity_t* ent)
 
 	player->hudPrint("^5login started\n");
 	player->coop_playerAdminAuthStarted(true);
-	DelayedServerCommand(player->entnum, "pushmenu coop_com");
-	DelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login Started - Please enter the code.").c_str()));
+	upgPlayerDelayedServerCommand(player->entnum, "pushmenu coop_com");
+	upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login Started - Please enter the code.").c_str()));
 	player->coop_playerAdminAuthStringLastLengthUpdate();
 
 	return true;
@@ -1510,7 +1510,7 @@ qboolean G_coopInput(const gentity_t* ent)
 			player->coop_playerAdminAuthString(va("%s%s", player->coop_playerAdminAuthString().c_str(), inputData.c_str()));
 		}
 		
-		DelayedServerCommand(player->entnum,va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n",player->coop_playerAdminAuthString().c_str()));
+		upgPlayerDelayedServerCommand(player->entnum,va("globalwidgetcommand coop_comCmdLoginCode title '%s'\n",player->coop_playerAdminAuthString().c_str()));
 		return true;
 	}
 

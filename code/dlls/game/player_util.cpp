@@ -567,7 +567,7 @@ void Player::SkipCinematic( Event *ev )
 
 				//if ESC is pressed only shortly or if no skip is active, show/hide menu
 				this->coopPlayer.lastTimeSkipCinematic = level.time;
-				DelayedServerCommand( this->entnum , "pushmenu ingame_multiplayer" );
+				upgPlayerDelayedServerCommand( this->entnum , "pushmenu ingame_multiplayer" );
 				return;
 			}
 		}

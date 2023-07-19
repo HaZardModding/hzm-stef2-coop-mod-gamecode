@@ -43,7 +43,7 @@
 void coop_armoryRememberLastUsed( Player *player, str sWeapon )
 {
 	if ( !game.coop_isActive )return;
-	DelayedServerCommand( player->entnum , va( "set coop_weap use %s" , sWeapon.c_str() ) );
+	upgPlayerDelayedServerCommand( player->entnum , va( "set coop_weap use %s" , sWeapon.c_str() ) );
 }
 
 //================================================================
@@ -146,7 +146,7 @@ void coop_armoryEquipPlayer(Player *player)
 		ev->AddString( sUseThisWeapon.c_str() );
 		player->ProcessEvent( ev );			
 	}
-	DelayedServerCommand( player->entnum , "vstr coop_weap" );
+	upgPlayerDelayedServerCommand( player->entnum , "vstr coop_weap" );
 }
 
 
