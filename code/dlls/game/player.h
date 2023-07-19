@@ -292,7 +292,7 @@ class Player : public Sentient
 		void				killThread();
 		//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
 		void				upgPlayerGetBackpackAttachOffset(Event* ev);
-		void				getBackpackAttachAngles(Event* ev);
+		void				upgPlayerGetBackpackAttachAngles(Event* ev);
 		void				getFlagAttachOffset(Event* ev);
 		void				getFlagAttachAngles(Event* ev);
 		//[b60013] chrissstrahl - checks if player is pressing a specific button
@@ -1307,7 +1307,7 @@ class Player : public Sentient
 		void				setBackpackAttachAngles( Event *ev );
 
 		Vector				upgPlayerGetBackpackAttachOffset( void );
-		Vector				getBackpackAttachAngles( void );
+		Vector				upgPlayerGetBackpackAttachAngles( void );
 
 		void				setFlagAttachOffset( Event *ev );
 		void				setFlagAttachAngles( Event *ev );

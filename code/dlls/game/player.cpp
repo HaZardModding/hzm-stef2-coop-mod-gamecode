@@ -1993,7 +1993,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	
 	//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
 	{ &EV_Player_getBackpackAttachOffset,				&Player::upgPlayerGetBackpackAttachOffset },
-	{ &EV_Player_getBackpackAttachAngles,				&Player::getBackpackAttachAngles },
+	{ &EV_Player_getBackpackAttachAngles,				&Player::upgPlayerGetBackpackAttachAngles },
 	{ &EV_Player_getFlagAttachOffset,					&Player::getFlagAttachOffset },
 	{ &EV_Player_getFlagAttachAngles,					&Player::getFlagAttachAngles },
 
@@ -15102,7 +15102,7 @@ Vector Player::upgPlayerGetBackpackAttachOffset( void )
 	return _backpackAttachOffset;
 }
 
-Vector Player::getBackpackAttachAngles( void )
+Vector Player::upgPlayerGetBackpackAttachAngles( void )
 {
 	return _backpackAttachAngles;
 }

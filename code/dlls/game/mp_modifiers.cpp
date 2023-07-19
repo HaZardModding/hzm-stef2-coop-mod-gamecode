@@ -1739,7 +1739,7 @@ void ModifierDiffusion::attachBomb( Player *player )
 	attachEvent->AddFloat( -1.0f );
 	attachEvent->AddFloat( -1.0f );
 	attachEvent->AddVector( player->upgPlayerGetBackpackAttachOffset() );
-	attachEvent->AddVector( player->getBackpackAttachAngles() );
+	attachEvent->AddVector( player->upgPlayerGetBackpackAttachAngles() );
 
 	player->ProcessEvent( attachEvent );
 }
@@ -2898,7 +2898,7 @@ void ModifierSpecialties::attachBackpack( Player *player )
 		attachEvent->AddFloat( -1.0f );
 		attachEvent->AddFloat( -1.0f );
 		attachEvent->AddVector( player->upgPlayerGetBackpackAttachOffset() );
-		attachEvent->AddVector( player->getBackpackAttachAngles() );
+		attachEvent->AddVector( player->upgPlayerGetBackpackAttachAngles() );
 
 		player->ProcessEvent( attachEvent );	
 	}
