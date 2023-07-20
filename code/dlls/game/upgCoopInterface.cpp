@@ -15,6 +15,7 @@
 #include "coopServer.hpp"
 #include "coopText.hpp"
 
+extern CoopServer coopServer;
 
 //================================================================
 // Name:        isCoopActive

@@ -967,9 +967,7 @@ bool Player::coop_getInstalled()
 			return true;
 		}
 	}
-	else {
-		return true;
-	}
+	return true;
 }
 
 //=========================================================[b60014]

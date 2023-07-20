@@ -1568,7 +1568,7 @@ str coop_returnCvarString( str cvarName )
 	if (!strlen(cvarName)) { return ""; }
 
 	cvar_t* cvar = gi.cvar_get(cvarName.c_str());
-	(cvar) ? cvar->string : "";
+	return (cvar) ? cvar->string : "";
 }
 
 //================================================================

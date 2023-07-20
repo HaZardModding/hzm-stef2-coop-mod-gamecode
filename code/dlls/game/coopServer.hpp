@@ -55,9 +55,6 @@ static int iSPRITES = 0;
 #define COOP_MAX_SAFE_COMBINED_LOAD	23
 */
 
-extern class CoopServer;
-extern CoopServer coopServer;
-
 //[b60011] chrissstrahl
 class CoopServer
 {
