@@ -1195,7 +1195,7 @@ Item *Sentient::FindItemByExternalName( const char *itemname, Item *current )
 Item *Sentient::FindItemByModelname( const char *mdl, Item *current )
 {
 	//[b60011]gamefix chrissstrahl - do not add models/ if it is actually not a model
-	if (coop_contains(mdl, ".tik") == -1) {
+	if (upgStrings.containsAt(mdl, ".tik") == -1) {
 		return NULL;
 	}
 

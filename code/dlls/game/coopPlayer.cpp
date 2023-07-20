@@ -840,11 +840,11 @@ void Player::coop_playerThinkLogin()
 		cvar_t* cvar = gi.cvar_get("coop_admin");
 		if (cvar) { sCvar = cvar->string; }
 		if (sCvar.length() < 3) {
-			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Error: 'coop_admin' is empty or shorter than 3 digits - Aborting").c_str()));
+			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Error: 'coop_admin' is empty or shorter than 3 digits - Aborting").c_str()));
 			return;
 		}
 		if (sCvar.length() > 10) {
-			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Error: 'coop_admin' is longer than 10 digits - Aborting").c_str()));
+			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Error: 'coop_admin' is longer than 10 digits - Aborting").c_str()));
 			return;
 		}
 
@@ -853,7 +853,7 @@ void Player::coop_playerThinkLogin()
 			coop_playerAdmin(true);
 			coopPlayer.adminAuthAttempts = 0;
 			coop_playerAdminAuthStarted(false);
-			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login succsessful - Accsess granted!\n").c_str()));
+			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Login succsessful - Accsess granted!\n").c_str()));
 			//ePlayer.playsound( "sound/environment/computer/lcars_yes.wav" ,1);
 			return;
 		}
@@ -862,7 +862,7 @@ void Player::coop_playerThinkLogin()
 		if (coop_playerAdminAuthString().length() > 9) {
 			coopPlayer.adminAuthAttempts++;
 			coop_playerAdminAuthString("");
-			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", coop_replaceForLabelText("Login failed - Accsess denied!\n").c_str()));
+			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Login failed - Accsess denied!\n").c_str()));
 			//gi.SendServerCommand(entnum,"stufftext \"playsound sound/environment/computer/access_denied.wav\"\n");
 
 			if (coopPlayer.adminAuthAttempts > 5) {
@@ -926,7 +926,7 @@ str Player::coop_getId()
 	else {
 		cvar_t* cvar = gi.cvar_get("coop_cId");
 		str sCvar = (cvar ? cvar->string : "");
-		coop_manipulateStringTrim(sCvar, "coopcid ");
+		upgStrings.manipulateTrim(sCvar, "coopcid ");
 		return sCvar;
 	}
 }
@@ -1716,7 +1716,7 @@ void coop_playerSetupCoop( Player *player )
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAa title %d", iAccel));
 
 		str sFF = va("%f", game.coop_friendlyFire);
-		coop_manipulateStringFromWithLength(sFF, 0, 4);
+		upgStrings.manipulateFromWithLength(sFF, 0, 4);
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoFF title %s", sFF.c_str()));
 
 		//hzm coop mod chrissstrahl - disable all other inactive blips

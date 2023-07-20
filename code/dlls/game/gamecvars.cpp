@@ -337,10 +337,6 @@ void CVAR_Init( void )
 	mp_respawnInvincibilityTime		= gi.cvar( "mp_respawnInvincibilityTime",	"4",		CVAR_SERVERINFO );
 	mp_warmUpTime					= gi.cvar( "mp_warmUpTime",					"10",		CVAR_SERVERINFO );
 
-	//hzm coop mod chrissstrahl - mp_warmuptime must not be under 1 or it will brake the coop mod
-	//I didn't have time to investigate why, so this is a cheap fix
-	//[b607] disabled we probably don't need this anymore //if ( mp_warmUpTime->integer < 1 ){ mp_warmUpTime->integer = 1; }
-
 	mp_minPlayers					= gi.cvar( "mp_minPlayers",					"0",		CVAR_SERVERINFO );
 	mp_bigGunMode					= gi.cvar( "mp_bigGunMode",					"0",		CVAR_SERVERINFO );
 	mp_respawnTime					= gi.cvar( "mp_respawnTime",				"-1",		CVAR_SERVERINFO );

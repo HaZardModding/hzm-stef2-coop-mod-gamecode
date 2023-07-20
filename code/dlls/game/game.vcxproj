@@ -1330,6 +1330,7 @@
     <ClCompile Include="upgCoopInterface.cpp" />
     <ClCompile Include="upgMp_manager.cpp" />
     <ClCompile Include="upgPlayer.cpp" />
+    <ClCompile Include="upgStrings.cpp" />
     <ClCompile Include="useAlarm.cpp" />
     <ClCompile Include="UseData.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -1617,6 +1618,7 @@
     <ClInclude Include="torsoAimAndFireWeapon.hpp" />
     <ClInclude Include="trigger.h" />
     <ClInclude Include="umap.h" />
+    <ClInclude Include="upgStrings.hpp" />
     <ClInclude Include="useAlarm.hpp" />
     <ClInclude Include="UseData.h" />
     <ClInclude Include="vector.h" />

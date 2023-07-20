@@ -5,33 +5,11 @@
 #include "coopCheck.hpp"
 #include "coopReturn.hpp"
 
-inline int coop_find(str sSource, str sKeyword)
-{
-	return coop_returnIntFind(sSource, sKeyword);
-}
-
-inline int coop_contains(str sSource, str sKeyword)
-{
-	return coop_returnIntFind(sSource, sKeyword);
-}
+#include "upgStrings.hpp"
 
 inline void coop_trimM(str& sTrim, const str& sTrimMatch)
 {
-	coop_manipulateStringTrim(sTrim, sTrimMatch);
-}
-inline str coop_trim(str sTrim, const str& sTrimMatch)
-{
-	return coop_returnStringTrim(sTrim, sTrimMatch);
-}
-
-inline str coop_substrToEnd(const str& sString, const int& iStart)
-{
-	return coop_returnStringStartingFrom(sString, iStart);
-}
-
-inline void coop_substrM(str& sString, const int& iStart, int iEnd)
-{
-	coop_manipulateStringFromWithLength(sString, iStart, iEnd);
+	upgStrings.manipulateTrim(sTrim, sTrimMatch);
 }
 
 inline str coop_substr( str sString , const int &iStart , int iEnd )

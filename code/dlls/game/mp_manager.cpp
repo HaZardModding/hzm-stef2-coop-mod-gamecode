@@ -27,6 +27,7 @@
 #include "upgMp_manager.hpp"
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
+#include "upgStrings.hpp"
 
 
 MultiplayerManager multiplayerManager;
@@ -2221,15 +2222,15 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 
 			//hzm coop mod chrissstrahl - print it in german if player is using german game version
 			if ( currentPlayer->upgPlayerHasLanguageGerman() ){
-				if ( coop_returnIntFind( _voteString , "skipcinematic" ) > -1 ){
+				if ( upgStrings.containsAt( _voteString , "skipcinematic" ) > -1 ){
 					bALt = true; sVoteText = "Sequenz abbrechen ?";
-					sVoteText += coop_returnStringStartingFrom( _voteString , 13 );
+					sVoteText += upgStrings.getStartingFrom( _voteString , 13 );
 				}
 			}
 			else {
-				if ( coop_returnIntFind( _voteString , "skipcinematic" ) > -1 ){
+				if ( upgStrings.containsAt( _voteString , "skipcinematic" ) > -1 ){
 					bALt = true; sVoteText = "Skip Cinematic ?";
-					sVoteText += coop_returnStringStartingFrom( _voteString , 13 );
+					sVoteText += upgStrings.getStartingFrom( _voteString , 13 );
 				}
 			}
 			//hzm decide which string to print
@@ -2505,7 +2506,7 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 		}
 	}
 	// hzm gameupdate chrissstrahl - remove useless ^ from text
-	tempText = coop_returnStringStartingFrom( tempText , startLoc );
+	tempText = upgStrings.getStartingFrom( tempText , startLoc );
 
 	if (Q_stricmp( tempText.c_str() , "" ) == 0) { return; }
 

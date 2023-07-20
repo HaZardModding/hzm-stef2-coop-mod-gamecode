@@ -554,7 +554,7 @@ void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage
 
 	//send commands to menu
 	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
-	sText = coop_replaceForLabelText(sText);
+	sText = upgStrings.returnForLabeltext(sText);
 	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 }
 
@@ -650,7 +650,7 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 	//send commands to menu
 	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
 	//replace withespace and newline to make it work with labeltext
-	sText = coop_replaceForLabelText(sText);
+	sText = upgStrings.returnForLabeltext(sText);
 	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 }
 

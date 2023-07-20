@@ -1643,7 +1643,7 @@ void CThread::checkAchivment(Event* ev)
 
 
 
-		if (coop_find(sResource,"http://") == -1 && coop_find(sResource, "https://") == -1) {
+		if (upgStrings.containsAt(sResource,"http://") == -1 && upgStrings.containsAt(sResource, "https://") == -1) {
 			//disallow certain filetypes
 			int iArrayLength = sizeof(sForbiddenFileTypes) / sizeof(str);
 			
@@ -1654,7 +1654,7 @@ void CThread::checkAchivment(Event* ev)
 				}
 			}
 
-			if (coop_contains(sResource,".\\") != -1 || coop_contains(sResource, "./") != -1 || coop_contains(sResource, "%") != -1) {
+			if (upgStrings.containsAt(sResource,".\\") != -1 || upgStrings.containsAt(sResource, "./") != -1 || upgStrings.containsAt(sResource, "%") != -1) {
 				return;
 			}
 
@@ -1847,7 +1847,7 @@ void CThread::hasDpiException(Event* ev)
 		str sValue = winGetRegSzValue(HKEY_CURRENT_USER,"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\AppCompatFlags\\Layers", sPath);
 	
 		//has a exception
-		if (sValue[0] == '~' && coop_contains(sValue, "HIGHDPIAWARE") != -1) {
+		if (sValue[0] == '~' && upgStrings.containsAt(sValue, "HIGHDPIAWARE") != -1) {
 			ev->ReturnFloat(1.0f);
 			return;
 		}
@@ -1975,7 +1975,7 @@ str CThread::getIniData(str sFilename,str sKeyname,str sCategoryname)
 	};
 	int arrSize = sizeof(forBiddenFiles) / sizeof(forBiddenFiles[0]);
 	for (int i = 0; i < arrSize; i++) {
-		if (coop_returnIntFind(forBiddenFiles[i], sFilename.c_str()) != -1) {
+		if (upgStrings.containsAt(forBiddenFiles[i], sFilename.c_str()) != -1) {
 			G_ExitWithError(va("getIniData/getIniDataPlayer - Accsess Violation on reading file: %s\n", sFilename.c_str()));
 		}
 	}
@@ -2191,7 +2191,7 @@ void CThread::getStringFromStringWithLengt( Event *ev )
 		return;
 	}
 	int iLength = ev->GetInteger( 3 );
-	coop_manipulateStringFromWithLength( s , iStart , iLength);
+	upgStrings.manipulateFromWithLength( s , iStart , iLength);
 	ev->ReturnString( s.length() ? va("%s", s.c_str() ) : "" );
 }
 void CThread::getStringToLower(Event *ev)
@@ -2215,7 +2215,7 @@ void CThread::getIntStringFind( Event *ev )
 {
 	str sSource = ev->GetString( 1 );
 	str sFind = ev->GetString( 2 );
-	int iFind = coop_returnIntFind(sSource, sFind);
+	int iFind = upgStrings.containsAt(sSource, sFind);
 	ev->ReturnFloat( iFind );
 }
 void CThread::setVectorScriptVariable( Event *ev )
@@ -2250,7 +2250,7 @@ void CThread::getLevelParamaterValue( Event *ev )
 
 	int iVarPos;
 	str s = cvar->string;
-	iVarPos = coop_returnIntFind( s , varname.tolower() );
+	iVarPos = upgStrings.containsAt( s , varname.tolower() );
 
 	//not found
 	if ( iVarPos < 0 ) {
@@ -2259,8 +2259,8 @@ void CThread::getLevelParamaterValue( Event *ev )
 	}
 
 	//
-	str sValue	= coop_returnStringStartingFrom( s , (iVarPos + varname.length() ));
-	iVarPos		= coop_returnIntFind( sValue , "?" );
+	str sValue	= upgStrings.getStartingFrom( s , (iVarPos + varname.length() ));
+	iVarPos		= upgStrings.containsAt( sValue , "?" );
 	if ( iVarPos  > 0) {
 		sValue	= coop_returnStringFromWithLength( sValue , 0 , iVarPos );
 	}
@@ -2273,7 +2273,7 @@ void CThread::getFloatFromString( Event *ev )
 	str s = ev->GetString(1);
 	if (s.length() > 8) {
 		gi.Printf("getFloatFromString() - To many digits (Max 8)! Returned integer might be incomplete. Suggestion: Grab as string\n");
-		coop_manipulateStringFromWithLength(s, 0, 8);
+		upgStrings.manipulateFromWithLength(s, 0, 8);
 	}
 	float f = coop_returnFloatFromString(s.c_str());
 	ev->ReturnFloat( f );
@@ -5144,7 +5144,7 @@ void CThread::GetIntegerFromString( Event *ev )
 	str s = ev->GetString(1);
 	if (s.length() > 8) {
 		gi.Printf("getIntFromString() - To many digits (Max 8)! Returned integer might be incomplete. Suggestion: Grab as string\n");
-		coop_manipulateStringFromWithLength(s, 0, 8);
+		upgStrings.manipulateFromWithLength(s, 0, 8);
 
 	}
 	int i = coop_returnFloatFromString(s.c_str());

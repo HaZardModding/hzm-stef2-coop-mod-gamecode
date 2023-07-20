@@ -19,6 +19,8 @@
 #include "g_utils.h"
 #include "ctype.h"
 
+#include "upgStrings.hpp"
+
 #include "coopChallenges.hpp"
 extern CoopChallenges coopChallenges;
 
@@ -2400,7 +2402,7 @@ void G_MissionFailed( const str& reason )
 
 
 	if ( reason[0] == '#' ) {
-		ss = coop_returnStringStartingFrom( reason , 1 );
+		ss = upgStrings.getStartingFrom( reason , 1 );
 		// Set our failure reason in the config string
 		gi.failedcondition( va( "\n\n  %s^0" , ss.c_str() ) );
 	}
@@ -2414,7 +2416,7 @@ void G_MissionFailed( const str& reason )
 	playerDeathThread = level.getPlayerDeathThread();
 
 	//[b610] chrissstrahl - changed to accomedate changes made to coop_serverLmsCheckFailure
-	if ( ( coop_returnIntFind(reason, "PlayerKilled") != -1) && ( playerDeathThread.length() ) )
+	if ( ( upgStrings.containsAt(reason, "PlayerKilled") != -1) && ( playerDeathThread.length() ) )
 	{
 		ExecuteThread( playerDeathThread, true, NULL );
 	}
@@ -2443,10 +2445,10 @@ void G_MissionFailed( const str& reason )
 				str sReason = reason;
 				//Intentionally no $$ wanted
 				if (reason.length() && reason[0] == '#') {
-					sReason = coop_substrToEnd(sReason, 1);
+					sReason = upgStrings.getStartingFrom(sReason, 1);
 				}
 				//If it is just a single word and has no $$ it is extreemly likley a local string, so add $$
-				else if (coop_returnIntFind(sReason.c_str(),"$$") == -1 && coop_returnIntFind(sReason.c_str(), " ") == -1) {
+				else if (upgStrings.containsAt(sReason.c_str(),"$$") == -1 && upgStrings.containsAt(sReason.c_str(), " ") == -1) {
 					sReason = va("$$%s$$", sReason.c_str());
 				}
 				

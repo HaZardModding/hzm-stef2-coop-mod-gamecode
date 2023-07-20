@@ -14819,13 +14819,13 @@ void Player::setVoteText( const str &voteText )
 	str s;
 	s = voteText;
 	//cut starting at $
-	int iFind = coop_returnIntFind( voteText,"$");
+	int iFind = upgStrings.containsAt( voteText,"$");
 	if ( iFind > 0 ){//-1 using 0 just to make sure this is not abused by voting for something like callvote map $badmap
-		coop_manipulateStringFromWithLength( s , 0 , iFind );
+		upgStrings.manipulateFromWithLength( s , 0 , iFind );
 	}
 	//cut if to long
 	if ( s.length() > 62 ){
-		coop_manipulateStringFromWithLength( s , 0 , 63 );
+		upgStrings.manipulateFromWithLength( s , 0 , 63 );
 	}
 	//end of hzm
 

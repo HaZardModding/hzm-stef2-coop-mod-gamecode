@@ -12,40 +12,6 @@
 #include "coopAlias.hpp"
 
 //================================================================
-// Name:        coop_textReplace
-// Class:       -
-//              
-// Description:	replace ge given string inside the 
-//              
-// Parameters:  str sText, str sFind , sReplace
-//              
-// Returns:     bool
-//              
-//================================================================
-bool coop_textReplace( str &sHeystack, const str &sDildo, const str &sNedle )
-{
-	//if dildo bad , plug it
-	//if dildo smaller than heystack, burn heystack
-	if ( strlen( sDildo ) < 1 || strlen( sHeystack ) < strlen( sDildo ) )
-		return false;
-
-	int iWater = coop_returnIntFind( sHeystack , sDildo );
-
-	//found no dildo, imidatly plug it
-	if ( iWater < -1 )
-		return false;
-
-	str sLighter = sHeystack;
-	coop_manipulateStringFromWithLength( sLighter , 0 , (iWater - 1 ) );
-	sLighter += sNedle;
-	sLighter += coop_returnStringStartingFrom( sLighter , ((iWater - 1) + strlen( sDildo ) )  );
-
-	//be manipulative
-	sHeystack = sLighter;
-	return true;
-}
-
-//================================================================
 // Name:        coop_textJoinCommands
 // Class:       -
 //              
@@ -431,28 +397,4 @@ void coop_textHudprintAll( str messageToShow )
 			player->hudPrint( messageToShow.c_str() );
 		}
 	}
-}
-
-//[b60011]=Chrissstrahl=============================================
-// Replaces withespace and newline with labeltext compatible chars, which are handled client side
-//================================================================
-str coop_replaceForLabelText(str sPure)
-{
-	int i = 0;
-	//[b60014] chrissstrahl - fixed "labeltext^" issue
-	if (strlen(sPure) > 10) {
-		str sTemp = sPure;
-		sTemp = sTemp.tolower();
-		if (coop_returnIntFind(sTemp,"labeltext ") != -1) {
-			i = 11;
-		}
-	}
-	
-	for (i = i; i < strlen(sPure); i++) {
-		if (sPure[i] == '\n' || sPure[i] == '#')
-			sPure[i] = '~';
-		if (sPure[i] == ' ')
-			sPure[i] = '^';
-	}
-	return sPure;
 }

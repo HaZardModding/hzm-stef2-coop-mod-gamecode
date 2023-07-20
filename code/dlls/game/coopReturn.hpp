@@ -27,17 +27,12 @@ float coop_returnFloatWithinOrDefault(const float &fCur, const float &fMin, cons
 int coop_returnIntFromString( const str &sSource );
 bool coop_returnBool( str sValue );
 int coop_returnIntFromFormatedString( str &sSource , const char &cFind );
-int coop_returnIntFind( str sSource , str sKeyword );
-str coop_returnStringTrim( str sTrim , str sTrimMatch );
-void coop_manipulateStringTrim( str &sTrim , const str &sTrimMatch );
 str coop_returnStringExtractedCvarValue( str s );
 str coop_returnStringCleanedCvarvalue( str s );
 str coop_returnStringCleanedCvarvalue( char s );
 str coop_returnStringCleanedCvarname( str s );
 str coop_returnStringCleanedCvarname( char s );
 str coop_returnStringCleanedCvar( char s , bool bIsValue );
-str coop_returnStringStartingFrom( const str &sString , const int &iStart );
-void coop_manipulateStringFromWithLength( str &sString , int const &iStart , int iEnd );
 str coop_returnStringFromWithLength( str sString , int const &iStart , int const &iEnd );
 str coop_returnStringSkillname( int iSkill );
 float coop_returnFloatAltIfValueBelow( bool bHigher , float fValue , float fLimit , float fAlt );

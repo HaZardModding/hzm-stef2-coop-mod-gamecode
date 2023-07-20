@@ -631,6 +631,9 @@
     <ClCompile Include="upgCoopInterface.cpp">
       <Filter>Source Files\HaZardModding\Upgrades</Filter>
     </ClCompile>
+    <ClCompile Include="upgStrings.cpp">
+      <Filter>Source Files\HaZardModding\Upgrades</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1273,6 +1276,9 @@
       <Filter>Source Files\HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
     <ClInclude Include="upgCoopInterface.hpp">
+      <Filter>Source Files\HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="upgStrings.hpp">
       <Filter>Source Files\HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
   </ItemGroup>

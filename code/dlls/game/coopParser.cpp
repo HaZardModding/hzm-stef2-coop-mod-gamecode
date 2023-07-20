@@ -19,6 +19,8 @@
 
 #include "_pch_cpp.h"
 
+#include "upgStrings.hpp"
+
 #include "coopPlayer.hpp"
 #include "coopClass.hpp"
 #include "coopArmory.hpp"
@@ -84,7 +86,7 @@ bool coop_parserReadFile( const str sFile , str &buffer )
 	if ( bufferInternal.buffer != NULL){
 
 		buffer = bufferInternal.buffer;
-		coop_manipulateStringFromWithLength( buffer , 0 , lSize );
+		upgStrings.manipulateFromWithLength( buffer , 0 , lSize );
 	}
 	bufferInternal.Close();
 	return true;
@@ -112,7 +114,7 @@ int coop_parserGetNumberOfItemsFromCategory( str sFile , const str section )
 	}
 
 	//section not in the file
-	if ( coop_returnIntFind( buffer , va("[%s]", section.c_str() ) ) == -1 ){
+	if ( upgStrings.containsAt( buffer , va("[%s]", section.c_str() ) ) == -1 ){
 		return -1;
 	}
 
@@ -152,7 +154,7 @@ int coop_parserGetNumberOfItemsFromCategory( str sFile , const str section )
 			}
 			else {
 				//checp check if there could really be a item
-				int iPosEqu = coop_returnIntFind( value , "=" );
+				int iPosEqu = upgStrings.containsAt( value , "=" );
 				if ( iPosEqu != -1 ) {
 					iItemsFound++;
 				}
@@ -187,7 +189,7 @@ void coop_parserGetItemsFromCategory( str sFile , ListenKnoten * &start , Listen
 	}
 
 	//section not in the file
-	if ( coop_returnIntFind( buffer , va( "[%s]" , section.c_str() ) ) == -1 ) {
+	if ( upgStrings.containsAt( buffer , va( "[%s]" , section.c_str() ) ) == -1 ) {
 		gi.Printf( "=============================================\n" );
 		gi.Printf( va( "INFO: coop_phraserGetItemsFromCategory SECTION NOT FOUND (%s) \n" , section.c_str() ) );
 		gi.Printf( "=============================================\n" );
@@ -239,7 +241,7 @@ void coop_parserGetItemsFromCategory( str sFile , ListenKnoten * &start , Listen
 			}
 			else if( bDesiredSection ) {
 				//check if there could really be a item
-				int iValStartPos = coop_returnIntFind( value , "=" );
+				int iValStartPos = upgStrings.containsAt( value , "=" );
 				if ( iValStartPos != -1 ) {
 					iCurrentItem++;
 
@@ -249,7 +251,7 @@ void coop_parserGetItemsFromCategory( str sFile , ListenKnoten * &start , Listen
 					coop_trimM( value , " \t\n" );
 
 					//set data
-					node->value = coop_returnStringStartingFrom(value,iValStartPos + 1);
+					node->value = upgStrings.getStartingFrom(value,iValStartPos + 1);
 
 					//link to NULL until another node is added
 					node->next = NULL;
@@ -353,7 +355,7 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 	}
 
 	//section not in the file
-	if ( coop_returnIntFind( buffer , va( "[%s]" , section.c_str() ) ) == -1 ) {
+	if ( upgStrings.containsAt( buffer , va( "[%s]" , section.c_str() ) ) == -1 ) {
 		gi.Printf( va( "INFO: coop_phraserIniGet section not found: %s\n" , section.c_str() ) );
 		return "";
 	}
@@ -399,7 +401,7 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 			//update: check onjly if valid section
 			if ( bDesiredSection ) {
 				//find pos if key
-				int iPosKey = coop_returnIntFind( value , key.c_str() );
+				int iPosKey = upgStrings.containsAt( value , key.c_str() );
 
 				//fix: check if the string we found is really the key or if it is just a part of it
 				if ( iPosKey != -1 ) {
@@ -420,9 +422,9 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 				}
 
 				if ( iPosKey != -1 ){
-					int iPosEqu = coop_returnIntFind( value , "=" );
-					int iPosSemi = coop_returnIntFind( value , ";" );
-					int iPosBrack = coop_returnIntFind( value , "[" );
+					int iPosEqu = upgStrings.containsAt( value , "=" );
+					int iPosSemi = upgStrings.containsAt( value , ";" );
+					int iPosBrack = upgStrings.containsAt( value , "[" );
 					//if = comes after key
 					//if ; comes not at all OR after =
 					//if [ comes not at all OR after =
@@ -434,7 +436,7 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 						iPosEqu++;//start after =
 						//check if there is a value after =
 						if ( ( iPosEqu + 1 ) < strlen( value ) ){
-							value = coop_substrToEnd( value , iPosEqu );
+							value = upgStrings.getStartingFrom( value , iPosEqu );
 							coop_trimM( value , "\t\n\r" ); //[b607] chrissstrahl - trim last \n as well
 
 							//debug
@@ -572,7 +574,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 		newValue = coop_returnStringUntilNewline(value);
 
 		//key found overwrite
-		if ( !Q_stricmp( sCurrentSection.c_str() , section ) && coop_returnIntFind( sLine , key ) > -1 && !bKeySet )
+		if ( !Q_stricmp( sCurrentSection.c_str() , section ) && upgStrings.containsAt( sLine , key ) > -1 && !bKeySet )
 		{
 			sNewBuffer += va( "%s%s=%s\n" , sExtraLine.c_str() , key.c_str() , newValue.c_str() );
 			//fprintf( pFileWrite , va( "%s%s=%s\n" , sExtraLine.c_str() , key.c_str() , value.c_str() ) );
@@ -597,7 +599,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 			}
 
 			//strip line down to sectionname only
-			sCurrentSection = coop_trim( sLine.tolower() , " []\t\r\n" ).tolower();
+			sCurrentSection = upgStrings.returnTrimmed( sLine.tolower() , " []\t\r\n" ).tolower();
 
 			//write section name
 			if ( !Q_stricmp( sCurrentSection.c_str(), section ) ) {

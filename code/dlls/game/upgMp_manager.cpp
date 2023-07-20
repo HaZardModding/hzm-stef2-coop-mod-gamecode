@@ -73,13 +73,13 @@ void MultiplayerManager::updateVotes(Player* player, bool bLeaving)
 
 			//hzm coop mod chrissstrahl - print it in german if player is using german game version
 			if (player->upgPlayerHasLanguageGerman()) {
-				if (coop_returnIntFind(multiplayerManager.getVoteString(), "skipcinematic") > -1) {
-					bALt = true; sVoteText = "Filmsequenz abbrechen?"; sVoteText += coop_returnStringStartingFrom(multiplayerManager.getVoteString(), 13);
+				if (upgStrings.containsAt(multiplayerManager.getVoteString(), "skipcinematic") > -1) {
+					bALt = true; sVoteText = "Filmsequenz abbrechen?"; sVoteText += upgStrings.getStartingFrom(multiplayerManager.getVoteString(), 13);
 				}
 			}
 			else {
-				if (coop_returnIntFind(multiplayerManager.getVoteString(), "skipcinematic") > -1) {
-					bALt = true; sVoteText = "Skip Cinematic ?"; sVoteText += coop_returnStringStartingFrom(multiplayerManager.getVoteString(), 13);
+				if (upgStrings.containsAt(multiplayerManager.getVoteString(), "skipcinematic") > -1) {
+					bALt = true; sVoteText = "Skip Cinematic ?"; sVoteText += upgStrings.getStartingFrom(multiplayerManager.getVoteString(), 13);
 				}
 			}
 

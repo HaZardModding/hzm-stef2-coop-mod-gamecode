@@ -11452,7 +11452,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 	float fDialogEngLength = 0;
 	float fDialogDeuLength = 0;
 	if (g_gametype->integer != GT_SINGLE_PLAYER) {
-		sLazyCodingSolutionHack = coop_returnStringStartingFrom(sLazyCodingSolutionHack, 13);
+		sLazyCodingSolutionHack = upgStrings.getStartingFrom(sLazyCodingSolutionHack, 13);
 		sLazyCodingSolutionHack = coop_returnStringPathFileNoExtension(sLazyCodingSolutionHack);
 		sLazyCodingSolutionHack += ".vlp";
 //GERMAN DIALOG

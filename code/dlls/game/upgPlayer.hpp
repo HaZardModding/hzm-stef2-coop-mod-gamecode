@@ -18,4 +18,6 @@ void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);
 void	upgPlayerHandleDelayedServerCommands(void);
 void	upgPlayerclearDelayedServerCommands(int entNum);
 
+extern UpgPlayer upgPlayer;
+
 #endif /* !__UPGPLAYER_HPP__ */

@@ -15,19 +15,19 @@
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
-extern UpgCoopInterface upgCoopInterface;
 
 //included to accsess
 //coopIsActive()
 extern CoopServer coopServer;
 #include "coopServer.hpp"
 
-//coop_returnIntFind
+//upgStrings.containsAt
 //coop_returnStringUntilWhithspace
 //coop_textPhraseLocalStrUmlaute
 #include "coopReturn.hpp"
-//coop_returnIntFind
+//upgStrings.containsAt
 //coop_replaceForLabelText
 #include "coopReturn.hpp"
 //coop_textPhraseLocalStrUmlaute
@@ -978,8 +978,8 @@ void Player::upgPlayerWidgetCommand(str sWidget, str sParameters)
 {
 	//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
 	//str sTemp;
-	if (coop_returnIntFind(sParameters.c_str(), "labeltext") != -1) {
-		sParameters = coop_replaceForLabelText(sParameters);
+	if (upgStrings.containsAt(sParameters.c_str(), "labeltext") != -1) {
+		sParameters = upgStrings.returnForLabeltext(sParameters);
 	}
 	str sData = "stufftext \"globalwidgetcommand ";
 	sData += sWidget;
@@ -1135,7 +1135,7 @@ void upgPlayerHandleDelayedServerCommands(void)
 
 				//[b607] chrissstrahl - optimize data string by not adding stufftext when not needed
 				//[b608] chrissstrahl - popmenu with a menuname does not work purly clientside, it needs stufftext prefix which is why it has been removed from the checks
-				foundSpace = coop_returnIntFind(pendingCommand->command, " ");
+				foundSpace = upgStrings.containsAt(pendingCommand->command, " ");
 				if (Q_stricmpn("hudprint ", pendingCommand->command, foundSpace) == 0 ||
 					Q_stricmpn("status ", pendingCommand->command, foundSpace) == 0 ||
 					Q_stricmpn("score ", pendingCommand->command, foundSpace) == 0

@@ -44,38 +44,38 @@ bool coop_vote_modifyVoteText(const str _voteString, str& sVoteText, Player* pla
 	//hzm coop mod chrissstrahl - print it in german if player is using german game version
 	if (player->upgPlayerHasLanguageGerman())
 	{
-		if (coop_returnIntFind(_voteString, "coop_maxspeed") > -1)
+		if (upgStrings.containsAt(_voteString, "coop_maxspeed") > -1)
 		{
-			sVoteText = "Setze Laufgeschwindigkeit auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);
+			sVoteText = "Setze Laufgeschwindigkeit auf:"; sVoteText += upgStrings.getStartingFrom(_voteString, 13);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_ff") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_ff") > -1)
 		{
-			sVoteText = "Setze Friendly Fire auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 7);
+			sVoteText = "Setze Friendly Fire auf:"; sVoteText += upgStrings.getStartingFrom(_voteString, 7);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_next") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_next") > -1)
 		{
-			sVoteText = "Lade naechste Coop Karte - JETZT!"; sVoteText += coop_returnStringStartingFrom(_voteString, 9);
+			sVoteText = "Lade naechste Coop Karte - JETZT!"; sVoteText += upgStrings.getStartingFrom(_voteString, 9);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_prev") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_prev") > -1)
 		{
-			sVoteText = "Lade vorherige Coop Karte - JETZT!"; sVoteText += coop_returnStringStartingFrom(_voteString, 9);
+			sVoteText = "Lade vorherige Coop Karte - JETZT!"; sVoteText += upgStrings.getStartingFrom(_voteString, 9);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_skill") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_skill") > -1)
 		{
-			sVoteText = "Setze Schwiergkeitsgrad auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 5);
+			sVoteText = "Setze Schwiergkeitsgrad auf:"; sVoteText += upgStrings.getStartingFrom(_voteString, 5);
 		}
 		//chrissstrahl - print readable string instead of command [b607]
-		else if (coop_returnIntFind(_voteString, "coop_challenge") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_challenge") > -1)
 		{
-			sVoteText = "Setze Herausforderung auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);
+			sVoteText = "Setze Herausforderung auf:"; sVoteText += upgStrings.getStartingFrom(_voteString, 13);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_lms") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_lms") > -1)
 		{
-			sVoteText = "Setze Last Man Standing auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 8);
+			sVoteText = "Setze Last Man Standing auf:"; sVoteText += upgStrings.getStartingFrom(_voteString, 8);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_awards") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_awards") > -1)
 		{
-			sVoteText = "Setze Auszeichnungen auf:"; sVoteText += coop_returnStringStartingFrom(_voteString, 11);
+			sVoteText = "Setze Auszeichnungen auf:"; sVoteText += upgStrings.getStartingFrom(_voteString, 11);
 		}
 		//end of [b607] changes
 		else
@@ -84,38 +84,38 @@ bool coop_vote_modifyVoteText(const str _voteString, str& sVoteText, Player* pla
 		}
 	}
 	else {
-		if (coop_returnIntFind(_voteString, "coop_maxspeed") > -1)
+		if (upgStrings.containsAt(_voteString, "coop_maxspeed") > -1)
 		{
-			sVoteText = "Set Movement Speed to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);
+			sVoteText = "Set Movement Speed to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 13);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_ff") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_ff") > -1)
 		{
-			sVoteText = "Set Friendly Fire to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 7);
+			sVoteText = "Set Friendly Fire to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 7);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_next") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_next") > -1)
 		{
-			sVoteText = "Load Next Coop Map - NOW!"; sVoteText += coop_returnStringStartingFrom(_voteString, 9);
+			sVoteText = "Load Next Coop Map - NOW!"; sVoteText += upgStrings.getStartingFrom(_voteString, 9);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_prev") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_prev") > -1)
 		{
-			sVoteText = "Load Previous Coop Map - NOW!"; sVoteText += coop_returnStringStartingFrom(_voteString, 9);
+			sVoteText = "Load Previous Coop Map - NOW!"; sVoteText += upgStrings.getStartingFrom(_voteString, 9);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_skill") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_skill") > -1)
 		{
-			sVoteText = "Set Dificulty to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 5);
+			sVoteText = "Set Dificulty to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 5);
 		}
 		//chrissstrahl - print readable string instead of command [b607]
-		else if (coop_returnIntFind(_voteString, "coop_teamicon") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_teamicon") > -1)
 		{
-			sVoteText = "Set Challenge to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 13);
+			sVoteText = "Set Challenge to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 13);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_lms") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_lms") > -1)
 		{
-			sVoteText = "Set Last Man Standing to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 8);
+			sVoteText = "Set Last Man Standing to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 8);
 		}
-		else if (coop_returnIntFind(_voteString, "coop_awards") > -1)
+		else if (upgStrings.containsAt(_voteString, "coop_awards") > -1)
 		{
-			sVoteText = "Set Awards to:"; sVoteText += coop_returnStringStartingFrom(_voteString, 11);
+			sVoteText = "Set Awards to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 11);
 		}
 		//end of [b607] changes
 		else
@@ -465,7 +465,7 @@ int coop_vote_mapValidate(Player* player, const str &command, const str &arg, st
 		//hzm gameupdate chrissstrahl - just to be sure, and to support $ als map var indicator
 		int iVarPos;
 		str sMapRealName = arg;
-		iVarPos = coop_returnIntFind(sMapRealName, "$");
+		iVarPos = upgStrings.containsAt(sMapRealName, "$");
 		if (iVarPos > 0) {
 			sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
 		}
@@ -706,7 +706,7 @@ int coop_vote_kickValidate(Player* player, const str &command, const str &arg, s
 		return 1;
 	}
 	//[b607] chrissstrahl - make sure we can kick players with spaces in their name
-	if (coop_returnIntFind(arg, " ") != -1) {
+	if (upgStrings.containsAt(arg, " ") != -1) {
 		int iClient = -1;
 		Player* plToKick = NULL;
 		for (int i = 0; i < maxclients->integer; i++) {
@@ -1068,7 +1068,7 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 	str sMapRealName = level.mapname;
 
 	//strip $ level parameter
-	iVarPos = coop_returnIntFind(sMapRealName, "$");
+	iVarPos = upgStrings.containsAt(sMapRealName, "$");
 	if (iVarPos > 0) {
 		sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
 	}
@@ -1171,7 +1171,7 @@ bool coop_vote_addbotSet(const str _voteString)
 	str sBotname;
 	int i;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1265,9 +1265,9 @@ bool coop_vote_mpmodifierSet(const str  _voteString)
 		return false;
 	}
 
-	str sValue = coop_returnStringStartingFrom(_voteString, coop_returnIntFind(_voteString, " "));
+	str sValue = upgStrings.getStartingFrom(_voteString, upgStrings.containsAt(_voteString, " "));
 	str sModifier = coop_returnStringUntilWhithspace(_voteString);
-	sModifier = coop_returnStringStartingFrom(sModifier, 12);
+	sModifier = upgStrings.getStartingFrom(sModifier, 12);
 
 	str sFile = "";
 	if (coop_returnBool(sValue)) {
@@ -1446,7 +1446,7 @@ bool coop_vote_respawntimeSet(const str _voteString)
 	str sMultiplier;
 	int i;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1484,7 +1484,7 @@ bool coop_vote_airaccelerateSet(const str _voteString)
 		return false;
 	}
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1524,7 +1524,7 @@ bool coop_vote_stasistimeSet(const str _voteString)
 
 	str sMultiplier;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1566,7 +1566,7 @@ bool coop_vote_awardsSet(const str _voteString)
 	str sValue;
 	int i;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1609,7 +1609,7 @@ bool coop_vote_friendlyfireSet(const str _voteString)
 	str sMultiplier;
 	int i;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1650,7 +1650,7 @@ bool coop_vote_maxspeedSet(const str _voteString)
 	str speed;
 	int i;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1693,7 +1693,7 @@ bool coop_vote_challengeSet(const str _voteString)
 	str sChallenge;
 	int i;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1733,7 +1733,7 @@ bool coop_vote_deadbodiesSet(const str _voteString)
 	str icon;
 	int i;
 
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) { iStart++; }
 	else { return true; }
 
@@ -1853,7 +1853,7 @@ bool coop_vote_execSet(const str _voteString)
 //[b607] chrissstrahl - added exec for executing server side configs (in a extra folder)
 
 	str sValue = "";
-	int iStart = coop_returnIntFind(_voteString, " ");
+	int iStart = upgStrings.containsAt(_voteString, " ");
 	if (_voteString.length() > (iStart + 1)) {
 		iStart++;
 		for (int i = iStart; i < _voteString.length(); i++) {

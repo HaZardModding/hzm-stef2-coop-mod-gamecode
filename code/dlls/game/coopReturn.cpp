@@ -271,10 +271,10 @@ int coop_returnIntFromFormatedString(str &sSource, const char &cFind)
 		str sExtracted = "";
 		coop_trimM( sSource , " \t" );
 
-		iPos = coop_returnIntFind( sSource , cFind );
+		iPos = upgStrings.containsAt( sSource , cFind );
 		if ( iPos < 1 )
 		{
-			sExtracted = coop_substrToEnd( sSource , iPos );
+			sExtracted = upgStrings.getStartingFrom( sSource , iPos );
 		}
 		else
 		{
@@ -294,7 +294,7 @@ int coop_returnIntFromFormatedString(str &sSource, const char &cFind)
 			return iTemp;
 		}
 
-		try { sSource = coop_substrToEnd( sSource , iPos + 1 ); }
+		try { sSource = upgStrings.getStartingFrom( sSource , iPos + 1 ); }
 		catch ( ... ) { return -1; }
 
 		coop_trimM( sSource , " \t" );
@@ -311,7 +311,7 @@ int coop_returnIntFromFormatedString(str &sSource, const char &cFind)
 //extract/evaluate a boolan from the given string
 bool coop_returnBool(str sValue)
 {
-	coop_manipulateStringTrim(sValue, " \t\r\n");
+	upgStrings.manipulateTrim(sValue, " \t\r\n");
 	//[b607] chrissstrahl - made to return false on default
 	if ( !sValue.length() ) { return false; }
 
@@ -319,129 +319,6 @@ bool coop_returnBool(str sValue)
 	
 	if ( atoi( sValue.c_str()) > 0 ) { return true; }
 	return false;
-}
-
-//return position at which given string was found otherwise return -1
-//starts at 0
-int coop_returnIntFind(str sSource , str sKeyword )
-{
-	//[b60012] chrissstrahl - fix missing .c_str()
-	if ( Q_stricmp( sKeyword.c_str(), "") == 0 || Q_stricmp( sSource, "") == 0)
-	{
-		return -1;
-	}
-	str ss , sk;
-	ss = sSource;
-	sk = sKeyword;
-	ss = ss.tolower(); 
-	sk = sk.tolower();
-
-	int iCurrtrentMatchIndex = 0;
-	int iFoundAt = -1;
-
-	for ( int i = 0; i < strlen(ss); i++ )
-	{
-		//check every char from the MATCH-LIST
-		if ( ss[i] == sk[iCurrtrentMatchIndex] ) {
-			if ( iCurrtrentMatchIndex == 0 )
-			{
-				iFoundAt = i;
-			}
-
-			iCurrtrentMatchIndex++;
-
-			if ( iCurrtrentMatchIndex == strlen( sk ) ) {
-				break;
-			}
-		}
-		else {
-			iCurrtrentMatchIndex = 0;
-			iFoundAt = -1;
-		}
-	}
-
-	//make sure we don't get any odd behaviour
-	if( iCurrtrentMatchIndex < sk.length() ) {
-		iCurrtrentMatchIndex = 0;
-		iFoundAt = -1;
-	}
-
-	//gi.Printf( va( "FOUND::::%d\n" , iFoundAt ) );
-	return iFoundAt;
-}
-//trim given chars (remove them if they are at the end or the beginning of that string)
-void coop_manipulateStringTrim( str &sTrim , const str &sTrimMatch )
-{
-	str sTemp = "";
-	bool b;
-	bool bStarted = false;
-
-	//check every char from the MATCH-LIST
-	for ( int i = 0; i < sTrim.length(); i++ ) {
-		b = true;
-		for ( int j = 0; j < strlen( sTrimMatch ); j++ ) {
-			if ( sTrim[i] == sTrimMatch[j] )
-			{
-				b = false;
-				break;
-			}
-		}
-
-		//the actual word we want to keep started
-		if ( !bStarted && b )
-		{
-			bStarted = true;
-		}
-
-		//combine word
-		if ( b || bStarted )
-		{
-			sTemp += sTrim[i];
-		}
-	}
-
-	//clear var
-	sTrim = "";
-	bStarted = false;
-
-	//check every char from the MATCH-LIST
-	for ( int i = ( sTemp.length() - 1 ); i > -1; i-- ) {
-		b = true;
-		for ( int j = 0; j < strlen( sTrimMatch ); j++ ) {
-			if ( sTemp[i] == sTrimMatch[j] )
-			{
-				b = false;
-				break;
-			}
-		}
-
-		//the actual word we want to keep started
-		if ( !bStarted && b )
-		{
-			bStarted = true;
-		}
-
-		//combine word
-		if ( b || bStarted )
-		{
-			sTrim += sTemp[i];
-		}
-	}
-
-	//reset var
-	sTemp = "";
-
-	//reverse the shitt again
-	for ( int i = ( sTrim.length() - 1 ); i > -1; i-- ) {
-		sTemp += sTrim[i];
-	}
-
-	sTrim = sTemp;
-}
-str coop_returnStringTrim( str sTrim , const str sTrimMatch )
-{
-	coop_manipulateStringTrim( sTrim , sTrimMatch );
-	return sTrim;
 }
 
 //================================================================
@@ -610,66 +487,9 @@ float coop_returnFloatAltIfValueBelow( bool bHigher, float fValue, float fLimit 
 	return fValue;
 }
 
-//================================================================
-// Name:        coop_returnStringStartingFrom
-// Class:       -
-//              
-// Description:  returns a string starting from given index
-//              
-// Parameters:  str sString , int iStart
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_returnStringStartingFrom( const str &sString , const int &iStart )
-{
-	str sPartial = "";
-	if ( sString && strlen( sString ) > iStart ) {
-		int i;
-		for ( i = iStart; i < strlen( sString ); i++ ) {
-			sPartial += sString[i];
-		}
-	}
-	return sPartial;
-}
-
-//================================================================
-// Name:        coop_returnStringFromWithLength
-// Class:       -
-//              
-// Description:  returns a string starting from given index with given length
-//				 Replacement for substr
-//              
-// Parameters:  str sString , int iStart, int iEnd
-//              
-// Returns:     str
-//              
-//================================================================
-void coop_manipulateStringFromWithLength( str &sString , const int &iStart , int iEnd )
-{
-	const int iLength = sString.length();
-	str sPartial = sString;
-	sString = "";
-	if ( iLength > iStart )
-	{
-		if ( iLength < ( iStart + iEnd ) )
-		{
-			iEnd = ( iLength - iStart );
-		}
-
-		for ( int i = iStart; i < ( iStart + iEnd ); i++ )
-		{
-			sString += sPartial[i];
-		}
-	}
-	else
-	{
-		throw( "Contact HZM with this info data: COOP PROGRAMMING ERROR IN: _returnStringFromWithLength ERROR INFORMATION READS: start pos > then strlen" );
-	}
-}
 str coop_returnStringFromWithLength( str sString , const int &iStart , int const &iEnd )
 {
-	coop_manipulateStringFromWithLength( sString , iStart , iEnd );
+	upgStrings.manipulateFromWithLength( sString , iStart , iEnd );
 	return sString;
 }
 
@@ -691,13 +511,13 @@ str coop_returnStringDomainname( const str &sPath )
 	str construct	= "";
 
 	//if it starts with http or https - reject all else
-	if (coop_contains(sPath, "http://") == 0) {
+	if (upgStrings.containsAt(sPath, "http://") == 0) {
 		i  = 7;
 	}
-	else if(coop_contains(sPath, "https://") == 0) {
+	else if(upgStrings.containsAt(sPath, "https://") == 0) {
 		i  = 8;
 	}
-	else if (coop_contains(sPath, "://") != -1) {
+	else if (upgStrings.containsAt(sPath, "://") != -1) {
 		return "";
 	}
 
@@ -1872,7 +1692,7 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	//check if it is a coop map - this is most likley
 	//check if it is a igm map - it is faster if we can check the name prefix first - reduce file read
 	if (Q_stricmpn( sLevelname.c_str() , "m" , 1 ) == 0 &&
-		coop_returnIntFind( sLevelname , "-" ) != -1 ||
+		upgStrings.containsAt( sLevelname , "-" ) != -1 ||
 		Q_stricmpn( sLevelname.c_str() , "credits" , 7 ) == 0 ) {
 		
 		if ( coop_parserIsItemInCategory( "maplist.ini" , sLevelname , "singleplayermission" ) ) {

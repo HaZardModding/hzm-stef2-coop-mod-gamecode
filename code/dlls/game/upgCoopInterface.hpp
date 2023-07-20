@@ -17,4 +17,6 @@ public:
 	bool				isCoopActive();
 };
 
+extern UpgCoopInterface upgCoopInterface;
+
 #endif /* upgCoopInterface.hpp */

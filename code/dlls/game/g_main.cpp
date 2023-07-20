@@ -1381,7 +1381,7 @@ void G_ExitLevel( void )
 		int iVarPos;
 		str sCleanMapname;
 		str sMapRealName = level.nextmap;
-		iVarPos = coop_returnIntFind(sMapRealName, "$");
+		iVarPos = upgStrings.containsAt(sMapRealName, "$");
 		if (iVarPos > 0) {
 			sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
 		}

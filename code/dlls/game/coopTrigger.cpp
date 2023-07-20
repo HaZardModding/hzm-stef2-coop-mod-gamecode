@@ -262,7 +262,7 @@ void TriggerCoopWorldBroken::Activate( Event *ev )
 			continue;
 		}
 
-		if ( coop_returnIntFind( sItem , ".tik" ) == -1 )
+		if ( upgStrings.containsAt( sItem , ".tik" ) == -1 )
 		{
 			sItem = va( "models/weapons/worldmodel-%s.tik" , sItem.c_str() );
 		}
@@ -4819,7 +4819,7 @@ void TriggerCoopPlayerItem::Activate( Event *ev )
 					
 			if ( sItem.length() )
 			{
-				if ( coop_returnIntFind( sItem , ".tik" ) == -1 )
+				if ( upgStrings.containsAt( sItem , ".tik" ) == -1 )
 				{
 					sItem = va("models/weapons/worldmodel-%s.tik", sItem.c_str() );
 				}
