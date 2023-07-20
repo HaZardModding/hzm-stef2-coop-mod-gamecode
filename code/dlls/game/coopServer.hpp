@@ -1,8 +1,8 @@
 //-----------------------------------------------------------------------------------
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// E-Mail:	chrissstrahl@yahoo.de
+// Code by:	HaZardModding, Christian Sebastian Strahl
+// E-Mail:		chrissstrahl@yahoo.de
 //
-// CONTAINING SERVER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//  CONTAINING MULTIPLAYER VOTE RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
 
 #ifndef __COOPSERVER_HPP__

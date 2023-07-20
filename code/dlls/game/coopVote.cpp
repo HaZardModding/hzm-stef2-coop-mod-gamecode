@@ -1,23 +1,9 @@
-//[b607] new - handle vote specific coop stuff 2019.12.15
-
 //-----------------------------------------------------------------------------------
-// Code by:	HaZardModding, Christian Sebastian Strahl, 
-// Based upon code from the HaZardModding Coop Mod Level Scripts created at 2006
+// Code by:	HaZardModding, Christian Sebastian Strahl
 // E-Mail:		chrissstrahl@yahoo.de
 //
-// CONTAINING SERVER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
-
-//HAZARDMODDING CO-OP SCRIPT MODIFICATION ©2006-2019 SOME RIGHTS RESERVED AND
-//PRIMARY (IP)INTELLECTUAL PROPERTY ON THE HZM COOP MOD HELD BY CHRISTIAN SEBASTIAN STRAHL, ALIAS CHRISSSTRAHL.
-
-//YOU ARE EXPLICITE FORBIDDEN TO PUBLISH A MODIFIED VARIANT OF THIS CODE,
-//ANY MATERIALS OR INTELLECTUAL PROPERTY OF THIS FILE WITHOUT THE EXPLICIT
-//WRITTEN PERMISSION OF THE RESPECTIVE OWNERS!
-
-//YOU MAY USE CODE PARTS AS LONG AS THEY DO NOT COMPROMISE THE GAME SAFTY
-//LOCAL AND INTERNATIONAL LAWS, AS WELL AS VIOLATE UPON THE ENDCLIENT ITS PRIVACY
-
-//CONTACT: chrissstrahl@yahoo.de [Christian Sebastian Strahl, Germany]
+// CONTAINING MULTIPLAYER VOTE RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//-----------------------------------------------------------------------------------
 
 //[b60012] chrissstrahl - allow flushtiki vote
 #include "coopServer.hpp"
@@ -37,21 +23,8 @@ extern CoopChallenges coopChallenges;
 #include "mp_manager.hpp"
 
 
-//check also func:
-//bool coop_textModifyVoteText( const str _voteString, str &sVoteText, Player* player )
-
-
-
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-//														::callVote
-//////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////
-
-
-
 //================================================================
-// Name:        coop_textModifyVoteText
+// Name:        coop_vote_modifyVoteText
 // Class:       -
 //              
 // Description: Return localized and optimized vote string
@@ -63,7 +36,7 @@ extern CoopChallenges coopChallenges;
 //================================================================
 bool coop_vote_modifyVoteText(const str _voteString, str& sVoteText, Player* player)
 {
-	if (!game.coop_isActive)
+	if (!coopServer.coopIsActive())
 		return false;
 
 	bool bAltText = true;
