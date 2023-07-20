@@ -628,6 +628,9 @@
     <ClCompile Include="upgMp_manager.cpp">
       <Filter>Source Files\HaZardModding\Upgrades</Filter>
     </ClCompile>
+    <ClCompile Include="upgCoopInterface.cpp">
+      <Filter>Source Files\HaZardModding\Upgrades</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1267,6 +1270,9 @@
       <Filter>Source Files\HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
     <ClInclude Include="upgMp_manager.hpp">
+      <Filter>Source Files\HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="upgCoopInterface.hpp">
       <Filter>Source Files\HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
   </ItemGroup>

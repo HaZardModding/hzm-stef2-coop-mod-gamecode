@@ -1327,6 +1327,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release CDROM|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release CDROM|Win32'">_pch_cpp.h</PrecompiledHeaderFile>
     </ClCompile>
+    <ClCompile Include="upgCoopInterface.cpp" />
     <ClCompile Include="upgMp_manager.cpp" />
     <ClCompile Include="upgPlayer.cpp" />
     <ClCompile Include="useAlarm.cpp" />
@@ -1539,6 +1540,7 @@
     <ClInclude Include="g_public.h" />
     <ClInclude Include="g_spawn.h" />
     <ClInclude Include="g_utils.h" />
+    <ClInclude Include="upgCoopInterface.hpp" />
     <ClInclude Include="upgMp_manager.hpp" />
     <ClInclude Include="upgPlayer.hpp" />
     <ClInclude Include="upgCircleMenu.hpp" />
