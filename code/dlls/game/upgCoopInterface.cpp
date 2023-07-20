@@ -17,6 +17,8 @@
 
 extern CoopServer coopServer;
 
+UpgCoopInterface upgCoopInterface;
+
 //================================================================
 // Name:        isCoopActive
 // Class:       UpgCoopInterface

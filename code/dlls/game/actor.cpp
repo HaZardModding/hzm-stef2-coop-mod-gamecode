@@ -5783,7 +5783,7 @@ void Actor::EndBehavior( void	)
 						Player *player;
 						for ( int i = 0; i < maxclients->integer; i++ )
 						{
-							if ( &g_entities[i] && g_entities[i].client && g_entities[i].inuse && g_entities[i].entity )
+							if (g_entities[i].inuse && g_entities[i].entity && g_entities[i].client)
 							{
 								player = ( Player* )g_entities[i].entity;
 								if ( multiplayerManager._playerData[player->entnum]._spectator == false )

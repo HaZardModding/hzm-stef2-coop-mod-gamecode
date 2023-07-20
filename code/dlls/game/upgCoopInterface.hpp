@@ -11,6 +11,9 @@
 
 class UpgCoopInterface
 {
+private:
+
+public:
 	bool				isCoopActive();
 };
 

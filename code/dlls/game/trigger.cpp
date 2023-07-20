@@ -4155,7 +4155,7 @@ void TriggerCallVolume::CheckReady( Event *ev )
 		Player *temp = NULL;
 		for ( i = 0; i < maxclients->integer; i++ )
 		{
-			if ( &g_entities[i] && g_entities[i].client && g_entities[i].inuse && g_entities[i].entity )
+			if ( g_entities[i].inuse && g_entities[i].entity && g_entities[i].client )
 			{
 				temp = ( Player* )g_entities[i].entity;
 				if ( temp && temp->health > 0 && !multiplayerManager.isPlayerSpectator( temp ) && IsEntityInBoundingBox( temp ) )
@@ -4227,7 +4227,7 @@ void TriggerCallVolume::_notifyRequiredEnts(bool inCallVolume )
 
 		for ( i = 0; i < maxclients->integer; i++ )
 		{
-			if ( &g_entities[i] && g_entities[i].client && g_entities[i].inuse && g_entities[i].entity )
+			if ( g_entities[i].inuse && g_entities[i].entity && g_entities[i].client )
 			{
 				temp = ( Player* )g_entities[i].entity;
 				if ( temp->health > 0 && !multiplayerManager.isPlayerSpectator( temp ) && IsEntityInBoundingBox( this ) )

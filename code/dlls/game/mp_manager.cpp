@@ -463,7 +463,7 @@ void MultiplayerManager::addBots( void )
 	cvar_t *mp_botcommands;
 
 	// If this is not a dedicated server make sure the player enters the game first
-	if ( !dedicated->integer && ( !g_entities[ 0 ].inuse || !g_entities[ 0 ].client || !g_entities[ 0 ].entity ) )
+	if ( !dedicated->integer && ( !g_entities[ 0 ].inuse || !g_entities[ 0 ].entity || !g_entities[ 0 ].client ) )
 		return;
 
 	// Add the bot commands

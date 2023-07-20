@@ -773,7 +773,7 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 	game.coop_reboot = true;
 
 	for (int i = 0; i < maxclients->integer; i++ ){
-		if ( &g_entities[i] && g_entities[i].client && g_entities[i].inuse ){
+		if ( &g_entities[i].inuse && g_entities[i].entity && g_entities[i].client ){
 			Player *playerValid = ( Player * )g_entities[i].entity;
 			if (playerValid){
 				//keep it in two lines

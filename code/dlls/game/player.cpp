@@ -1972,7 +1972,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//hzm gameupdate daggolin - new commands
 	{ &EV_Player_GetScriptVariablesCommand ,	&Player::upgPlayerGetScriptVariablesCommand } ,
 	//hzm gameupdate chrissstrahl - sets specific camera on player
-	{ &EV_Player_setCamera ,					&Player::upgPlayerGetCameraEvent } ,
+	{ &EV_Player_setCamera ,					&Player::upgPlayerSetCameraEvent } ,
 	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_setKillThread ,				&Player::upgPlayerSetKillThread },
 	//hzm gameupdate chrissstrahl - add new commands for script use
