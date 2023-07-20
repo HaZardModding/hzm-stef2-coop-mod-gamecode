@@ -133,7 +133,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "purchaseSkill",		G_PurchaseSkillCmd,		false },
 	{ "swapItem",			G_SwapItemCmd,			false },
 	{ "dropItem",			G_DropItemCmd,			false },
-	{ NULL,					NULL,					NULL }
+	{ nullptr,				nullptr,				0 }
 };
 
 void G_InitConsoleCommands( void )
