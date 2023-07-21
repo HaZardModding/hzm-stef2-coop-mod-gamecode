@@ -61,3 +61,33 @@ void UpgGame::flushTikisServer()
 		gi.SendServerCommand(0, "stufftext flushtikis\n");
 	}
 }
+
+//================================================================
+// Name:        setCameraCurrent
+// Class:       UpgGame
+//              
+// Description: set current camera
+//              
+// Parameters:  void
+//              
+// Returns:     void        
+//================================================================
+void UpgGame::setCameraCurrent(Entity* eCam)
+{
+	cinematicCurrentCam = eCam;
+}
+
+//================================================================
+// Name:        getCameraCurrent
+// Class:       UpgGame
+//              
+// Description: get current camera
+//              
+// Parameters:  void
+//              
+// Returns:     Entity*        
+//================================================================
+Entity* UpgGame::getCameraCurrent()
+{
+	return cinematicCurrentCam;
+}

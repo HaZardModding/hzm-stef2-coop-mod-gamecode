@@ -3,9 +3,12 @@
 
 class UpgGame
 {
+	Entity*			cinematicCurrentCam = NULL;
 public:
 	void			flushTikisPlayers();
 	void			flushTikisServer();
+	void			setCameraCurrent(Entity* eCam);
+	Entity*			getCameraCurrent();
 };
 
 extern UpgGame upgGame;

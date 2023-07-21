@@ -342,7 +342,6 @@ void coop_serverInizializeGameVars(void)
 	game.branchdialog_startingTime = 0.0f;
 	game.branchdialog_name = "";
 	game.branchdialog_timeout = 20;
-	game.cinematicCurrentCam = NULL;
 	game.bForceDynLightUpdate = false;
 	game.cinematicSkipping = false;
 	game.coop_showEventsTime = 0;//[b607] used to manage g_showevents 

@@ -17,15 +17,16 @@
 //
 
 #include "_pch_cpp.h"
-
-#include "coopReturn.hpp"
-
 #include "entity.h"
 #include "trigger.h"
 #include "camera.h"
 #include "bspline.h"
 #include "player.h"
 #include "camera.h"
+
+#include "upgGame.hpp"
+
+#include "coopReturn.hpp"
 
 //#define CAMERA_PATHFILE_VERSION 1
 
@@ -2300,29 +2301,24 @@ void SetCamera( Entity* ent, float switchTime )
 	int         j;
 	gentity_t   *other;
 	Camera      *cam;
-	Player      *client;
+	Player      *player;
 
 	if ( ent && !ent->isSubclassOf( Camera ) )
 		return;
 
-//hzm coop mod chrissstrahl - trying to fix crash, when this is called and client 0 disconnected
+	//[GAMEUPGRADE] chrissstrahl - fix crash, when this is called and client 0 disconnected
+	//[GAMEUPGRADE] chrissstrahl - also keep track of current camera
 	cam = ( Camera * )ent;
+	upgGame.setCameraCurrent(ent);
 
-//hzm gameupdate chrissstrahl - set current cinematic camera
-	game.cinematicCurrentCam = (Entity *)ent;
-
-	for( j = 0; j < game.maxclients; j++ )
-	{
+	for( j = 0; j < game.maxclients; j++ ){
 		other = &g_entities[ j ];
-
-		if ( other->inuse && other->client )
-		{
-			client = ( Player * )other->entity;
+		if ( other->inuse && other->client ){
+			player = ( Player * )other->entity;
 			
-			//hzm chrissstrahl - make sure we set camera to player only not bots
-			if ( client && client->isSubclassOf( Player ) )
-			{
-				client->SetCamera( cam , switchTime );
+			//[GAMEUPGRADE] - make sure we set camera to player only, not bots
+			if ( !player->upgPlayerIsBot()){
+				player->SetCamera( cam , switchTime );
 			}
 		}
 	}

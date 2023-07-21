@@ -18,8 +18,15 @@
 #include "_pch_cpp.h"
 #include "g_utils.h"
 #include "ctype.h"
+#include "worldspawn.h"
+#include "scriptmaster.h"
+#include "player.h"
+#include "PlayerStart.h"
+#include "mp_manager.hpp"
+#include <qcommon/gameplaymanager.h>
 
 #include "upgStrings.hpp"
+#include "upgGame.hpp"
 
 #include "coopChallenges.hpp"
 extern CoopChallenges coopChallenges;
@@ -29,12 +36,6 @@ extern CoopChallenges coopChallenges;
 #include "coopCheck.hpp"
 #include "listener.h"
 
-#include "worldspawn.h"
-#include "scriptmaster.h"
-#include "player.h"
-#include "PlayerStart.h"
-#include "mp_manager.hpp"
-#include <qcommon/gameplaymanager.h>
 
 char means_of_death_strings[ MOD_TOTAL_NUMBER ][ 32 ] =
 {
@@ -2619,13 +2620,16 @@ void G_StopCinematic( void )
 	level.cinematic = false;
 	gi.cvar_set( "sv_cinematic", "0" );
 
+	//[GAMEUPGRADE] chrissstrahl - clear current cinematic camera
+	upgGame.setCameraCurrent(NULL);
+
 	//hzm coop mod chrissstrahl - clear skip cinematic entity
 	world->skipthreadEntity = NULL;
-	//hzm gameupdate chrissstrahl - just make sure the players can view from their on camera again
-	game.cinematicCurrentCam = NULL;	//this is here in case cueplayer is deleted from script
+
 	SetCamera( NULL , 0.0f );			//this is here in case cueplayer is deleted from script
 	//hzm gameupdate chrissstrahl - reset skip status
 	game.cinematicSkipping = false;
+
 	//hzm gameupdate chrissstrahl 
 	level.playerfrozen = false;			//this is here in case releaseplayer is deleted from script
 

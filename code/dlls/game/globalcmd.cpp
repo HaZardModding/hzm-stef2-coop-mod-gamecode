@@ -24,15 +24,16 @@
 #include "CinematicArmature.h"
 #include "mp_manager.hpp"
 #include "mp_modeBase.hpp"
+#include "vector.h"
+#include "interpreter.h"
 
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
 #include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
+#include "upgGame.hpp"
 
-#include "vector.h"
-#include "interpreter.h"
 #include "coopParser.hpp"
 #include "coopReturn.hpp"
 #include "coopCheck.hpp"
@@ -3031,8 +3032,8 @@ void CThread::CuePlayer( Event *ev )
 		switchTime = 0;
 	}
 
-	//hzm gameupdate chrissstrahl - clear current cinematic camera
-	game.cinematicCurrentCam = NULL;
+	//[GAMEUPGRADE] chrissstrahl - clear current cinematic camera
+	upgGame.setCameraCurrent(NULL);
 	
 	SetCamera( NULL, switchTime );
 }

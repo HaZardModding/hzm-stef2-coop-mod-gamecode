@@ -283,8 +283,10 @@ void coop_radarUpdate( Player *player )
 			gentity_t* gentity = &g_entities[i];
 			if (gentity->inuse && gentity->entity && gentity->client && gentity->entity->isSubclassOf(Player)) {
 				Player* currentPlayer = (Player*)gentity->entity;
-				currentPlayer->coopPlayer.radarBlipActive[(COOP_RADAR_MAX_BLIPS - 1)] = false;
-				upgPlayerDelayedServerCommand(gentity->entity->entnum,va("globalwidgetcommand cr%i disable", (COOP_RADAR_MAX_BLIPS - 1)));
+				if (currentPlayer->coopPlayer.radarBlipActive[(COOP_RADAR_MAX_BLIPS - 1)]) {
+					currentPlayer->coopPlayer.radarBlipActive[(COOP_RADAR_MAX_BLIPS - 1)] = false;
+					upgPlayerDelayedServerCommand(gentity->entity->entnum, va("globalwidgetcommand cr%i disable", (COOP_RADAR_MAX_BLIPS - 1)));
+				}
 			}
 		}
 	}

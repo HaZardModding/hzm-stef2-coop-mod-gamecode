@@ -67,8 +67,6 @@ class Game : public Class
 	   bool			isStandardLevel;
 	   int			levelType;
 	   bool			isCoopIncludedLevel;
-//hzm gameupdate chrissstrahl - set current cinematic camera - used to set cam on players that enter after the camera has been called
-	   EntityPtr	cinematicCurrentCam;
 //hzm gameupdate chrissstrahl - 
 	   bool			cinematicSkipping;
 //hzm gameupdate chrissstrahl - force update the dynamic lights

@@ -28,6 +28,7 @@
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgStrings.hpp"
+#include "upgGame.hpp"
 
 
 MultiplayerManager multiplayerManager;
@@ -3228,11 +3229,9 @@ void MultiplayerManager::makePlayerSpectator( Player *player, SpectatorTypes spe
 
 		player->clearItemText();
 
-//hzm gameupdate chrissstrahl - make player view from the current camera, don't bother to show player his own view
-		//[b608] chrissstrahl - fixed missing reference to the player
-		if ( level.cinematic == 1 && game.cinematicCurrentCam != NULL )
-		{
-			player->SetCamera( (Camera *)(Entity *)game.cinematicCurrentCam , 0 );
+		//[GAMEUPGRADE][b608] chrissstrahl - make player view from the current camera
+		if ( level.cinematic == 1 && upgGame.getCameraCurrent() != NULL ){
+			player->SetCamera( (Camera *)upgGame.getCameraCurrent(), 0);
 		}
 	}
 }
@@ -3355,15 +3354,13 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 		}
 	}
 
-	//hzm gameupdate chrissstrahl - make player view from the current camera, don't bother to show player his own view
-	if ( level.cinematic == 1 && game.cinematicCurrentCam != NULL )
-	{
-		player->SetCamera( (Camera *)(Entity *)game.cinematicCurrentCam, 0 );
+	//[GAMEUPGRADE][b60014] chrissstrahl - make player view from the current camera
+	if ( level.cinematic == 1 && upgGame.getCameraCurrent() != NULL ){
+		player->SetCamera( (Camera *)upgGame.getCameraCurrent(), 0 );
 	}
 
 	//hzm coop mod chrissstrahl - coop mod prevent player from respawning if LMS is active and player died
-	if ( !coop_playerSpawnLms(player) )
-	{
+	if ( !coop_playerSpawnLms(player) ){
 		return;
 	}
 

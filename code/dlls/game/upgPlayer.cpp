@@ -12,6 +12,7 @@
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
 
+#include "upgGame.hpp"
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
@@ -1032,7 +1033,7 @@ void Player::upgPlayerSetCameraEvent(Event* ev)
 		SetCamera(NULL, switchTime);
 		//clear current camera so it can be restored on savegame
 		if (g_gametype->integer == GT_SINGLE_PLAYER) {
-			game.cinematicCurrentCam = NULL;
+			upgGame.setCameraCurrent(NULL);
 		}
 		return;
 	}
@@ -1044,7 +1045,7 @@ void Player::upgPlayerSetCameraEvent(Event* ev)
 
 	//set current camera so it can be restored on savegame
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		game.cinematicCurrentCam = camera;
+		upgGame.setCameraCurrent(camera);
 	}
 	SetCamera((Camera*)camera, switchTime);
 }
@@ -1119,6 +1120,7 @@ void upgPlayerDelayedServerCommand(int entNum,const char* commandText)
 		{
 			temp = temp->next;
 		}
+		gi.Printf("upgPlayerDelayedServerCommand (appended): %s\n", command->command);
 		temp->next = command;
 	}
 }
@@ -1140,7 +1142,9 @@ void upgPlayerHandleDelayedServerCommands(void)
 	int j;
 	for (i = 0; i < maxclients->integer; i++) {
 
-		if (&g_entities[i].inuse || !g_entities[i].entity || !g_entities[i].client) { continue; }
+		if (!&g_entities[i].inuse || !g_entities[i].entity || !g_entities[i].client) {
+			continue;
+		}
 		Player* player = (Player*)g_entities[i].entity;
 		
 		pendingServerCommand* pendingCommand = pendingServerCommandList[i];

@@ -1231,11 +1231,11 @@ str Program::getStringVariableValue( const char *varname )
 {
 	def_t *var = getDefForVarname(varname);
 
-	if ( var == NULL ) return str("");
+	if ( var == NULL ) return "";
 	else
 	{
 		if ( var->type == &type_string ) return getString( var->ofs );
-		else return str("");
+		else return "";
 	}
 }
 
