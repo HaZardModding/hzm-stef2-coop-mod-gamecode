@@ -15,6 +15,7 @@
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
 #include "upgStrings.hpp"
+#include "upgGame.hpp"
 
 //[b60012] chrissstrahl - allow flushtiki vote
 #include "coopServer.hpp"
@@ -473,7 +474,7 @@ int coop_vote_mapValidate(Player* player, const str &command, const str &arg, st
 		str sMapRealName = arg;
 		iVarPos = upgStrings.containsAt(sMapRealName, "$");
 		if (iVarPos > 0) {
-			sMapRealName = upgStrings.substr(sMapRealName, 0, iVarPos);
+			sMapRealName = upgStrings.getSubStr(sMapRealName, 0, iVarPos);
 		}
 
 		fullMapName = "maps/";
@@ -1076,7 +1077,7 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 	//strip $ level parameter
 	iVarPos = upgStrings.containsAt(sMapRealName, "$");
 	if (iVarPos > 0) {
-		sMapRealName = upgStrings.substr(sMapRealName, 0, iVarPos);
+		sMapRealName = upgStrings.getSubStr(sMapRealName, 0, iVarPos);
 	}
 
 	//find current map in the list
@@ -1272,7 +1273,7 @@ bool coop_vote_mpmodifierSet(const str  _voteString)
 	}
 
 	str sValue = upgStrings.getStartingFrom(_voteString, upgStrings.containsAt(_voteString, " "));
-	str sModifier = coop_returnStringUntilWhithspace(_voteString);
+	str sModifier = upgStrings.getUntilChar(_voteString," ");
 	sModifier = upgStrings.getStartingFrom(sModifier, 12);
 
 	str sFile = "";
@@ -1311,9 +1312,9 @@ bool coop_vote_flushTikis(const str _voteString)
 		return false;
 	}
 
-	coopServer.flushTikis();
+	upgGame.flushTikisServer();
 
-	coop_playerFlushTikis();
+	upgGame.flushTikisPlayers();
 
 	return true;
 }

@@ -277,7 +277,7 @@ int coop_returnIntFromFormatedString(str &sSource, const char &cFind)
 		}
 		else
 		{
-			sExtracted = upgStrings.substr( sSource , 0 , iPos );
+			sExtracted = upgStrings.getSubStr( sSource , 0 , iPos );
 		}
 
 		upgStrings.manipulateTrim( sExtracted , " \t" );
@@ -555,33 +555,6 @@ str coop_returnStringPathFileNoExtension(const str &sPath)
 		fileName += sPath[i];
 	}
 	return fileName;
-}
-
-//================================================================
-// Name:        coop_returnStringUntilWhithspace
-// Class:       -
-//              
-// Description:  returns the given string until a whitespace occours
-//              
-// Parameters:  str sChain
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_returnStringUntilWhithspace( str sChain )
-{
-	if ( !sChain ) return "";
-
-	int i;
-	str sPart = "";
-	for ( i = 0; i < sChain.length(); i++ ){
-		if ( sChain[i] == ' ' ){
-			return sPart;
-		}else{
-			sPart += sChain[i];
-		}
-	}
-	return sPart;
 }
 
 //[b607] chrissstrahl

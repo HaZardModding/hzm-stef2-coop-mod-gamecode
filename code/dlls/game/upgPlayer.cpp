@@ -18,27 +18,11 @@
 #include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
 
-//included to accsess
-//coopIsActive()
-extern CoopServer coopServer;
-#include "coopServer.hpp"
-
-//upgStrings.containsAt
-//coop_returnStringUntilWhithspace
-//coop_textPhraseLocalStrUmlaute
-#include "coopReturn.hpp"
-//upgStrings.containsAt
-//coop_replaceForLabelText
-#include "coopReturn.hpp"
-//coop_textPhraseLocalStrUmlaute
-#include "coopText.hpp"
-
-
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
 
 //=========================================================[b60014]
-// Name:        player::upgPlayerIsHost
+// Name:        upgPlayerIsHost
 // Class:       -
 //              
 // Description: Checks if player is host
@@ -68,15 +52,14 @@ bool Player::upgPlayerIsHost()
 }
 
 //================================================================
-// Name:        coop_checkPlayerLanguageGerman
-// Class:       -
+// Name:        upgPlayerHasLanguageGerman
+// Class:       Player
 //              
-// Description:  check if player has german game version
+// Description: check if player has german game version
 //              
 // Parameters:  Player *player
 //              
-// Returns:     bool
-//              
+// Returns:     bool             
 //================================================================
 bool Player::upgPlayerHasLanguageGerman()
 {
@@ -87,8 +70,16 @@ bool Player::upgPlayerHasLanguageGerman()
 	return false;
 }
 
-
-//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
+//========================================================[b60011]
+// Name:        upgPlayerHasLanguageGerman
+// Class:       Player
+//              
+// Description: returns if player has german language of game
+//              
+// Parameters:  Event* ev
+//              
+// Returns:     bool             
+//================================================================
 void Player::upgPlayerHasLanguageGerman(Event* ev)
 {
 	bool bLangMatch = false;
@@ -98,8 +89,16 @@ void Player::upgPlayerHasLanguageGerman(Event* ev)
 	ev->ReturnFloat((float)bLangMatch);
 }
 
-
-//hzm gameupdate chrissstrahl [b60011]  - returns if player has german language of game
+//========================================================[b60011]
+// Name:        upgPlayerHasLanguageEnglish
+// Class:       Player
+//              
+// Description: returns if player has english language of game
+//              
+// Parameters:  Event* ev
+//              
+// Returns:     void             
+//================================================================
 void Player::upgPlayerHasLanguageEnglish(Event* ev)
 {
 	bool bLangMatch = false;
@@ -109,13 +108,31 @@ void Player::upgPlayerHasLanguageEnglish(Event* ev)
 	ev->ReturnFloat((float)bLangMatch);
 }
 
-//hzm gameupdate chrissstrahl [b60011]  - returns player language string
+//========================================================[b60011]
+// Name:        upgPlayerHasLanguageGerman
+// Class:       Player
+//              
+// Description: returns player language string [Deu/Eng/?]
+//              
+// Parameters:  Event* ev
+//              
+// Returns:     void             
+//================================================================
 void Player::upgPlayerGetLanguageEvent(Event* ev)
 {
 	ev->ReturnString(upgPlayerGetLanguage());
 }
 
-//hzm gameupdate chrissstrahl [b60011]  - returns player language string
+//========================================================[b60011]
+// Name:        upgPlayerHasLanguageGerman
+// Class:       Player
+//              
+// Description: returns player language string [Deu/Eng/?]
+//              
+// Parameters:  void
+//              
+// Returns:     str             
+//================================================================
 str Player::upgPlayerGetLanguage()
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
@@ -126,7 +143,16 @@ str Player::upgPlayerGetLanguage()
 	return upgPlayer.language;
 }
 
-//hzm gameupdate chrissstrahl [b60011]  - sets player language string
+//========================================================[b60011]
+// Name:        upgPlayerSetLanguage
+// Class:       Player
+//              
+// Description: sets player language string
+//              
+// Parameters:  str String
+//              
+// Returns:     void           
+//================================================================
 void Player::upgPlayerSetLanguage(str sLang)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
@@ -150,8 +176,8 @@ void Player::upgPlayerSetLanguage(str sLang)
 }
 
 //=========================================================[b60014]
-// Name:        player::upgPlayerDeathTimeUpdate
-// Class:       -
+// Name:        upgPlayerDeathTimeUpdate
+// Class:       Player
 //              
 // Description: updates deathtime, used to store server time at wich the player died last
 //              
@@ -168,12 +194,12 @@ void Player::upgPlayerDeathTimeUpdate()
 }
 
 //=========================================================[b60014]
-// Name:        player::upgPlayerDeathTimeSet
-// Class:       -
+// Name:        upgPlayerDeathTimeSet
+// Class:       Player
 //              
 // Description: resest deathtime, used to store server time at wich the player died last
 //              
-// Parameters:  void
+// Parameters:  int
 //              
 // Returns:     void
 //================================================================
@@ -183,8 +209,8 @@ void Player::upgPlayerDeathTimeSet(int iTime)
 }
 
 //=========================================================[b60014]
-// Name:        player::upgPlayerDeathTime
-// Class:       -
+// Name:        upgPlayerDeathTime
+// Class:       Player
 //              
 // Description: returns at wich server time the player died last
 //              
@@ -201,15 +227,14 @@ int Player::upgPlayerDeathTime()
 }
 
 //=========================================================[b60014]
-// Name:        player::upgPlayerSetup
-// Class:       -
+// Name:        upgPlayerSetup
+// Class:       Player
 //              
-// Description: Handles Player Say stuff, filters and script execution, ect...
-//				player::upgPlayerSay will retrive the player answer
+// Description: Handles Player Setup stuff, like language and netsetting
 //              
 // Parameters:  void
 //              
-// Returns:     bool
+// Returns:     void
 //================================================================
 void Player::upgPlayerSetup()
 {
@@ -218,12 +243,12 @@ void Player::upgPlayerSetup()
 }
 
 //=========================================================[b60014]
-// Name:        player::upgPlayerKilled
-// Class:       -
+// Name:        upgPlayerKilled
+// Class:       Player
 //              
 // Description: executed when player dies
 //              
-// Parameters:  void
+// Parameters:  const Entity* attacker, const Entity* inflictor, const int meansOfDeath
 //              
 // Returns:     bool
 //================================================================
@@ -232,12 +257,15 @@ bool Player::upgPlayerKilled(const Entity* attacker, const Entity* inflictor, co
 	//set last killed time to current time
 	upgPlayerDeathTimeUpdate();
 
+	//there is nothing we do in here that would need to stop other functions, such as coop
+	//if(killMessage || killHandling ){ return true; }
+
 	return false;
 }
 
 //=========================================================[b60014]
-// Name:        player::upgPlayerSay
-// Class:       -
+// Name:        upgPlayerSay
+// Class:       Player
 //              
 // Description: Handles Player Say stuff, filters and script execution, ect...
 //              
@@ -290,14 +318,13 @@ bool Player::upgPlayerSay(str sayString)
 
 //================================================================
 // Name:        upgPlayerSaySpamfilterCountdown
-// Class:       -
+// Class:       Player
 //              
 // Description: counts down after player has spammed until player is allowed to chat again
 //
 // Parameters:  void 
 //              
-// Returns:     void
-//              
+// Returns:     void             
 //================================================================
 void Player::upgPlayerSaySpamfilterCountdown()
 {
@@ -309,14 +336,13 @@ void Player::upgPlayerSaySpamfilterCountdown()
 
 //========================================================[b60014]
 // Name:        upgPlayerClientThink
-// Class:       -
+// Class:       Player
 //              
 // Description: ClientThink, used to update/check stuff each frame
 //
 // Parameters:  void 
 //              
-// Returns:     void
-//              
+// Returns:     void             
 //================================================================
 void Player::upgPlayerClientThink()
 {
@@ -328,8 +354,8 @@ void Player::upgPlayerClientThink()
 }
 
 //========================================================[b60014]
-// Name:        player::upgPlayerIsBot
-// Class:       -
+// Name:        upgPlayerIsBot
+// Class:       Player
 //              
 // Description: Checks if player is a bot
 //              
@@ -346,12 +372,12 @@ bool Player::upgPlayerIsBot()
 }
 
 //========================================================[b60014]
-// Name:        player::upgPlayerGetTargetedEntity
-// Class:       -
+// Name:        upgPlayerGetTargetedEntity
+// Class:       Player
 //              
 // Description: this has been implemented for script use
 //              
-// Parameters:  event
+// Parameters:  event* ev
 //              
 // Returns:     void
 //================================================================
@@ -366,16 +392,16 @@ void Player::upgPlayerGetTargetedEntity(Event* ev)
 }
 
 //==========================================================[b607]
-// Name:        player::ugpPlayerInThirdPerson
+// Name:        ugpPlayerInThirdPerson
 // Class:       -
 //              
 // Description: returns if player is in third person or not
 //              
 // Parameters:  void
 //              
-// Returns:     qboolean
+// Returns:     bool
 //================================================================
-qboolean Player::ugpPlayerInThirdPerson()
+bool Player::ugpPlayerInThirdPerson()
 {
 	return _isThirdPerson;
 }
@@ -979,7 +1005,7 @@ void Player::upgPlayerWidgetCommand(str sWidget, str sParameters)
 	//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
 	//str sTemp;
 	if (upgStrings.containsAt(sParameters.c_str(), "labeltext") != -1) {
-		sParameters = upgStrings.returnForLabeltext(sParameters);
+		sParameters = upgStrings.getReplacedForLabeltext(sParameters);
 	}
 	str sData = "stufftext \"globalwidgetcommand ";
 	sData += sWidget;
@@ -1141,7 +1167,7 @@ void upgPlayerHandleDelayedServerCommands(void)
 					Q_stricmpn("score ", pendingCommand->command, foundSpace) == 0
 					)
 				{
-					sCmd = coop_returnStringUntilWhithspace(pendingCommand->command);
+					sCmd = upgStrings.getUntilChar(pendingCommand->command," ");
 					startIndex = (sCmd.length() + 1);
 				}
 				else {
@@ -1159,10 +1185,10 @@ void upgPlayerHandleDelayedServerCommands(void)
 				}
 
 				//hzm coop mod chrissstrahl - phrase coop localstrings, replace with normal chars if player does not have coop
-				sNewText = coop_textPhraseLocalStrUmlaute(player, sText);
+				sNewText = upgStrings.getReplacedUmlaute(player, sText);
 				//make sure the text is no longer than 287 units or it will crash the game
 				if (sNewText.length() > 287) {
-					sNewText = upgStrings.substr(sNewText, 0, 286);
+					sNewText = upgStrings.getSubStr(sNewText, 0, 286);
 					gi.Printf("handleDelayedServerCommands: String to long, was cut down to 286\n");
 					gi.Printf("%s", sCmd.c_str());
 				}

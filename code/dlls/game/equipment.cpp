@@ -578,9 +578,9 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 						sRed = gpm->getFloatValue(sInteractiveType, "Red");
 						sBlue = gpm->getFloatValue(sInteractiveType, "Blue");
 						sGreen = gpm->getFloatValue(sInteractiveType, "Green");
-						sRed = upgStrings.substr(sRed, 0, 4);
-						sBlue = upgStrings.substr(sBlue, 0, 4);
-						sGreen = upgStrings.substr(sGreen, 0, 4);
+						sRed = upgStrings.getSubStr(sRed, 0, 4);
+						sBlue = upgStrings.getSubStr(sBlue, 0, 4);
+						sGreen = upgStrings.getSubStr(sGreen, 0, 4);
 					}
 
 					if (descr1 != "" || descr2 != "" || descr3 != "") {

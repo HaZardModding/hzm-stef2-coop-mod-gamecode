@@ -134,7 +134,7 @@ int coop_parserGetNumberOfItemsFromCategory( str sFile , const str section )
 			if ( value[0] == '[' )
 			{
 				if ( value[section.length() + 1] == ']' &&
-					stricmp( upgStrings.substr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
+					stricmp( upgStrings.getSubStr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
 				{
 					bDesiredSection = true;
 				}
@@ -218,7 +218,7 @@ void coop_parserGetItemsFromCategory( str sFile , ListenKnoten * &start , Listen
 			if ( value[0] == '[' )
 			{
 				if ( value[section.length() + 1] == ']' &&
-					stricmp( upgStrings.substr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
+					stricmp( upgStrings.getSubStr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
 				{
 					bDesiredSection = true;
 				}
@@ -375,7 +375,7 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 				//check if section name is valid
 				//fixed: make sure we do not accept finds that are outside of out the desired section
 				if (	value[ section.length() + 1 ] == ']' &&
-						stricmp( upgStrings.substr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
+						stricmp( upgStrings.getSubStr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
 				{
 					bDesiredSection = true;
 				}
@@ -598,7 +598,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 			}
 
 			//strip line down to sectionname only
-			sCurrentSection = upgStrings.returnTrimmed( sLine.tolower() , " []\t\r\n" ).tolower();
+			sCurrentSection = upgStrings.getTrimmed( sLine.tolower() , " []\t\r\n" ).tolower();
 
 			//write section name
 			if ( !Q_stricmp( sCurrentSection.c_str(), section ) ) {

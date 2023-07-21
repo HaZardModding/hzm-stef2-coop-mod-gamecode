@@ -45,7 +45,7 @@ qboolean G_coopClientId(const gentity_t* ent)
 	}
 
 	if ((player->coopPlayer.timeEntered + 10) > level.time) {
-		upgStrings.returnTrimmed(sId, " \t\r\n;[]=");
+		upgStrings.getTrimmed(sId, " \t\r\n;[]=");
 		str sClientIdNew = coop_checkPlayerCoopIdExistInIni(player,sId);
 	}
 	else {
@@ -603,7 +603,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 #endif
 		sInfoPrint += va("%i %s [%s %s]\n", COOP_BUILD, sys2.c_str(), __DATE__, __TIME__);
 		sInfoPrint += va("Map: %s\n", level.mapname.c_str());
-		sInfoPrint = upgStrings.returnForLabeltext(sInfoPrint);
+		sInfoPrint = upgStrings.getReplacedForLabeltext(sInfoPrint);
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdI0 labeltext %s", sInfoPrint.c_str()));
 		return true;
 	}
@@ -752,7 +752,7 @@ qboolean G_coopCom_login(const gentity_t* ent)
 	player->hudPrint("^5login started\n");
 	player->coop_playerAdminAuthStarted(true);
 	upgPlayerDelayedServerCommand(player->entnum, "pushmenu coop_com");
-	upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Login Started - Please enter the code.").c_str()));
+	upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.getReplacedForLabeltext("Login Started - Please enter the code.").c_str()));
 	player->coop_playerAdminAuthStringLastLengthUpdate();
 
 	return true;
@@ -1517,7 +1517,7 @@ qboolean G_coopInput(const gentity_t* ent)
 
 	//limit of data that can be actually used
 	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
-		inputData = upgStrings.substr(inputData.c_str(), 0, 259);
+		inputData = upgStrings.getSubStr(inputData.c_str(), 0, 259);
 	}
 
 	ent->entity->entityVars.SetVariable("coopInputData", inputData.c_str());

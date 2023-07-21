@@ -55,7 +55,6 @@
 
 str coop_textJoinCommands( str sCmd1 , str sCmd2 );
 void coop_textCinematicHudprint( Player *player , str sText );
-str coop_textPhraseLocalStrUmlaute( Player *player, str sText );
 void coop_textHudprint( Player *player , str sText );
 void coop_textHudprintAll( str messageToShow );
 

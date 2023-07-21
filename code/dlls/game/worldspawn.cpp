@@ -30,14 +30,12 @@
 #include "mp_manager.hpp"
 #include "groupcoordinator.hpp"
 
+#include "upgGame.hpp"
+
 #include "coopServer.hpp"
 #include "coopObjectives.hpp"
 #include "coopReturn.hpp"
 #include "coopParser.hpp"
-
-//[b60011] chrissstrahl - moved flushtikis there
-#include "coopServer.hpp"
-extern CoopServer coopServer;
 
 WorldPtr  world;
 
@@ -1316,11 +1314,8 @@ World::~World()
 
 	freeAllBrokenThings();
 
-
-	//hzm gameupdate chrissstrahl - to further reduce issues I have disabled this if the current game is not in coop
-	//hzm gameupdate chrissstrahl - disabled the checks because it didn't work as expected
-	//[b60011] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
-	coopServer.flushTikis();
+	//[GAMEUPGRADE][b60014] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
+	upgGame.flushTikisServer();
 }
 
 void World::FreeTargetList( void )

@@ -217,7 +217,7 @@ void coop_objectivesSetup( Player *player)
 			game.coop_author = "$$Empty$$";
 		}
 	}
-	game.coop_author = upgStrings.returnForLabeltext(game.coop_author);
+	game.coop_author = upgStrings.getReplacedForLabeltext(game.coop_author);
 	upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor labeltext %s" , game.coop_author.c_str() ) );
 	
 	//hzm coop mod chrissstrahl - set story right away, need to do this differently in mp see coop_playerSay

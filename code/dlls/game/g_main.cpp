@@ -1387,7 +1387,7 @@ void G_ExitLevel( void )
 		str sMapRealName = level.nextmap;
 		iVarPos = upgStrings.containsAt(sMapRealName, "$");
 		if (iVarPos > 0) {
-			sMapRealName = upgStrings.substr(sMapRealName, 0, iVarPos);
+			sMapRealName = upgStrings.getSubStr(sMapRealName, 0, iVarPos);
 		}
 		sCleanMapname = va("maps/%s.bsp",sMapRealName.c_str());
 

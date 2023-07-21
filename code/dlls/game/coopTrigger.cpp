@@ -135,7 +135,7 @@ void TriggerCoopGameSave::Activate( Event *ev )
 	else if ( sSaveName.length() > 32 )
 	{
 		gi.Printf( "TriggerCoopGameSave::Activate - Save-game in uservar1 to long, WAS RECIFIED (maximum 32 Letters)!\n" );
-		sSaveName = upgStrings.substr( sSaveName, 0 , 32 );
+		sSaveName = upgStrings.getSubStr( sSaveName, 0 , 32 );
 	}
 
 	gi.SendConsoleCommand( va("ui_savegamewithname \"%s\"\n", sSaveName.c_str() ) );

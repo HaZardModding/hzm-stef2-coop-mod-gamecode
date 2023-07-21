@@ -628,6 +628,9 @@
     <ClCompile Include="upgStrings.cpp">
       <Filter>HaZardModding\Upgrades</Filter>
     </ClCompile>
+    <ClCompile Include="upgGame.cpp">
+      <Filter>HaZardModding\Upgrades</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1270,6 +1273,9 @@
       <Filter>HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
     <ClInclude Include="upgStrings.hpp">
+      <Filter>HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="upgGame.hpp">
       <Filter>HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
   </ItemGroup>

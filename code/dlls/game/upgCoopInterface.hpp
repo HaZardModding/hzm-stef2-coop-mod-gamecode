@@ -19,6 +19,7 @@ private:
 
 public:
 	bool				isCoopActive();
+	bool				playerHasCoop(Player* player);
 };
 
 extern UpgCoopInterface upgCoopInterface;

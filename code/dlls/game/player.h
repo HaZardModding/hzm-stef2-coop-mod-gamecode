@@ -341,7 +341,7 @@ class Player : public Sentient
 		void				upgPlayerWidgetCommand(str sWidget, str sParameters);
 		//[b607] chrissstrahl
 		void				upgPlayerGetTargetedEntity(Event* ev);
-		qboolean			ugpPlayerInThirdPerson();
+		bool				ugpPlayerInThirdPerson();
 		//[UNKNOWN VERSION] chrissstrahl
 		void				upgPlayerWorldEffects(void);
 		void				upgPlayerGetScriptVariablesCommand(Event* ev);

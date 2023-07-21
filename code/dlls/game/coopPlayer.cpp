@@ -841,11 +841,11 @@ void Player::coop_playerThinkLogin()
 		cvar_t* cvar = gi.cvar_get("coop_admin");
 		if (cvar) { sCvar = cvar->string; }
 		if (sCvar.length() < 3) {
-			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Error: 'coop_admin' is empty or shorter than 3 digits - Aborting").c_str()));
+			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.getReplacedForLabeltext("Error: 'coop_admin' is empty or shorter than 3 digits - Aborting").c_str()));
 			return;
 		}
 		if (sCvar.length() > 10) {
-			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Error: 'coop_admin' is longer than 10 digits - Aborting").c_str()));
+			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.getReplacedForLabeltext("Error: 'coop_admin' is longer than 10 digits - Aborting").c_str()));
 			return;
 		}
 
@@ -854,7 +854,7 @@ void Player::coop_playerThinkLogin()
 			coop_playerAdmin(true);
 			coopPlayer.adminAuthAttempts = 0;
 			coop_playerAdminAuthStarted(false);
-			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Login succsessful - Accsess granted!\n").c_str()));
+			upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.getReplacedForLabeltext("Login succsessful - Accsess granted!\n").c_str()));
 			//ePlayer.playsound( "sound/environment/computer/lcars_yes.wav" ,1);
 			return;
 		}
@@ -863,7 +863,7 @@ void Player::coop_playerThinkLogin()
 		if (coop_playerAdminAuthString().length() > 9) {
 			coopPlayer.adminAuthAttempts++;
 			coop_playerAdminAuthString("");
-			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.returnForLabeltext("Login failed - Accsess denied!\n").c_str()));
+			upgPlayerDelayedServerCommand(entnum,va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.getReplacedForLabeltext("Login failed - Accsess denied!\n").c_str()));
 			//gi.SendServerCommand(entnum,"stufftext \"playsound sound/environment/computer/access_denied.wav\"\n");
 
 			if (coopPlayer.adminAuthAttempts > 5) {
@@ -875,7 +875,7 @@ void Player::coop_playerThinkLogin()
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_spEquip
+// Name:        coop_spEquip
 // Class:       -
 //              
 // Description: Handles weapons load from script in singleplayer
@@ -909,7 +909,7 @@ void Player::upgPlayerSpEquip()
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_getId
+// Name:        coop_getId
 // Class:       -
 //              
 // Description: Gets Player coop Id
@@ -933,7 +933,7 @@ str Player::coop_getId()
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_setId
+// Name:        coop_setId
 // Class:       -
 //              
 // Description: Sets Player coop Id
@@ -951,7 +951,7 @@ void Player::coop_setId(str sId)
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_getInstalled
+// Name:        coop_getInstalled
 // Class:       -
 //              
 // Description: Checks if player has the coop mod installed or not
@@ -972,7 +972,7 @@ bool Player::coop_getInstalled()
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_setInstalled
+// Name:        coop_setInstalled
 // Class:       -
 //              
 // Description: Sets flag that player has coop mod installed
@@ -990,7 +990,7 @@ void Player::coop_setInstalled(bool bIns)
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_getInstalledVersion
+// Name:        coop_getInstalledVersion
 // Class:       -
 //              
 // Description: Returns Coop Mod installed version
@@ -1013,7 +1013,7 @@ int Player::coop_getInstalledVersion()
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_setInstalledVersion
+// Name:        coop_setInstalledVersion
 // Class:       -
 //              
 // Description: Sets Coop Mod installed version
@@ -1031,7 +1031,7 @@ void Player::coop_setInstalledVersion(int iVer)
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_getInstalledCheckTime
+// Name:        coop_getInstalledCheckTime
 // Class:       -
 //              
 // Description:	Returns Coop Mod installed time check var content
@@ -1055,7 +1055,7 @@ int Player::coop_getInstalledCheckTime()
 }
 
 //=========================================================[b60014]
-// Name:        player::coop_setInstalledVersion
+// Name:        coop_setInstalledVersion
 // Class:       -
 //              
 // Description:	Sets Coop Mod installed time check var
@@ -1070,32 +1070,6 @@ void Player::coop_setInstalledCheckTime(int iTime)
 {
 	if (multiplayerManager.inMultiplayer()) {
 		coopPlayer.installedVersion = iTime;
-	}
-}
-
-//=========================================================[b60012]
-// Name:        coop_playerFlushTikis
-// Class:       -
-//              
-// Description: Flushtikis for clients - try to fix tiki model anim cache overload issue
-//              
-// Parameters:  void
-//              
-// Returns:     void
-//              
-//================================================================
-void coop_playerFlushTikis()
-{
-	//flush also clients
-	for (int i = 0; i < maxclients->integer; i++) {
-		if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
-			Player* playerValid = (Player*)g_entities[i].entity;
-			if (playerValid && !(playerValid->edict->svflags & SVF_BOT)) {
-				//[b60014] chrissstrahl - changed so it will instantly transmit
-				//DelayedServerCommand(i, "flushtikis");
-				gi.SendServerCommand(i, "stufftext flushtikis\n");
-			}
-		}
 	}
 }
 	

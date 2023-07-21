@@ -32,3 +32,22 @@ bool UpgCoopInterface::isCoopActive()
 {
 	return coopServer.coopIsActive();
 }
+
+
+//================================================================
+// Name:        playerHasCoop
+// Class:       UpgCoopInterface
+//              
+// Description:	checks if player has the coop mod
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool UpgCoopInterface::playerHasCoop(Player* player)
+{
+	if (player) {
+		return player->coop_getInstalled();
+	}
+	return false;
+}

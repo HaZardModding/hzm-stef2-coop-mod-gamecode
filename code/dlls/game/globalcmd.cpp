@@ -2268,7 +2268,7 @@ void CThread::getLevelParamaterValue( Event *ev )
 	str sValue	= upgStrings.getStartingFrom( s , (iVarPos + varname.length() ));
 	iVarPos		= upgStrings.containsAt( sValue , "?" );
 	if ( iVarPos  > 0) {
-		sValue	= upgStrings.substr( sValue , 0 , iVarPos );
+		sValue	= upgStrings.getSubStr( sValue , 0 , iVarPos );
 	}
 	ev->ReturnString( sValue.c_str() );
 }

@@ -8,6 +8,7 @@
 #include "_pch_cpp.h"
 
 #include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
 
 UpgStrings upgStrings;
 
@@ -147,7 +148,6 @@ str UpgStrings::getStartingFrom(const str& sString, const int& iStart)
 	return sPartial;
 }
 
-
 //================================================================
 // Name:        getStartingFromUntil
 // Class:       UpgStrings
@@ -174,6 +174,33 @@ str UpgStrings::getStartingFromUntil(str sText, int iStart, int iMax)
 		sNew += sText[i];
 	}
 	return sNew;
+}
+
+//================================================================
+// Name:        getUntilChar
+// Class:       UpgStrings
+//              
+// Description:	returns the given string until a given-char occours
+//              
+// Parameters:  str sChain
+//              
+// Returns:     str  
+//================================================================
+str UpgStrings::getUntilChar(str sChain,str sUntil)
+{
+	if (!sChain) return "";
+
+	int i;
+	str sPart = "";
+	for (i = 0; i < sChain.length(); i++) {
+		if (sChain[i] == sUntil[0]) {
+			return sPart;
+		}
+		else {
+			sPart += sChain[i];
+		}
+	}
+	return sPart;
 }
 
 //================================================================
@@ -303,6 +330,101 @@ str UpgStrings::getReplacedSpaceWithUnderscoreBlack(str sText)
 	return sNewText;
 }
 
+//================================================================
+// Name:        upgStrings.getReplacedUmlaute
+// Class:       -
+//              
+// Description: replaces umlaute with ASCII compatible letters,
+//				umlaute are filtred in net code and would not make it to the client otherwise
+//
+// Parameters:  Player* player, str sText 
+//              
+// Returns:     void
+//              
+//================================================================
+str UpgStrings::getReplacedUmlaute(str sText) { return getReplacedUmlaute(nullptr, sText); }
+str UpgStrings::getReplacedUmlaute(Player* player, str sText)
+{
+	//WARNING, this has a bug, if a umlaut is followed by another, they will not work and $$$ is shown
+	int i;
+	str sNewText = "";
+	str sCoop = "";
+	str sNoCoop = "";
+	int iIndex = 0;
+
+	for (i = 0; i < sText.length(); i++) {
+		//if we found something like $$o$$, we will have to skip $o$$
+		if (iIndex > i) {
+			continue;
+		}
+
+		bool bAddE = true;
+		iIndex = i;
+
+		//search for something like $$o$$
+		if (sText[i] == '$' && (i + 4) < sText.length()) {
+			bAddE = false;
+			if (sText[i + 1] == '$' && sText[i + 3] == '$' && sText[i + 4] == '$') {
+				if (sText[i + 2] == 'a' ||
+					sText[i + 2] == 'A' ||
+					sText[i + 2] == 'o' ||
+					sText[i + 2] == 'O' ||
+					sText[i + 2] == 'u' ||
+					sText[i + 2] == 'U' ||
+					sText[i + 2] == 'S')
+				{
+					bAddE = true;
+					str conv = sText[i + 2];
+					sCoop = va("$$%s$$", conv.c_str());
+					sNoCoop = va("%se", conv.c_str());
+					iIndex = (i + 5);
+				}
+			}
+		}
+		//search for umlauts
+		else if (sText[i] == 'ä') {
+			sCoop = "$$a$$"; sNoCoop = "ae";
+		}
+		else if (sText[i] == 'Ä') {
+			sCoop = "$$A$$"; sNoCoop = "AE";
+		}
+		else if (sText[i] == 'ö') {
+			sCoop = "$$o$$"; sNoCoop = "oe";
+		}
+		else if (sText[i] == 'Ö') {
+			sCoop = "$$O$$"; sNoCoop = "OE";
+		}
+		else if (sText[i] == 'ü') {
+			sCoop = "$$u$$"; sNoCoop = "ue";
+		}
+		else if (sText[i] == 'Ü') {
+			sCoop = "$$U$$"; sNoCoop = "UE";
+		}
+		else if (sText[i] == 'ß') {
+			sCoop = "$$S$$"; sNoCoop = "Sz";
+		}
+		//no match, just regular text
+		else {
+			bAddE = false;
+		}
+
+		if (bAddE) {
+			//coop mod installed
+			if (player && upgCoopInterface.playerHasCoop(player)) {
+				sNewText += sCoop;
+			}//no coop mod
+			else {
+				sNewText += sNoCoop;
+			}
+		}
+		else {
+			sNewText += sText[i];
+		}
+	}
+	return sNewText;
+}
+
+
 //========================================================[b60011]
 // Name:        returnForLabeltext
 // Class:       UpgStrings
@@ -313,7 +435,7 @@ str UpgStrings::getReplacedSpaceWithUnderscoreBlack(str sText)
 //              
 // Returns:     str           
 //================================================================
-str UpgStrings::returnForLabeltext(str sPure)
+str UpgStrings::getReplacedForLabeltext(str sPure)
 {
 	int i = 0;
 	//[b60014] chrissstrahl - fixed "labeltext^" issue
@@ -423,7 +545,7 @@ void UpgStrings::manipulateTrim(str& sTrim, const str& sTrimMatch)
 //              
 // Returns:     str sTrim           
 //================================================================
-str UpgStrings::returnTrimmed(str sTrim, const str sTrimMatch)
+str UpgStrings::getTrimmed(str sTrim, const str sTrimMatch)
 {
 	upgStrings.manipulateTrim(sTrim, sTrimMatch);
 	return sTrim;
@@ -439,7 +561,7 @@ str UpgStrings::returnTrimmed(str sTrim, const str sTrimMatch)
 //              
 // Returns:     str           
 //================================================================
-str UpgStrings::substr(str sString, const int& iStart, int iEnd)
+str UpgStrings::getSubStr(str sString, const int& iStart, int iEnd)
 {
 	manipulateFromWithLength(sString,iStart,iEnd);
 	return sString;

@@ -35,7 +35,6 @@ str coop_returnStringCleanedCvarname( char s );
 str coop_returnStringCleanedCvar( char s , bool bIsValue );
 str coop_returnStringSkillname( int iSkill );
 float coop_returnFloatAltIfValueBelow( bool bHigher , float fValue , float fLimit , float fAlt );
-str coop_returnStringUntilWhithspace( str sChain );
 str coop_returnStringUntilNewline( str sChain ); //[b607] chrissstrahl
 str coop_returnStringPathFileNoExtension(const str &sPath);//[b607] chrissstrahl
 str coop_returnStringDomainname(const str& sPath);
