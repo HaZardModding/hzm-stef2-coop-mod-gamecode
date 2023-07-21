@@ -1,6 +1,8 @@
 #ifndef __UPGPLAYER_HPP__
 #define __UPGPLAYER_HPP__
 
+#include "_pch_cpp.h"
+
 //[GAMEUPGRADE][b60014] chrissstrahl - used to seperate code bases better
 class UpgPlayer
 {

@@ -19,15 +19,7 @@
 #include "_pch_cpp.h"
 #include "entity.h"
 #include "player.h"
-
-#include "coopPlayer.hpp"
-#include "coopText.hpp"
-#include "coopReturn.hpp"
-#include "upgCircleMenu.hpp"
 #include "puzzleobject.hpp"
-
-extern void coop_playerThink(Player* player);
-
 #include "worldspawn.h"
 #include "weapon.h"
 #include "trigger.h"
@@ -51,6 +43,17 @@ extern void coop_playerThink(Player* player);
 #include "gamecmds.h"
 #include "teammateroster.hpp"
 #include <qcommon/gameplaymanager.h>
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
+
+#include "coopPlayer.hpp"
+#include "coopText.hpp"
+#include "coopReturn.hpp"
+
 
 //Forward
 //Back

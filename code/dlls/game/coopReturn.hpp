@@ -33,15 +33,12 @@ str coop_returnStringCleanedCvarvalue( char s );
 str coop_returnStringCleanedCvarname( str s );
 str coop_returnStringCleanedCvarname( char s );
 str coop_returnStringCleanedCvar( char s , bool bIsValue );
-str coop_returnStringFromWithLength( str sString , int const &iStart , int const &iEnd );
 str coop_returnStringSkillname( int iSkill );
 float coop_returnFloatAltIfValueBelow( bool bHigher , float fValue , float fLimit , float fAlt );
 str coop_returnStringUntilWhithspace( str sChain );
 str coop_returnStringUntilNewline( str sChain ); //[b607] chrissstrahl
 str coop_returnStringPathFileNoExtension(const str &sPath);//[b607] chrissstrahl
-str coop_returnStringFilenameOnly( const str &sPath );
 str coop_returnStringDomainname(const str& sPath);
-str coop_returnStringFileExtensionOnly( const str &sPath );
 str coop_returnStringDeathmessagenameForEntity( Entity * entity );
 Entity* coop_returnEntityPlayerFavored( void );
 Player* coop_returnPlayerNotFavored( void );

@@ -7,15 +7,14 @@
 
 #include "_pch_cpp.h"
 
-#include "coopAlias.hpp"
 #include "coopReturn.hpp"
 #include "coopCheck.hpp"
-#include "coopAlias.hpp"
 #include "coopParser.hpp"
 
 #include "upgPlayer.hpp"
 #include "upgMp_manager.hpp"
 #include "upgCircleMenu.hpp"
+#include "upgStrings.hpp"
 
 //[b60013] chrissstrahl - added rpg specific support
 #include "coopRPG.hpp"
@@ -191,7 +190,7 @@ int coop_returnIntOrDefaultFromString( str sSource, int iDefault )
 {
 	try
 	{
-		coop_trimM( sSource , " \t\r\n;=,f" );
+		upgStrings.manipulateTrim( sSource , " \t\r\n;=,f" );
 		if ( sSource.length() ) {
 			return atoi( sSource ); //[b60011] chrissstrahl - changed from (int)atof()
 		}
@@ -237,7 +236,7 @@ float coop_returnFloatOrDefaultFromString( str sSource , float fDefault )
 {
 	try
 	{
-		coop_trimM( sSource , " \t\r\n;=,f" );
+		upgStrings.manipulateTrim( sSource , " \t\r\n;=,f" );
 		if ( sSource.length() ) {
 			return atof( sSource );
 		}
@@ -269,7 +268,7 @@ int coop_returnIntFromFormatedString(str &sSource, const char &cFind)
 		int iPos;
 		int iTemp = -1;
 		str sExtracted = "";
-		coop_trimM( sSource , " \t" );
+		upgStrings.manipulateTrim( sSource , " \t" );
 
 		iPos = upgStrings.containsAt( sSource , cFind );
 		if ( iPos < 1 )
@@ -278,10 +277,10 @@ int coop_returnIntFromFormatedString(str &sSource, const char &cFind)
 		}
 		else
 		{
-			sExtracted = coop_substr( sSource , 0 , iPos );
+			sExtracted = upgStrings.substr( sSource , 0 , iPos );
 		}
 
-		coop_trimM( sExtracted , " \t" );
+		upgStrings.manipulateTrim( sExtracted , " \t" );
 
 		try { iTemp = atoi( sExtracted ); }
 		catch ( ... )
@@ -297,7 +296,7 @@ int coop_returnIntFromFormatedString(str &sSource, const char &cFind)
 		try { sSource = upgStrings.getStartingFrom( sSource , iPos + 1 ); }
 		catch ( ... ) { return -1; }
 
-		coop_trimM( sSource , " \t" );
+		upgStrings.manipulateTrim( sSource , " \t" );
 
 		return iTemp;
 	}
@@ -487,12 +486,6 @@ float coop_returnFloatAltIfValueBelow( bool bHigher, float fValue, float fLimit 
 	return fValue;
 }
 
-str coop_returnStringFromWithLength( str sString , const int &iStart , int const &iEnd )
-{
-	upgStrings.manipulateFromWithLength( sString , iStart , iEnd );
-	return sString;
-}
-
 //========================================================[b60011]
 // Name:        coop_returnStringDomainname
 // Class:       -
@@ -539,32 +532,6 @@ str coop_returnStringDomainname( const str &sPath )
 	return (domainName += construct);
 }
 
-//================================================================
-// Name:        coop_returnStringFilenameOnly
-// Class:       -
-//              
-// Description:  returns the filename of a given path string
-//              
-// Parameters:  str sPath
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_returnStringFilenameOnly( const str &sPath )
-{
-	int i;
-	str fileName = "";
-	for ( i = 0; i < sPath.length(); i++ ){
-		if ( sPath[i] == '/' || sPath[i] == '\\' ){
-			fileName = "";
-		}
-		else{
-			fileName += sPath[i];
-		}
-	}
-	return fileName;
-}
-
 //[b607]
 //================================================================
 // Name:        coop_returnStringPathFileNoExtension
@@ -586,50 +553,6 @@ str coop_returnStringPathFileNoExtension(const str &sPath)
 			break;
 		}
 		fileName += sPath[i];
-	}
-	return fileName;
-}
-
-//================================================================
-// Name:        coop_returnStringFileExtensionOnly
-// Class:       -
-//              
-// Description:  returns the fileextension of a given path string
-//              
-// Parameters:  str sPath
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_returnStringFileExtensionOnly( const str &sPath )
-{
-	str fileName = "";
-	str sPath2 = sPath;
-	sPath2 = sPath2.tolower();
-	for ( int i = 0; i < strlen(sPath2); i++ )
-	{
-		if (sPath2[i] == '/' || sPath2[i] == '\\' || sPath2[i] == ':' || sPath2[i] == ' ' ) {
-			fileName = "";
-		}
-		else {
-			fileName += sPath2[i];
-		}		
-	}
-
-	str fileName2 = "";
-	for ( int i = 0; i < strlen( fileName ); i++ )
-	{
-		if ( fileName[i] == '.' ) {
-			fileName2 = ".";
-		}
-		else {
-			fileName2 += fileName[i];
-		}
-	}
-
-	if ( strlen(fileName2) )
-	{
-		return fileName2;
 	}
 	return fileName;
 }

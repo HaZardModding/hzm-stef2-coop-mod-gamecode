@@ -1162,7 +1162,7 @@ void upgPlayerHandleDelayedServerCommands(void)
 				sNewText = coop_textPhraseLocalStrUmlaute(player, sText);
 				//make sure the text is no longer than 287 units or it will crash the game
 				if (sNewText.length() > 287) {
-					sNewText = coop_substr(sNewText, 0, 286);
+					sNewText = upgStrings.substr(sNewText, 0, 286);
 					gi.Printf("handleDelayedServerCommands: String to long, was cut down to 286\n");
 					gi.Printf("%s", sCmd.c_str());
 				}

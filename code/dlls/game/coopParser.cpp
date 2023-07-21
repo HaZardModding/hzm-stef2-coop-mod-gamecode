@@ -26,7 +26,6 @@
 #include "coopArmory.hpp"
 #include "coopText.hpp"
 #include "coopReturn.hpp"
-#include "coopAlias.hpp"
 #include "coopParser.hpp"
 
 #include "level.h"
@@ -52,7 +51,7 @@
 bool coop_parserReadFile( const str sFile , str &buffer )
 {
 	//if someone tries to open files with wrong extension
-	str sFileExt = coop_getFileExtension( sFile );
+	str sFileExt = upgStrings.getFileExtension( sFile );
 	if ( stricmp( sFileExt.c_str() , ".ini" ) != 0 &&
 		stricmp( sFileExt.c_str() , ".log" ) != 0 &&
 		stricmp( sFileExt.c_str() , ".txt" ) != 0 &&
@@ -135,7 +134,7 @@ int coop_parserGetNumberOfItemsFromCategory( str sFile , const str section )
 			if ( value[0] == '[' )
 			{
 				if ( value[section.length() + 1] == ']' &&
-					stricmp( coop_returnStringFromWithLength( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
+					stricmp( upgStrings.substr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
 				{
 					bDesiredSection = true;
 				}
@@ -219,7 +218,7 @@ void coop_parserGetItemsFromCategory( str sFile , ListenKnoten * &start , Listen
 			if ( value[0] == '[' )
 			{
 				if ( value[section.length() + 1] == ']' &&
-					stricmp( coop_returnStringFromWithLength( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
+					stricmp( upgStrings.substr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
 				{
 					bDesiredSection = true;
 				}
@@ -248,7 +247,7 @@ void coop_parserGetItemsFromCategory( str sFile , ListenKnoten * &start , Listen
 					//create new element
 					ListenKnoten *node = new ListenKnoten;
 
-					coop_trimM( value , " \t\n" );
+					upgStrings.manipulateTrim( value , " \t\n" );
 
 					//set data
 					node->value = upgStrings.getStartingFrom(value,iValStartPos + 1);
@@ -376,7 +375,7 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 				//check if section name is valid
 				//fixed: make sure we do not accept finds that are outside of out the desired section
 				if (	value[ section.length() + 1 ] == ']' &&
-						stricmp( coop_returnStringFromWithLength( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
+						stricmp( upgStrings.substr( value , 1 , section.length() ).c_str() , section.c_str() ) == 0 )
 				{
 					bDesiredSection = true;
 				}
@@ -437,7 +436,7 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 						//check if there is a value after =
 						if ( ( iPosEqu + 1 ) < strlen( value ) ){
 							value = upgStrings.getStartingFrom( value , iPosEqu );
-							coop_trimM( value , "\t\n\r" ); //[b607] chrissstrahl - trim last \n as well
+							upgStrings.manipulateTrim( value , "\t\n\r" ); //[b607] chrissstrahl - trim last \n as well
 
 							//debug
 							//gi.Printf( "coop_phraserIniGet VALUE_RETRIVED!!\n" );
@@ -468,7 +467,7 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 bool coop_parserIniSet( str sFile , const str &key , const str &value , const str section )
 {
 	//if someone tries to open files with wrong extension
-	str sFileExt = coop_getFileExtension( sFile );
+	str sFileExt = upgStrings.getFileExtension( sFile );
 	if (	stricmp( sFileExt.c_str() , ".ini" ) != 0 &&
 			stricmp( sFileExt.c_str() , ".inf" ) != 0 )
 	{
@@ -541,7 +540,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 		//gi.Printf( va( "..%s" , sLine.c_str() ) );
 
 		//trim string
-		coop_trimM( sLine , " \t\r" );
+		upgStrings.manipulateTrim( sLine , " \t\r" );
 
 		//commentary, empty line or key already set, keep line as it is and write it directly to the file
 		if ( bKeySet || sLine[0] == ';' || sLine[0] == '\n' )

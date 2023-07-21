@@ -178,8 +178,8 @@ str UpgStrings::returnForLabeltext(str sPure)
 	return sPure;
 }
 
-//========================================================[b60011]
-// Name:        returnForLabeltext
+//================================================================
+// Name:        manipulateTrim
 // Class:       UpgStrings
 //              
 // Description:  trim given chars (remove them if they are at the end or the beginning of that string)
@@ -256,8 +256,104 @@ void UpgStrings::manipulateTrim(str& sTrim, const str& sTrimMatch)
 
 	sTrim = sTemp;
 }
+
+//================================================================
+// Name:        returnTrimmed
+// Class:       UpgStrings
+//              
+// Description:  trim given chars (remove them if they are at the end or the beginning of that string)
+//              
+// Parameters:  str sBase, str sTrimChars
+//              
+// Returns:     str sTrim           
+//================================================================
 str UpgStrings::returnTrimmed(str sTrim, const str sTrimMatch)
 {
 	upgStrings.manipulateTrim(sTrim, sTrimMatch);
 	return sTrim;
+}
+
+//================================================================
+// Name:        substr
+// Class:       UpgStrings
+//              
+// Description:  returns the specified part of a string
+//              
+// Parameters:  str sString, const int& iStart, int iEnd
+//              
+// Returns:     str           
+//================================================================
+str UpgStrings::substr(str sString, const int& iStart, int iEnd)
+{
+	manipulateFromWithLength(sString,iStart,iEnd);
+	return sString;
+}
+
+//================================================================
+// Name:        getFileName
+// Class:       UpgStrings
+//              
+// Description:  returns the filename of a given path with file string
+//              
+// Parameters:  str sPath
+//              
+// Returns:     str             
+//================================================================
+str UpgStrings::getFileName(const str& sPath)
+{
+	int i;
+	str fileName = "";
+	for (i = 0; i < sPath.length(); i++) {
+		if (sPath[i] == '/' || sPath[i] == '\\') {
+			fileName = "";
+		}
+		else {
+			fileName += sPath[i];
+		}
+	}
+	return fileName;
+}
+
+//================================================================
+// Name:        coop_returnStringFileExtensionOnly
+// Class:       UpgStrings
+//              
+// Description:  returns the fileextension of a given path string
+//              
+// Parameters:  str sPath
+//              
+// Returns:     str
+//              
+//================================================================
+str UpgStrings::getFileExtension(const str& sPath)
+{
+	str fileName = "";
+	str sPath2 = sPath;
+	sPath2 = sPath2.tolower();
+	for (int i = 0; i < strlen(sPath2); i++)
+	{
+		if (sPath2[i] == '/' || sPath2[i] == '\\' || sPath2[i] == ':' || sPath2[i] == ' ') {
+			fileName = "";
+		}
+		else {
+			fileName += sPath2[i];
+		}
+	}
+
+	str fileName2 = "";
+	for (int i = 0; i < strlen(fileName); i++)
+	{
+		if (fileName[i] == '.') {
+			fileName2 = ".";
+		}
+		else {
+			fileName2 += fileName[i];
+		}
+	}
+
+	if (strlen(fileName2))
+	{
+		return fileName2;
+	}
+	return fileName;
 }

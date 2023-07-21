@@ -8,6 +8,10 @@
 #ifndef __UPGCOOPINTERFACE_HPP__
 #define __UPGCOOPINTERFACE_HPP__
 
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
 
 class UpgCoopInterface
 {

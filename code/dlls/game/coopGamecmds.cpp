@@ -8,6 +8,8 @@
 #ifndef __COOPGAMECMDS_CPP__
 #define __COOPGAMECMDS_CPP__
 
+
+
 #include "coopGamecmds.hpp"
 #include "coopText.hpp"
 
@@ -1515,7 +1517,7 @@ qboolean G_coopInput(const gentity_t* ent)
 
 	//limit of data that can be actually used
 	if (inputData.length() > 260) { //(264) make sure we have space for linebreak
-		inputData = coop_returnStringFromWithLength(inputData.c_str(), 0, 259);
+		inputData = upgStrings.substr(inputData.c_str(), 0, 259);
 	}
 
 	ent->entity->entityVars.SetVariable("coopInputData", inputData.c_str());

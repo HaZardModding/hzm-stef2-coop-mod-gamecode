@@ -5,22 +5,28 @@
 // CONTAINING MULTIPLAYER VOTE RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
 
+
+
+#include "actor.h"
+#include "player.h"
+#include "mp_manager.hpp"
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+
 //[b60012] chrissstrahl - allow flushtiki vote
 #include "coopServer.hpp"
 extern CoopServer coopServer;
-
 #include "coopVote.hpp"
 #include "coopReturn.hpp"
 #include "coopHuds.hpp"
 #include "coopParser.hpp"
 #include "coopActor.hpp"
-
 extern CoopChallenges coopChallenges;
 #include "coopChallenges.hpp"
 
-#include "actor.h"
-#include "player.h"
-#include "mp_manager.hpp"
 
 
 //================================================================
@@ -467,7 +473,7 @@ int coop_vote_mapValidate(Player* player, const str &command, const str &arg, st
 		str sMapRealName = arg;
 		iVarPos = upgStrings.containsAt(sMapRealName, "$");
 		if (iVarPos > 0) {
-			sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
+			sMapRealName = upgStrings.substr(sMapRealName, 0, iVarPos);
 		}
 
 		fullMapName = "maps/";
@@ -757,7 +763,7 @@ int coop_vote_execValidate(Player* player, const str &command, const str &arg, s
 
 	//[b607] chrissstrahl - changed file directory + added localstring
 	fullCFGName = "cfg/server/callvote/";
-	fullCFGName += coop_returnStringFilenameOnly(arg);
+	fullCFGName += upgStrings.getFileExtension(arg);
 	fullCFGName += ".cfg";
 
 	if (!gi.FS_Exists(fullCFGName.c_str())){
@@ -1070,7 +1076,7 @@ int coop_vote_mapNxtPrevValidate(Player* player, const str &command, const str &
 	//strip $ level parameter
 	iVarPos = upgStrings.containsAt(sMapRealName, "$");
 	if (iVarPos > 0) {
-		sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
+		sMapRealName = upgStrings.substr(sMapRealName, 0, iVarPos);
 	}
 
 	//find current map in the list
@@ -1859,7 +1865,7 @@ bool coop_vote_execSet(const str _voteString)
 		for (int i = iStart; i < _voteString.length(); i++) {
 			sValue += _voteString[i];
 		}
-		sValue = coop_returnStringFilenameOnly(sValue);
+		sValue = upgStrings.getFileExtension(sValue);
 		gi.SendConsoleCommand(va("exec cfg/server/callvote/%s.cfg\n", sValue.c_str()));
 	}
 	return true;

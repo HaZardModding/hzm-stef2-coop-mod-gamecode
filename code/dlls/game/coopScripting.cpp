@@ -6,6 +6,9 @@
 //-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
+
+#include "upgCoopInterface.hpp"
+
 #include "coopReturn.hpp"
 #include "coopArmory.hpp"
 #include "coopObjectives.hpp"
@@ -147,7 +150,7 @@ str CoopScripting::checkReplaceInclude(str sLex)
 			)
 		{
 			str s = "coop_mod/maps/global_scripts/";
-			str sFn = coop_returnStringFilenameOnly(sLex);
+			str sFn = upgStrings.getFileExtension(sLex);
 			s += sFn;
 			if (gi.FS_ReadFile(s, NULL, true) != -1) {
 				//strcpy(lex.pr_immediate_string, s.c_str());

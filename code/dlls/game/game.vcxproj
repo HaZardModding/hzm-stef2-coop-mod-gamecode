@@ -649,7 +649,6 @@
     </ClCompile>
     <ClCompile Include="coopAchievements.cpp" />
     <ClCompile Include="coopActor.cpp" />
-    <ClCompile Include="coopAlias.cpp" />
     <ClCompile Include="coopArmory.cpp" />
     <ClCompile Include="coopCheck.cpp" />
     <ClCompile Include="coopClass.cpp" />
@@ -1480,7 +1479,6 @@
     <ClInclude Include="container.h" />
     <ClInclude Include="coopAchievements.hpp" />
     <ClInclude Include="coopActor.hpp" />
-    <ClInclude Include="coopAlias.hpp" />
     <ClInclude Include="coopArmory.hpp" />
     <ClInclude Include="coopCheck.hpp" />
     <ClInclude Include="coopClass.hpp" />

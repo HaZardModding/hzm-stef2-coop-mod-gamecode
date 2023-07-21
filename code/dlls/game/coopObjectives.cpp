@@ -19,6 +19,20 @@
 
 
 #include "_pch_cpp.h"
+#include "level.h"
+#include "player.h"
+#include "weapon.h"
+#include "mp_manager.hpp"
+#include "mp_modeDm.hpp"
+#include "mp_modeTeamDm.hpp"
+#include "mp_modeCtf.hpp"
+#include "powerups.h"
+
+#include "upgCoopInterface.hpp"
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
 
 #include "coopCheck.hpp"
 #include "coopReturn.hpp"
@@ -30,14 +44,7 @@
 #include "coopText.hpp"
 #include "coopStory.hpp"
 
-#include "level.h"
-#include "player.h"
-#include "weapon.h"
-#include "mp_manager.hpp"
-#include "mp_modeDm.hpp"
-#include "mp_modeTeamDm.hpp"
-#include "mp_modeCtf.hpp"
-#include "powerups.h"
+
 
 //================================================================
 // Name:        coop_objectivesMarkerUpdate

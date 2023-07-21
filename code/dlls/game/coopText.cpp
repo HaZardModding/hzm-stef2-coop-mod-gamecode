@@ -9,7 +9,6 @@
 #include "coopText.hpp"
 #include "coopCheck.hpp"
 #include "coopReturn.hpp"
-#include "coopAlias.hpp"
 
 //================================================================
 // Name:        coop_textJoinCommands

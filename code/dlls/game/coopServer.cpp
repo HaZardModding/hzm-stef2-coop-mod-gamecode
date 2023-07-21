@@ -10,28 +10,6 @@
 
 
 #include "_pch_cpp.h"
-
-#include "coopEvents.hpp"
-#include "coopServer.hpp"
-CoopServer coopServer;
-
-#include "coopScripting.hpp"
-extern CoopScripting coopScripting;
-
-#include "coopReturn.hpp"
-#include "coopPlayer.hpp"
-#include "coopObjectives.hpp"
-#include "coopText.hpp"
-#include "coopParser.hpp"
-
-//[b60011] chrissstrahl
-#include "coopNpcTeam.hpp"
-extern CoopNpcTeam coopNpcTeam;
-#include "coopChallenges.hpp"
-extern CoopChallenges coopChallenges;
-#include "upgCircleMenu.hpp"
-extern UpgCircleMenu upgCircleMenu;
-
 #include "player.h"
 #include "mp_manager.hpp"
 #include "mp_modeDm.hpp"
@@ -41,6 +19,29 @@ extern UpgCircleMenu upgCircleMenu;
 #include "interpreter.h"
 #include "program.h"
 #include "trigger.h"
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
+extern UpgCircleMenu upgCircleMenu;
+
+#include "coopEvents.hpp"
+#include "coopServer.hpp"
+CoopServer coopServer;
+#include "coopScripting.hpp"
+extern CoopScripting coopScripting;
+#include "coopReturn.hpp"
+#include "coopPlayer.hpp"
+#include "coopObjectives.hpp"
+#include "coopText.hpp"
+#include "coopParser.hpp"
+#include "coopNpcTeam.hpp"//[b60011] chrissstrahl
+extern CoopNpcTeam coopNpcTeam;
+#include "coopChallenges.hpp"
+extern CoopChallenges coopChallenges;
+
 extern Event EV_ScriptThread_StuffCommand;
 
 //[b60011] chrissstrahl
@@ -804,7 +805,7 @@ void coop_serverMonitorTikiCache( str sData )
 		return;
 	}
 
-	sData = coop_returnStringFilenameOnly( sData );
+	sData = upgStrings.getFileExtension( sData );
 	sData = sData.tolower();
 
 	int iMax;
@@ -1585,7 +1586,7 @@ str coop_serverModifiedFile( str standardPath )
 	bool isScriptFile = false;
 
 	//[b60011] Chrissstrahl - clean this up a bit - and while I am at it, fix issues
-	str sFileExt = coop_returnStringFileExtensionOnly(standardPath);
+	str sFileExt = upgStrings.getFileExtension(standardPath);
 
 	//we handle alternative script file extension, so we need to know
 	//[b60012] chrissstrahl - fix missing .c_str()

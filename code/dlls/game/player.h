@@ -37,6 +37,8 @@ class HoldableItem;
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
 
 #include "g_local.h"
 #include "vector.h"

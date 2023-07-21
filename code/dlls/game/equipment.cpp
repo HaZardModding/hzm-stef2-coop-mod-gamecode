@@ -21,6 +21,12 @@
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
 
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
+
 #include "coopForcefield.hpp"
 extern CoopForcefield coopForcefield;
 
@@ -572,9 +578,9 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 						sRed = gpm->getFloatValue(sInteractiveType, "Red");
 						sBlue = gpm->getFloatValue(sInteractiveType, "Blue");
 						sGreen = gpm->getFloatValue(sInteractiveType, "Green");
-						sRed = coop_substr(sRed, 0, 4);
-						sBlue = coop_substr(sBlue, 0, 4);
-						sGreen = coop_substr(sGreen, 0, 4);
+						sRed = upgStrings.substr(sRed, 0, 4);
+						sBlue = upgStrings.substr(sBlue, 0, 4);
+						sGreen = upgStrings.substr(sGreen, 0, 4);
 					}
 
 					if (descr1 != "" || descr2 != "" || descr3 != "") {

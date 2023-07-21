@@ -26,7 +26,6 @@ extern CoopChallenges coopChallenges;
 
 #include "coopRadar.hpp"
 #include "coopReturn.hpp"
-#include "coopAlias.hpp"
 #include "coopCheck.hpp"
 #include "listener.h"
 

@@ -2,7 +2,6 @@
 #define __COOPPHRASER_HPP__
 
 #include "_pch_cpp.h"
-#include "coopAlias.hpp"
 
 bool coop_parserReadFile( const str sFile , str &buffer );
 void coop_parserGetItemsFromCategory( str sFile , ListenKnoten *&start , ListenKnoten *&end , const str section );

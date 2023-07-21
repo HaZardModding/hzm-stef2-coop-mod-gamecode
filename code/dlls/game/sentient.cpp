@@ -31,11 +31,16 @@
 #include "actor.h"
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
+#include "decals.h"
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
 
 #include "coopChallenges.hpp" //[b60011] chrissstrahl
 extern CoopChallenges coopChallenges;
-
-#include "decals.h"
 
 Event EV_Sentient_BeginAttack
 (

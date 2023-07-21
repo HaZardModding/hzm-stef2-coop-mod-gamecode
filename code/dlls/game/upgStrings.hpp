@@ -18,6 +18,9 @@ public:
 	str				returnForLabeltext(str sPure);
 	void			manipulateTrim(str& sTrim, const str& sTrimMatch);
 	str				returnTrimmed(str sTrim, const str sTrimMatch);
+	str				substr(str sString, const int& iStart, int iEnd);
+	str				getFileName(const str& sPath);
+	str				getFileExtension(const str& sPath);
 };
 
 extern UpgStrings upgStrings;

@@ -20,31 +20,18 @@
 
 #include "_pch_cpp.h"
 #include "actor.h"
-#include "coopTrigger.hpp"
 #include "mp_manager.hpp"
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+
+#include "coopTrigger.hpp"
 #include "coopObjectives.hpp"
 #include "coopStory.hpp"
 #include "coopReturn.hpp"
 #include "coopArmory.hpp"
-/*
-#include "coopAlias.hpp"
-#include "coopParser.hpp"
-#include "coopModel.hpp"
-#include "coopRadar.hpp"
-#include "coopCheck.hpp"
-#include "coopText.hpp"
-#include "coopServer.hpp"
-#include "coopPlayer.hpp"
-#include "coopClass.hpp"
-#include "coopHuds.hpp"
-#include "level.h"
-#include "player.h"
-#include "weapon.h"
-#include "mp_modeDm.hpp"
-#include "mp_modeTeamDm.hpp"
-#include "mp_modeCtf.hpp"
-#include <qcommon/gameplaymanager.h>
-*/
 
 extern Event EV_SetArchetype;
 extern Event EV_Warp;
@@ -148,7 +135,7 @@ void TriggerCoopGameSave::Activate( Event *ev )
 	else if ( sSaveName.length() > 32 )
 	{
 		gi.Printf( "TriggerCoopGameSave::Activate - Save-game in uservar1 to long, WAS RECIFIED (maximum 32 Letters)!\n" );
-		sSaveName = coop_returnStringFromWithLength( sSaveName, 0 , 32 );
+		sSaveName = upgStrings.substr( sSaveName, 0 , 32 );
 	}
 
 	gi.SendConsoleCommand( va("ui_savegamewithname \"%s\"\n", sSaveName.c_str() ) );

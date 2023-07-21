@@ -16,11 +16,7 @@
 //
 #include "_pch_cpp.h"
 
-//hzm coop mod chrissstrahl - let we need to include this, I think...
-#include "coopReturn.hpp"
-#include "coopDialog.hpp"
-#include "coopCheck.hpp"
-#include "coopActor.hpp"
+
 
 //#include "g_local.h"
 #include "actor.h"
@@ -50,6 +46,12 @@
 #include "mp_manager.hpp"
 //hzm coop mod chrissstrahl - we need to access the awardsystem to handle awards in coop
 #include "mp_awardsystem.hpp"
+
+//hzm coop mod chrissstrahl - let we need to include this, I think...
+#include "coopReturn.hpp"
+#include "coopDialog.hpp"
+#include "coopCheck.hpp"
+#include "coopActor.hpp"
 
 //hzm coop mod chrissstrahl - here we go declare externals
 extern void coop_dialogSetupPlayerAll( Actor *speaker , char localizedDialogName[MAX_QPATH] , bool headDisplay );

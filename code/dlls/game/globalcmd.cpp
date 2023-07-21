@@ -25,6 +25,12 @@
 #include "mp_manager.hpp"
 #include "mp_modeBase.hpp"
 
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
+
 #include "vector.h"
 #include "interpreter.h"
 #include "coopParser.hpp"
@@ -1649,7 +1655,7 @@ void CThread::checkAchivment(Event* ev)
 			
 			int i;
 			for (i = 0; i < iArrayLength;i++) {
-				if(strcmpi(coop_returnStringFileExtensionOnly(sResource).c_str(),va(".%s",sForbiddenFileTypes[i].c_str())) == 0) {
+				if(strcmpi(upgStrings.getFileExtension(sResource).c_str(),va(".%s",sForbiddenFileTypes[i].c_str())) == 0) {
 					return;
 				}
 			}
@@ -2262,7 +2268,7 @@ void CThread::getLevelParamaterValue( Event *ev )
 	str sValue	= upgStrings.getStartingFrom( s , (iVarPos + varname.length() ));
 	iVarPos		= upgStrings.containsAt( sValue , "?" );
 	if ( iVarPos  > 0) {
-		sValue	= coop_returnStringFromWithLength( sValue , 0 , iVarPos );
+		sValue	= upgStrings.substr( sValue , 0 , iVarPos );
 	}
 	ev->ReturnString( sValue.c_str() );
 }

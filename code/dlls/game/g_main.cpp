@@ -15,19 +15,6 @@
 // DESCRIPTION:
 //
 #include "_pch_cpp.h"
-
-#define SAVEGAME_VERSION 60011 //[b60011] chrissstrahl - test if this prevents issues by printing out a warning
-#define PERSISTANT_VERSION 1
-
-//[b60012] chrissstrahl
-#include "coopServer.hpp"
-extern CoopServer coopServer;
-
-#include "coopPlayer.hpp"
-#include "coopReturn.hpp"
-#include "coopParser.hpp"
-#include "coopText.hpp"
-
 #include "g_utils.h"
 #include "gamecmds.h"
 #include "entity.h"
@@ -45,6 +32,23 @@ extern CoopServer coopServer;
 #include <qcommon/gameplaymanager.h>
 #include <qcommon/stringresource.hpp>
 #include "teammateroster.hpp"
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
+
+//[b60012] chrissstrahl
+#include "coopServer.hpp"
+extern CoopServer coopServer;
+#include "coopPlayer.hpp"
+#include "coopReturn.hpp"
+#include "coopParser.hpp"
+#include "coopText.hpp"
+
+#define SAVEGAME_VERSION 60014 //[b60011] chrissstrahl - test if this prevents issues by printing out a warning
+#define PERSISTANT_VERSION 1
 
 Vector			vec_origin = Vector(0, 0, 0);
 Vector			vec_zero = Vector(0, 0, 0);
@@ -1383,7 +1387,7 @@ void G_ExitLevel( void )
 		str sMapRealName = level.nextmap;
 		iVarPos = upgStrings.containsAt(sMapRealName, "$");
 		if (iVarPos > 0) {
-			sMapRealName = coop_returnStringFromWithLength(sMapRealName, 0, iVarPos);
+			sMapRealName = upgStrings.substr(sMapRealName, 0, iVarPos);
 		}
 		sCleanMapname = va("maps/%s.bsp",sMapRealName.c_str());
 

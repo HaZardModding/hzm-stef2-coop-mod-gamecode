@@ -304,10 +304,13 @@ GOBJ =\
     $(B)/game/WeaponDualWield.o \
     $(B)/game/weaputils.o \
     $(B)/game/worldspawn.o \
+    \
 	$(B)/game/upgCircleMenu.o \
 	$(B)/game/upgMp_manager.o \
 	$(B)/game/upgPlayer.o \
 	$(B)/game/upgCoopInterface.o \
+	$(B)/game/upgStrings.o \
+    \
 	$(B)/game/coopNpcTeam.o \
     $(B)/game/coopArmory.o \
     $(B)/game/coopChallenges.o \
@@ -326,7 +329,6 @@ GOBJ =\
     $(B)/game/coopServer.o \
     $(B)/game/coopStory.o \
     $(B)/game/coopParser.o \
-    $(B)/game/coopAlias.o \
 	$(B)/game/coopTrigger.o \
 	$(B)/game/coopActor.o \
 	$(B)/game/coopVote.o \
@@ -502,11 +504,14 @@ $(B)/game/weapon.o : $(GDIR)/weapon.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/WeaponDualWield.o : $(GDIR)/WeaponDualWield.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/weaputils.o : $(GDIR)/weaputils.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/worldspawn.o : $(GDIR)/worldspawn.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
+
 $(B)/game/upgCircleMenu.o : $(GDIR)/upgCircleMenu.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgMp_manager.o : $(GDIR)/upgMp_manager.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgPlayer.o : $(GDIR)/upgPlayer.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgCoopInterface.o : $(GDIR)/upgCoopInterface.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/upgStrings.o : $(GDIR)/upgStrings.cpp; $(DO_GAME_SHLIB_CC)
+
+$(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopNpcTeam.o : $(GDIR)/coopNpcTeam.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopArmory.o : $(GDIR)/coopArmory.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopChallenges.o : $(GDIR)/coopChallenges.cpp; $(DO_GAME_SHLIB_CC)
@@ -524,7 +529,6 @@ $(B)/game/coopScripting.o : $(GDIR)/coopScripting.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopServer.o : $(GDIR)/coopServer.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopStory.o : $(GDIR)/coopStory.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopParser.o : $(GDIR)/coopParser.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/coopAlias.o : $(GDIR)/coopAlias.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopTrigger.o : $(GDIR)/coopTrigger.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopActor.o : $(GDIR)/coopActor.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopVote.o : $(GDIR)/coopVote.cpp; $(DO_GAME_SHLIB_CC)

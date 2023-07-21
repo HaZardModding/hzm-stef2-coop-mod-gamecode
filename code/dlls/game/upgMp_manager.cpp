@@ -15,6 +15,7 @@ class MultiplayerManager;
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
 
 //DEPENDENCIES TO REMOVE
 

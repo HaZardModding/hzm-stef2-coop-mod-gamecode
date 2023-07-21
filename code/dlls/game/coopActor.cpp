@@ -6,13 +6,18 @@
 //-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
-
-#include "coopActor.hpp"
-#include "coopReturn.hpp"
-
 #include "actor.h"
 #include "player.h"
 #include "mp_manager.hpp"
+
+#include "upgPlayer.hpp"
+#include "upgCircleMenu.hpp"
+#include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
+
+#include "coopActor.hpp"
+#include "coopReturn.hpp"
 
 extern Event EV_Actor_Fade;
 

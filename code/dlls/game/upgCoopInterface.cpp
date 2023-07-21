@@ -9,7 +9,6 @@
 
 #include "upgCoopInterface.hpp"
 
-#include "coopAlias.hpp"
 #include "coopCheck.hpp"
 #include "coopReturn.hpp"
 #include "coopServer.hpp"

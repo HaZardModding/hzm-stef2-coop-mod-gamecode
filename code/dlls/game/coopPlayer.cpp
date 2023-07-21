@@ -18,6 +18,8 @@
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
+#include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
 
 //[b60011] chrissstrahl
 #include "coopNpcTeam.hpp"
@@ -29,7 +31,6 @@ extern CoopServer coopServer;
 extern CoopSpawnlocation coopSpawnlocation;
 
 #include "coopPlayer.hpp"
-#include "coopAlias.hpp"
 #include "coopParser.hpp"
 #include "coopModel.hpp"
 #include "coopRadar.hpp"
@@ -1183,7 +1184,7 @@ str coop_playerGetDataSegment( Player *player , short int iNumber )
 	str sData;
 	str sSegment = "";
 	sData = coop_parserIniGet( coopServer.getServerDataIniFilename() , player->coop_getId(), "client");
-	coop_trimM( sData , " \t\r\n" );
+	upgStrings.manipulateTrim( sData , " \t\r\n" );
 
 	//[b60012] chrissstrahl - fix missing .c_str()
 	if ( !Q_stricmp( sData.c_str(), "" ) )
@@ -1338,7 +1339,7 @@ void coop_playerRestore( Player *player )
 	//100 200 200 200 200 200 1465368163 mapname
 
 	//trim/clean
-	coop_trimM( sData," \t\r\n" );
+	upgStrings.manipulateTrim( sData," \t\r\n" );
 
 	//get first set of data
 	int iTempData=0;
@@ -2074,7 +2075,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	int i = 0;
 	bool idendified = false;
 
-	str sModel = coop_returnStringFilenameOnly( inflictor->model ).tolower();
+	str sModel = upgStrings.getFileExtension( inflictor->model ).tolower();
 //////gi.Printf( va( "%s #%s %s killed %s! $%s mod: %f \n" , inflictor.getClassname() , attacker.getClassname() , sModel.c_str() , killedPlayer->client->pers.netname , inflictor->targetname , meansOfDeath ) );
 	//playerPrey->hudPrint( sModel.c_str() );
 	
