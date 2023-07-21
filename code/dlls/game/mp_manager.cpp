@@ -2148,8 +2148,8 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 				//}
 				//else {
 				str s , s2;
-				s = coop_textReplaceWhithespace( multiplayerManager._voteOwner->client->pers.netname );
-				s2 = coop_textReplaceWhithespaceBlack( _voteString.c_str() );
+				s = upgStrings.getReplacedSpaceWithUnderscore( multiplayerManager._voteOwner->client->pers.netname );
+				s2 = upgStrings.getReplacedSpaceWithUnderscoreBlack( _voteString.c_str() );
 				upgPlayerDelayedServerCommand( playerCurrent->entnum , va( "locationprint 220 455 %s^0_^8$$CalledVote$$:^0_^8%s 0.8" , s.c_str() , s2.c_str() ) );
 				//}
 			}

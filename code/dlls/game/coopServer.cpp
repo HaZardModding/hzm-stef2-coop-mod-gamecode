@@ -875,7 +875,7 @@ void coop_serverManageClientData( str sMap )
 	}
 	//check if coop map is a sequel (determined by name simularities coop_[paradiseIsland]2 - coop_[gbs]7 )
 	//[b60012] chrissstrahl - fix missing .c_str()
-	else if ( Q_stricmp( coop_textCleanAllButLettersAndLower( level.mapname ).c_str(), coop_textCleanAllButLettersAndLower(sMap).c_str()) == 0) {
+	else if ( Q_stricmp( upgStrings.getLettersOnlyAsLowercase( level.mapname ).c_str(), upgStrings.getLettersOnlyAsLowercase(sMap).c_str()) == 0) {
 		bCoopKeppPlayerStatus = true;
 	}
 

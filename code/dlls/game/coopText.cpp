@@ -6,6 +6,9 @@
 //-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
+#include "mp_manager.hpp"
+
+
 #include "coopText.hpp"
 #include "coopCheck.hpp"
 #include "coopReturn.hpp"
@@ -32,8 +35,8 @@ str coop_textJoinCommands( str sCmd1 , str sCmd2 )
 	if ( !sCmd2 || strlen( sCmd2 ) < 1 )bEmpty = true;
 	else s2 = sCmd2;
 	
-	sCmd1 = coop_textReturnFromTill( sCmd1 , 0 , COOP_JOIN_MAX_SINGLE_COMMAND );
-	sCmd2 = coop_textReturnFromTill( sCmd2 , 0 , COOP_JOIN_MAX_SINGLE_COMMAND );
+	sCmd1 = upgStrings.getStartingFromUntil( sCmd1 , 0 , COOP_JOIN_MAX_SINGLE_COMMAND );
+	sCmd2 = upgStrings.getStartingFromUntil( sCmd2 , 0 , COOP_JOIN_MAX_SINGLE_COMMAND );
 
 	if ( bEmpty ){
 		gi.Printf("coop_textJoinCommands: WARNING: empty command joined\n");
@@ -43,165 +46,6 @@ str coop_textJoinCommands( str sCmd1 , str sCmd2 )
 	}
 
 	return s1;
-}
-
-//================================================================
-// Name:        coop_textReturnFromTill
-// Class:       -
-//              
-// Description:	Returns a string starting from, until, do not confuse this till with length!
-//              
-// Parameters:  str sText , int iStart , int iMax
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_textReturnFromTill( str sText, int iStart, int iMax )
-{
-	if ( !sText || sText.length() < 1 ) return "";
-	if ( iMax > sText.length() ) iMax = sText.length();
-
-	if ( iStart > iMax ){
-		gi.Printf( va( "coop_textReturnFromTill: ERROR in values: start[%i] max[%i]\n" , iStart , iMax ) );
-		return "";
-	}
-
-	int					i;
-	str					sNew = "";
-	for ( i = iStart; i < iMax; i++ ){
-		sNew += sText[i];
-	}
-	return sNew;
-}
-
-//================================================================
-// Name:        coop_textCleanAllButLetters
-// Class:       -
-//              
-// Description:		removes the everything but the actual letters from string
-//              
-// Parameters:  str sText
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_textCleanAllButLetters( str sText )
-{
-	//filter all but letters
-	static const char	validChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-	int					i , j;
-	bool				isValidChar;
-	str					sNew = "";
-
-	for ( i = 0; i < sText.length(); i++ ){
-		isValidChar = false;
-		for ( j = 0; validChars[j]; j++ ){
-			if ( sText[i] == validChars[j] ){ isValidChar = true; }
-		}
-
-		if ( !isValidChar ){
-			sNew += "";
-		}else{
-			sNew += sText[i];
-		}
-	}
-	return sNew;
-}
-
-
-//================================================================
-// Name:        coop_textCleanAllButLettersAndLower
-// Class:       -
-//              
-// Description:		removes the everything but the actual letters from string, transforms to lowercase
-//              
-// Parameters:  str sText
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_textCleanAllButLettersAndLower( str sText )
-{
-	//filter all but letters
-	static const char	validChars[] = "abcdefghijklmnopqrstuvwxyz";
-	int					i , j;
-	bool				isValidChar;
-	str					sNew = "";
-
-	sText = sText.tolower();
-
-	for ( i = 0; i < sText.length(); i++ ){
-		isValidChar = false;
-		for ( j = 0; validChars[j]; j++ ){
-			if ( sText[i] == validChars[j] ){ isValidChar = true; }
-		}
-
-		if ( !isValidChar ){
-			sNew += "";
-		}
-		else{
-			sNew += sText[i];
-		}
-	}
-	return sNew;
-}
-
-//================================================================
-// Name:        coop_textReplaceWhithespace
-// Class:       -
-//              
-// Description:		replaces the current string after all whithespaces have been replaced
-//					used for locationprint strings and menu related stuff (Coop communicator Transporetr Menu)
-//              
-// Parameters:  str sText
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_textReplaceWhithespace( str sText )
-{
-	int		i;
-	str		sNewText = "";
-
-	for ( i = 0; i < sText.length(); i++ ){
-		if ( sText[i] == ' ' ){
-			sNewText += "_";
-		}
-		else{
-			sNewText += sText[i];
-		}
-	}
-
-	return sNewText;
-}
-
-//================================================================
-// Name:        coop_textReplaceWhithespaceBlack
-// Class:       -
-//              
-// Description:		replaces the current string after all whithespaces have been replaced
-//					used for locationprint strings
-//              
-// Parameters:  str sText
-//              
-// Returns:     str
-//              
-//================================================================
-str coop_textReplaceWhithespaceBlack( str sText )
-{
-	int		i;
-	str		sNewText = "";
-
-	for ( i = 0; i < sText.length(); i++ ){
-		if ( sText[i] == ' ' ){
-			sNewText += "^0_^8";
-		}
-		else{
-			sNewText += sText[i];
-		}
-	}
-
-	return sNewText;
 }
 
 //================================================================
@@ -313,11 +157,11 @@ str coop_textPhraseLocalStrUmlaute( Player *player, str sText )
 //================================================================
 void coop_textCinematicHudprint( Player *player , str sText )
 {
-	if ( !level.cinematic ){
+	if ( !level.cinematic && multiplayerManager.inMultiplayer()){
 		player->hudPrint( sText.c_str() );
 	}
 	else{
-		sText = coop_textReplaceWhithespace( sText.c_str() );
+		sText = upgStrings.getReplacedSpaceWithUnderscore( sText.c_str() );
 		upgPlayerDelayedServerCommand( player->entnum , va( "locationprint 220 455 %s 0.8" , sText.c_str() ) );
 	}
 }
@@ -350,7 +194,7 @@ void coop_textHudprint( Player *player , str sText )
 			gi.centerprintf( gentity , CENTERPRINT_IMPORTANCE_CRITICAL , command.c_str() );
 		}
 	}
-	else if( player ){
+	else if( player && !multiplayerManager.inMultiplayer()){
 		player->hudPrint( sText.c_str() );
 	}
 }

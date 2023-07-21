@@ -1157,7 +1157,7 @@ void coop_playerCommunicator(Player* player, int iAdd)
 			}
 			else {
 				sListName = listPlayer->client->pers.netname;
-				sListName = coop_textReplaceWhithespace(sListName);
+				sListName = upgStrings.getReplacedSpaceWithUnderscore(sListName);
 			}
 
 			upgPlayerDelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTran%i title %s\n",j, sListName.c_str()));

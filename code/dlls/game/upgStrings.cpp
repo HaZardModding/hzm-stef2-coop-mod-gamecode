@@ -147,6 +147,162 @@ str UpgStrings::getStartingFrom(const str& sString, const int& iStart)
 	return sPartial;
 }
 
+
+//================================================================
+// Name:        getStartingFromUntil
+// Class:       UpgStrings
+//              
+// Description:	Returns a string starting from, until - do not confuse this till with length!
+//              
+// Parameters:  str sText , int iStart , int iMax
+//              
+// Returns:     str     
+//================================================================
+str UpgStrings::getStartingFromUntil(str sText, int iStart, int iMax)
+{
+	if (!sText || sText.length() < 1) return "";
+	if (iMax > sText.length()) iMax = sText.length();
+
+	if (iStart > iMax) {
+		gi.Printf(va("upgStrings.getStartingFromUntil: ERROR in values: start[%i] max[%i]\n", iStart, iMax));
+		return "";
+	}
+
+	int					i;
+	str					sNew = "";
+	for (i = iStart; i < iMax; i++) {
+		sNew += sText[i];
+	}
+	return sNew;
+}
+
+//================================================================
+// Name:        coop_textCleanAllButLetters
+// Class:       -
+//              
+// Description:		removes the everything but the actual letters from string
+//              
+// Parameters:  str sText
+//              
+// Returns:     str
+//================================================================
+str UpgStrings::getLettersOnly(str sText)
+{
+	//filter all but letters
+	static const char	validChars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	int					i, j;
+	bool				isValidChar;
+	str					sNew = "";
+
+	for (i = 0; i < sText.length(); i++) {
+		isValidChar = false;
+		for (j = 0; validChars[j]; j++) {
+			if (sText[i] == validChars[j]) { isValidChar = true; }
+		}
+
+		if (!isValidChar) {
+			sNew += "";
+		}
+		else {
+			sNew += sText[i];
+		}
+	}
+	return sNew;
+}
+
+//================================================================
+// Name:        getLettersOnlyAsLowercase
+// Class:       UpgStrings
+//              
+// Description:	removes everything but the actual letters from string, transforms to lowercase
+//              
+// Parameters:  str
+//              
+// Returns:     str
+//================================================================
+str UpgStrings::getLettersOnlyAsLowercase(str sText)
+{
+	//filter all but letters
+	static const char	validChars[] = "abcdefghijklmnopqrstuvwxyz";
+	int					i, j;
+	bool				isValidChar;
+	str					sNew = "";
+
+	sText = sText.tolower();
+
+	for (i = 0; i < sText.length(); i++) {
+		isValidChar = false;
+		for (j = 0; validChars[j]; j++) {
+			if (sText[i] == validChars[j]) { isValidChar = true; }
+		}
+
+		if (!isValidChar) {
+			sNew += "";
+		}
+		else {
+			sNew += sText[i];
+		}
+	}
+	return sNew;
+}
+
+
+//================================================================
+// Name:        getReplacedSpaceWithUnderscore
+// Class:       UpgStrings
+//              
+// Description:		replaces the current string after all whithespaces have been replaced
+//					used for locationprint strings and menu related stuff (Coop communicator Transporetr Menu)
+//              
+// Parameters:  str
+//              
+// Returns:     str        
+//================================================================
+str UpgStrings::getReplacedSpaceWithUnderscore(str sText)
+{
+	int		i;
+	str		sNewText = "";
+
+	for (i = 0; i < sText.length(); i++) {
+		if (sText[i] == ' ') {
+			sNewText += "_";
+		}
+		else {
+			sNewText += sText[i];
+		}
+	}
+
+	return sNewText;
+}
+
+//================================================================
+// Name:        getReplacedSpaceWithUnderscoreBlack
+// Class:       UpgStrings
+//              
+// Description:	replaces the current string after all whithespaces have been replaced
+//				used for locationprint strings
+//              
+// Parameters:  str
+//              
+// Returns:     str         
+//================================================================
+str UpgStrings::getReplacedSpaceWithUnderscoreBlack(str sText)
+{
+	int		i;
+	str		sNewText = "";
+
+	for (i = 0; i < sText.length(); i++) {
+		if (sText[i] == ' ') {
+			sNewText += "^0_^8";
+		}
+		else {
+			sNewText += sText[i];
+		}
+	}
+
+	return sNewText;
+}
+
 //========================================================[b60011]
 // Name:        returnForLabeltext
 // Class:       UpgStrings

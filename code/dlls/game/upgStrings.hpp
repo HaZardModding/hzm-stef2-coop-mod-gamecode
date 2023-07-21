@@ -15,6 +15,11 @@ public:
 	int				containsAt(str sSource, str sKeyword);
 	void			manipulateFromWithLength(str& sString, int const& iStart, int iEnd);
 	str				getStartingFrom(const str& sString, const int& iStart);
+	str				getStartingFromUntil(str sText, int iStart, int iMax);
+	str				getLettersOnly(str sText);
+	str				getLettersOnlyAsLowercase(str sText);
+	str				getReplacedSpaceWithUnderscore(str sText);
+	str				getReplacedSpaceWithUnderscoreBlack(str sText);
 	str				returnForLabeltext(str sPure);
 	void			manipulateTrim(str& sTrim, const str& sTrimMatch);
 	str				returnTrimmed(str sTrim, const str sTrimMatch);

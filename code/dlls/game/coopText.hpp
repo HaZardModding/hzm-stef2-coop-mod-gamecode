@@ -54,12 +54,7 @@
 #include "_pch_cpp.h"
 
 str coop_textJoinCommands( str sCmd1 , str sCmd2 );
-str coop_textReturnFromTill( str sText , int iStart , int iMax );
 void coop_textCinematicHudprint( Player *player , str sText );
-str coop_textCleanAllButLetters( str sText );
-str coop_textCleanAllButLettersAndLower( str sText );
-str coop_textReplaceWhithespace( str sText );
-str coop_textReplaceWhithespaceBlack( str sText );
 str coop_textPhraseLocalStrUmlaute( Player *player, str sText );
 void coop_textHudprint( Player *player , str sText );
 void coop_textHudprintAll( str messageToShow );
