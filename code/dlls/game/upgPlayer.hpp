@@ -20,6 +20,7 @@ private:
 	str			scanData0 = "";
 	str			scanData1 = "";
 	str			scanData2 = "";
+	float		lastTimeSkipCinematic = -970.0f;
 };
 
 void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);

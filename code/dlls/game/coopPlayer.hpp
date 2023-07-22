@@ -135,8 +135,6 @@ public:
 	bool	showTargetedEntity = false;
 	//hzm coop mod chrissstrahl - keeps track of last targeted entity its class
 	str		lastTargetedEntityClass = "";
-	//hzm coop mod chrissstrahl - remember when player pressed escape during this cinematic
-	float	lastTimeSkipCinematic = -990.0f;
 	//hzm coop mod chrissstrahl - remember when player caused the last time a message to the hud, prevent him from spamming, used for events like rejoining when dead in lms and so forth
 	float	lastTimeHudMessage = -989.0f;
 	//hzm coop mod chrissstrahl - marks if player weapons should be unholstered after !transport

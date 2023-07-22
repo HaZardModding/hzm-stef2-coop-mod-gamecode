@@ -546,8 +546,8 @@ void Player::SkipCinematic( Event *ev )
 		//hzm gameupdate chrissstrahl - allow skipping of cinematics in mp and also allow opening the menu during cinematic
 		if ( g_gametype->integer > 0 ) {
 			//player presses long or repeatedly ESC
-			if ( ( this->coopPlayer.lastTimeSkipCinematic + 0.25 ) > level.time && !game.cinematicSkipping ) {
-				this->coopPlayer.lastTimeSkipCinematic = level.time;
+			if ( ( upgPlayerGetSkipCinematicTimeLast() + 0.25) > level.time && !game.cinematicSkipping) {
+				upgPlayerSetSkipCinematicTimeLast();
 				multiplayerManager.callVote( this , "skipcinematic" , "" );
 				return;
 			}
@@ -555,18 +555,18 @@ void Player::SkipCinematic( Event *ev )
 			//player presses long ESC and a cinematic skip vote is active
 			else {
 				//check if player has voted, if not make him vote yes for skip, if a vote is active, then exit
-				if ( ( this->coopPlayer.lastTimeSkipCinematic + 0.25 ) > level.time && game.cinematicSkipping )
+				if ( (upgPlayerGetSkipCinematicTimeLast() + 0.25) > level.time && game.cinematicSkipping)
 				{
 					if ( !multiplayerManager._playerData[this->entnum]._voted )
 					{
 						multiplayerManager.vote( this , "y" );
 					}
-					this->coopPlayer.lastTimeSkipCinematic = level.time;
+					upgPlayerSetSkipCinematicTimeLast();
 					return;
 				}
 
 				//if ESC is pressed only shortly or if no skip is active, show/hide menu
-				this->coopPlayer.lastTimeSkipCinematic = level.time;
+				upgPlayerSetSkipCinematicTimeLast();
 				upgPlayerDelayedServerCommand( this->entnum , "pushmenu ingame_multiplayer" );
 				return;
 			}

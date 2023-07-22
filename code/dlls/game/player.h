@@ -281,6 +281,8 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		float				upgPlayerGetSkipCinematicTimeLast();
+		void				upgPlayerSetSkipCinematicTimeLast();
 		str					upgPlayerGetScanData(short iNumber);
 		void				upgPlayerSetScanData(short iNumber, str sData);
 		void				upgPlayerHudAddScanning();
@@ -1874,7 +1876,6 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
 	arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
-	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);	
 	
 	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
 	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);

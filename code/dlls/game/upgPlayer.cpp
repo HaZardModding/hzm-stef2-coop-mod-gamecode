@@ -22,6 +22,36 @@
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
 //=========================================================[b60014]
+// Name:        upgPlayerGetSkipCinematicTimeLast
+// Class:       Player
+//              
+// Description: get skip cinematic time last 
+//              
+// Parameters:  void
+//              
+// Returns:     float
+//================================================================
+float Player::upgPlayerGetSkipCinematicTimeLast()
+{
+	return upgPlayer.lastTimeSkipCinematic;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetSkipCinematicTimeLast
+// Class:       Player
+//              
+// Description: get skip cinematic time last 
+//              
+// Parameters:  void
+//              
+// Returns:     float
+//================================================================
+void Player::upgPlayerSetSkipCinematicTimeLast()
+{
+	upgPlayer.lastTimeSkipCinematic = level.time;
+}
+
+//=========================================================[b60014]
 // Name:        upgPlayerGetScanData
 // Class:       Player
 //              
