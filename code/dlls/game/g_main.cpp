@@ -47,7 +47,7 @@ extern CoopServer coopServer;
 #include "coopParser.hpp"
 #include "coopText.hpp"
 
-#define SAVEGAME_VERSION 60014 //[b60011] chrissstrahl - test if this prevents issues by printing out a warning
+#define SAVEGAME_VERSION 8
 #define PERSISTANT_VERSION 1
 
 Vector			vec_origin = Vector(0, 0, 0);

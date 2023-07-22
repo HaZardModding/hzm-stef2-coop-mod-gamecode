@@ -831,7 +831,7 @@ void World::updateMessageOfTheDay( void )
 		for (int i = 0; i < maxclients->integer; i++){
 			player = (Player *)g_entities[i].entity;
 			if (player && player->client && player->isSubclassOf(Player) && !multiplayerManager.isPlayerSpectator(player)){
-				if ((player->coopPlayer.timeEntered + 10) > level.time) {
+				if ((player->upgPlayerGetLevelTimeEntered() + 10) > level.time) {
 					continue;
 				}
 				if (player->messageOfTheDaySend == false || bForce == true) {

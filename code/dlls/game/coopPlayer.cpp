@@ -52,11 +52,22 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+//[b60014] chrissstrahl - extend the amount of time a player can be under water without drowning
+//================================================================
+// CALLED FROM: void Player::InitWorldEffects( void )
+//================================================================
+void Player::coop_playerInitWorldEffects()
+{
+	if (multiplayerManager.inMultiplayer() && game.coop_isActive) {
+		air_finished = level.time + 20.0f;
+	}
+}
+
 //[b60011] chrissstrahl - get coop class name - used for scripting
 //================================================================
 // HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
 //================================================================
-void Player::getCoopClass(Event* ev)
+void Player::coop_playerGetCoopClass(Event* ev)
 {
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer
 	if (multiplayerManager.inMultiplayer() && game.coop_isActive) {
@@ -67,12 +78,11 @@ void Player::getCoopClass(Event* ev)
 	}
 }
 
-
 //[b60011] chrissstrahl - check if coop class is technician
 //================================================================
 // HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
 //================================================================
-void Player::isCoopClassTechnician(Event* ev)
+void Player::coop_playerIsCoopClassTechnician(Event* ev)
 {
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
 	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
@@ -87,7 +97,7 @@ void Player::isCoopClassTechnician(Event* ev)
 //================================================================
 // HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
 //================================================================
-void Player::isCoopClassMedic(Event* ev)
+void Player::coop_playerIsCoopClassMedic(Event* ev)
 {
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
 	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_MEDIC) {
@@ -102,7 +112,7 @@ void Player::isCoopClassMedic(Event* ev)
 //================================================================
 // HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
 //================================================================
-void Player::isCoopClassHeavyWeapons(Event* ev)
+void Player::coop_playerIsCoopClassHeavyWeapons(Event* ev)
 {
 	//[b60014] chrissstrahl - accsess coopPlayer.className only in multiplayer)
 	if (multiplayerManager.inMultiplayer() && game.coop_isActive && this->coopPlayer.className == COOP_CLASS_NAME_HEAVYWEAPONS) {
@@ -118,7 +128,7 @@ void Player::isCoopClassHeavyWeapons(Event* ev)
 //================================================================
 // HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
 //================================================================
-void Player::setClassLocked(Event* ev)
+void Player::coop_playerSetClassLocked(Event* ev)
 {
 	//[b60014] chrissstrahl - accsess coopPlayer.classChangingDisabled only in multiplayer)
 	if (multiplayerManager.inMultiplayer() && game.coop_isActive) {
@@ -129,7 +139,7 @@ void Player::setClassLocked(Event* ev)
 //================================================================
 // HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
 //================================================================
-void Player::getCoopVersion(Event* ev)
+void Player::coop_playerGetCoopVersion(Event* ev)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	ev->ReturnFloat(coop_getInstalledVersion());
@@ -1229,7 +1239,7 @@ bool coop_playerSpawnLms( Player *player )
 	//player is more than 3 sec on level and
 	//player dies more often than allowed
 	if (	player->upgPlayerDeathTime() > game.coop_levelStartTime &&
-			(player->coopPlayer.timeEntered + 3 ) < level.time &&
+			(player->upgPlayerGetLevelTimeEntered() + 3 ) < level.time &&
 			player->coopPlayer.lmsDeaths >= game.coop_lastmanstanding
 	){
 		multiplayerManager.makePlayerSpectator(player, SPECTATOR_TYPE_FOLLOW, false);
@@ -1406,42 +1416,8 @@ bool coop_playerSetup(Player* player)
 		world->CancelEventsOfType(EV_World_AutoFailure);
 	}
 
-	gentity_t* ent = player->edict;
-	if (!ent) {
-		return false;
-	}
-
-	//[b607] daggolin - Restore bot state on player object
-	if (level.spawn_bot) {
-		ent->svflags |= SVF_BOT;
-	}
-	//[b610] chrissstrahl - add var in any case
-	player->entityVars.SetVariable("_playerIsBot", (float)(int)level.spawn_bot);
-
-	//[b60011] chrissstrahl - what happned to this ? I readded this as I can't find it
-	player->coopPlayer.timeEntered = level.time;
-
-	//[b60011] chrissstrahl - make sure we do not handle bots
-	if (player->upgPlayerIsBot()) {
-		
-		cvar_t* cvar = gi.cvar_get("local_language");
-		str sCvar = (cvar ? cvar->string : "Eng");
-		player->upgPlayerSetLanguage(sCvar);
-
-		cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
-		int iCvar2 = (cvar2 ? cvar2->integer : 0);
-		if (iCvar2 < 60) {
-			gi.cvar_set("cl_maxpackets","60");
-		}
-
-		cvar_t* cvar3 = gi.cvar_get("cl_packetdup");
-		int iCvar3 = (cvar3 ? cvar3->integer : 0);
-		if (iCvar3 > 0) {
-			gi.cvar_set("cl_packetdup", "0");
-		}
-		coop_classSet(player, "HeavyWeapon");
-		return true;
-	}
+	//[b60014] chrissstrahl - we don't want to handle bots
+	if (multiplayerManager.inMultiplayer() && player->upgPlayerIsBot()) { return true; }
 
 	//[b60014] chrissstrahl - temorarly disable sv_floodprotect to allow setup commands
 	//from client which are send fast in groups, floodprotect actually discards them (as it should)
@@ -1475,7 +1451,7 @@ bool coop_playerSetup(Player* player)
 	//player->coopPlayer.respawnAtRespawnpoint = true;
 
 	//hzm coop mod chrissstrahl - record time when player entred, store in player entity
-	player->entityVars.SetVariable("globalCoop_timeEntered", level.time);
+	player->entityVars.SetVariable("globalCoop_upgPlayer.timeEntered", level.time);
 
 	if(game.coop_isActive){
 		//hzm coop mod chrissstrahl - run level script threads, used for scriptmod and noscript script
@@ -1703,7 +1679,7 @@ void coop_playerSetupCoop( Player *player )
 		coop_objectivesSetup(player);
 
 		//[b60014] chrissstrahl - fix class not applaying on local server because lastTimeChangedClass and lastTimeAppliedClass are both 999 at start
-		player->coopPlayer.lastTimeChangedClass = (player->coopPlayer.timeEntered - 42);
+		player->coopPlayer.lastTimeChangedClass = (player->upgPlayerGetLevelTimeEntered() - 42);
 
 		//[b60011] chrissstrahl 
 		coopChallenges.playerEnteredWarning(player);
@@ -1835,7 +1811,7 @@ void coop_playerEnterArena(int entnum, float health)
 	//
 	if (multiplayerManager.getPlayersTeam(player) != NULL && multiplayerManager.getPlayersTeam(player)->getName() != "Blue") {
 		multiplayerManager.joinTeam(player, "Blue");
-		if ((player->coopPlayer.timeEntered + 2) < level.time && !multiplayerManager.isPlayerSpectator(player)) {
+		if ((player->upgPlayerGetLevelTimeEntered() + 2) < level.time && !multiplayerManager.isPlayerSpectator(player)) {
 			//[b60012][cleanup] chrissstrahl - this could be put into a func
 			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint("^5INFO:^2 Coop erlaubt nur blaues Team.\n");

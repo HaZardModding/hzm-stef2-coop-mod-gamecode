@@ -1992,7 +1992,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getLastDamaged,				&Player::upgPlayerGetLastDamaged },
 	{ &EV_Player_getTeamName,					&Player::upgPLayerGetTeamName },
 	{ &EV_Player_getTeamScore,					&Player::upgPlayerGetTeamScore },
-	{ &EV_Player_getCoopVersion,				&Player::getCoopVersion },
+	{ &EV_Player_getCoopVersion,				&Player::coop_playerGetCoopVersion },
 	
 	//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
 	{ &EV_Player_getBackpackAttachOffset,				&Player::upgPlayerGetBackpackAttachOffset },
@@ -2037,15 +2037,15 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b607] chrissstrahl - return targeted entity of player
 	{ &EV_Player_GetTargetedEntity ,			&Player::upgPlayerGetTargetedEntity },
 	//[b60011] chrissstrahl - allowing/preventing player from switching class
-	{ &EV_Player_SetClassLocked ,				&Player::setClassLocked },
+	{ &EV_Player_SetClassLocked ,				&Player::coop_playerSetClassLocked },
 	//[b60011] chrissstrahl - get coop class name
-	{ &EV_Player_GetCoopClass ,					&Player::getCoopClass },
+	{ &EV_Player_GetCoopClass ,					&Player::coop_playerGetCoopClass },
 	//[b60011] chrissstrahl - check if coop class is technician
-	{ &EV_Player_IsTechnichian ,				&Player::isCoopClassTechnician },
+	{ &EV_Player_IsTechnichian ,				&Player::coop_playerIsCoopClassTechnician },
 	//[b60011] chrissstrahl - check if coop class is Medic
-	{ &EV_Player_IsMedic ,						&Player::isCoopClassMedic },
+	{ &EV_Player_IsMedic ,						&Player::coop_playerIsCoopClassMedic },
 	//[b60011] chrissstrahl - check if coop class is HeavyWeapons
-	{ &EV_Player_IsHeavyWeapons ,				&Player::isCoopClassHeavyWeapons },
+	{ &EV_Player_IsHeavyWeapons ,				&Player::coop_playerIsCoopClassHeavyWeapons },
 	//[b60011] chrissstrahl - checks player has ger/eng langauge
 	{ &EV_Player_HasLanguageGerman ,			&Player::upgPlayerHasLanguageGerman },
 	{ &EV_Player_HasLanguageEnglish ,			&Player::upgPlayerHasLanguageEnglish },
@@ -3721,12 +3721,6 @@ Player::Player()
 	actor_camera = NULL;
 	cool_camera = NULL;
 
-	//HaZardModding Coop Mod
-	//HaZardModding Coop Mod
-	//HaZardModding Coop Mod
-	//[b607] chrissstrahl - used to fix a gamebug (targeted name keeping)
-	last_entityTargeted = NULL;
-
 	//[b607] daggolin - set bot flag
 	if (level.spawn_bot) edict->svflags |= SVF_BOT;
 
@@ -4219,9 +4213,11 @@ void Player::InitWorldEffects( void )
 	next_drown_time = 0;
 	next_painsound_time = 0;
 
-	//hzm gameupdate && hzm coop - air in dm/coop
-	if ( game.coop_isActive ) air_finished = level.time + 20.0f;
-	else					  air_finished = level.time + 10.0f;
+	//[GAMEUPGRADE] daggolin
+	air_finished = level.time + 10.0f;
+
+	//[b60014] chrissstrahl - extend the time a player can be under water in coop
+	coop_playerInitWorldEffects();
 
 	old_waterlevel = 0;
 	drown_damage = 0.0f;
@@ -6361,7 +6357,7 @@ void Player::CheckForTargetedEntity(void)
 
 	if (!viewTrace.ent) {
 		SetTargetedEntity(0);
-		last_entityTargeted = NULL;
+		upgPlayer.targetedEntityLast = NULL;
 		return;//comes here once after respawn
 	}
 
@@ -6370,7 +6366,7 @@ void Player::CheckForTargetedEntity(void)
 	//if player is targeting world
 	if ((viewTrace.entityNum == ENTITYNUM_WORLD)) {
 		SetTargetedEntity(0);
-		last_entityTargeted = world;
+		upgPlayer.targetedEntityLast = world;
 		return;
 	}
 
@@ -6425,7 +6421,7 @@ void Player::CheckForTargetedEntity(void)
 	//NOT A PLAYER
 	//- Remove player name, if last entity was a player
 	else {
-		if (last_entityTargeted && last_entityTargeted->isSubclassOf(Player)) {
+		if (upgPlayer.targetedEntityLast && upgPlayer.targetedEntityLast->isSubclassOf(Player)) {
 			gi.SendServerCommand(entnum, "stufftext \"cg_targetedPlayerName ^0\"\n");
 			
 			//[b60014] chrissstrahl - reset also the class symbol, in multiplayer
@@ -6438,7 +6434,7 @@ void Player::CheckForTargetedEntity(void)
 	
 	//set first the target then the last target
 	SetTargetedEntity(viewTrace.ent->entity);
-	last_entityTargeted = viewTrace.ent->entity;
+	upgPlayer.targetedEntityLast = viewTrace.ent->entity;
 }
 
 
@@ -6455,32 +6451,10 @@ void Player::CheckForTargetedEntity(void)
 //-----------------------------------------------------
 void Player::SetTargetedEntity( EntityPtr entity )
 {
-	//hzm coop mod chrissstrahl - prevent tricorder scann interruption of archetypes
-	int i;
-	Player* players;
-	for ( i = 0; i < maxclients->integer; i++ )
-	{
-		players = multiplayerManager.getPlayer( i );
-
-		if ( !players )
-			continue;
-
-		//is a spectator or is a bot
-		//[b60014] chrissstrahl - possible bug fixed where it checked if it is not a bot to skip
-		if (multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator( players ) && players->edict->svflags & SVF_BOT )
-			continue;
-
-		//exit, do not allow new player to end a scann, because this player is scanning
-		if ( players != this && players->coopPlayer.scanning && players->_targetedEntity ) {
-			return;
-		}
+	//[GAMEUPGRADE][b60014] chrissstrahl - prevent tricorder scann interruption of archetypes
+	if (upgPlayerSetTargetedEntity()) {
+		return;
 	}
-	//end of hzm
-
-	//hzm coop mod chrissstrahl - Note:
-	//	If dissabled archetype will no longer hide and show once they have been targeted
-	//	Resets all archetype infos that are displayed
-	//end of hzm
 
 	//remove the EF_DISPLAY_INFO from the entity.
 	if ( _targetedEntity != 0 )
@@ -6488,11 +6462,10 @@ void Player::SetTargetedEntity( EntityPtr entity )
 
 	_targetedEntity = entity;
 
-	//[b60014] chrissstrahl - do not allow spectators to trigger archetypes
+	//[GAMEUPGRADE][b60014] chrissstrahl - do not allow spectators to trigger archetypes
 	if ( multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator( this ) ) {
 		return;
 	}
-	//end of hzm
 
 	//hzm coop mod chrissstrahl - Note:
 	//	If dissabled archetype will no longer show on targeting
@@ -6522,20 +6495,6 @@ void Player::SetTargetedEntity( EntityPtr entity )
 		//end of hzm
 		*/
 	}
-	//hzm coop mod chrissstrahl - remove hud if we have no tricorder in use(scanning)
-	if ( this->coop_getInstalled() && this->coopPlayer.scanHudActive ) {
-		Weapon* currentWeapon = this->GetActiveWeapon( WEAPON_ANY );//WEAPON_ANY WEAPON_DUAL
-		if ( currentWeapon ) {
-			Equipment* e;
-			e = ( Equipment* )currentWeapon;
-
-			if ( e->isScanning() )
-				return;
-		}
-		this->coopPlayer.scanHudActive = false;
-		gi.SendServerCommand( this->entnum , "stufftext \"ui_removehud coop_scan\"\n" );
-	}
-	//end of hzm
 }
 
 //-----------------------------------------------------
@@ -6566,7 +6525,7 @@ void Player::ProcessTargetedEntity( void )
 			continue;
 
 		//exit, do not allow new player to start a scann, because this player is scanning
-		if ( players->coopPlayer.scanning && players->_targetedEntity /*&& players != this*/ ) {
+		if ( players->upgPlayerIsScanning() && players->_targetedEntity /*&& players != this*/ ) {
 			//this->hudPrint( "ProcessTargetedEntity denied\n" );
 			return;
 		}

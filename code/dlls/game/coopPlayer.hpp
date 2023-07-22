@@ -131,8 +131,6 @@ public:
 	float	lastTimeUsing = 0.0f;
 	//hzm coop mod chrissstrahl - used to store gametime this player was last time modulating a puzzleobject
 	float	lastTimeModulatingPuzzle = 0.0f;
-	//hzm coop mod chrissstrahl - keeps track of last targeted entity num
-	//int		lastTargetedEntity; //[b607] removed, there is last_entityTargeted in player class
 	//hzm coop mod chrissstrahl - show targeted entity targetname and class dev command (!targeted)
 	bool	showTargetedEntity = false;
 	//hzm coop mod chrissstrahl - keeps track of last targeted entity its class
@@ -141,8 +139,6 @@ public:
 	float	lastTimeSkipCinematic = -990.0f;
 	//hzm coop mod chrissstrahl - remember when player caused the last time a message to the hud, prevent him from spamming, used for events like rejoining when dead in lms and so forth
 	float	lastTimeHudMessage = -989.0f;
-	//hzm coop mod chrissstrahl - keeps track of when the player entered the game
-	float	timeEntered = -988.0f;
 	//hzm coop mod chrissstrahl - marks if player weapons should be unholstered after !transport
 	bool	transportUnholster = false;
 	//hzm coop mod chrissstrahl - remember weapon that should be unholstered after !transport
@@ -151,8 +147,6 @@ public:
 	bool	updateHudDisplayed = false;
 	//hzm coop mod chrissstrahl - needed for additional vote options
 	bool startedVote = false;
-	//hzm coop mod chrissstrahl - needed for tricorder scanning/archetypes in mp
-	bool scanning = false;
 	//hzm coop mod chrissstrahl - used to keep track of tricorder scan info hud status
 	bool scanHudActive = false;
 	//hzm coop mod chrissstrahl - used to store tricorder scan last data send time

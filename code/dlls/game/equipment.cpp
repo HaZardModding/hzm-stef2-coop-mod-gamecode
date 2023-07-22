@@ -446,27 +446,19 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 		if ( g_gametype->integer != GT_SINGLE_PLAYER )
 		{
 			//check every player
-			int i;
-			Player* players;
-			for ( i = 0; i < maxclients->integer; i++ )
-			{
-				players = multiplayerManager.getPlayer( i );
+			Player* playerOther;
+			for (int i = 0; i < maxclients->integer; i++ ){
+				playerOther = multiplayerManager.getPlayer( i );
 
 				//player does not exist OR player is spectator OR is bot
-				if ( !players || multiplayerManager.isPlayerSpectator( players ) || ( players->edict->svflags & SVF_BOT ) )
+				if ( !playerOther || multiplayerManager.isPlayerSpectator(playerOther) || (playerOther->edict->svflags & SVF_BOT ) )
 					continue;
 
 				//exit, do not allow new player to start a scann, because this player is scanning
-				if ( players->coopPlayer.scanning && players->_targetedEntity && players != playerCur ) {
+				if (playerOther->upgPlayerIsScanning() && playerOther->_targetedEntity && playerOther != playerCur ) {
 					return;
 				}
 			}
-		}
-
-		//starting to scann
-		if ( isScanning() && !playerCur->coopPlayer.scanning ) {
-			//messageTest( playerCur , "scanning\n" );
-			playerCur->coopPlayer.scanning = true;
 		}
 	}
 	//hzm coop mod chrissstrahl - testing
@@ -480,26 +472,22 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 			}
 		}
 
-		//hzm coop mod chrissstrahl - moved above for on 14th 2017.11
-		playerCur->coopPlayer.scanning = false;
-
 		//go trough all players in a for and check if one of them is scanning
 		//exit here if any player is scanning, prevent other players from canceling
 		//the scann of that player
 		if ( g_gametype->integer != GT_SINGLE_PLAYER )
 		{
 			int i;
-			Player* players;
-			for ( i = 0; i < maxclients->integer; i++ )
-			{
-				players = multiplayerManager.getPlayer( i );
+			Player* playerOther;
+			for ( i = 0; i < maxclients->integer; i++ ){
+				playerOther = multiplayerManager.getPlayer( i );
 
 				//player does not exist OR player is spectator OR is bot
-				if ( !players || multiplayerManager.isPlayerSpectator( players ) || ( players->edict->svflags & SVF_BOT ) )
+				if ( !playerOther || multiplayerManager.isPlayerSpectator(playerOther) || (playerOther->upgPlayerIsBot() ) )
 					continue;
 
 				//exit, do not allow new player to end a scann, because this player is scanning
-				if ( players != playerCur && players->coopPlayer.scanning && players->_targetedEntity ) {
+				if (playerOther != playerCur && playerOther->upgPlayerIsScanning() && playerOther->_targetedEntity ) {
 					return;
 				}
 			}
@@ -531,23 +519,21 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 		//go trough all players in a for and check if one of them is scanning
 		//exit here if any player is scanning, prevent other players from canceling
 		//the scann of that player
-		int i;
-		Player* players;
-		for ( i = 0; i < maxclients->integer; i++ )
-		{
-			players = multiplayerManager.getPlayer( i );
+		Player* playerOther;
+		for (int i = 0; i < maxclients->integer; i++ ){
+			playerOther = multiplayerManager.getPlayer( i );
 
 			//player does not exist OR player is spectator OR is bot
-			if ( !players || multiplayerManager.isPlayerSpectator( players ) || ( players->edict->svflags & SVF_BOT ) )
+			if ( !playerOther || multiplayerManager.isPlayerSpectator(playerOther) || playerOther->upgPlayerIsBot())
 				continue;
 
 			//exit, do not allow new player to end a scann, because this player is scanning
-			if ( players != playerCur ) {
-				if ( players->_targetedEntity /*&&  players->_targetedEntity != entity*/ ) {
-					players->_targetedEntity->edict->s.eFlags &= ~EF_DISPLAY_INFO;
-					players->_targetedEntity->edict->s.eFlags &= ~EF_DISPLAY_DESC1;
-					players->_targetedEntity->edict->s.eFlags &= ~EF_DISPLAY_DESC2;
-					players->_targetedEntity->edict->s.eFlags &= ~EF_DISPLAY_DESC3;
+			if (playerOther != playerCur ) {
+				if (playerOther->_targetedEntity /*&&  players->_targetedEntity != entity*/ ) {
+					playerOther->_targetedEntity->edict->s.eFlags &= ~EF_DISPLAY_INFO;
+					playerOther->_targetedEntity->edict->s.eFlags &= ~EF_DISPLAY_DESC1;
+					playerOther->_targetedEntity->edict->s.eFlags &= ~EF_DISPLAY_DESC2;
+					playerOther->_targetedEntity->edict->s.eFlags &= ~EF_DISPLAY_DESC3;
 					//messageTest( players , "ending your arche\n" );
 				}
 			}
@@ -558,7 +544,7 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 		//add modified wider variant of hud for high res in coop mod pk3 download
 		//add modified wider variant of hud for high res in coop mod pk3 download
 
-		if ( playerCur->coop_getInstalled()) {
+		if (upgCoopInterface.playerHasCoop(playerCur)) {
 			if ( ( playerCur->coopPlayer.lastScanSend + 0.5 ) < level.time ) {
 				playerCur->coopPlayer.lastScanSend = ( int )level.time;
 				if ( playerCur->_targetedEntity != 0 ) {

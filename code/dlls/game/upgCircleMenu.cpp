@@ -76,7 +76,7 @@ Event EV_Player_circleMenuClear
 // Returns:     -
 //              
 //================================================================
-void Player::switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd)
+void Player::circleMenuSwitchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd)
 {
 	str command = "globalwidgetcommand ";
 	command += widget1;
@@ -277,7 +277,7 @@ str Player::circleMenuGetWidgetName(int iSegment)
 // Returns:     -
 //              
 //================================================================
-int Player::getSegmentNumForAngle(float fAngle)
+int Player::circleMenuGetSegmentNumForAngle(float fAngle)
 {
 	float fNumSegments = 4;
 	float fSegmentDegreeSize = (360 / fNumSegments);
@@ -378,7 +378,7 @@ void Player::circleMenuThink()
 
 	float fSegmentNum;
 	str sWidgetName;
-	fSegmentNum = getSegmentNumForAngle(fAngle);
+	fSegmentNum = circleMenuGetSegmentNumForAngle(fAngle);
 //gi.Printf("Player::circleMenuThink()->circleMenuGetWidgetName\n");
 	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
 

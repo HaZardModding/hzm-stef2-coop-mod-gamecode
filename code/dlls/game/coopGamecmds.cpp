@@ -44,7 +44,7 @@ qboolean G_coopClientId(const gentity_t* ent)
 		return qtrue;
 	}
 
-	if ((player->coopPlayer.timeEntered + 10) > level.time) {
+	if ((player->upgPlayerGetLevelTimeEntered() + 10) > level.time) {
 		upgStrings.getTrimmed(sId, " \t\r\n;[]=");
 		str sClientIdNew = coop_checkPlayerCoopIdExistInIni(player,sId);
 	}

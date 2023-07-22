@@ -21,17 +21,135 @@
 
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
+//=========================================================[b60014]
+// Name:        upgPlayerIsScanning
+// Class:       Player
+//              
+// Description: checks if player is scanning something or not
+//              
+// Parameters:  void
+//              
+// Returns:     bool             
+//================================================================
+bool Player::upgPlayerIsScanning()
+{
+	Weapon* currentWeapon = GetActiveWeapon(WEAPON_ANY);//WEAPON_ANY WEAPON_DUAL
+	if (currentWeapon) {
+		Equipment* eQuipMenT = (Equipment*)currentWeapon;
+		return eQuipMenT->isScanning();
+	}
+	return false;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetTargetedEntity
+// Class:       Player
+//              
+// Description: called from: void Player::SetTargetedEntity( EntityPtr entity )
+//              
+// Parameters:  void
+//              
+// Returns:     bool             
+//================================================================
+bool Player::upgPlayerSetTargetedEntity()
+{
+	if (multiplayerManager.inMultiplayer()) {
+		Player* playerOther;
+		for (int i = 0; i < maxclients->integer; i++) {
+			playerOther = multiplayerManager.getPlayer(i);
+			if (!playerOther || multiplayerManager.isPlayerSpectator(playerOther) || playerOther->upgPlayerIsBot()) { continue; }
+
+			//exit, do not allow new player to end a scann, because this player is scanning
+			if (playerOther != this && playerOther->upgPlayerIsScanning() && playerOther->_targetedEntity) {
+				return true;
+			}
+		}
+	}
+
+	if (upgCoopInterface.playerHasCoop(this) && coopPlayer.scanHudActive) {
+		Weapon* currentWeapon = GetActiveWeapon(WEAPON_ANY);//WEAPON_ANY WEAPON_DUAL
+		if (currentWeapon) {
+			Equipment* e;
+			e = (Equipment*)currentWeapon;
+
+			if (e->isScanning())
+				return true;
+		}
+		coopPlayer.scanHudActive = false;
+		gi.SendServerCommand(entnum, "stufftext \"ui_removehud coop_scan\"\n");
+	}
+	return false;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerGetLevelTimeEntered
+// Class:       Player
+//              
+// Description: get level.time at which this player did enter the game
+//              
+// Parameters:  void
+//              
+// Returns:     float             
+//================================================================
+float Player::upgPlayerGetLevelTimeEntered()
+{
+	return upgPlayer.timeEntered;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetLevelTimeEntered
+// Class:       Player
+//              
+// Description: sets level.time at which this player did enter the game
+//              
+// Parameters:  void
+//              
+// Returns:     void             
+//================================================================
+void Player::upgPlayerSetLevelTimeEntered()
+{
+	upgPlayer.timeEntered = level.time;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetTargetedEntityLast
+// Class:       Player
+//              
+// Description: get lastentity player did target
+//              
+// Parameters:  void
+//              
+// Returns:     Entity*             
+//================================================================
+Entity* Player::upgPlayerSetTargetedEntityLast()
+{
+	return upgPlayer.targetedEntityLast;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetTargetedEntityLast
+// Class:       Player
+//              
+// Description: sets level.time at which this player did enter the game
+//              
+// Parameters:  Entity*
+//              
+// Returns:     void             
+//================================================================
+void Player::upgPlayerSetTargetedEntityLast(Entity * eLast)
+{
+	upgPlayer.timeEntered = level.time;
+}
 
 //=========================================================[b60014]
 // Name:        upgPlayerIsHost
-// Class:       -
+// Class:       Player
 //              
 // Description: Checks if player is host
 //              
 // Parameters:  void
 //              
-// Returns:     bool
-//              
+// Returns:     bool           
 //================================================================
 bool Player::upgPlayerIsHost()
 {
@@ -239,6 +357,35 @@ int Player::upgPlayerDeathTime()
 //================================================================
 void Player::upgPlayerSetup()
 {
+	//[b607] daggolin - Restore bot state on player object
+	gentity_t* ent = edict; if (!ent) { return; }
+	if (level.spawn_bot) { edict->svflags |= SVF_BOT; }
+	entityVars.SetVariable("_playerIsBot", (float)(int)level.spawn_bot);
+
+	upgPlayerSetLevelTimeEntered();
+
+	//[b60011] chrissstrahl - make sure we do not handle bots
+	if (multiplayerManager.inMultiplayer() && upgPlayerIsBot()) {
+
+		cvar_t* cvar = gi.cvar_get("local_language");
+		str sCvar = (cvar ? cvar->string : "Eng");
+		upgPlayerSetLanguage(sCvar);
+
+		cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
+		int iCvar2 = (cvar2 ? cvar2->integer : 0);
+		if (iCvar2 < 60) {
+			gi.cvar_set("cl_maxpackets", "60");
+		}
+
+		cvar_t* cvar3 = gi.cvar_get("cl_packetdup");
+		int iCvar3 = (cvar3 ? cvar3->integer : 0);
+		if (iCvar3 > 0) {
+			gi.cvar_set("cl_packetdup", "0");
+		}
+		coop_classSet(this, "HeavyWeapon");
+		return;
+	}
+
 	//tell player to give us his cl_maxpackets and language
 	upgPlayerDelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
 }

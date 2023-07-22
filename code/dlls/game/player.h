@@ -235,18 +235,19 @@ class Player : public Sentient
 		void				coop_playerCoopStatus(str sStatus);
 		bool				coop_playerObjectivesCycleEqual();
 		void				coop_playerObjectivesCycleUpdate();
+		void				coop_playerInitWorldEffects();
 		//[b60011] chrissstrahl
 		CoopPlayer			coopPlayer;
 		friend class		CoopPlayer;
 		bool				coop_updateStats(void);
 		int					coop_updateStatsCoopHealth(int statNum);
-		void				getCoopClass(Event* ev);
-		void				isCoopClassTechnician(Event* ev);
-		void				isCoopClassMedic(Event* ev);
-		void				isCoopClassHeavyWeapons(Event* ev);
-		void				setClassLocked(Event* ev);
+		void				coop_playerGetCoopClass(Event* ev);
+		void				coop_playerIsCoopClassTechnician(Event* ev);
+		void				coop_playerIsCoopClassMedic(Event* ev);
+		void				coop_playerIsCoopClassHeavyWeapons(Event* ev);
+		void				coop_playerSetClassLocked(Event* ev);
 		//[UNKNOWN VERSION] chrissstrahl
-		void				getCoopVersion(Event* ev);
+		void				coop_playerGetCoopVersion(Event* ev);
 		//--------------------------------------------------------------
 		// GAMEUPGRADE PLAYER CIRCLEMENU
 		//--------------------------------------------------------------
@@ -259,7 +260,7 @@ class Player : public Sentient
 		float				circleMenuLastTimeActive();
 	private:
 		str					circleMenuGetWidgetName(int iDirection);
-		int					getSegmentNumForAngle(float fAngle);
+		int					circleMenuGetSegmentNumForAngle(float fAngle);
 		void				circleMenuThink(void);
 		void				circleMenuSelect(int iSelection);
 		void				circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType);
@@ -272,7 +273,7 @@ class Player : public Sentient
 		void				circleMenuDialogSetEvent(Event* ev);
 		void				circleMenuDialogClearEvent(Event* ev);
 		void				circleMenuEvent(Event* ev);
-		void				switchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
+		void				circleMenuSwitchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
 		//--------------------------------------------------------------
 		// GAMEUPGRADE PLAYER
 		//--------------------------------------------------------------
@@ -280,6 +281,12 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		bool				upgPlayerIsScanning();
+		bool				upgPlayerSetTargetedEntity();
+		float				upgPlayerGetLevelTimeEntered();
+		void				upgPlayerSetLevelTimeEntered();
+		Entity*				upgPlayerSetTargetedEntityLast();
+		void				upgPlayerSetTargetedEntityLast(Entity* eLast);
 		void				upgPlayerDeathTimeUpdate();
 		void				upgPlayerDeathTimeSet(int iTime);
 		int					upgPlayerDeathTime();
@@ -381,8 +388,6 @@ class Player : public Sentient
 		friend class		Camera;
 		friend class		Vehicle;
 		friend class		HorseVehicle;
-
-		EntityPtr			last_entityTargeted;
 
 		static movecontrolfunc_t MoveStartFuncs[];
 
@@ -1823,74 +1828,38 @@ inline void Player::Archive( Archiver &arc )
 
 	arc.ArchiveBool( &_cameraCutThisFrame );
 
-	//[b60011] chrissstrahl - fix variables not being properly saved and loaded
+	//================================================================
+	//[GAMEUPGRADE][b60014] chrissstrahl - manages singleplayer savegames
+	//================================================================
+	// We want the savegame files to be compatible with stock
+	// So we can not add new vars and archive them on player or other classes
+	// The solution is to use new classes and set them to a value on load
+	// OR use entityvars, entity vars are only viable if they are not 
+	// used each frame, otherwise they add a considrable ammount of
+	// overhead, we don't want that
+	//================================================================
+	// 
 	// This is either a loadgame or a restart
 	if (LoadingSavegame) {}
+	if (LoadingServer) {}
 	// When saveing the game
 	if (arc.Saving()) {}
 	// When loading the saved game
-	if (arc.Loading()) {}
-	// Always load and save these - some vars are also used in singleplayer
-	// the coop mod does not seperate multiplayer and singleplayer quite clearly	
-	//coopPlayer.lastTargetedEntity
-//arc.ArchiveBool(&branchdialog_active);					//this needs review, this might not be used at all - will check after commit
-//arc.ArchiveFloat(coopPlayer.lastTimeModulatingPuzzle);	//this needs review, this might not be used at all - will check after commit
-	//arc.ArchiveBool(&messageOfTheDaySend);						//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveBool(&coopPlayer.admin);							//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveVector3(&coopPlayer.lastAliveLocation);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveInteger(&coopPlayer.setupTries);					//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.installedCheckTime);				//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveBool(&coopPlayer.injuredSymbolVisible);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveBool(&coopPlayer.respawned);						//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveBool(&coopPlayer.respawnAtRespawnpoint);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveBool(&coopPlayer.setupComplete);					//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveInteger(&coopPlayer.deathViewangleY);				//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveInteger(&coopPlayer.reviveCounter);				//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveInteger(&coopPlayer.lastMass);						//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveString(&coopPlayer.lastTargetedClassSend);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveInteger(&coopPlayer.lastRadarAngle);				//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeInjured);				//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeRadarUpdated);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeAppliedClass);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedClassStat);		//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeUsedClassMsg);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeNeutralized);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeRevived);				//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastTimeUsing);					//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveBool(&coopPlayer.startedVote);						//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveString(&coopPlayer.transportUnholster);			//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveString(&coopPlayer.transportUnholsterWeaponName);	//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveBool(&coopPlayer.updateHudDisplayed);				//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lastScanSend);					//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveBool(&coopPlayer.clickFireHudActive);				//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.lmsDeaths);						//used in multiplayer only - not relevant for zingleplaya
-	//arc.ArchiveFloat(&coopPlayer.);								//used in multiplayer only - not relevant for zingleplaya
-//[b60014] chrissstrahl - no longer used in singleplayer
-	//arc.ArchiveString(&coopPlayer.className)
-	//arc.ArchiveInteger(&coopPlayer.installedVersion);
-	//arc.ArchiveInteger(&coopPlayer.installed);
-	//arc.ArchiveString(&coopPlayer.coopId);
-	//arc.ArchiveBool(&coopPlayer.armoryNeedstoBeEquiped);	//only used in singleplayer to prevent loss of inventory caused by code alterations - this might be fixable else where
-	//arc.ArchiveFloat(&coopPlayer.lastTimeChangedClass);
-	//arc.ArchiveBool(&coopPlayer.neutralized);
-	//arc.ArchiveFloat(&coopPlayer.diedLast);
-	//arc.ArchiveString(&coopPlayer.coopStatus);
-	//arc.ArchiveInteger(&coopPlayer.objectivesCycle);
-	//arc.ArchiveString(&language); //hzm gameupdate chrissstrahl [b60011] - store player langauge
-	
-	
-	arc.ArchiveSafePointer(&last_entityTargeted);
+	// Set vars that are also used in singleplayer but not put into the savegame file
+	if (arc.Loading()) {
+		upgPlayer.targetedEntityLast = NULL;
+		upgPlayer.timeEntered = 0.0f;
+	}
+
 	arc.ArchiveString(&coopPlayer.lastScanSendData);
 	arc.ArchiveBool(&coopPlayer.showTargetedEntity);		
 	//these should be reviewed properly - I was in a hurry so I added em anyway
-	arc.ArchiveBool(&coopPlayer.scanning);
 	arc.ArchiveBool(&coopPlayer.scanHudActive);
 	arc.ArchiveFloat(&coopPlayer.lastTimeThink);
 	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
 	arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);
-	arc.ArchiveFloat(&coopPlayer.timeEntered);
 	arc.ArchiveString(&coopPlayer.scanData0);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
 	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer

@@ -188,7 +188,7 @@ void coop_radarUpdate( Player *player )
 	if( level.mission_failed ||
 		player->health <= 0.0f ||
 		multiplayerManager.isPlayerSpectator(player) ||
-		(player->coopPlayer.timeEntered + 3) > level.time ||
+		(player->upgPlayerGetLevelTimeEntered() + 3) > level.time ||
 		(player->coopPlayer.lastTimeSpawned + 1.5) > level.time ||
 		player->coopPlayer.lastTimeRadarUpdated + COOP_RADAR_TIMECYCLE > level.time ||
 		solvingPuzzle && solvingPuzzle->floatValue() == 1.0f )
