@@ -22,6 +22,51 @@
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
 //=========================================================[b60014]
+// Name:        upgPlayerGetScanData
+// Class:       Player
+//              
+// Description: get scanData strings
+//              
+// Parameters:  short iNumber
+//              
+// Returns:     str
+//================================================================
+str Player::upgPlayerGetScanData(short iNumber)
+{
+	str sData = "";
+	if (iNumber == 0)		{ sData = upgPlayer.scanData0; }
+	else if (iNumber == 1)	{ sData = upgPlayer.scanData1; }
+	else if (iNumber == 2)	{ sData = upgPlayer.scanData2; }
+	else {
+		gi.Error(ERR_DROP, "upgPlayerSetScanData Parameter 1 out of range (0-2)\n");
+	}
+	return sData;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetScanData
+// Class:       Player
+//              
+// Description: set scanData strings
+//              
+// Parameters:  short iNumber, str sData
+//              
+// Returns:     void             
+//================================================================
+void Player::upgPlayerSetScanData(short iNumber,str sData)
+{
+	if (upgCoopInterface.playerHasCoop(this)) {
+		if(iNumber == 0)		{ upgPlayer.scanData0 = sData; }
+		else if (iNumber == 1)	{ upgPlayer.scanData1 = sData; }
+		else if (iNumber == 2)	{ upgPlayer.scanData2 = sData; }
+		else {
+			gi.Error(ERR_DROP, "upgPlayerSetScanData Parameter 1 out of range (0-2)\n");
+		}
+	}
+}
+
+
+//=========================================================[b60014]
 // Name:        upgPlayerHudAddScanning
 // Class:       Player
 //              
@@ -99,7 +144,7 @@ void Player::upgPlayerSetHudScanningActive(bool bActive)
 //================================================================
 void Player::upgPlayerSetLastScanData(str sData)
 {
-	upgPlayer.lastScanSendData = sData;
+	upgPlayer.scanDataSendLast = sData;
 }
 
 //=========================================================[b60014]
@@ -113,7 +158,7 @@ void Player::upgPlayerSetLastScanData(str sData)
 // Returns:     void             
 str Player::upgPlayerGetLastScanData()
 {
-	return upgPlayer.lastScanSendData;
+	return upgPlayer.scanDataSendLast;
 }
 
 //=========================================================[b60014]

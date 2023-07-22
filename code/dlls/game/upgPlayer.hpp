@@ -14,8 +14,12 @@ private:
 	str			language = "Eng";
 	Entity*		targetedEntityLast = NULL;
 	float		timeEntered = -988.0f;
-	str			lastScanSendData = "";
-	bool		scanHudActive = false;
+	//used to manage transmitting of scanning data to coop tricorder hud
+	str			scanDataSendLast = "";
+	bool		scanHudActive = false;	
+	str			scanData0 = "";
+	str			scanData1 = "";
+	str			scanData2 = "";
 };
 
 void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);

@@ -37,7 +37,7 @@ void UpgGame::flushTikisPlayers()
 }
 
 //=========================================================[b60012]
-// Name:        gameFlushTikisPlayers
+// Name:        flushTikisServer
 // Class:       UpgGame
 //              
 // Description: Flushtikis server - try to fix tiki model anim cache overload issue

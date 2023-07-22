@@ -571,8 +571,8 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 						playerCur->upgPlayerHudAddScanning();
 
 						//[b607] chrissstrahl - fix tricorder scan data for coop tricorder hud being send multiple times to player
-						if(playerCur->coopPlayer.scanData0 != descr1){
-							playerCur->coopPlayer.scanData0 = descr1;
+						if(playerCur->upgPlayerGetScanData(0) != descr1){
+							playerCur->upgPlayerSetScanData(0,descr1);
 							if (descr1 == "") {
 								upgPlayerDelayedServerCommand(playerCur->entnum, va("set coop_scan0 $$TriPuz_Default$$", descr1.c_str()));
 							}
@@ -581,8 +581,8 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 								upgPlayerDelayedServerCommand(playerCur->entnum, va("set coop_scan0 $$%s$$", descr1.c_str()));
 							}
 						}
-						if (playerCur->coopPlayer.scanData1 != descr2) {
-							playerCur->coopPlayer.scanData1 = descr2;
+						if (playerCur->upgPlayerGetScanData(1) != descr2) {
+							playerCur->upgPlayerSetScanData(1,descr2);
 							if (descr2 == "") {
 								upgPlayerDelayedServerCommand(playerCur->entnum,"set coop_scan1 $$TriPuz_Default$$");
 							}
@@ -591,8 +591,8 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 								upgPlayerDelayedServerCommand(playerCur->entnum, va("set coop_scan1 $$%s$$", descr2.c_str()));
 							}
 						}
-						if (playerCur->coopPlayer.scanData2 != descr3) {
-							playerCur->coopPlayer.scanData2 = descr3;
+						if (playerCur->upgPlayerGetScanData(2) != descr3) {
+							playerCur->upgPlayerSetScanData(2,descr3);
 							if (descr3 == "") {
 								upgPlayerDelayedServerCommand(playerCur->entnum, "set coop_scan2 $$TriPuz_Default$$");
 							}

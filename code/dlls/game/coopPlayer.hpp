@@ -153,10 +153,6 @@ public:
 	int lmsDeaths = 0;
 	//[b607] chrissstrahl - used to store last if a certain hud is active
 	bool clickFireHudActive = false;
-	//[b60011][b607] chrissstrahl - used to manage transmitting of scanning data to coop tricorder hud
-	str scanData0 = ""; //[b60011]
-	str scanData1 = "";
-	str scanData2 = "";
 	//[b60011] chrissstrahl - used to allow placing of objects - this will be the temp model used to visualize where a object will be placed
 	EntityPtr ePlacable = NULL;
 	//[b60011] chrissstrahl - used to keep track of the class ability of a player to place a class specific station

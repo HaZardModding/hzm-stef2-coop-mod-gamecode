@@ -281,6 +281,8 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		str					upgPlayerGetScanData(short iNumber);
+		void				upgPlayerSetScanData(short iNumber, str sData);
 		void				upgPlayerHudAddScanning();
 		void				upgPlayerHudRemoveScanning();
 		bool				upgPlayerGetHudScanningActive();
@@ -1854,7 +1856,12 @@ inline void Player::Archive( Archiver &arc )
 	// Set vars that are also used in singleplayer but not put into the savegame file
 	if (arc.Loading()) {
 		upgPlayer.scanHudActive = true;
-		upgPlayer.lastScanSendData = "?NoNe?";
+		upgPlayer.scanDataSendLast = "?NoNe?";
+
+		upgPlayerSetScanData(0,"");
+		upgPlayerSetScanData(1,"");
+		upgPlayerSetScanData(2,"");
+
 		upgPlayer.targetedEntityLast = NULL;
 		upgPlayer.timeEntered = 0.1f;
 		cvar_t* cvar = gi.cvar_get("cl_maxpackets");
@@ -1867,11 +1874,7 @@ inline void Player::Archive( Archiver &arc )
 	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
 	arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);
 	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
-	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);
-	arc.ArchiveString(&coopPlayer.scanData0);			//Not quite Clean implemented, so also accsessed in singleplayer
-	arc.ArchiveString(&coopPlayer.scanData1);			//Not quite Clean implemented, so also accsessed in singleplayer
-	arc.ArchiveString(&coopPlayer.scanData2);			//Not quite Clean implemented, so also accsessed in singleplayer
-	
+	arc.ArchiveFloat(&coopPlayer.lastTimeSkipCinematic);	
 	
 	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
 	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);
