@@ -464,12 +464,9 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 	//hzm coop mod chrissstrahl - testing
 	else
 	{
-		//hzm coop mod chrissstrahl - remove hud if player has coop mod and hud active
+		//[GAMEUPGRADE] chrissstrahl - remove hud if player has coop mod and hud active
 		if ( !this->isScanning() && playerCur->_targetedEntity != 0 ) {
-			if ( playerCur->coop_getInstalled() && playerCur->coopPlayer.scanHudActive ) {
-				playerCur->coopPlayer.scanHudActive = false;
-				gi.SendServerCommand( playerCur->entnum , "stufftext \"ui_removehud coop_scan\"\n" );
-			}
+			playerCur->upgPlayerHudRemoveScanning();
 		}
 
 		//go trough all players in a for and check if one of them is scanning
@@ -570,11 +567,9 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 					}
 
 					if (descr1 != "" || descr2 != "" || descr3 != "") {
-						//add hud if not already added
-						if ( !playerCur->coopPlayer.scanHudActive ) {
-							playerCur->coopPlayer.scanHudActive = true;
-							gi.SendServerCommand( playerCur->entnum , "stufftext \"ui_addhud coop_scan\"\n" );
-						}
+						//[GAMEUPGRADE][b60014] chrissstrahl - add hud if not already added
+						playerCur->upgPlayerHudAddScanning();
+
 						//[b607] chrissstrahl - fix tricorder scan data for coop tricorder hud being send multiple times to player
 						if(playerCur->coopPlayer.scanData0 != descr1){
 							playerCur->coopPlayer.scanData0 = descr1;
@@ -629,11 +624,9 @@ void Equipment::ProcessTargetedEntity( EntityPtr entity )
 		//- if targeted entity does no longer exist and player is NOT scanning
 		long timeElapsed = ( long )( level.time - scanTime );
 
-		if ( playerCur->coop_getInstalled() && playerCur->coopPlayer.scanHudActive ) {
-			if ( timeElapsed >= 0.1 || timeElapsed <= 0.1 && playerCur->_targetedEntity == 0 ) {
-				playerCur->coopPlayer.scanHudActive = false;
-				gi.SendServerCommand( playerCur->entnum , "stufftext \"ui_removehud coop_scan\"\n" );
-			}
+		//[GAMEUPGRADE][b60014] chrissstrahl - 
+		if ( timeElapsed >= 0.1 || timeElapsed <= 0.1 && playerCur->_targetedEntity == 0 ) {
+			playerCur->upgPlayerHudRemoveScanning();
 		}
 		//end of hzm
 

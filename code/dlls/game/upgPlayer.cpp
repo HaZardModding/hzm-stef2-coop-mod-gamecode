@@ -22,6 +22,101 @@
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
 //=========================================================[b60014]
+// Name:        upgPlayerHudAddScanning
+// Class:       Player
+//              
+// Description: removes the scanning hud that appears when useing the tricorder
+//              
+// Parameters:  void
+//              
+// Returns:     void             
+//================================================================
+void Player::upgPlayerHudAddScanning()
+{
+	if (upgCoopInterface.playerHasCoop(this) && !upgPlayerGetHudScanningActive()) {
+		upgPlayerSetHudScanningActive(true);
+		gi.SendServerCommand(entnum, "stufftext \"ui_addhud coop_scan\"\n");
+	}
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerHudRemoveScanning
+// Class:       Player
+//              
+// Description: removes the scanning hud that appears when useing the tricorder
+//              
+// Parameters:  void
+//              
+// Returns:     void             
+//================================================================
+void Player::upgPlayerHudRemoveScanning()
+{
+	if (upgCoopInterface.playerHasCoop(this) && upgPlayerGetHudScanningActive()) {
+		upgPlayerSetHudScanningActive(false);
+		gi.SendServerCommand(entnum, "stufftext \"ui_removehud coop_scan\"\n");
+	}
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerGetHudScanningActive
+// Class:       Player
+//              
+// Description: returns if scanning hud for tricorder is active
+//              
+// Parameters:  void
+//              
+// Returns:     bool             
+//================================================================
+bool Player::upgPlayerGetHudScanningActive()
+{
+	return upgPlayer.scanHudActive;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetHudScanningActive
+// Class:       Player
+//              
+// Description: sets if scanning hud for tricorder is active
+//              
+// Parameters:  void
+//              
+// Returns:     void             
+//================================================================
+void Player::upgPlayerSetHudScanningActive(bool bActive)
+{
+	upgPlayer.scanHudActive = bActive;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetLastScanData
+// Class:       Player
+//              
+// Description: sets data string that was last aquired by scanning
+//              
+// Parameters:  void
+//              
+// Returns:     void             
+//================================================================
+void Player::upgPlayerSetLastScanData(str sData)
+{
+	upgPlayer.lastScanSendData = sData;
+}
+
+//=========================================================[b60014]
+// Name:        upgPlayerSetLastScanData
+// Class:       Player
+//              
+// Description: sets data string that was last aquired by scanning
+//              
+// Parameters:  void
+//              
+// Returns:     void             
+str Player::upgPlayerGetLastScanData()
+{
+	return upgPlayer.lastScanSendData;
+}
+
+//=========================================================[b60014]
 // Name:        upgPlayerIsScanning
 // Class:       Player
 //              
@@ -66,7 +161,7 @@ bool Player::upgPlayerSetTargetedEntity()
 		}
 	}
 
-	if (upgCoopInterface.playerHasCoop(this) && coopPlayer.scanHudActive) {
+	if (upgCoopInterface.playerHasCoop(this) && upgPlayer.scanHudActive) {
 		Weapon* currentWeapon = GetActiveWeapon(WEAPON_ANY);//WEAPON_ANY WEAPON_DUAL
 		if (currentWeapon) {
 			Equipment* e;
@@ -75,8 +170,7 @@ bool Player::upgPlayerSetTargetedEntity()
 			if (e->isScanning())
 				return true;
 		}
-		coopPlayer.scanHudActive = false;
-		gi.SendServerCommand(entnum, "stufftext \"ui_removehud coop_scan\"\n");
+		upgPlayerHudRemoveScanning();
 	}
 	return false;
 }

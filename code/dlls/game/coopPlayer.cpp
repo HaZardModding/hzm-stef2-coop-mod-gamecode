@@ -1209,11 +1209,11 @@ void coop_manageIntervalTransmit( Player* player , str sData , float fInterval ,
 		//return;
 	//}
 	
-	if ( sData == player->upgPlayer.lastScanSendData && ( last + fInterval ) > level.time ){
+	if ( sData == player->upgPlayerGetLastScanData() && (last + fInterval) > level.time) {
 		//return;
 	}
 	last = level.time;
-	player->upgPlayer.lastScanSendData = sData;
+	player->upgPlayerSetLastScanData(sData);
 	upgPlayerDelayedServerCommand( player->entnum , sData.c_str() );
 }
 

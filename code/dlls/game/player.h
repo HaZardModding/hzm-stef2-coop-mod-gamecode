@@ -281,6 +281,12 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		void				upgPlayerHudAddScanning();
+		void				upgPlayerHudRemoveScanning();
+		bool				upgPlayerGetHudScanningActive();
+		void				upgPlayerSetHudScanningActive(bool bActive);
+		void				upgPlayerSetLastScanData(str sData);
+		str					upgPlayerGetLastScanData();
 		bool				upgPlayerIsScanning();
 		bool				upgPlayerSetTargetedEntity();
 		float				upgPlayerGetLevelTimeEntered();
@@ -1847,6 +1853,7 @@ inline void Player::Archive( Archiver &arc )
 	// When loading the saved game
 	// Set vars that are also used in singleplayer but not put into the savegame file
 	if (arc.Loading()) {
+		upgPlayer.scanHudActive = true;
 		upgPlayer.lastScanSendData = "?NoNe?";
 		upgPlayer.targetedEntityLast = NULL;
 		upgPlayer.timeEntered = 0.1f;
@@ -1856,7 +1863,6 @@ inline void Player::Archive( Archiver &arc )
 
 	arc.ArchiveBool(&coopPlayer.showTargetedEntity);		
 	//these should be reviewed properly - I was in a hurry so I added em anyway
-	arc.ArchiveBool(&coopPlayer.scanHudActive);
 	arc.ArchiveFloat(&coopPlayer.lastTimeThink);
 	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
 	arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);

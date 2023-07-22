@@ -147,8 +147,6 @@ public:
 	bool	updateHudDisplayed = false;
 	//hzm coop mod chrissstrahl - needed for additional vote options
 	bool startedVote = false;
-	//hzm coop mod chrissstrahl - used to keep track of tricorder scan info hud status
-	bool scanHudActive = false;
 	//hzm coop mod chrissstrahl - used to store tricorder scan last data send time
 	float lastScanSend = -987.0f;
 	//[b60011] chrissstrahl - used to store deaths this player died during lms

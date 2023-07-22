@@ -15,6 +15,7 @@ private:
 	Entity*		targetedEntityLast = NULL;
 	float		timeEntered = -988.0f;
 	str			lastScanSendData = "";
+	bool		scanHudActive = false;
 };
 
 void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);
