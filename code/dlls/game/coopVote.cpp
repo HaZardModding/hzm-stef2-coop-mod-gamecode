@@ -764,7 +764,7 @@ int coop_vote_execValidate(Player* player, const str &command, const str &arg, s
 
 	//[b607] chrissstrahl - changed file directory + added localstring
 	fullCFGName = "cfg/server/callvote/";
-	fullCFGName += upgStrings.getFileExtension(arg);
+	fullCFGName += upgStrings.getFileName(arg);
 	fullCFGName += ".cfg";
 
 	if (!gi.FS_Exists(fullCFGName.c_str())){
@@ -1866,8 +1866,8 @@ bool coop_vote_execSet(const str _voteString)
 		for (int i = iStart; i < _voteString.length(); i++) {
 			sValue += _voteString[i];
 		}
-		sValue = upgStrings.getFileExtension(sValue);
-		gi.SendConsoleCommand(va("exec cfg/server/callvote/%s.cfg\n", sValue.c_str()));
+		sValue = upgStrings.getFileName(sValue);
+		gi.SendConsoleCommand(va("exec cfg/server/callvote/%s\n", sValue.c_str()));
 	}
 	return true;
 }

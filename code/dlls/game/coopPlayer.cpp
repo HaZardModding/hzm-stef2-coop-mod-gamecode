@@ -2049,7 +2049,7 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	int i = 0;
 	bool idendified = false;
 
-	str sModel = upgStrings.getFileExtension( inflictor->model ).tolower();
+	str sModel = upgStrings.getFileName( inflictor->model ).tolower();
 //////gi.Printf( va( "%s #%s %s killed %s! $%s mod: %f \n" , inflictor.getClassname() , attacker.getClassname() , sModel.c_str() , killedPlayer->client->pers.netname , inflictor->targetname , meansOfDeath ) );
 	//playerPrey->hudPrint( sModel.c_str() );
 	

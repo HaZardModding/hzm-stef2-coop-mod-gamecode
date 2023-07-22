@@ -56,8 +56,9 @@ bool UpgStrings::replace(str& sHeystack, const str& sFind, const str& sNedle)
 //================================================================
 int UpgStrings::containsAt(str sSource, str sKeyword)
 {
-	//[b60012] chrissstrahl - fix missing .c_str()
-	if (Q_stricmp(sKeyword.c_str(), "") == 0 || Q_stricmp(sSource.c_str(), "") == 0){ return -1; }
+	if (Q_stricmp(sKeyword.c_str(), "") == 0 || Q_stricmp(sSource.c_str(), "") == 0){
+		return -1;
+	}
 	str ss, sk;
 	ss = sSource;
 	sk = sKeyword;
@@ -91,7 +92,6 @@ int UpgStrings::containsAt(str sSource, str sKeyword)
 		iCurrtrentMatchIndex = 0;
 		iFoundAt = -1;
 	}
-
 	//gi.Printf( va( "FOUND::::%d\n" , iFoundAt ) );
 	return iFoundAt;
 }

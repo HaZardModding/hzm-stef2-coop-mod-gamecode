@@ -130,7 +130,7 @@ str CoopScripting::checkReplaceInclude(str sLex)
 //global scripts will be switched by the mod and scripters don't have to worry
 {
 	//[b60012] chrissstrahl - fix missing .c_str()
-	if (g_gametype->integer != GT_SINGLE_PLAYER && getIncludedCoop()) { //[b60011] chrissstrahl - also check if we are really using the coop mod or not - fix this destaster once and for all
+	if (	g_gametype->integer != GT_SINGLE_PLAYER && getIncludedCoop()) { //[b60011] chrissstrahl - also check if we are really using the coop mod or not - fix this destaster once and for all
 		if (!Q_stricmp(sLex.c_str(), "maps/global_scripts/global_acceleratedmovement.scr") ||
 			!Q_stricmp(sLex.c_str(), "maps/global_scripts/global_archetype.scr") ||
 			!Q_stricmp(sLex.c_str(), "maps/global_scripts/global_common.scr") ||
@@ -150,9 +150,9 @@ str CoopScripting::checkReplaceInclude(str sLex)
 			)
 		{
 			str s = "coop_mod/maps/global_scripts/";
-			str sFn = upgStrings.getFileExtension(sLex);
+			str sFn = upgStrings.getFileName(sLex);
 			s += sFn;
-			if (gi.FS_ReadFile(s, NULL, true) != -1) {
+			if (gi.FS_ReadFile(s.c_str(), NULL, true) != -1) {
 				//strcpy(lex.pr_immediate_string, s.c_str());
 				sLex = s;
 				gi.Printf(va("HZM Coop Mod is using %s from coop_mod folders\n", sFn.c_str()));
