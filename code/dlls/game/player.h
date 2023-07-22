@@ -1847,11 +1847,13 @@ inline void Player::Archive( Archiver &arc )
 	// When loading the saved game
 	// Set vars that are also used in singleplayer but not put into the savegame file
 	if (arc.Loading()) {
+		upgPlayer.lastScanSendData = "?NoNe?";
 		upgPlayer.targetedEntityLast = NULL;
-		upgPlayer.timeEntered = 0.0f;
+		upgPlayer.timeEntered = 0.1f;
+		cvar_t* cvar = gi.cvar_get("cl_maxpackets");
+		upgPlayer.clMaxPackets = atoi((cvar ? cvar->string : "15"));
 	}
 
-	arc.ArchiveString(&coopPlayer.lastScanSendData);
 	arc.ArchiveBool(&coopPlayer.showTargetedEntity);		
 	//these should be reviewed properly - I was in a hurry so I added em anyway
 	arc.ArchiveBool(&coopPlayer.scanHudActive);

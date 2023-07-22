@@ -153,8 +153,6 @@ public:
 	float lastScanSend = -987.0f;
 	//[b60011] chrissstrahl - used to store deaths this player died during lms
 	int lmsDeaths = 0;
-	//hzm coop mod chrissstrahl - used to store data send 
-	str lastScanSendData = "";
 	//[b607] chrissstrahl - used to store last if a certain hud is active
 	bool clickFireHudActive = false;
 	//[b60011][b607] chrissstrahl - used to manage transmitting of scanning data to coop tricorder hud

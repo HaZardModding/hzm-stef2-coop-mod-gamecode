@@ -1209,11 +1209,11 @@ void coop_manageIntervalTransmit( Player* player , str sData , float fInterval ,
 		//return;
 	//}
 	
-	if ( sData == player->coopPlayer.lastScanSendData && ( last + fInterval ) > level.time ){
+	if ( sData == player->upgPlayer.lastScanSendData && ( last + fInterval ) > level.time ){
 		//return;
 	}
 	last = level.time;
-	player->coopPlayer.lastScanSendData = sData;
+	player->upgPlayer.lastScanSendData = sData;
 	upgPlayerDelayedServerCommand( player->entnum , sData.c_str() );
 }
 
@@ -1528,10 +1528,6 @@ void coop_playerSetupClient(Player* player)
 //================================================================
 void coop_playerSetupHost(Player* player)
 {
-	cvar_t* cvar = gi.cvar_get("local_language");
-	str sCvar = (cvar ? cvar->string : "Eng");
-	player->upgPlayerSetLanguage(sCvar);
-
 	//[b60014] chrissstrahl - changed to use functions that handle sp/mp/coop
 	player->coop_setInstalledVersion(player->coop_getInstalledVersion());
 	player->coop_setInstalled(true);

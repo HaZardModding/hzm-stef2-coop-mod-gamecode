@@ -93,6 +93,7 @@ bool Player::upgPlayerSetTargetedEntity()
 //================================================================
 float Player::upgPlayerGetLevelTimeEntered()
 {
+	if (!multiplayerManager.inMultiplayer()) { return 0.0f; }
 	return upgPlayer.timeEntered;
 }
 
@@ -364,30 +365,44 @@ void Player::upgPlayerSetup()
 
 	upgPlayerSetLevelTimeEntered();
 
-	//[b60011] chrissstrahl - make sure we do not handle bots
-	if (multiplayerManager.inMultiplayer() && upgPlayerIsBot()) {
-
+	//tell player to give us his cl_maxpackets and language
+	if (upgPlayerIsHost()) {
 		cvar_t* cvar = gi.cvar_get("local_language");
 		str sCvar = (cvar ? cvar->string : "Eng");
 		upgPlayerSetLanguage(sCvar);
 
-		cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
-		int iCvar2 = (cvar2 ? cvar2->integer : 0);
-		if (iCvar2 < 60) {
-			gi.cvar_set("cl_maxpackets", "60");
+		cvar = gi.cvar_get("cl_maxpackets");
+		sCvar = (cvar ? cvar->string : "0");
+		if (atoi(sCvar) < 60) {
+			sCvar = "60";
+			gi.cvar_set("cl_maxpackets",va("%s", sCvar.c_str()));
 		}
-
-		cvar_t* cvar3 = gi.cvar_get("cl_packetdup");
-		int iCvar3 = (cvar3 ? cvar3->integer : 0);
-		if (iCvar3 > 0) {
-			gi.cvar_set("cl_packetdup", "0");
-		}
-		coop_classSet(this, "HeavyWeapon");
-		return;
+		upgPlayer.clMaxPackets = atoi(sCvar);
 	}
+	else {
+		//[b60011] chrissstrahl - make sure we do not handle bots
+		if (multiplayerManager.inMultiplayer() && upgPlayerIsBot()) {
+			cvar_t* cvar = gi.cvar_get("local_language");
+			str sCvar = (cvar ? cvar->string : "Eng");
+			upgPlayerSetLanguage(sCvar);
 
-	//tell player to give us his cl_maxpackets and language
-	upgPlayerDelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
+			cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
+			int iCvar2 = (cvar2 ? cvar2->integer : 0);
+			if (iCvar2 < 60) {
+				gi.cvar_set("cl_maxpackets", "60");
+			}
+
+			cvar_t* cvar3 = gi.cvar_get("cl_packetdup");
+			int iCvar3 = (cvar3 ? cvar3->integer : 0);
+			if (iCvar3 > 0) {
+				gi.cvar_set("cl_packetdup", "0");
+			}
+			coop_classSet(this, "HeavyWeapon");
+			return;
+		}
+
+		upgPlayerDelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
+	}
 }
 
 //=========================================================[b60014]

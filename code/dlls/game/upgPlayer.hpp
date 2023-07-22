@@ -14,6 +14,7 @@ private:
 	str			language = "Eng";
 	Entity*		targetedEntityLast = NULL;
 	float		timeEntered = -988.0f;
+	str			lastScanSendData = "";
 };
 
 void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);
