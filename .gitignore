@@ -26,3 +26,4 @@ code/dlls/game/Debug
 code/dlls/Debug
 code/ipch
 code/fucking_delete.bat
+code/dlls/game/game.vcxproj.user

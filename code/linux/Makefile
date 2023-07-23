@@ -311,6 +311,7 @@ GOBJ =\
 	$(B)/game/upgCoopInterface.o \
 	$(B)/game/upgStrings.o \
 	$(B)/game/upgGame.o \
+	$(B)/game/upgWorld.o \
     \
 	$(B)/game/coopNpcTeam.o \
     $(B)/game/coopArmory.o \
@@ -512,6 +513,7 @@ $(B)/game/upgPlayer.o : $(GDIR)/upgPlayer.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgCoopInterface.o : $(GDIR)/upgCoopInterface.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgStrings.o : $(GDIR)/upgStrings.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgGame.o : $(GDIR)/upgGame.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/upgWorld.o : $(GDIR)/upgWorld.cpp; $(DO_GAME_SHLIB_CC)
 
 $(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopNpcTeam.o : $(GDIR)/coopNpcTeam.cpp; $(DO_GAME_SHLIB_CC)

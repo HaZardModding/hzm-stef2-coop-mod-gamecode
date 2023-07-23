@@ -69,8 +69,6 @@ class Game : public Class
 	   bool			isCoopIncludedLevel;
 //hzm gameupdate chrissstrahl - 
 	   bool			cinematicSkipping;
-//hzm gameupdate chrissstrahl - force update the dynamic lights
-	   bool			bForceDynLightUpdate;
 //hzm coop mod chrissstrahl - tells if current map is played in coop
 	   bool			coop_isActive;
 //hzm coop mod chrissstrahl - add bool for coop awards detection

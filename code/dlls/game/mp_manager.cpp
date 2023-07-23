@@ -29,6 +29,7 @@
 #include "upgCircleMenu.hpp"
 #include "upgStrings.hpp"
 #include "upgGame.hpp"
+#include "upgWorld.hpp"
 
 
 MultiplayerManager multiplayerManager;
@@ -822,19 +823,17 @@ void MultiplayerManager::addPlayer( Player *player )
 	}
 
 	// Inform the award system about the new player
-
 	_awardSystem->addPlayer ( player );
 
-	//[b60014] chrissstrahl - we don't need that for bots
-	if (player->edict->svflags & SVF_BOT)
+	//[GAMEUPGRADE][b60014] chrissstrahl - we don't need that for bots on level start
+	if (player->upgPlayerIsBot() && level.time < (mp_warmUpTime->integer + 2))
 		return;
 
-	// Inform all of the players that the player has joined the game
-	//[b607] chrissstrahl - restored to default - last minute fix
-	HUDPrintAllClients( va( "%s $$JoinedGame$$\n" , player->client->pers.netname ) );
+	//Update Dynamic lights - or they will stay black for player joing midgame
+	upgWorld.setUpdateDynamicLights(true);
 
-	//[b607] chrissstrahl - fix dynamic lights not updating/being activated for players on a dedicated server
-	handleDynamicLights(player);
+	// Inform all of the players that the player has joined the game
+	HUDPrintAllClients( va( "%s $$JoinedGame$$\n" , player->client->pers.netname ) );
 }
 
 void MultiplayerManager::removePlayer( Player *player )

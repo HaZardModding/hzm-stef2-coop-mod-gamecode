@@ -231,7 +231,6 @@ public:
 	void			UpdateTerrain( void );
 	void			UpdateEntityFadeDist( void );
 	void			UpdateDynamicLights( void );
-	void			updateMessageOfTheDay(void); //[b607] chrissstrahl - message of the day
 	void			UpdateWindDirection( void );
 	void			UpdateWindIntensity( void );
 	void			UpdateWeather( void );
@@ -280,6 +279,11 @@ public:
 	void			Think( void );
 	
 	virtual void	Archive( Archiver &arc );
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE WORLD
+	//--------------------------------------------------------------
+	bool			upgWorldUpdateDynamicLights();
 
 	//[b60013] chrissstrahl - allow to grab physics vars
 	void			getPhysicsVar(Event* ev);

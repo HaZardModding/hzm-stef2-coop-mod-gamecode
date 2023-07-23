@@ -18,6 +18,7 @@
 #include "upgMp_manager.hpp"
 #include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
+#include "upgWorld.hpp"
 
 extern Event EV_Player_upgPlayerMessageOfTheDay;
 

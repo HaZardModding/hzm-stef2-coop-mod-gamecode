@@ -777,22 +777,10 @@ void World::UpdateEntityFadeDist( void )
 
 void World::UpdateDynamicLights( void )
 {
-	//[b607] chrissstrahl - make the dynamic lights work for players that join midgame/dedicated server
-	if(game.bForceDynLightUpdate){
-		game.bForceDynLightUpdate = false;
-		for (int i = 0; i < MAX_LIGHTING_GROUPS; i++) {
-			if(dynamic_lights[i].intensity > 0.0f) {
-				gi.SetDynamicLight(i, 0.0f );
-				//gi.Printf("SetDynamicLight: %i\n",i);
-			}
-			if(dynamic_lights[i].defaultIntensity) {
-				gi.SetDynamicLightDefault(i, 0.0f );
-				//gi.Printf("SetDynamicLightDefault: %i\n", i);
-			}
-		}
+	//[GAMEUPGRADE][b60014] chrissstrahl - fix dynamic light for players joining midgame
+	if(upgWorldUpdateDynamicLights()){
 		return;
 	}
-	//end of hzm
 
 	for (int i = 0 ; i < MAX_LIGHTING_GROUPS ; i++ ){
 		gi.SetDynamicLight(i, dynamic_lights[i].intensity);

@@ -38,12 +38,6 @@ void MultiplayerManager::resetVoteCount(Player* player)
 	}
 }
 
-//[b607] chrissstrahl - add dynamic light support on multiplayer dedicated servers
-void MultiplayerManager::handleDynamicLights(Player* player)
-{
-	game.bForceDynLightUpdate = true;
-}
-
 //hzm gamefix chrissstrahl - used to show new players the current vote
 float MultiplayerManager::voteTime(void)
 {

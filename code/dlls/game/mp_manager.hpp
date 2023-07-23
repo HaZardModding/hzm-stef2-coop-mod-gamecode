@@ -364,8 +364,6 @@ class MultiplayerManager : public Class
 		void							addKills( int entnum, int kills );
 		//hzm gameupdate chrissstrahl - add new func to reset vote count - used to reset after cinematics
 		void							resetVoteCount( Player *player ); 
-		//[b607] chrissstrahl - handle dynamic lights correctly on dedicated servers
-		void							handleDynamicLights(Player *player);
 	};
 
 #endif // __MP_MANAGER_HPP__

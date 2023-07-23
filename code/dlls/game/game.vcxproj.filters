@@ -631,6 +631,9 @@
     <ClCompile Include="upgGame.cpp">
       <Filter>HaZardModding\Upgrades</Filter>
     </ClCompile>
+    <ClCompile Include="upgWorld.cpp">
+      <Filter>HaZardModding\Upgrades</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1277,6 +1280,9 @@
     </ClInclude>
     <ClInclude Include="upgGame.hpp">
       <Filter>HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="upgWorld.hpp">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
