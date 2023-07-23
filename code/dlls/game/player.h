@@ -281,6 +281,7 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		void				upgPlayerMessageOfTheDay(Event* ev);
 		float				upgPlayerGetSkipCinematicTimeLast();
 		void				upgPlayerSetSkipCinematicTimeLast();
 		str					upgPlayerGetScanData(short iNumber);
@@ -383,7 +384,6 @@ class Player : public Sentient
 		// 
 		//hzm gameupdate chrissstrahl
 		bool				branchdialog_active;
-		bool				messageOfTheDaySend;
 	public:
 		CLASS_PROTOTYPE( Player );
 		Player();

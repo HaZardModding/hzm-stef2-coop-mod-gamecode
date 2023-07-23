@@ -19,7 +19,41 @@
 #include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
 
+extern Event EV_Player_upgPlayerMessageOfTheDay;
+
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
+
+//=========================================================[b60014]
+// Name:        mp_motd
+// Class:       Player
+//              
+// Description: Reads mp_motd cvar and prints it to player hud
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void Player::upgPlayerMessageOfTheDay(Event* ev)
+{
+	if (!multiplayerManager.inMultiplayer()) { return; }
+	
+	//while in cinematic postpone event, post it again
+	if (sv_cinematic->integer == 1) {
+		Event* newEvent = new Event(EV_Player_upgPlayerMessageOfTheDay);
+		PostEvent(newEvent,3.0f);
+		return;
+	}
+
+	//get cvar, abbort if empty
+	str sMessage;
+	cvar_t* cvar = gi.cvar_get("mp_motd");
+	if (!cvar) { return; }
+	
+	sMessage = cvar->string;
+	if (!sMessage.length()) { return; }
+
+	hudPrint(va("^5Message of the day:^8 %s\n", sMessage.c_str()));
+}
 
 //=========================================================[b60014]
 // Name:        upgPlayerGetSkipCinematicTimeLast
@@ -571,6 +605,12 @@ void Player::upgPlayerSetup()
 		}
 
 		upgPlayerDelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
+	}
+
+	if (multiplayerManager.inMultiplayer()) {
+		//print message of the day
+		Event* newEvent = new Event(EV_Player_upgPlayerMessageOfTheDay);
+		PostEvent(newEvent, 10.0f);
 	}
 }
 

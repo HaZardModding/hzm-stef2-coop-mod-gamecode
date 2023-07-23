@@ -800,49 +800,6 @@ void World::UpdateDynamicLights( void )
 	}
 }
 
-//[b607] chrissstrahl - message of the day mp_motd
-void World::updateMessageOfTheDay( void )
-{
-	if (sv_cinematic->integer == 1) {
-		return;
-	}
-	static float fLastMsgTime = 0;
-	bool bForce = false;
-	static str sMessageOftheDay = "";
-	str sMessageOftheDayTemp = "";
-	if ((fLastMsgTime + 3) < level.time) {
-		//get cvar
-		cvar_t *cvar = gi.cvar_get("mp_motd");
-		if (cvar == NULL) { return;	}
-
-		sMessageOftheDayTemp = cvar->string;
-		if (!sMessageOftheDayTemp.length()) {
-			return;
-		}
-
-		//if message has changed
-		if (sMessageOftheDayTemp != sMessageOftheDay) {
-			bForce = true;
-			sMessageOftheDay = sMessageOftheDayTemp;
-		}
-
-		//show nessage to all players if needed
-		Player *player = NULL;
-		for (int i = 0; i < maxclients->integer; i++){
-			player = (Player *)g_entities[i].entity;
-			if (player && player->client && player->isSubclassOf(Player) && !multiplayerManager.isPlayerSpectator(player)){
-				if ((player->upgPlayerGetLevelTimeEntered() + 10) > level.time) {
-					continue;
-				}
-				if (player->messageOfTheDaySend == false || bForce == true) {
-					player->messageOfTheDaySend = true;
-					player->hudPrint(va("^5Message of the day:^8 %s\n",sMessageOftheDay.c_str()));
-				}
-			}
-		}
-	}
-}
-
 void World::UpdateWindDirection( void )
 {
 	gi.SetWindDirection( wind.direction );
@@ -1480,11 +1437,6 @@ void World::Think( void )
 
 	//hzm coop mod chrissstrahl - check for certain server settings
 	coop_serverThink();
-
-	//[b607] chrissstrahl - message of the day - mp_motd
-	if (g_gametype->integer == GT_MULTIPLAYER) {
-		updateMessageOfTheDay();
-	}
 }
 
 //----------------------------------------------------------------

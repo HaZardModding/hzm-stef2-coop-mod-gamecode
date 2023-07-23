@@ -1762,6 +1762,15 @@ Event EV_Player_getViewtraceEndpos
 	"return-vector",
 	"Returns vector at wich players aim ends at"
 );
+//[GAMEUPGRADE][b60014] chrissstrahl - print message of the day (delayed)
+Event EV_Player_upgPlayerMessageOfTheDay
+(
+	"upgPlayerMessageOfTheDay",
+	EV_DEFAULT,
+	"",
+	"",
+	"Prints the message of the day from cvar mp_motd"
+);
 
 /*
 ==============================================================================
@@ -2049,6 +2058,8 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//[b60011] chrissstrahl - checks player has ger/eng langauge
 	{ &EV_Player_HasLanguageGerman ,			&Player::upgPlayerHasLanguageGerman },
 	{ &EV_Player_HasLanguageEnglish ,			&Player::upgPlayerHasLanguageEnglish },
+	//[GAMEUPGRADE][b60014] chrissstrahl
+	{ &EV_Player_upgPlayerMessageOfTheDay ,		&Player::upgPlayerMessageOfTheDay },
 	{ NULL , NULL }
 };
 
@@ -3721,11 +3732,9 @@ Player::Player()
 	actor_camera = NULL;
 	cool_camera = NULL;
 
-	//[b607] daggolin - set bot flag
+	//[GAMEUPGRADE][b607] daggolin - set bot flag
 	if (level.spawn_bot) edict->svflags |= SVF_BOT;
 
-	//[b607] chrissstrahl - added message of the day
-	messageOfTheDaySend = false;
 	//hzm gameupdate chrissstrahl - used to check if this player is suppose to take action in a branchdialog situation 
 	branchdialog_active = false;
 
