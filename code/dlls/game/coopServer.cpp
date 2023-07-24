@@ -1750,14 +1750,8 @@ void coop_serverCleanup(bool restart)
 	//[b60011] chrissstrahl - this lets us detect if the map was restarted or loadad
 	game.levelRestarted = restart;
 
-	game.coop_author = "";
-	game.coop_story = "";
-	game.coop_story_deu = "";
-	game.coop_awardsActive = false;
-	game.coop_isActive = false;
-
 	//[b60011] chrissstrahl - only clean up while in multiplayer bejond this point
-	if (!multiplayerManager.inMultiplayer()) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		return;
 	}
 
@@ -1769,6 +1763,13 @@ void coop_serverCleanup(bool restart)
 	//[b60011] chrissstrahl
 	coopChallenges.cleanUp(restart);
 	coopNpcTeam.cleanUp(restart);
+
+	//be smart, clean these at the very end
+	game.coop_author = "";
+	game.coop_story = "";
+	game.coop_story_deu = "";
+	game.coop_awardsActive = false;
+	game.coop_isActive = false;
 }
 
 //[b60011] chrissstrahl - bad setting Warning
