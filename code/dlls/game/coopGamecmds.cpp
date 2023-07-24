@@ -1326,6 +1326,10 @@ qboolean G_coopCom_levelend(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_targeted(const gentity_t* ent)
 {
+	if (g_gametype->integer = GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return qtrue;
+	}
+
 	Player* player = (Player*)ent->entity;
 
 	//[b60014] chrissstrahl - add spam protection
@@ -1340,12 +1344,12 @@ qboolean G_coopCom_targeted(const gentity_t* ent)
 		return qtrue;
 	}
 
-	if (player->coopPlayer.showTargetedEntity) {
-		player->coopPlayer.showTargetedEntity = false;
+	if (player->coop_getShowTargetedEntity()) {
+		player->coop_setShowTargetedEntity(false);
 		player->hudPrint("^5Info^8: Show Targetnames - ^1disabled.\n");
 	}
 	else {
-		player->coopPlayer.showTargetedEntity = true;
+		player->coop_setShowTargetedEntity(true);
 		player->hudPrint("^5Info^8: Show Targetnames - ^2enabled.\n");
 	}
 	return qtrue;

@@ -6366,7 +6366,7 @@ void Player::CheckForTargetedEntity(void)
 
 	//[b607] chrissstrahl - developer show targetnames command
 	//[b60014] chrissstrahl - Fixed info being prited every frame
-	if (multiplayerManager.inMultiplayer() && coopPlayer.showTargetedEntity) {
+	if (multiplayerManager.inMultiplayer() && coop_getShowTargetedEntity()) {
 		Vector vData;
 		ScriptVariable* scriptVar = NULL;
 		scriptVar = entityVars.GetVariable("!targeted");

@@ -55,7 +55,7 @@ extern int iSPRITES;
 
 //[b60014] chrissstrahl - used to autospawn npc teammates
 //================================================================
-// CALLED FROM: EV_Player_coop_playerNpcCheckAutoTeam
+// HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
 //================================================================
 void Player::coop_playerNpcCheckAutoTeam(Event* ev)
 {
@@ -177,7 +177,7 @@ void Player::coop_playerGetCoopVersion(Event* ev)
 
 //================================================================
 // Name:        coop_playerCheckAdmin
-// Class:       -
+// Class:       Player
 //              
 // Description: [b607] added login authorisation stuff for coop admin login menu
 //              
@@ -206,7 +206,7 @@ bool Player::coop_playerCheckAdmin()
 
 //========================================================[b60014]
 // Name:        coop_playerObjectivesCycleEqual
-// Class:       -
+// Class:       Player
 //              
 // Description:  check if player is up to date on the latest objectives
 //              
@@ -226,7 +226,7 @@ bool Player::coop_playerObjectivesCycleEqual()
 
 //========================================================[b60014]
 // Name:        coop_playerObjectivesCycleUpdate
-// Class:       -
+// Class:       Player
 //              
 // Description:  sets player objectives as up to date
 //              
@@ -246,7 +246,7 @@ void Player::coop_playerObjectivesCycleUpdate()
 
 //========================================================[b60014]
 // Name:        coop_playerStatus
-// Class:       -
+// Class:       Player
 //              
 // Description:  returns player status used for restoring upon reconnect
 //              
@@ -265,7 +265,7 @@ str Player::coop_playerCoopStatus()
 
 //========================================================[b60014]
 // Name:        coop_playerStatus
-// Class:       -
+// Class:       Player
 //              
 // Description:  sets player status used for restoring upon reconnect
 //              
@@ -285,7 +285,7 @@ void Player::coop_playerCoopStatus(str sStatus)
 
 //========================================================[b60014]
 // Name:        coop_playerDiedLast
-// Class:       -
+// Class:       Player
 //              
 // Description:  returns level.time when player died last
 //              
@@ -304,7 +304,7 @@ float Player::coop_playerDiedLast()
 
 //========================================================[b60014]
 // Name:        coop_playerDiedLastUpdate
-// Class:       -
+// Class:       Player
 //              
 // Description:  sets level.time player died last
 //              
@@ -324,7 +324,7 @@ void Player::coop_playerDiedLastUpdate()
 
 //========================================================[b60014]
 // Name:        coop_playerNeutralized
-// Class:       -
+// Class:       Player
 //              
 // Description:  returns if player is currently neutralized or not
 //              
@@ -343,7 +343,7 @@ bool Player::coop_playerNeutralized()
 
 //========================================================[b60014]
 // Name:        coop_playerNeutralized
-// Class:       -
+// Class:       Player
 //              
 // Description:  sets if player is currently neutralized or not
 //              
@@ -363,7 +363,7 @@ void Player::coop_playerNeutralized(bool bNeutralized)
 
 //========================================================[b60014]
 // Name:        coop_playerAdminAuthAttempts
-// Class:       -
+// Class:       Player
 //              
 // Description:  returns failed attempts of player using !login
 //              
@@ -382,7 +382,7 @@ int Player::coop_playerAdminAuthAttempts()
 
 //========================================================[b60014]
 // Name:        coop_playerAdminAuthAttemptsUpdate
-// Class:       -
+// Class:       Player
 //              
 // Description:  counts up failed attempts of player trying to use !login
 //              
@@ -402,7 +402,7 @@ void Player::coop_playerAdminAuthAttemptsUpdate()
 
 //========================================================[b60014]
 // Name:        coop_playerAdminAuthAttemptsUpdateReset
-// Class:       -
+// Class:       Player
 //              
 // Description:  reset failed attempts of player trying to use !login
 //              
@@ -422,7 +422,7 @@ void Player::coop_playerAdminAuthAttemptsReset()
 
 //========================================================[b60014]
 // Name:        coop_playerAdminAuthStringLastLength
-// Class:       -
+// Class:       Player
 //              
 // Description:  return player if current and last auth strings are in the same length
 //              
@@ -443,7 +443,7 @@ bool Player::coop_playerAdminAuthStringChanged()
 
 //========================================================[b60014]
 // Name:        coop_playerAdminAuthStringLastLengthUpdate
-// Class:       -
+// Class:       Player
 //              
 // Description:  sets player admin auth string last to current auth string
 //              
@@ -463,7 +463,7 @@ void Player::coop_playerAdminAuthStringLastLengthUpdate()
 
 //========================================================[b60014]
 // Name:        coop_playerAdminAuthStarted
-// Class:       -
+// Class:       Player
 //              
 // Description:  return player admin auth string
 //              
@@ -502,7 +502,7 @@ void Player::coop_playerAdminAuthStarted(str sAuth)
 
 //========================================================[b60014]
 // Name:        coop_playerAdminAuthString
-// Class:       -
+// Class:       Player
 //              
 // Description:  return player admin auth string
 //              
@@ -521,7 +521,7 @@ str Player::coop_playerAdminAuthString()
 
 //========================================================[b60014]
 // Name:        coop_playerAdminAuthString
-// Class:       -
+// Class:       Player
 //              
 // Description:  sets player admin auth string
 //              
@@ -541,7 +541,7 @@ void Player::coop_playerAdminAuthString(str sAuth)
 
 //========================================================[b60014]
 // Name:        coop_playerAdmin
-// Class:       -
+// Class:       Player
 //              
 // Description:  return player admin var
 //              
@@ -560,7 +560,7 @@ bool Player::coop_playerAdmin()
 
 //========================================================[b60014]
 // Name:        coop_playerAdmin
-// Class:       -
+// Class:       Player
 //              
 // Description:  sets player admin var
 //              
@@ -580,7 +580,7 @@ void Player::coop_playerAdmin(bool bAdmin)
 
 //========================================================[b60014]
 // Name:        coop_playerSetupComplete
-// Class:       -
+// Class:       Player
 //              
 // Description:  Returns number of tried for coop player setup
 //              
@@ -599,7 +599,7 @@ int Player::coop_playerSetupTriesCidTime()
 
 //========================================================[b60014]
 // Name:        coop_playerSetupTriesCidIncremment
-// Class:       -
+// Class:       Player
 //              
 // Description:  Updates time to when next check for cid
 //              
@@ -619,7 +619,7 @@ void Player::coop_playerSetupTriesCidTimeUpdate()
 
 //========================================================[b60014]
 // Name:        coop_playerSetupTriesCid
-// Class:       -
+// Class:       Player
 //              
 // Description:  Returns number of tried for coop player setup
 //              
@@ -638,7 +638,7 @@ int Player::coop_playerSetupTriesCid()
 
 //========================================================[b60014]
 // Name:        coop_playerSetupTriesCidIncremment
-// Class:       -
+// Class:       Player
 //              
 // Description:  Sets Coop setup done for player
 //              
@@ -658,7 +658,7 @@ void Player::coop_playerSetupTriesCidIncremment()
 
 //========================================================[b60014]
 // Name:        coop_playerSetupTries
-// Class:       -
+// Class:       Player
 //              
 // Description:  Returns number of tries for coop player setup
 //              
@@ -677,7 +677,7 @@ int Player::coop_playerSetupTries()
 
 //========================================================[b60014]
 // Name:        coop_playerSetupTriesIncremment
-// Class:       -
+// Class:       Player
 //              
 // Description:  Increments number of tries for setup - used for failsafe
 //              
@@ -697,7 +697,7 @@ void Player::coop_playerSetupTriesIncremment()
 
 //========================================================[b60014]
 // Name:        coop_playerSetupComplete
-// Class:       -
+// Class:       Player
 //              
 // Description:  Sets Coop setup complete status for player
 //              
@@ -717,7 +717,7 @@ void Player::coop_playerSetupComplete(bool bComplete)
 
 //========================================================[b60014]
 // Name:        coop_playerSetupComplete
-// Class:       -
+// Class:       Player
 //              
 // Description:  checks if setup for player is done
 //              
@@ -736,7 +736,7 @@ bool Player::coop_playerSetupComplete()
 
 //========================================================[b60014]
 // Name:        coop_playerScore
-// Class:       -
+// Class:       Player
 //              
 // Description:  handles player score command in coop, removes score hud after few sec and shows press fire to spawn hud
 //              
@@ -763,7 +763,7 @@ bool Player::coop_playerScore()
 
 //================================================================
 // Name:        coop_playerThinkDetectCoopId
-// Class:       -
+// Class:       Player
 //              
 // Description:  checks if the given player does have a coop mod id
 //              
@@ -808,7 +808,7 @@ void Player::coop_playerThinkDetectCoopId()
 
 //================================================================
 // Name:        coop_playerThinkDetectCoop
-// Class:       -
+// Class:       Player
 //              
 // Description:  checks if the given player does have the coop mod installed or not
 //              
@@ -856,7 +856,7 @@ void Player::coop_playerThinkDetectCoop()
 
 //=========================================================[b60014]
 // Name:        coop_playerThinkLogin
-// Class:       -
+// Class:       Player
 //              
 // Description: Handles weapons load from script in singleplayer
 //              we need to have this delayed because in sp the player is spawned way before the level or the script is ready
@@ -916,7 +916,7 @@ void Player::coop_playerThinkLogin()
 
 //=========================================================[b60014]
 // Name:        coop_spEquip
-// Class:       -
+// Class:       Player
 //              
 // Description: Handles weapons load from script in singleplayer
 //              we need to have this delayed because in sp the player is spawned way before the level or the script is ready
@@ -950,7 +950,7 @@ void Player::upgPlayerSpEquip()
 
 //=========================================================[b60014]
 // Name:        coop_getId
-// Class:       -
+// Class:       Player
 //              
 // Description: Gets Player coop Id
 //              
@@ -974,7 +974,7 @@ str Player::coop_getId()
 
 //=========================================================[b60014]
 // Name:        coop_setId
-// Class:       -
+// Class:       Player
 //              
 // Description: Sets Player coop Id
 //              
@@ -992,7 +992,7 @@ void Player::coop_setId(str sId)
 
 //=========================================================[b60014]
 // Name:        coop_getInstalled
-// Class:       -
+// Class:       Player
 //              
 // Description: Checks if player has the coop mod installed or not
 //              
@@ -1013,7 +1013,7 @@ bool Player::coop_getInstalled()
 
 //=========================================================[b60014]
 // Name:        coop_setInstalled
-// Class:       -
+// Class:       Player
 //              
 // Description: Sets flag that player has coop mod installed
 //              
@@ -1031,7 +1031,7 @@ void Player::coop_setInstalled(bool bIns)
 
 //=========================================================[b60014]
 // Name:        coop_getInstalledVersion
-// Class:       -
+// Class:       Player
 //              
 // Description: Returns Coop Mod installed version
 //              
@@ -1054,7 +1054,7 @@ int Player::coop_getInstalledVersion()
 
 //=========================================================[b60014]
 // Name:        coop_setInstalledVersion
-// Class:       -
+// Class:       Player
 //              
 // Description: Sets Coop Mod installed version
 //              
@@ -1072,7 +1072,7 @@ void Player::coop_setInstalledVersion(int iVer)
 
 //=========================================================[b60014]
 // Name:        coop_getInstalledCheckTime
-// Class:       -
+// Class:       Player
 //              
 // Description:	Returns Coop Mod installed time check var content
 //				Used to detect when coop setup should timeout for player
@@ -1096,7 +1096,7 @@ int Player::coop_getInstalledCheckTime()
 
 //=========================================================[b60014]
 // Name:        coop_setInstalledVersion
-// Class:       -
+// Class:       Player
 //              
 // Description:	Sets Coop Mod installed time check var
 //				Used to detect when coop setup should timeout for player
@@ -2777,6 +2777,16 @@ void coop_playerLeft( Player *player )
 	coop_playerCommunicator(player, 0);
 }
 
+//================================================================
+// Name:        coop_updateStatsCoopHealth
+// Class:       Player
+//              
+// Description: handles player stats in coop - executed from player.cpp at Player::UpdateStats( void )
+//              
+// Parameters:  int
+//              
+// Returns:     int
+//================================================================
 int Player::coop_updateStatsCoopHealth(int statNum)
 {
 	int value = 0;
@@ -2795,10 +2805,9 @@ int Player::coop_updateStatsCoopHealth(int statNum)
 	return value;
 }
 
-
 //================================================================
 // Name:        coop_updateStats
-// Class:       -
+// Class:       Player
 //              
 // Description: handles player stats in coop - executed from player.cpp at Player::UpdateStats( void )
 //              
@@ -2848,5 +2857,40 @@ bool Player::coop_updateStats(void)
 	}
 
 	return true;
+}
+
+//================================================================
+// Name:        coop_setShowTargetedEntity
+// Class:       Player
+//              
+// Description: [b607] added login authorisation stuff for coop admin login menu
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_setShowTargetedEntity(bool bShow)
+{
+	coopPlayer.showTargetedEntity = bShow;
+}
+
+//================================================================
+// Name:        coop_getShowTargetedEntity
+// Class:       Player
+//              
+// Description: [b607] added login authorisation stuff for coop admin login menu
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool Player::coop_getShowTargetedEntity()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return false;
+	}
+	return coopPlayer.showTargetedEntity;
 }
 

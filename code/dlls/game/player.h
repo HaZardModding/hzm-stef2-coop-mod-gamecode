@@ -195,6 +195,8 @@ class Player : public Sentient
 		// COOP PLAYER - Specific to the Coop Mod
 		//--------------------------------------------------------------
 		//[b60014] chrissstrahl
+		void				coop_setShowTargetedEntity(bool bShow);
+		bool				coop_getShowTargetedEntity();
 		void				coop_playerNpcCheckAutoTeam(Event* ev);
 		str					coop_getId();
 		void				coop_setId(str sId);
@@ -1869,9 +1871,7 @@ inline void Player::Archive( Archiver &arc )
 		upgPlayer.timeEntered = 0.1f;
 		cvar_t* cvar = gi.cvar_get("cl_maxpackets");
 		upgPlayer.clMaxPackets = atoi((cvar ? cvar->string : "15"));
-	}
-
-	arc.ArchiveBool(&coopPlayer.showTargetedEntity);		
+	}		
 	//these should be reviewed properly - I was in a hurry so I added em anyway
 	arc.ArchiveFloat(&coopPlayer.lastTimeThink);
 	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
