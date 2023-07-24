@@ -335,15 +335,8 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	//hzm coop mod chrissstrahl - used to store last player mass value, needed to restore it after player has been revived
 	player->coopPlayer.lastMass = player->mass;
 
-	//hzm coop mod chrissstrahl - set player class, sets default if none stored at the client side cvar
-	//hzm coop mod chrissstrahl - make sure the value is applied (again)
-	player->entityVars.SetVariable( "globalclassName" , currentClass.c_str() );
-
 	//hzm coop mod chrissstrahl - set health
 	player->setMaxHealth( classMaxHealth );
-
-	//hzm coop mod chrissstrahl - set player class, sets default if none stored at the client side cvar
-	player->entityVars.SetVariable( "globalclassName" , currentClass.c_str() );
 
 	//hzm coop mod chrissstrahl - add a background shader to the hud, this shows the player his current class
 	if ( player->coop_getInstalled() ) {
