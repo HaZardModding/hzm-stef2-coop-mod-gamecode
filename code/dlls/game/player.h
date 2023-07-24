@@ -284,6 +284,7 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		void				upgPlayerLoadingSavegame();
 		void				upgPlayerMessageOfTheDay(Event* ev);
 		float				upgPlayerGetSkipCinematicTimeLast();
 		void				upgPlayerSetSkipCinematicTimeLast();
@@ -1860,24 +1861,10 @@ inline void Player::Archive( Archiver &arc )
 	// When loading the saved game
 	// Set vars that are also used in singleplayer but not put into the savegame file
 	if (arc.Loading()) {
-		upgPlayer.scanHudActive = true;
-		upgPlayer.scanDataSendLast = "?NoNe?";
-
-		upgPlayerSetScanData(0,"");
-		upgPlayerSetScanData(1,"");
-		upgPlayerSetScanData(2,"");
-
-		upgPlayer.targetedEntityLast = NULL;
-		upgPlayer.timeEntered = 0.1f;
-		cvar_t* cvar = gi.cvar_get("cl_maxpackets");
-		upgPlayer.clMaxPackets = atoi((cvar ? cvar->string : "15"));
-	}		
-	//these should be reviewed properly - I was in a hurry so I added em anyway
-	arc.ArchiveFloat(&coopPlayer.lastTimeThink);
-	arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
-	arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);
-	arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
-	
+		//[GAMEPUGRADE][b60014] chrissstrahl - do special things when loading a savegame
+		//ultimatively we would want to entirly remove this, but we have other things to take care of first
+		upgPlayerLoadingSavegame();
+	}
 	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
 	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);
 	arc.ArchiveSafePointer(&coopPlayer.ePlacable);

@@ -25,6 +25,31 @@ extern Event EV_Player_upgPlayerMessageOfTheDay;
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
 //=========================================================[b60014]
+// Name:        upgPlayerLoadingSavegame
+// Class:       Player
+//              
+// Description: Executed from Player::Archive( Archiver &arc ) when loading a savegame
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void Player::upgPlayerLoadingSavegame()
+{
+	upgPlayer.scanHudActive = true;
+	upgPlayer.scanDataSendLast = "?NoNe?";
+
+	upgPlayerSetScanData(0, "");
+	upgPlayerSetScanData(1, "");
+	upgPlayerSetScanData(2, "");
+
+	upgPlayer.targetedEntityLast = NULL;
+	upgPlayer.timeEntered = 0.1f;
+	cvar_t* cvar = gi.cvar_get("cl_maxpackets");
+	upgPlayer.clMaxPackets = atoi((cvar ? cvar->string : "15"));
+}
+
+//=========================================================[b60014]
 // Name:        mp_motd
 // Class:       Player
 //              
