@@ -103,8 +103,7 @@ void MultiplayerManager::updateVotes(Player* player, bool bLeaving)
 		_voteYes = 0;
 		_voteTime = 0.0f;
 
-		int i;
-		for (i = 0; i < maxclients->integer; i++) {
+		for (int i = 0; i < maxclients->integer; i++) {
 			Player* currentPlayer;
 			currentPlayer = getPlayer(i);
 			if (currentPlayer) {

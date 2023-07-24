@@ -56,7 +56,7 @@ bool UpgStrings::replace(str& sHeystack, const str& sFind, const str& sNedle)
 //================================================================
 int UpgStrings::containsAt(str sSource, str sKeyword)
 {
-	if (Q_stricmp(sKeyword.c_str(), "") == 0 || Q_stricmp(sSource.c_str(), "") == 0){
+	if (!sKeyword.length() || !sSource.length()) {
 		return -1;
 	}
 	str ss, sk;
