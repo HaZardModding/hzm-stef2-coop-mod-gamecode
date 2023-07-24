@@ -5075,7 +5075,7 @@ void Weapon::ProcessTargetedEntity( EntityPtr entity )
 		return;
 
 	player =  (Player*) (Sentient*)owner;
-	if(player == 0)
+	if(player == nullptr) //[GAMEUPGRADE][b60014] chrissstrahl - changed 0 to nullptr
 		return;
 	
 	if ( targetingSkin )
