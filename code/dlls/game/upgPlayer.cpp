@@ -555,6 +555,7 @@ int Player::upgPlayerDeathTime()
 // Class:       Player
 //              
 // Description: Handles Player Setup stuff, like language and netsetting
+//				Always executed from Player::Player()
 //              
 // Parameters:  void
 //              
@@ -565,7 +566,6 @@ void Player::upgPlayerSetup()
 	//[b607] daggolin - Restore bot state on player object
 	gentity_t* ent = edict; if (!ent) { return; }
 	if (level.spawn_bot) { edict->svflags |= SVF_BOT; }
-	entityVars.SetVariable("_playerIsBot", (float)(int)level.spawn_bot);
 
 	upgPlayerSetLevelTimeEntered();
 
@@ -1282,7 +1282,7 @@ void Player::upgPlayerGetLastDamaged(Event* ev)
 	ev->ReturnFloat(upgPlayerGetLastDamageTime());
 }
 
-void Player::upgPLayerGetTeamName(Event* ev)
+void Player::upgPlayerGetTeamName(Event* ev)
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
 	if (multiplayerManager.inMultiplayer()) {
@@ -1510,9 +1510,8 @@ void upgPlayerDelayedServerCommand(int entNum,const char* commandText)
 //================================================================
 void upgPlayerHandleDelayedServerCommands(void)
 {
-	int i;
 	int j;
-	for (i = 0; i < maxclients->integer; i++) {
+	for (int i = 0; i < maxclients->integer; i++) {
 
 		if (!&g_entities[i].inuse || !g_entities[i].entity || !g_entities[i].client) {
 			continue;

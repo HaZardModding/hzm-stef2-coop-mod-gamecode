@@ -26,6 +26,7 @@
 extern CoopNpcTeam coopNpcTeam;
 extern CoopChallenges coopChallenges;
 extern CoopServer coopServer;
+extern Event EV_Player_coop_playerNpcCheckAutoTeam;
 
 #include "coopSpawnlocation.hpp"
 extern CoopSpawnlocation coopSpawnlocation;
@@ -51,6 +52,35 @@ extern Event EV_World_AutoFailure;
 extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
+
+//[b60014] chrissstrahl - used to autospawn npc teammates
+//================================================================
+// CALLED FROM: EV_Player_coop_playerNpcCheckAutoTeam
+//================================================================
+void Player::coop_playerNpcCheckAutoTeam(Event* ev)
+{
+	if (!multiplayerManager.inMultiplayer()) {
+		return;
+	}
+
+	if (level.cinematic) {
+		for (int i = 0; i < maxclients->integer; i++) {
+			Player* currentPlayer;
+			currentPlayer = multiplayerManager.getPlayer(i);
+			if (currentPlayer) {
+				currentPlayer->CancelEventsOfType(EV_Player_coop_playerNpcCheckAutoTeam);
+			}
+		}
+
+		//Manage Auto NPC Team
+		Event* newEvent = new Event(EV_Player_coop_playerNpcCheckAutoTeam);
+		PostEvent(newEvent, 3.0f);
+		return;
+	}
+
+	//check if we should add npc team mates
+	coopNpcTeam.npcCheckAutoTeam();
+}
 
 //[b60014] chrissstrahl - extend the amount of time a player can be under water without drowning
 //================================================================
@@ -1408,9 +1438,6 @@ bool coop_playerSetup( gentity_t *ent )
 }
 bool coop_playerSetup(Player* player)
 {
-	if (!player)
-		return false;
-
 	//[b607] chrissstrahl - allow cancelation of pending Missionfailure event (only if autofail because of empty server)
 	if (game.coop_autoFailPending) {
 		world->CancelEventsOfType(EV_World_AutoFailure);
@@ -1450,12 +1477,10 @@ bool coop_playerSetup(Player* player)
 	player->coopPlayer.deathViewangleY = 0;
 	//player->coopPlayer.respawnAtRespawnpoint = true;
 
-	//hzm coop mod chrissstrahl - record time when player entred, store in player entity
-	player->entityVars.SetVariable("globalCoop_upgPlayer.timeEntered", level.time);
-
 	if(game.coop_isActive){
-		//hzm coop mod chrissstrahl - run level script threads, used for scriptmod and noscript script
-		coop_serverRunScriptThread("globalCoop_teammate_follow");
+		//Manage Auto NPC Team
+		Event* newEvent2 = new Event(EV_Player_coop_playerNpcCheckAutoTeam);
+		player->PostEvent(newEvent2, 3.0f);
 
 		//[b60011] chrissstrahl - changed: player is now starting the thread, renamed thread
 		//notify level scripts that the player just spawned - this is used on custom map scripts

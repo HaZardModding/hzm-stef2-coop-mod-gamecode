@@ -167,8 +167,6 @@ public:
 extern pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
 //[b607] chrissstrahl - add/remove/update playername for communicator menu
 void coop_playerCommunicator(Player* player, int iAdd);
-//[b607] chrissstrahl - added for coop admin login
-bool coop_playerCheckAdmin(Player *player);
 //[b607] chrissstrahl - added to handle stuff when a player is connecting
 void coop_playerConnect(Entity *ePlayer); 
 bool coop_playerSpawnLms( Player *player );

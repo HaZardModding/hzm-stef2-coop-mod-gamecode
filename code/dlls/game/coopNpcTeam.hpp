@@ -33,6 +33,7 @@ private:
 
 public:
 	void	init();
+	void	npcCheckAutoTeam();
 	void	npcLoadData();
 	void	playerLeft(Player* player);
 	void	playerReadyCheck(Player* player);
@@ -40,9 +41,11 @@ public:
 	void	npcAdd(Player* player);
 	void	npcAdd(Vector vOrigin, Vector vAngles);
 	void	npcRemove(Player* player);
-	Entity* npcGetSpawnPos();
+	Entity* npcGetSpawnEnt();
 	void	cleanUp(bool restart);
 };
+
+extern CoopNpcTeam coopNpcTeam;
 
 /*
 ADDED playerLeft() TO coopPLayer.cpp at coop_playerLeft()

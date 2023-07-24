@@ -53,6 +53,7 @@
 #include "coopPlayer.hpp"
 #include "coopText.hpp"
 #include "coopReturn.hpp"
+#include "coopNpcTeam.hpp"
 
 
 //Forward
@@ -1762,6 +1763,15 @@ Event EV_Player_getViewtraceEndpos
 	"return-vector",
 	"Returns vector at wich players aim ends at"
 );
+//[b60014] chrissstrahl - try to add automatic team npc (delayed)
+Event EV_Player_coop_playerNpcCheckAutoTeam
+(
+	"npcCheckAutoTeam",
+	EV_DEFAULT,
+	"",
+	"",
+	"Checks if the coop mod can add npc teammates"
+);
 //[GAMEUPGRADE][b60014] chrissstrahl - print message of the day (delayed)
 Event EV_Player_upgPlayerMessageOfTheDay
 (
@@ -1968,97 +1978,67 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_FlagAttachAngles , &Player::setFlagAttachAngles } ,
 
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
-
-	//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
-	{ &EV_Player_getViewtraceEndpos,			&Player::upgPlayerGetViewtraceEndpos },
-
-	//[b60014] chrissstrahl - grab player userfov, basically the fov the player has set in menu
-	{ &EV_Player_getUserFov,					&Player::upgPlayerGetUserFov},
-
-	//hzm gameupdate chrissstrahl [b60011] circlemenu
+	//--------------------------------------------------------------
+	// HAZARDMODDING COOP MOD //[b60014] - chrissstrahl - mostly script related
+	//--------------------------------------------------------------
+	{ &EV_Player_SetClassLocked ,				&Player::coop_playerSetClassLocked },
+	{ &EV_Player_SetClassLocked ,				&Player::coop_playerSetClassLocked },
+	{ &EV_Player_GetCoopClass ,					&Player::coop_playerGetCoopClass },
+	{ &EV_Player_IsTechnichian ,				&Player::coop_playerIsCoopClassTechnician },
+	{ &EV_Player_IsMedic ,						&Player::coop_playerIsCoopClassMedic },
+	{ &EV_Player_IsHeavyWeapons ,				&Player::coop_playerIsCoopClassHeavyWeapons },
+	{ &EV_Player_getCoopVersion,				&Player::coop_playerGetCoopVersion },
+	{ &EV_Player_coop_playerNpcCheckAutoTeam,	&Player::coop_playerNpcCheckAutoTeam },
+	//--------------------------------------------------------------
+	// GAMEUPGRADE PLAYER CIRCLEMENU //[b60011] - chrissstrahl
+	//--------------------------------------------------------------
 	{ &EV_Player_circleMenu,					&Player::circleMenuEvent},
 	{ &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent},
 	{ &EV_Player_circleMenuDialogClear,			&Player::circleMenuDialogClearEvent },
 	{ &EV_Player_circleMenuSet,					&Player::circleMenuSetEvent },
 	{ &EV_Player_circleMenuClear,				&Player::circleMenuClearEvent },
-	//hzm gameupdate daggolin - new commands
+	//--------------------------------------------------------------
+	// GAMEUPGRADE PLAYER - chrissstrahl - mostly script related
+	//--------------------------------------------------------------
+	{ &EV_Player_getViewtraceEndpos,			&Player::upgPlayerGetViewtraceEndpos },
+	{ &EV_Player_getUserFov,					&Player::upgPlayerGetUserFov },
 	{ &EV_Player_GetScriptVariablesCommand ,	&Player::upgPlayerGetScriptVariablesCommand } ,
-	//hzm gameupdate chrissstrahl - sets specific camera on player
 	{ &EV_Player_setCamera ,					&Player::upgPlayerSetCameraEvent } ,
-	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_setKillThread ,				&Player::upgPlayerSetKillThread },
-	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getLanguage,					&Player::upgPlayerGetLanguageEvent },
-	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getName ,						&Player::upgPlayerGetNameEvent },
-	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_WidgetCommand ,				&Player::upgPlayerWidgetCommandEvent },
-	//hzm gameupdate chrissstrahl - add new commands for script use
 	{ &EV_Player_getScore,						&Player::upgPlayerGetScore },
 	{ &EV_Player_addScore,						&Player::upgPlayerAddScore },
 	{ &EV_Player_getDeaths,						&Player::upgPlayerGetDeaths },
 	{ &EV_Player_getKills,						&Player::upgPlayerGetKills },
 	{ &EV_Player_getLastDamaged,				&Player::upgPlayerGetLastDamaged },
-	{ &EV_Player_getTeamName,					&Player::upgPLayerGetTeamName },
+	{ &EV_Player_getTeamName,					&Player::upgPlayerGetTeamName },
 	{ &EV_Player_getTeamScore,					&Player::upgPlayerGetTeamScore },
-	{ &EV_Player_getCoopVersion,				&Player::coop_playerGetCoopVersion },
-	
-	//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
-	{ &EV_Player_getBackpackAttachOffset,				&Player::upgPlayerGetBackpackAttachOffset },
-	{ &EV_Player_getBackpackAttachAngles,				&Player::upgPlayerGetBackpackAttachAngles },
-	{ &EV_Player_getFlagAttachOffset,					&Player::upgPlayerGetFlagAttachOffset },
-	{ &EV_Player_getFlagAttachAngles,					&Player::upgPlayerGetFlagAttachAngles },
-
-	//[b60013] chrissstrahl - checks if player is pressing fowrward button
+	{ &EV_Player_getBackpackAttachOffset,		&Player::upgPlayerGetBackpackAttachOffset },
+	{ &EV_Player_getBackpackAttachAngles,		&Player::upgPlayerGetBackpackAttachAngles },
+	{ &EV_Player_getFlagAttachOffset,			&Player::upgPlayerGetFlagAttachOffset },
+	{ &EV_Player_getFlagAttachAngles,			&Player::upgPlayerGetFlagAttachAngles },
 	{ &EV_Player_checkForward,					&Player::upgPlayerCheckForward },
-	//[b60013] chrissstrahl - checks if player is pressing backward button
 	{ &EV_Player_checkBackward,					&Player::upgPlayerCheckBackward },
-	//[b60013] chrissstrahl - checks if player is pressing left turn or strafe button
 	{ &EV_Player_checkLeft,						&Player::upgPlayerCheckLeft },
-	//[b60013] chrissstrahl - checks if player is pressing right turn or strafe button
 	{ &EV_Player_checkRight,					&Player::upgPlayerCheckRight },
-	//[b60013] chrissstrahl - checks if player is pressing lean right button
 	{ &EV_Player_checkLeanRight,				&Player::upgPlayerCheckLeanRight },
-	//[b60013] chrissstrahl - checks if player is pressing lean left button
 	{ &EV_Player_checkLeanLeft,					&Player::upgPlayerCheckLeanLeft },
-	//[b60013] chrissstrahl - checks if player is pressing drop rune button
 	{ &EV_Player_checkDropRune,					&Player::upgPlayerCheckDropRune },
-	//[b60013] chrissstrahl - checks if player is pressing run button
 	{ &EV_Player_checkRun,						&Player::upgPlayerCheckRun },
-	//[b60013] chrissstrahl - checks if player is pressing reload button
 	{ &EV_Player_checkReload,					&Player::upgPlayerCheckReload },
-	//[b60013] chrissstrahl - checks if player is pressing jump button
 	{ &EV_Player_checkJump,						&Player::upgPlayerCheckJump },
-	//[b60013] chrissstrahl - checks if player is pressing crouch fire button
 	{ &EV_Player_checkCrouch,					&Player::upgPlayerCheckCrouch },
-
-	//[b60011] chrissstrahl - checks if player is using the use button
 	{ &EV_Player_checkUse,						&Player::upgPlayerCheckUsePressing },
-	//[b60011] chrissstrahl - checks if player is in third person
 	{ &EV_Player_checkThirdperson,				&Player::upgPlayerCheckThirdperson },
-	//[b60011] chrissstrahl - checks if player is pressing fire/alternative fire button
 	{ &EV_Player_checkFire,						&Player::upgPlayerCheckFire },
 	{ &EV_Player_checkFirealt,					&Player::upgPlayerCheckFirealt },
-	//[b60011] chrissstrahl - runs thread from player entity
 	{ &EV_Player_RunThread,						&Player::upgPlayerRunThread },
-	//[b60011] chrissstrahl - get player viewangle
 	{ &EV_Player_GetViewangles ,				&Player::upgPlayerGetViewanglesEvent } ,
-	//[b607] chrissstrahl - return targeted entity of player
 	{ &EV_Player_GetTargetedEntity ,			&Player::upgPlayerGetTargetedEntity },
-	//[b60011] chrissstrahl - allowing/preventing player from switching class
-	{ &EV_Player_SetClassLocked ,				&Player::coop_playerSetClassLocked },
-	//[b60011] chrissstrahl - get coop class name
-	{ &EV_Player_GetCoopClass ,					&Player::coop_playerGetCoopClass },
-	//[b60011] chrissstrahl - check if coop class is technician
-	{ &EV_Player_IsTechnichian ,				&Player::coop_playerIsCoopClassTechnician },
-	//[b60011] chrissstrahl - check if coop class is Medic
-	{ &EV_Player_IsMedic ,						&Player::coop_playerIsCoopClassMedic },
-	//[b60011] chrissstrahl - check if coop class is HeavyWeapons
-	{ &EV_Player_IsHeavyWeapons ,				&Player::coop_playerIsCoopClassHeavyWeapons },
-	//[b60011] chrissstrahl - checks player has ger/eng langauge
 	{ &EV_Player_HasLanguageGerman ,			&Player::upgPlayerHasLanguageGerman },
 	{ &EV_Player_HasLanguageEnglish ,			&Player::upgPlayerHasLanguageEnglish },
-	//[GAMEUPGRADE][b60014] chrissstrahl
 	{ &EV_Player_upgPlayerMessageOfTheDay ,		&Player::upgPlayerMessageOfTheDay },
 	{ NULL , NULL }
 };

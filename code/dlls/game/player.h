@@ -195,6 +195,7 @@ class Player : public Sentient
 		// COOP PLAYER - Specific to the Coop Mod
 		//--------------------------------------------------------------
 		//[b60014] chrissstrahl
+		void				coop_playerNpcCheckAutoTeam(Event* ev);
 		str					coop_getId();
 		void				coop_setId(str sId);
 		bool				coop_getInstalled();
@@ -369,7 +370,7 @@ class Player : public Sentient
 		void				upgPlayerGetDeaths(Event* ev);
 		void				upgPlayerGetKills(Event* ev);
 		void				upgPlayerGetLastDamaged(Event* ev);
-		void				upgPLayerGetTeamName(Event* ev);
+		void				upgPlayerGetTeamName(Event* ev);
 		void				upgPlayerGetTeamScore(Event* ev);
 		void				upgPlayerGetNameEvent(Event* ev);
 		void				upgPlayerSetCameraEvent(Event *ev);
