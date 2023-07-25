@@ -9,7 +9,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LocalDebuggerWorkingDirectory>D:\OneDrive\GAMES\COOP EF2\</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>+set dedicated 0 +set g_gametype 1 +set bot_enable 1 +set mp_botcmmands "exec megabots.cfg" +set logfile 1 +set sv_maxclients 4 +set r_fullscreen 0 +set r_mode 6 +cheats 1 +mp_warmuptime 0 +set mp_gametype 0 +map m5l1b-drull_ruins1</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>+set dedicated 0 +set g_gametype 0 +set bot_enable 1 +set mp_botcmmands "exec megabots.cfg" +set logfile 1 +set sv_maxclients 4 +set r_fullscreen 0 +set r_mode 6 +cheats 1 +mp_warmuptime 0 +set mp_gametype 0 +devmap coop_icestation</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug MP|Win32'">
     <LocalDebuggerWorkingDirectory>D:\GAMES\Star Trek\Elite Force II\Server EF2\</LocalDebuggerWorkingDirectory>
