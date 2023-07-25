@@ -249,7 +249,12 @@ void Archiver::Close( void )
 		{
 			fixup = fixupList.ObjectAt( i );
 			classptr = classpointerList.ObjectAt( fixup->index );
-			
+
+			//[b60014] chrissstrahl - Using this to allow debugging to see where the call comes from
+			if (((classptr == NULL) && (fixup->index != ARCHIVE_NULL_POINTER))){
+				gi.Printf(va("Type: %d - Index: %d - Object At: %d\n", fixup->type, fixup->index, i));
+			}
+
 			// Make sure the ptr isn't screwed up //[b60011] chrissstrahl - if you get here while loading a savegame a var/pointer is accsessed that was not archived, if vars are accsessed during sp they need to be archived properly
 			assert( !( ( classptr == NULL ) && ( fixup->index != ARCHIVE_NULL_POINTER ) ) );
 			

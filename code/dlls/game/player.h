@@ -195,6 +195,11 @@ class Player : public Sentient
 		// COOP PLAYER - Specific to the Coop Mod
 		//--------------------------------------------------------------
 		//[b60014] chrissstrahl
+		void				coop_playerLoadingSavegame();
+		float				coop_getObjectivesPrintedTitleLast();
+		void				coop_setObjectivesPrintedTitleLast();
+		float				coop_getSpawnedLastTime();
+		void				coop_setSpawnedLastTime();
 		void				coop_setShowTargetedEntity(bool bShow);
 		bool				coop_getShowTargetedEntity();
 		void				coop_playerNpcCheckAutoTeam(Event* ev);
@@ -1864,10 +1869,26 @@ inline void Player::Archive( Archiver &arc )
 		//[GAMEPUGRADE][b60014] chrissstrahl - do special things when loading a savegame
 		//ultimatively we would want to entirly remove this, but we have other things to take care of first
 		upgPlayerLoadingSavegame();
+		
+		//[b60014] chrissstrahl - fixup data, this is a workaround, ultimatively we want to elimenate this
+		coop_playerLoadingSavegame();
 	}
 	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
 	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);
 	arc.ArchiveSafePointer(&coopPlayer.ePlacable);
+
+	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
+	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
+	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
+	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
+	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
+	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
+	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
+	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
+	//arc.ArchiveFloat(&coopPlayer.lastTimeThink);
+	//arc.ArchiveFloat(&coopPlayer.lastTimeUpdatedObjectives);
+	//arc.ArchiveFloat(&coopPlayer.lastTimePrintedObjectivesTitle);
+	//arc.ArchiveFloat(&coopPlayer.lastTimeSpawned);
 	}
 
 inline Camera *Player::CurrentCamera()

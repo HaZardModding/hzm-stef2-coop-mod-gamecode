@@ -893,7 +893,7 @@ void coop_serverSaveClientData( Player *player )
 		return;
 	if ( multiplayerManager.isPlayerSpectator( player ) )
 		return;
-	if ( player->coopPlayer.lastTimeSpawned == -1.0f )
+	if ( player->coop_getSpawnedLastTime() == -1.0f )
 		return;
 
 	//time_t timeOnServer;

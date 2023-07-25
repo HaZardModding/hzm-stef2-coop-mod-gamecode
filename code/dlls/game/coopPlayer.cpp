@@ -217,10 +217,6 @@ bool Player::coop_playerCheckAdmin()
 //================================================================
 bool Player::coop_playerObjectivesCycleEqual()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
-		return true;
-	}
-
 	return (coopPlayer.objectivesCycle == game.coop_objectiveCycle) ? true : false;
 }
 
@@ -237,10 +233,6 @@ bool Player::coop_playerObjectivesCycleEqual()
 //================================================================
 void Player::coop_playerObjectivesCycleUpdate()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.objectivesCycle Access VIOLATION!\n");
-		return;
-	}
 	coopPlayer.objectivesCycle = game.coop_objectiveCycle;
 }
 
@@ -1816,7 +1808,7 @@ void coop_playerEnterArena(int entnum, float health)
 		return;
 
 	//hzm coop mod chrissstrahl set when the player spawned last time, used to display objectives in text hud
-	player->coopPlayer.lastTimeSpawned = level.time;
+	player->coop_setSpawnedLastTime();
 
 	if (!game.coop_isActive) {
 		return;
@@ -2628,7 +2620,7 @@ void coop_playerThink( Player *player )
 	if ( !multiplayerManager.isPlayerSpectator( player ) ){
 		//make sure that the player does not respawn inside a door, this would be bad
 
-		if ( ( player->coopPlayer.lastTimeSpawned + 1 ) > level.time ) {
+		if ( ( player->coop_getSpawnedLastTime() + 1 ) > level.time ) {
 			if ( coop_checkEntityInsideDoor( ( Entity * )player ) ) {
 				player->coopPlayer.respawnAtRespawnpoint = true;
 				//[b60013] chrissstrahl - move player to spawn if stuck in door
@@ -2860,18 +2852,92 @@ bool Player::coop_updateStats(void)
 }
 
 //================================================================
+// Name:        coop_setObjectivesPrintedTitleLast
+// Class:       Player
+//              
+// Description: Sets coopPlayer.lastTimePrintedObjectivesTitle
+//              
+// Parameters:  void
+//              
+// Returns:     void           
+//================================================================
+void Player::coop_setObjectivesPrintedTitleLast()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.lastTimePrintedObjectivesTitle Access VIOLATION!\n");
+	}
+	coopPlayer.lastTimePrintedObjectivesTitle = level.time;
+}
+
+//================================================================
+// Name:        coop_getObjectivesPrintedTitleLast
+// Class:       Player
+//              
+// Description: Gets coopPlayer.lastTimePrintedObjectivesTitle
+//              
+// Parameters:  void
+//              
+// Returns:     float    
+//================================================================
+float Player::coop_getObjectivesPrintedTitleLast()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return 0.0f;
+	}
+	return coopPlayer.lastTimePrintedObjectivesTitle;
+}
+
+//================================================================
+// Name:        coop_setSpawnedLastTime
+// Class:       Player
+//              
+// Description: Sets coopPlayer.lastTimeSpawned
+//              
+// Parameters:  void
+//              
+// Returns:     void           
+//================================================================
+void Player::coop_setSpawnedLastTime()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.lastTimeSpawned Access VIOLATION!\n");
+	}
+	coopPlayer.lastTimeSpawned = level.time;
+}
+
+//================================================================
+// Name:        coop_getSpawnedLastTime
+// Class:       Player
+//              
+// Description: Gets coopPlayer.lastTimeSpawned
+//              
+// Parameters:  void
+//              
+// Returns:     float    
+//================================================================
+float Player::coop_getSpawnedLastTime()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		return 0.0f;
+	}
+	return coopPlayer.lastTimeSpawned;
+}
+
+//================================================================
 // Name:        coop_setShowTargetedEntity
 // Class:       Player
 //              
-// Description: [b607] added login authorisation stuff for coop admin login menu
+// Description: Sets coopPlayer.showTargetedEntity
 //              
 // Parameters:  bool
 //              
-// Returns:     void
-//              
+// Returns:     void           
 //================================================================
 void Player::coop_setShowTargetedEntity(bool bShow)
 {
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.showTargetedEntity Access VIOLATION!\n");
+	}
 	coopPlayer.showTargetedEntity = bShow;
 }
 
@@ -2879,12 +2945,11 @@ void Player::coop_setShowTargetedEntity(bool bShow)
 // Name:        coop_getShowTargetedEntity
 // Class:       Player
 //              
-// Description: [b607] added login authorisation stuff for coop admin login menu
+// Description: Gets coopPlayer.showTargetedEntity
 //              
 // Parameters:  void
 //              
-// Returns:     bool
-//              
+// Returns:     bool    
 //================================================================
 bool Player::coop_getShowTargetedEntity()
 {
@@ -2892,5 +2957,21 @@ bool Player::coop_getShowTargetedEntity()
 		return false;
 	}
 	return coopPlayer.showTargetedEntity;
+}
+
+//================================================================
+// Name:        coop_playerLoadingSavegame
+// Class:       Player
+//              
+// Description: Used to fix issues when loading savegame in singleplayer
+//              
+// Parameters:  void
+//              
+// Returns:     void    
+//================================================================
+void Player::coop_playerLoadingSavegame()
+{
+	coopPlayer.objectivesCycle = 0.1f;
+	coopPlayer.lastTimePrintedObjectivesTitle = 9999.0f;
 }
 

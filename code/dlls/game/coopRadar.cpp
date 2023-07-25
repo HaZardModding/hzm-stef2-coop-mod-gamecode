@@ -189,7 +189,7 @@ void coop_radarUpdate( Player *player )
 		player->health <= 0.0f ||
 		multiplayerManager.isPlayerSpectator(player) ||
 		(player->upgPlayerGetLevelTimeEntered() + 3) > level.time ||
-		(player->coopPlayer.lastTimeSpawned + 1.5) > level.time ||
+		(player->coop_getSpawnedLastTime() + 1.5) > level.time ||
 		player->coopPlayer.lastTimeRadarUpdated + COOP_RADAR_TIMECYCLE > level.time ||
 		solvingPuzzle && solvingPuzzle->floatValue() == 1.0f )
 	{

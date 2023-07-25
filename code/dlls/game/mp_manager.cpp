@@ -900,7 +900,7 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 				//hzm gameupdate chrissstrahl - if the mission has failed, don't show this anymore, keep text minimal to focus players on the failure text
 				if ( !level.mission_failed )
 				{
-					if ( !game.coop_isActive || ( player->coopPlayer.lastTimeSpawned + 2 ) < level.time ) {
+					if ( !game.coop_isActive || ( player->coop_getSpawnedLastTime() + 2 ) < level.time ) {
 						if (player->upgPlayerHasLanguageGerman()) {
 							centerPrint( player->entnum , va( "^3 %s %s" , modelName, COOP_TEXT_PLAYER_MODEL_NOT_ALLOWED_DEU) , CENTERPRINT_IMPORTANCE_NORMAL );
 						}

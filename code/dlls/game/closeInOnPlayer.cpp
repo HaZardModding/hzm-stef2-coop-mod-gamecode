@@ -292,7 +292,7 @@ void CloseInOnPlayer::findPlayer()
 			if (game.coop_isActive) {
 				Player *pl = (Player*)eCurr;
 				//if player did not re/spawn after he died and some time has passed this player is no longer valid
-				if( pl->coopPlayer.lastTimeSpawned < pl->coop_playerDiedLast() && (pl->coop_playerDiedLast() + 30.0f) > level.time) {
+				if( pl->coop_getSpawnedLastTime() < pl->coop_playerDiedLast() && (pl->coop_playerDiedLast() + 30.0f) > level.time) {
 					player = (Player*)eCurr;
 				}
 			}

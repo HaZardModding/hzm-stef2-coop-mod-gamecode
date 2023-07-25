@@ -319,9 +319,7 @@ void coop_objectivesUpdatePlayer( Player* player )
 
 	//[b60014] chrissstrahl - singleplayer or when ready in mp/coop
 	if ( g_gametype->integer == GT_SINGLE_PLAYER || multiplayerManager.inMultiplayer() && player->coop_playerSetupComplete() ){
-		//if (player->coopPlayer.lastTimeUpdatedObjectives != game.coop_objectiveLastUpdate && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
-			//player->coopPlayer.lastTimeUpdatedObjectives = game.coop_objectiveLastUpdate;
-		if (!player->coop_playerObjectivesCycleEqual() && (player->coopPlayer.lastTimeSpawned + 3.0f) < level.time) {
+		if (!player->coop_playerObjectivesCycleEqual() && (player->coop_getSpawnedLastTime() + 3.0f) < level.time) {
 			player->coop_playerObjectivesCycleUpdate();
 
 			coop_objectivesNotify( player );
@@ -735,10 +733,10 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 				float fAge = game.coop_objectiveItemCompletedAt[( iObjectiveItem - 1 )];
 				if ( ( fAge + 5 ) > level.time || fAge < 0 ){
 					if ( gi.GetNumFreeReliableServerCommands( player->entnum ) > 32 ){
-						if ((player->coopPlayer.lastTimePrintedObjectivesTitle + 3) < level.time){
+						if ((player->coop_getObjectivesPrintedTitleLast() + 3) < level.time) {
 							player->hudPrint( "\n\n^8======^5 $$MissionObjectives$$ ^8======\n" );
 						}
-						player->coopPlayer.lastTimePrintedObjectivesTitle = level.time;
+						player->coop_setObjectivesPrintedTitleLast();
 						player->hudPrint( va( "%s:^8 %s%s%s\n" , sStatusName.c_str() , sLocalString.c_str() , sObjective.c_str() , sLocalString.c_str() ) );
 					}
 				}
