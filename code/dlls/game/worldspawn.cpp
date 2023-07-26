@@ -31,6 +31,7 @@
 #include "groupcoordinator.hpp"
 
 #include "upgGame.hpp"
+#include "upgWorld.hpp"
 
 #include "coopServer.hpp"
 #include "coopObjectives.hpp"
