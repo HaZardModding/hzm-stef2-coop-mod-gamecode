@@ -672,6 +672,7 @@
     <ClCompile Include="coopText.cpp" />
     <ClCompile Include="coopTrigger.cpp" />
     <ClCompile Include="coopVote.cpp" />
+    <ClCompile Include="coopWorld.cpp" />
     <ClCompile Include="corridorCombatWithRangedWeapon.cpp" />
     <ClCompile Include="coverCombatWithRangedWeapon.cpp" />
     <ClCompile Include="DamageModification.cpp">
@@ -1504,6 +1505,7 @@
     <ClInclude Include="coopText.hpp" />
     <ClInclude Include="coopTrigger.hpp" />
     <ClInclude Include="coopVote.hpp" />
+    <ClInclude Include="coopWorld.hpp" />
     <ClInclude Include="corridorCombatWithRangedWeapon.hpp" />
     <ClInclude Include="coverCombatWithRangedWeapon.hpp" />
     <ClInclude Include="DamageModification.hpp" />

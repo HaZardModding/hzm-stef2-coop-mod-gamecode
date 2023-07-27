@@ -579,29 +579,7 @@ void Player::SkipCinematic( Event *ev )
 		// now that we have executed it, lets kill it so we don't call it again
 		world->skipthread = "";
 		
-		//hzm coop mod chrissstrahl - allow the new triggers to work
-		if ( skipthread[0] != '$')
-		{
-			ExecuteThread( skipthread );
-		}
-		else
-		{
-			//call the given trigger instead
-			if ( world->skipthreadEntity )
-			{
-				Event *event = new Event( EV_Activate );
-				event->SetSource( EV_FROM_SCRIPT );
-				event->SetThread( 0 );
-				event->SetLineNumber( 0 );
-				event->AddEntity( world );
-				world->skipthreadEntity->ProcessEvent( event );
-			}
-		}
-
-		//clear entity
-		world->skipthreadEntity = NULL;
-		//end of hzm
-
+		ExecuteThread( skipthread );
 
 		// reset the roll on our view just in case
 		v_angle.z = 0;

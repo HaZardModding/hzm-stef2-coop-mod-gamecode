@@ -2623,9 +2623,6 @@ void G_StopCinematic( void )
 	//[GAMEUPGRADE] chrissstrahl - clear current cinematic camera
 	upgGame.setCameraCurrent(NULL);
 
-	//hzm coop mod chrissstrahl - clear skip cinematic entity
-	world->skipthreadEntity = NULL;
-
 	SetCamera( NULL , 0.0f );			//this is here in case cueplayer is deleted from script
 	//hzm gameupdate chrissstrahl - reset skip status
 	game.cinematicSkipping = false;

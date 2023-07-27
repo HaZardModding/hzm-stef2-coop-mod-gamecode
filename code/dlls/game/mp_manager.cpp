@@ -830,7 +830,7 @@ void MultiplayerManager::addPlayer( Player *player )
 		return;
 
 	//Update Dynamic lights - or they will stay black for player joing midgame
-	upgWorld.setUpdateDynamicLights(true);
+	upgWorld.upgWorldSetUpdateDynamicLights(true);
 
 	// Inform all of the players that the player has joined the game
 	HUDPrintAllClients( va( "%s $$JoinedGame$$\n" , player->client->pers.netname ) );

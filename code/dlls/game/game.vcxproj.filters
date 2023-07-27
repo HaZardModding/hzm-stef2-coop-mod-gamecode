@@ -634,6 +634,9 @@
     <ClCompile Include="upgWorld.cpp">
       <Filter>HaZardModding\Upgrades</Filter>
     </ClCompile>
+    <ClCompile Include="coopWorld.cpp">
+      <Filter>HaZardModding\Coop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1282,6 +1285,9 @@
       <Filter>HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
     <ClInclude Include="upgWorld.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="coopWorld.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

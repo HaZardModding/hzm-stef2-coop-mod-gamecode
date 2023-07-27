@@ -1229,25 +1229,10 @@ bool coop_vote_skipcinematicSet(const str _voteString)
 		str skipthread;
 		skipthread = world->skipthread;
 		G_ClearFade();
-
-		if (skipthread[0] == '$'){
-			//call the given trigger instead
-			if (world->skipthreadEntity){
-				Event *event = new Event(EV_Activate);
-				event->SetSource(EV_FROM_SCRIPT);
-				event->SetThread(0);
-				event->SetLineNumber(0);
-				event->AddEntity(world);
-				world->skipthreadEntity->ProcessEvent(event);
-			}
-		}
-		else{
-			ExecuteThread(skipthread);
-		}
+		ExecuteThread(skipthread);
+		
 		// now that we have executed it, lets clear it so we don't call it again
 		world->skipthread = "";
-		//clear entity
-		world->skipthreadEntity = NULL;
 
 		//hzm gameupdate chrissstrahl - reset skip status
 		game.cinematicSkipping = false;

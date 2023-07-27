@@ -3648,7 +3648,6 @@ void TriggerCoopCinematicSkip::Activate( Event *ev )
 	}
 
 	world->skipthread = "$";
-	world->skipthreadEntity = ent;
 
 	//remove this trigger if it has cnt set	and hits the limit
 	RemoveSelfOnCountHit();

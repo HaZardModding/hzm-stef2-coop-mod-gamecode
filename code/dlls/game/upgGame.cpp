@@ -2,7 +2,7 @@
 // Code by:	HaZardModding, Christian Sebastian Strahl, 
 // E-Mail:	chrissstrahl@yahoo.de
 //
-// Game related upgrades and fixes
+// General Game related Upgrades, Updates and Fixes
 //-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
@@ -10,6 +10,24 @@
 #include "upgGame.hpp"
 
 UpgGame upgGame;
+
+//===========================================================[b6xx]
+// Name:        upgGame.checkMpGametype
+// Class:       UpgGame
+//              
+// Description: fix mp_gametype, which will otherwise lead to join team buttons no longer working right
+//              the coop mod does cause that if started from with game menu, on purpose
+// 
+// Parameters:  void
+//              
+// Returns:     void        
+//================================================================
+void UpgGame::checkMpGametype()
+{
+	if (mp_gametype->integer > 3 || mp_gametype->integer < 0) {
+		gi.cvar_set("mp_gametype", "0");
+	}
+}
 
 //=========================================================[b60012]
 // Name:        upgGame.gameFlushTikisPlayers

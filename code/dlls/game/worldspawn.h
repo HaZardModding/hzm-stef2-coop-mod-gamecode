@@ -175,11 +175,6 @@ public:
 	float						terrain_global_min;
 	
 	float						entity_fade_dist;
-	
-//hzm coop mod chrissstrahl - allow skip cinematic to trigger a entity
-	EntityPtr					skipthreadEntity;
-//hzm eof
-
 
 	DynamicLightInfo			dynamic_lights[ MAX_LIGHTING_GROUPS ];
 	
@@ -281,15 +276,16 @@ public:
 	virtual void	Archive( Archiver &arc );
 
 	//--------------------------------------------------------------
-	// GAMEUPGRADE WORLD
+	// GAMEUPGRADE WORLD [b60014] chrissstrahl
 	//--------------------------------------------------------------
 	bool			upgWorldUpdateDynamicLights();
-
-	//[b60013] chrissstrahl - allow to grab physics vars
-	void			getPhysicsVar(Event* ev);
-	//hzm coop mod chrissstrahl - allow delayed loading of maps
-	void			loadMap( Event *ev );
-	void			autoFailure(Event *ev);
+	void			upgWorldGetPhysicsVar(Event* ev);
+	void			upgWorldViewmodesClear();
+	//--------------------------------------------------------------
+	// [b6xx] chrissstrahl Coop Mod
+	//--------------------------------------------------------------
+	void			coop_worldLoadMap( Event *ev );
+	void			coop_worldAutoFailure(Event *ev);
 };
 
 inline void TargetList::Archive( Archiver &arc )

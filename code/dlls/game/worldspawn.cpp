@@ -33,6 +33,7 @@
 #include "upgGame.hpp"
 #include "upgWorld.hpp"
 
+#include "coopWorld.hpp"
 #include "coopServer.hpp"
 #include "coopObjectives.hpp"
 #include "coopReturn.hpp"
@@ -459,7 +460,9 @@ Event EV_World_CanShakeCamera
 	"Specifies whether or not cinematic camera's can shake from earthquakes."
 );
 
-//hzm coop mod chrissstrahl - allow delayed map load
+//--------------------------------------------------------------
+// [b6xx] chrissstrahl Coop Mod
+//--------------------------------------------------------------
 Event EV_World_LoadMap
 (
 	"loadMap" ,
@@ -468,7 +471,6 @@ Event EV_World_LoadMap
 	"mapname" ,
 	"event to load maps (with delay) after coop mission failure"
 	);
-//[b607] chrissstrahl - used to cancel failure event (on empty server) if a player joins
 Event EV_World_AutoFailure
 (
 	"autoFailure",
@@ -477,7 +479,9 @@ Event EV_World_AutoFailure
 	"",
 	"event to start a mission failure on empty server"
 );
-//[b60013] chrissstrahl - allow to grab physics vars
+//--------------------------------------------------------------
+// GAMEUPGRADE [b60014] chrissstrahl
+//--------------------------------------------------------------
 Event EV_World_GetPhysicsVar
 (
 	"getPhysicsVar",
@@ -536,78 +540,32 @@ CLASS_DECLARATION( Entity, World, "worldspawn" )
 	{ &EV_World_RemoveAvailableViewMode,	&World::removeAvailableViewMode },
 	{ &EV_World_ClearAvailableViewModes,	&World::clearAvailableViewModes },
 	{ &EV_World_CanShakeCamera,				&World::setCanShakeCamera },
-	//[b60013] chrissstrahl - allow to grab physics vars
-	{ &EV_World_GetPhysicsVar,				&World::getPhysicsVar },
-	//hzm coop mod chrissstrahl - allow delayed loading of map
-	{ &EV_World_LoadMap,					&World::loadMap } ,
-	{ &EV_World_AutoFailure,				&World::autoFailure } ,
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl
+	//--------------------------------------------------------------
+	{ &EV_World_GetPhysicsVar,				&World::upgWorldGetPhysicsVar }, //allow to grab physics vars
+	//--------------------------------------------------------------
+	// [b6xx] chrissstrahl Coop Mod
+	//--------------------------------------------------------------
+	{ &EV_World_LoadMap,					&World::coop_worldLoadMap } ,	//allow delayed loading of map
+	{ &EV_World_AutoFailure,				&World::coop_worldAutoFailure } ,
 	//end of hzm
 	{ NULL, NULL }
 };
 
-//[b60013] Chrissstrahl - allow to return physics var value via script
-void World::getPhysicsVar(Event* ev) {
-	float fValue = -1;
-	str sName = ev->GetString(1);
-	if (sName.length()) {
-		fValue = getPhysicsVar(sName.c_str());
-		if (fValue == -1) {
-			sName.tolower();
-
-			if (sName == "maxspeed") { sName = "sv_maxspeed"; }
-			else if (sName == "airaccelerate") { sName = "sv_airaccelerate"; }
-			else if (sName == "gravity") { sName = "sv_gravity"; }
-			else { gi.Printf("getPhysicsVar - unknown Physics Var Name: %s\nKnown names are: maxspeed, airaccelerate and gravity\n", sName.c_str()); }
-			cvar_t* cvar = gi.cvar_get(sName.c_str());
-
-			if (cvar) {
-				ev->ReturnFloat((float)cvar->integer);
-				return;
-			}
-		}
-	}
-	ev->ReturnFloat(fValue);
-}
-
-//[b607] chrissstrahl
-void World::autoFailure(Event *ev)
-{
-	game.coop_autoFailPending = false;
-	G_MissionFailed("PlayerKilled");
-}
-
-//hzm coop mod chrissstrahl - allow delayed loading of map (post event with delay)
-void World::loadMap( Event *ev )
-{
-	str command = ev->GetString( 1 );
-	if ( command.length() ) {
-		if ( sv_cheats->integer == 1 ) {
-#ifdef __linux__
-			gi.SendConsoleCommand( va( "map %s \n" , command.c_str() ) );//load map now
-#else
-			gi.SendConsoleCommand( va( "devmap %s \n" , command.c_str() ) );//load map now
-#endif	
-		}
-		else {
-			gi.SendConsoleCommand( va( "map %s \n" , command.c_str() ) );//load map now
-		}
-	}
-}
-//end of hzm
-
-
 World::World()
 {
-	//hzm coop mod chrissstrahl - added to allow skip cinematic to activate a entity
-	skipthreadEntity = NULL;
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl - make sure mp_gametype is within bounds
+	//--------------------------------------------------------------
+	upgGame.checkMpGametype();
 
-	//hzm coop mod chrissstrahl - fix mp_gametype, since coop mod start server menu uses mp_gametype greather than 3
-	//but the game does not have such a gametype, which will lead to join team buttons no longer working right
-	if ( mp_gametype->integer > 3 || mp_gametype->integer < 0 ){
-		gi.cvar_set( "mp_gametype" , "0" );
-	}
-	//end of hzm
-
+	//--------------------------------------------------------------
+	// [b60014] chrissstrahl - Coop Mod
+	//--------------------------------------------------------------
+	coopWorld.coop_worldSetLevelStartTime();
+	
+	
 	str         mapname;
 	int		   i;
 
@@ -634,12 +592,6 @@ World::World()
 	{
 		return;
 	}
-
-	//hzm coop mod chrissstrahl - used to compare realtime of level start to realtime when player last died
-	//as some sort of reconnect protection if some one tries to cheat Coop LMS or Respawntime
-	time_t result = time( NULL );
-	localtime( &result );
-	game.coop_levelStartTime = (int)result;
 
 	// clear out the soundtrack from the last level
 	ChangeSoundtrack( "" );
@@ -680,18 +632,22 @@ World::World()
 	level.nextmap = "";
 	level.level_name = level.mapname;
 
-//hzm coop mod chrissstrahl - remove viewmodes (standard maps keep it because of singleplayer compatibility)
-	_availableViewModes.ClearObjectList();
-	_availableViewModes.AddUniqueObject( "BogusMode" );
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - remove viewmodes (it usually keeps it once it has been added)
+	//--------------------------------------------------------------
+	upgWorldViewmodesClear();
 
-//[b607] chrissstrahl - moved up here so it won't overwrite the coop mod restored vars
-// Initialize movement info
+ 	//--------------------------------------------------------------
+	// [b607] chrissstrahl - COOP MOD, moved up here so it won't overwrite the coop mod restored vars
+	//--------------------------------------------------------------
+	// Initialize movement info
 	for (i = 0; i < WORLD_PHYSICS_TOTAL_NUMBER; i++){
 		_physicsInfo[i] = -1.0f;
 	}
 
-//hzm coop mod chrissstrahl - run coop related server stuff
-//determind maptype and other stuff
+	//--------------------------------------------------------------
+	// [b6xx] chrissstrahl - COOP MOD, run coop related server stuff, determind maptype and other stuff
+	//--------------------------------------------------------------
 	coop_serverCoop();
 
 //hzm coop mod - try loading coop version if needed, try loading default if coop fails, try coop if default fails, display warnings accordingly
@@ -1594,8 +1550,9 @@ void World::removeAvailableViewMode( Event *ev )
 void World::clearAvailableViewModes( Event *ev )
 {
 	_availableViewModes.ClearObjectList();
-	//[b607] chrissstrahl - fix all viewmodes aviailable when using 
-	//$world.clearAvailableViewModes(); in script without setting a new viewmodus
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b607] chrissstrahl - fix all viewmodes aviailable when using $world.clearAvailableViewModes(); in script without setting a new viewmodus
+	//--------------------------------------------------------------
 	_availableViewModes.AddUniqueObject("BogusMode");
 }
 
@@ -1728,9 +1685,6 @@ void World::Archive( Archiver &arc )
 	_availableViewModes.Archive( arc );
 
 	arc.ArchiveBoolean( &world_dying );
-
-	//[b60011] chrissstrahl - make sure this works with savegames
-	arc.ArchiveSafePointer( &skipthreadEntity );
 
 	arc.ArchiveString( &skipthread );
 	arc.ArchiveFloat( &farplane_distance );
