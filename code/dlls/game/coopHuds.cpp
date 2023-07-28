@@ -174,26 +174,6 @@ void coop_hudsRemove( Player *player , str hudName )
 	}
 }
 
-//hzm coop mod chrissstrahl - add coop related huds, updatenotification
-void coop_hudsUpdateNotification( Player *player )
-{
-	if ( player->coop_getInstalled() ) {
-		if ( player->coop_getInstalledVersion() < COOP_BUILD ) {
-			if ( !player->coopPlayer.updateHudDisplayed ) {
-				if ( ( level.time + 20 ) > mp_warmUpTime->integer &&
-					level.cinematic != qtrue &&
-					level.mission_failed != qtrue &&
-					level.playerfrozen != qtrue &&
-					player->coop_playerSetupComplete() != false )
-				{
-					player->coopPlayer.updateHudDisplayed = true;
-					player->hudPrint( va( "^5Coop info^8: Please ^5update^8 the HZM Coop Mod!\nYour version:^3 %d ^8- server version:^5 %d\n" , player->coop_getInstalledVersion() , COOP_BUILD ) );
-				}
-			}
-		}
-	}
-}
-
 //add huds that have been specified for this mission or map only
 //$world.getStringvar( "coop_registredHud" + fIndex );
 //cvar_bool_coop_disClass = getCvarInt( "coop_disClass" );

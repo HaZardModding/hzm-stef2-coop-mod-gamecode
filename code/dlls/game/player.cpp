@@ -1782,6 +1782,16 @@ Event EV_Player_upgPlayerMessageOfTheDay
 	"Prints the message of the day from cvar mp_motd"
 );
 
+//[b60014] Coop Mod chrissstrahl - print message to update (delayed)
+Event EV_Player_coopMessageUpdateYourMod
+(
+	"coop_playerMessageUpdateYourMod",
+	EV_DEFAULT,
+	"",
+	"",
+	"Prints a message to player to update the HZM Coop Mod"
+);
+
 /*
 ==============================================================================
 
@@ -1981,6 +1991,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//--------------------------------------------------------------
 	// HAZARDMODDING COOP MOD //[b60014] - chrissstrahl - mostly script related
 	//--------------------------------------------------------------
+	{ &EV_Player_coopMessageUpdateYourMod ,		&Player::coop_playerMessageUpdateYourMod },
 	{ &EV_Player_SetClassLocked ,				&Player::coop_playerSetClassLocked },
 	{ &EV_Player_SetClassLocked ,				&Player::coop_playerSetClassLocked },
 	{ &EV_Player_GetCoopClass ,					&Player::coop_playerGetCoopClass },

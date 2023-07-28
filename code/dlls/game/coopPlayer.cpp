@@ -1474,6 +1474,11 @@ bool coop_playerSetup(Player* player)
 		Event* newEvent2 = new Event(EV_Player_coop_playerNpcCheckAutoTeam);
 		player->PostEvent(newEvent2, 3.0f);
 
+		//[b60014] chrissstrahl - moved here and turned into a event rather than have it check each frame in think
+		extern Event EV_Player_coopMessageUpdateYourMod;
+		Event* eventUpdateMod = new Event(EV_Player_coopMessageUpdateYourMod);
+		player->PostEvent(eventUpdateMod, 15.0f);
+
 		//[b60011] chrissstrahl - changed: player is now starting the thread, renamed thread
 		//notify level scripts that the player just spawned - this is used on custom map scripts
 		ExecuteThread("coop_justEntered", true, (Entity*)player);
@@ -1546,7 +1551,9 @@ void coop_playerSetupClient(Player* player)
 void coop_playerSetupHost(Player* player)
 {
 	//[b60014] chrissstrahl - changed to use functions that handle sp/mp/coop
-	player->coop_setInstalledVersion(player->coop_getInstalledVersion());
+	cvar_t* cvar = gi.cvar_get("coop_ver");
+	str sCvar = (cvar ? cvar->string : va("%d", COOP_BUILD));
+	player->coop_setInstalledVersion(atoi(sCvar));
 	player->coop_setInstalled(true);
 
 	//[b60014] chrissstrahl - move widget back into the correct place
@@ -2650,9 +2657,6 @@ void coop_playerThink( Player *player )
 	if ( ( player->coopPlayer.lastTimeThink + 1.0f ) < level.time ){
 		player->coopPlayer.lastTimeThink = level.time;
 
-		//display update notification menu if needed
-		coop_hudsUpdateNotification( player );
-
 		if ( player->health < 0.0f || sv_cinematic->integer != 0 || multiplayerManager.isPlayerSpectator( player ) ) {
 			return;
 		}
@@ -2973,5 +2977,34 @@ void Player::coop_playerLoadingSavegame()
 {
 	coopPlayer.objectivesCycle = 0.1f;
 	coopPlayer.lastTimePrintedObjectivesTitle = 9999.0f;
+}
+
+//=========================================================[b60014]
+// Name:        coop_playerMessageUpdateYourMod
+// Class:       Player
+//              
+// Description: prints update your mod message if needed
+//              
+// Parameters:  void
+//              
+// Returns:     void    
+//================================================================
+void Player::coop_playerMessageUpdateYourMod(Event* ev)
+{
+	extern Event EV_Player_coopMessageUpdateYourMod;
+
+	//on missionfailure, stop
+	if (level.mission_failed == qtrue || coop_getInstalledVersion() >= COOP_BUILD) {
+		return;
+	}
+	
+	//while in cinematic postpone event, post it again
+	if (sv_cinematic->integer == 1 || !coop_playerSetupComplete()) {
+		Event* eventUpdateMod = new Event(EV_Player_coopMessageUpdateYourMod);
+		PostEvent(eventUpdateMod, 2.0f);
+		return;
+	}
+
+	hudPrint(va("^5Coop info^8: Please ^5update^8 the HZM Coop Mod!\nYour version:^3 %d ^8- server version:^5 %d\n", coop_getInstalledVersion(), COOP_BUILD));
 }
 

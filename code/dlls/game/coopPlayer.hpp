@@ -137,8 +137,6 @@ public:
 	bool	transportUnholster = false;
 	//hzm coop mod chrissstrahl - remember weapon that should be unholstered after !transport
 	str		transportUnholsterWeaponName = "";
-	//hzm coop mod chrissstrahl - remember if update menu has been shown or not
-	bool	updateHudDisplayed = false;
 	//hzm coop mod chrissstrahl - needed for additional vote options
 	bool startedVote = false;
 	//hzm coop mod chrissstrahl - used to store tricorder scan last data send time

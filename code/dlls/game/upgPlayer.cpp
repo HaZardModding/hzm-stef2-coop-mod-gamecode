@@ -107,6 +107,11 @@ void Player::upgPlayerMessageOfTheDay(Event* ev)
 {
 	if (!multiplayerManager.inMultiplayer()) { return; }
 	
+	//on missionfailure, stop
+	if (level.mission_failed == qtrue) {
+		return;
+	}
+
 	//while in cinematic postpone event, post it again
 	if (sv_cinematic->integer == 1) {
 		Event* newEvent = new Event(EV_Player_upgPlayerMessageOfTheDay);

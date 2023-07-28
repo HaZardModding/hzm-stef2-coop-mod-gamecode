@@ -195,6 +195,7 @@ class Player : public Sentient
 		// COOP PLAYER - Specific to the Coop Mod
 		//--------------------------------------------------------------
 		//[b60014] chrissstrahl
+		void				coop_playerMessageUpdateYourMod(Event* ev);
 		void				coop_playerLoadingSavegame();
 		float				coop_getObjectivesPrintedTitleLast();
 		void				coop_setObjectivesPrintedTitleLast();
