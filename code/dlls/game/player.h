@@ -290,6 +290,7 @@ class Player : public Sentient
 		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
 		void				upgPlayerLoadingSavegame();
+		void				upgPlayerSkipCinematic();
 		void				upgPlayerMessageOfTheDay(Event* ev);
 		float				upgPlayerGetSkipCinematicTimeLast();
 		void				upgPlayerSetSkipCinematicTimeLast();

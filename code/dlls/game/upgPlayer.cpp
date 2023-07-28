@@ -49,6 +49,50 @@ void Player::upgPlayerLoadingSavegame()
 	upgPlayer.clMaxPackets = atoi((cvar ? cvar->string : "15"));
 }
 
+//===========================================================[b6xx]
+// Name:        upgPlayerSkipCinematic
+// Class:       Player
+//              
+// Description:  allow skipping of cinematics in mp and also allow opening the menu during cinematic
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void Player::upgPlayerSkipCinematic()
+{
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
+		return;
+	}
+
+	//player presses long or repeatedly ESC
+	if ((upgPlayerGetSkipCinematicTimeLast() + 0.25) > level.time && !game.cinematicSkipping) {
+		upgPlayerSetSkipCinematicTimeLast();
+		multiplayerManager.callVote(this, "skipcinematic", "");
+		return;
+	}
+	//player presses short ESC
+	//player presses long ESC and a cinematic skip vote is active
+	else {
+		//check if player has voted, if not make him vote yes for skip, if a vote is active, then exit
+		if ((upgPlayerGetSkipCinematicTimeLast() + 0.25) > level.time && game.cinematicSkipping)
+		{
+			if (!multiplayerManager._playerData[this->entnum]._voted)
+			{
+				multiplayerManager.vote(this, "y");
+			}
+			upgPlayerSetSkipCinematicTimeLast();
+			return;
+		}
+
+		//if ESC is pressed only shortly or if no skip is active, show/hide menu
+		upgPlayerSetSkipCinematicTimeLast();
+		upgPlayerDelayedServerCommand(this->entnum, "pushmenu ingame_multiplayer");
+		return;
+	}
+}
+
+
 //=========================================================[b60014]
 // Name:        mp_motd
 // Class:       Player

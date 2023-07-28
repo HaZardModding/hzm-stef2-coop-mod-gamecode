@@ -4,8 +4,7 @@
 //
 // WORLD Class related Upgrades, Updates and Fixes
 //-----------------------------------------------------------------------------------
-#ifndef __UPGWORLD_HPP__
-#define __UPGWORLD_HPP__
+#pragma once
 
 class UpgWorld
 {
@@ -16,5 +15,3 @@ public:
 };
 
 extern UpgWorld upgWorld;
-
-#endif /* upgWorld.hpp */

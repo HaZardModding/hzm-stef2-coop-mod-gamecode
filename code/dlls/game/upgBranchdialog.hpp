@@ -2,14 +2,16 @@
 // Code by:	HaZardModding, Christian Sebastian Strahl
 // E-Mail:		chrissstrahl@yahoo.de
 //
-// CONTAINING WORLD RELATED FUNCTIONS FOR THE HZM CO-OP MOD
+//  GAMEUPGRADE code for dialog stuff in multiplayer
 //-----------------------------------------------------------------------------------
 #pragma once
 
-class CoopWorld
+#include "_pch_cpp.h"
+
+class UpgBranchDialog
 {
 public:
-	void			coop_worldSetLevelStartTime();
+	void failsave();
 };
 
-extern CoopWorld coopWorld;
+extern UpgBranchDialog upgBranchDialog;

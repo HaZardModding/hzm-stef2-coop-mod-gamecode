@@ -2599,11 +2599,30 @@ void G_StartCinematic( void )
 
 void G_StopCinematic( void )
 {
+	// clear out the skip thread
+	world->skipthread = "";
+
+	level.cinematic = false;
+	gi.cvar_set( "sv_cinematic", "0" );
+	SetCamera( NULL , 0.0f );			//this is here in case cueplayer is deleted from script
+
+
+	//hzm gameupdate chrissstrahl 
+	level.playerfrozen = false;			//this is here in case releaseplayer is deleted from script
+
+	//hzm gameupdate chrissstrahl - no need to do the stuff below in singlepplayer
+	//move this code to coop
+	//move this code to coop
+	//move this code to coop
+	//move this code to coop
+	//move this code to coop
+	//move this code to coop
+
 	//[b608] chrissstrahl - Clear all the player's vote text if a vote is vote is activce during cinematic
 	if (g_gametype->integer != GT_SINGLE_PLAYER) {
 		if (game.cinematicSkipping) {// Check if a skipcinematic vote is active
 			for (int i = 0; i < maxclients->integer; i++) {
-				Player *currentPlayer;
+				Player* currentPlayer;
 				currentPlayer = multiplayerManager.getPlayer(i);
 				if (currentPlayer) {
 					currentPlayer->clearVoteText();
@@ -2614,24 +2633,14 @@ void G_StopCinematic( void )
 		coopChallenges.reset();
 	}
 
-	// clear out the skip thread
-	world->skipthread = "";
-
-	level.cinematic = false;
-	gi.cvar_set( "sv_cinematic", "0" );
+	//hzm gameupdate chrissstrahl - reset skip status
+	game.cinematicSkipping = false;
 
 	//[GAMEUPGRADE] chrissstrahl - clear current cinematic camera
 	upgGame.setCameraCurrent(NULL);
 
-	SetCamera( NULL , 0.0f );			//this is here in case cueplayer is deleted from script
-	//hzm gameupdate chrissstrahl - reset skip status
-	game.cinematicSkipping = false;
 
-	//hzm gameupdate chrissstrahl 
-	level.playerfrozen = false;			//this is here in case releaseplayer is deleted from script
-
-	//hzm gameupdate chrissstrahl - no need to do the stuff below in singlepplayer
-	if ( g_gametype->integer == GT_SINGLE_PLAYER ) {
+	if (g_gametype->integer == GT_SINGLE_PLAYER) {
 		return;
 	}
 

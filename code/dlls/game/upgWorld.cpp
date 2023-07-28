@@ -10,6 +10,26 @@
 UpgWorld upgWorld;
 
 //================================================================
+// Name:        upgWorldAdjustForLevelScript
+// Class:       World
+//              
+// Description: [b60014] chrissstrahl - checks if the levelscript might end with .script instead of .scr
+//				modifies string if that is so, basically changes extenstion to .script then
+//              
+// Parameters:  void
+//              
+// Returns:     void     
+//================================================================
+void World::upgWorldAdjustForLevelScript(str &mapname)
+{
+	if (gi.FS_ReadFile(mapname.c_str(), NULL, true) == -1) {
+		if (gi.FS_ReadFile(va("%sipt", mapname.c_str()), NULL, true) != -1) {
+			mapname = va("%sipt", mapname.c_str());
+		}
+	}
+}
+
+//================================================================
 // Name:        upgWorldViewmodesClear
 // Class:       World
 //              

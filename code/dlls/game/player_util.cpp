@@ -541,48 +541,25 @@ void ClosePlayerLogFile( void )
 
 void Player::SkipCinematic( Event *ev )
 {
-	if ( level.cinematic == 1 )
-	{
-		//hzm gameupdate chrissstrahl - allow skipping of cinematics in mp and also allow opening the menu during cinematic
-		if ( g_gametype->integer > 0 ) {
-			//player presses long or repeatedly ESC
-			if ( ( upgPlayerGetSkipCinematicTimeLast() + 0.25) > level.time && !game.cinematicSkipping) {
-				upgPlayerSetSkipCinematicTimeLast();
-				multiplayerManager.callVote( this , "skipcinematic" , "" );
-				return;
-			}
-			//player presses short ESC
-			//player presses long ESC and a cinematic skip vote is active
-			else {
-				//check if player has voted, if not make him vote yes for skip, if a vote is active, then exit
-				if ( (upgPlayerGetSkipCinematicTimeLast() + 0.25) > level.time && game.cinematicSkipping)
-				{
-					if ( !multiplayerManager._playerData[this->entnum]._voted )
-					{
-						multiplayerManager.vote( this , "y" );
-					}
-					upgPlayerSetSkipCinematicTimeLast();
-					return;
-				}
-
-				//if ESC is pressed only shortly or if no skip is active, show/hide menu
-				upgPlayerSetSkipCinematicTimeLast();
-				upgPlayerDelayedServerCommand( this->entnum , "pushmenu ingame_multiplayer" );
-				return;
-			}
-		}
-
-		str skipthread;
-		G_ClearFade();
-		
-		skipthread = world->skipthread;
-		// now that we have executed it, lets kill it so we don't call it again
-		world->skipthread = "";
-		
-		ExecuteThread( skipthread );
-
-		// reset the roll on our view just in case
-		v_angle.z = 0;
-		SetViewAngles( v_angle );
+	if (!level.cinematic) {
+		return;
 	}
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - make sure mp_gametype is within bounds
+	//--------------------------------------------------------------
+	upgPlayerSkipCinematic();
+
+	str skipthread;
+	G_ClearFade();
+		
+	skipthread = world->skipthread;
+	// now that we have executed it, lets kill it so we don't call it again
+	world->skipthread = "";
+		
+	ExecuteThread( skipthread );
+
+	// reset the roll on our view just in case
+	v_angle.z = 0;
+	SetViewAngles( v_angle );
 }

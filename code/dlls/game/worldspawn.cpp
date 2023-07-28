@@ -633,9 +633,11 @@ World::World()
 	level.level_name = level.mapname;
 
 	//--------------------------------------------------------------
-	// GAMEUPGRADE [b6xx] chrissstrahl - remove viewmodes (it usually keeps it once it has been added)
+	// GAMEUPGRADE [b6xx] chrissstrahl
 	//--------------------------------------------------------------
 	upgWorldViewmodesClear();
+	mapname = va("maps/%s.scr", level.mapname.c_str());
+	upgWorldAdjustForLevelScript(mapname);
 
  	//--------------------------------------------------------------
 	// [b607] chrissstrahl - COOP MOD, moved up here so it won't overwrite the coop mod restored vars
@@ -644,37 +646,25 @@ World::World()
 	for (i = 0; i < WORLD_PHYSICS_TOTAL_NUMBER; i++){
 		_physicsInfo[i] = -1.0f;
 	}
-
+	
 	//--------------------------------------------------------------
 	// [b6xx] chrissstrahl - COOP MOD, run coop related server stuff, determind maptype and other stuff
 	//--------------------------------------------------------------
-	coop_serverCoop();
+	coop_serverCoop(mapname);
+	bool bLoadRegularScript = coopServer.adjustForLevelScript(mapname);
 
-//hzm coop mod - try loading coop version if needed, try loading default if coop fails, try coop if default fails, display warnings accordingly
-	mapname = coop_serverModifiedFile( va( "maps/%s.scr",level.mapname.c_str() ) );
-
-	// If there isn't a script with the same name as the map, then don't try to load script
-	if ( gi.FS_ReadFile( mapname.c_str() , NULL , true ) != -1 )
-	{
-		//hzm gameupdate chrissstrahl - prints message that a script has been added even when developer is off
-		gi.Printf( "Adding level script: '%s'\n" , mapname.c_str() );
-
-		// just set the script, we will start it in G_Spawn
-		level.SetGameScript( mapname.c_str() );
-	}
-	else
-	{
-		//hzm gameupdate chrissstrahl - prints message that NO script has been added even when developer is off
-		//loads default script to have basic coop functionality if the map is not a multiplayer map and has no script at all
-		if ( game.levelType == MAPTYPE_MULTIPLAYER )
-		{
-			gi.Printf( "Script file: '%s' not found, no scripts added!\n" , mapname.c_str() );
-			level.SetGameScript( "" );
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl
+	//--------------------------------------------------------------
+	if (bLoadRegularScript) {
+		if (gi.FS_ReadFile(mapname.c_str(), NULL, true) != -1) {
+			gi.Printf("Adding level script: '%s'\n", mapname.c_str());
+			level.SetGameScript(mapname.c_str());
 		}
-		else
-		{
-			gi.Printf( "Script file: '%s' not found, loading coop default script!\n" , mapname.c_str() );
-			level.SetGameScript( "coop_mod/matrix/default.script" );
+		else {
+			if (mapname.length()) {
+				gi.Printf("Script file: '%s' not found, no scripts added!\n", mapname.c_str());
+			}
 		}
 	}
 
@@ -734,7 +724,9 @@ void World::UpdateEntityFadeDist( void )
 
 void World::UpdateDynamicLights( void )
 {
+	//--------------------------------------------------------------
 	//[GAMEUPGRADE][b60014] chrissstrahl - fix dynamic light for players joining midgame
+	//--------------------------------------------------------------
 	if(upgWorldUpdateDynamicLights()){
 		return;
 	}
@@ -845,8 +837,10 @@ void World::SetLightIntensity( Event *ev )
 		return;
 	}
 
-	//[b607] chrissstrahl - HZMDEBUG fixme print out developer testing infos
-	//gi.Printf( "DEBUG: Light group (%s) intensity set to %d\n" , light_group_name.c_str() , light_intensity);
+	//--------------------------------------------------------------
+	//[b607] chrissstrahl - print out developer testing infos
+	//--------------------------------------------------------------
+	//gi.Printf( "COOPDEBUG: Light group (%s) intensity set to %d\n" , light_group_name.c_str() , light_intensity);
 
 	// Set the light info
 
@@ -1358,29 +1352,9 @@ void World::Think( void )
 		gi.cvar_set( "sv_currentGravity", va( "%f", gravity ) );
 	}
 
-	//hzm gameupdate chrissstrahl - CHECK IF branchdialog failsafe SHOULD BE TRIGGERED
-	if ( g_gametype->integer != GT_SINGLE_PLAYER && game.branchdialog_selectionActive )
-	{
-		//hzm gameupdate chrissstrahl - failsafe triggered on timeout and other events
-		if ( ( game.branchdialog_startingTime + game.branchdialog_timeout ) < level.time ){
-			if ( game.branchdialog_name.length() ){
-				ExecuteThread( va( "%s_failsafe" , game.branchdialog_name.c_str() ) );
-
-				//[b608] Chrissstrahl - handle activator stuff
-				if ( game.branchdialog_chosenPlayer && game.branchdialog_chosenPlayer->isSubclassOf(Player) ) {
-					Player *player = (Player*)(Entity *)game.branchdialog_chosenPlayer;
-					gi.SendServerCommand(player->entnum, "stufftext popmenu branchdialog 1\n");
-					player->branchdialog_active = false;
-				}
-
-				game.branchdialog_chosenPlayer = NULL; //[b608] chrissstrahl - used to store player that is valid to select the dialog
-				game.branchdialog_selectionActive = false;
-				game.branchdialog_name = "";
-			}
-		}
-	}
-
-	//hzm coop mod chrissstrahl - check for certain server settings
+	//--------------------------------------------------------------
+	//[b6xx] chrissstrahl - check for certain server settings and do other things
+	//--------------------------------------------------------------
 	coop_serverThink();
 }
 

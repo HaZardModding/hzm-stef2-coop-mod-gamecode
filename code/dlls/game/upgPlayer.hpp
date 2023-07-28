@@ -1,6 +1,4 @@
-#ifndef __UPGPLAYER_HPP__
-#define __UPGPLAYER_HPP__
-
+#pragma once
 //[GAMEUPGRADE][b60014] chrissstrahl - used to seperate code bases better
 class UpgPlayer
 {
@@ -28,5 +26,3 @@ void	upgPlayerHandleDelayedServerCommands(void);
 void	upgPlayerclearDelayedServerCommands(int entNum);
 
 extern UpgPlayer upgPlayer;
-
-#endif /* !__UPGPLAYER_HPP__ */

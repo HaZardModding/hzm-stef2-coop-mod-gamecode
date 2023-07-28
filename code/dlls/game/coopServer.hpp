@@ -4,9 +4,8 @@
 //
 //  CONTAINING MULTIPLAYER VOTE RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
+#pragma once
 
-#ifndef __COOPSERVER_HPP__
-#define __COOPSERVER_HPP__
 #include "_pch_cpp.h"
 
 //we wana see if we can memorize all models and animations loadad
@@ -66,7 +65,10 @@ public:
 	void svFloodProtectDisable();
 	void svFloodProtectEnable();
 	str getServerDataIniFilename();
+	bool adjustForLevelScript(str& mapname);
 };
+
+extern CoopServer coopServer;
 
 int coop_serverConfigstringRemoveCombatSounds(str sActorname);//[b607] chrissstrahl - used to remove combatsounds for named actor
 void coop_serverConfigstringRemoveNonCoopStrings(); //[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
@@ -86,7 +88,7 @@ void coop_serverSaveAllClientData( void );
 void coop_serverResetClientData( Player *player );
 void coop_serverResetAllClientData( void );
 void coop_afterChristmasEvent_deleteTrees( void );
-void coop_serverCoop();
+bool coop_serverCoop(str &mapname);
 void coop_serverSetup( void );
 bool coop_serverRunScriptThread( str scriptThread );
 void coop_serverManageAi( bool aiOn );
@@ -94,5 +96,3 @@ str coop_serverModifiedFile( str standardPath );
 void coop_serverThink( void );
 void coop_serverCleanup(bool restart); //[b610] chrissstrahl - used to reset vars and clean up stuff
 void coop_serverWarningBadSetting(str sMessage); //[b60011] chrissstrahl - to print server errors in a standardized way
-
-#endif /* coopServer.hpp */

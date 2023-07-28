@@ -20,6 +20,7 @@
 #include "program.h"
 #include "trigger.h"
 
+#include "upgBranchDialog.hpp"
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
@@ -68,8 +69,45 @@ bool CoopServer::coopIsActive()
 }
 
 //========================================================[b60014]
+// Name:        adjustForLevelScript
+// Class:       CoopServer
+//              
+// Description: modifies levelscript to load
+//              
+// Parameters:  str &mapname
+//              
+// Returns:     bool
+//================================================================
+bool CoopServer::adjustForLevelScript(str &mapname)
+{
+	//[b60014] chrissstrahl - prefer to load script files from coop_mod folder 
+	mapname = coop_serverModifiedFile(va("maps/%s.scr", level.mapname.c_str()));
+
+	// If there isn't a script with the same name as the map, then don't try to load script
+	if (gi.FS_ReadFile(mapname.c_str(), NULL, true) != -1){
+		//hzm gameupdate chrissstrahl - prints message that a script has been added even when developer is off
+		gi.Printf("Adding level script: '%s'\n", mapname.c_str());
+
+		// just set the script, we will start it in G_Spawn
+		level.SetGameScript(mapname.c_str());
+	}else{
+		//hzm gameupdate chrissstrahl - prints message that NO script has been added even when developer is off
+		//loads default script to have basic coop functionality if the map is not a multiplayer map and has no script at all
+		if (game.levelType == MAPTYPE_MULTIPLAYER){
+			gi.Printf("Script file: '%s' not found, no scripts added!\n", mapname.c_str());
+			level.SetGameScript("");
+		}else{
+			gi.Printf("Script file: '%s' not found, loading coop default script!\n", mapname.c_str());
+			level.SetGameScript("coop_mod/matrix/default.script");
+		}
+	}
+	return false;
+}
+
+
+//========================================================[b60014]
 // Name:        getServerDataIniFilename
-// Class:       -
+// Class:       CoopServer
 //              
 // Description: Used to return the name for this servers serverData.ini file
 //              
@@ -1244,10 +1282,10 @@ void coop_serverResetAllClientData( void )
 //              
 // Parameters:  VOID
 //              
-// Returns:     VOID
+// Returns:     bool
 //              
 //================================================================
-void coop_serverCoop()
+bool coop_serverCoop(str &mapname)
 {
 	//[b60013] chrissstrahl - set/reset vars upon each map load
 	coopScripting.init();
@@ -1319,7 +1357,7 @@ void coop_serverCoop()
 
 	//hzm coop mod chrissstrahl - NO MORE - Gallifrey Falls No More
 	if ( g_gametype->integer != GT_MULTIPLAYER ) {
-		return;
+		return true;
 	}
 
 	//[b60011] chrissstrahl - dectect if coop mod should be active
@@ -1344,7 +1382,7 @@ void coop_serverCoop()
 		gi.cvar_set( "g_aimviewangles" , "0" );
 
 		levelVars.SetVariable( "isCoopLevel" , 0.0f );
-		return;
+		return true;
 	}
 	
 	game.coop_saveClientData = true;
@@ -1367,7 +1405,7 @@ void coop_serverCoop()
 }
 
 //================================================================
-// Name:        coop_server
+// Name:        coop_serverSetup
 // Class:       -
 //              
 // Description: Configures the server to suit the coop mod needs
@@ -1729,6 +1767,8 @@ void coop_serverThink( void )
 
 	//hzm coop mod chrissstrahl - this will manage the objective marker
 	coop_objectivesMarkerUpdate();
+
+	upgBranchDialog.failsave();
 }
 
 //[b610] chrissstrahl - executed from Level::CleanUp

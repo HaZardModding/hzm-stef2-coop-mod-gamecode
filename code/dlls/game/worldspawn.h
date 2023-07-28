@@ -281,6 +281,7 @@ public:
 	bool			upgWorldUpdateDynamicLights();
 	void			upgWorldGetPhysicsVar(Event* ev);
 	void			upgWorldViewmodesClear();
+	void			upgWorldAdjustForLevelScript(str& mapname);
 	//--------------------------------------------------------------
 	// [b6xx] chrissstrahl Coop Mod
 	//--------------------------------------------------------------

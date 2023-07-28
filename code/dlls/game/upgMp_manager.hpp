@@ -1,4 +1,7 @@
-#ifndef __UPGMP_MANAGER_HPP__
-#define __UPGMP_MANAGER_HPP__
-
-#endif /* !__UPGMP_MANAGER_HPP__ */
+//-----------------------------------------------------------------------------------
+// Code by:	HaZardModding, Christian Sebastian Strahl, 
+// E-Mail:	chrissstrahl@yahoo.de
+//
+// MultiplayerManager (mp_manager) class related Upgrades, Updates and Fixes
+//-----------------------------------------------------------------------------------
+#pragma once
