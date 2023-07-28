@@ -4,7 +4,6 @@
 //
 // CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
-
 #pragma once
 
 #include "_pch_cpp.h"
@@ -43,6 +42,8 @@ public:
 	bool		challenesAreDisabled	= true;
 	short		iCurrentChallenge		= 0;
 };
+
+extern CoopChallenges coopChallenges;
 
 //[b60011] chrissstrahl - Variouse External Dependencies
 /*

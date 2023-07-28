@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------------
 
 #include "_pch_cpp.h"
+#include "mp_manager.hpp"
 
 #include "upgGame.hpp"
 
@@ -108,4 +109,73 @@ void UpgGame::setCameraCurrent(Entity* eCam)
 Entity* UpgGame::getCameraCurrent()
 {
 	return cinematicCurrentCam;
+}
+
+//================================================================
+// Name:        startCinematic
+// Class:       UpgGame
+//              
+// Description: hides player during cinematic start on multiplayer
+//              
+// Parameters:  void
+//              
+// Returns:     void     
+//================================================================
+void UpgGame::startCinematic()
+{
+	if (!multiplayerManager.inMultiplayer()) { return; }
+
+	gentity_t* other;
+	Player* player;
+
+	int j;
+	for (j = 0; j < game.maxclients; j++){
+		other = &g_entities[j];
+		if (other->inuse && other->client && other->entity){
+			player = (Player*)other->entity;
+			//hzm gameupdate chrissstrahl - do this allways
+			player->setSolidType(SOLID_NOT);
+			player->takedamage = DAMAGE_NO;
+			player->SetState("STAND", "STAND");
+			player->cinematicStarted();
+
+			//player->hideModel(); //hzm - does not work right
+			//hzm gameupdate chrissstrahl - hide with delay, to fix issues
+			Event* hidePlayer;
+			hidePlayer = new Event(EV_Hide);
+			player->PostEvent(hidePlayer, 0.1f);
+		}
+	}
+}
+
+//================================================================
+// Name:        stopCinematic
+// Class:       UpgGame
+//              
+// Description: handles cinematic stop on multiplayer
+//              
+// Parameters:  void
+//              
+// Returns:     void     
+//================================================================
+void UpgGame::stopCinematic()
+{
+	if (!multiplayerManager.inMultiplayer()) { return; }
+	
+	//clear current cinematic camera - used for multiplayer/coop camera tracking
+	upgGame.setCameraCurrent(NULL);
+
+	gentity_t* other;
+	Player* player;
+
+	int j;
+	for (j = 0; j < game.maxclients; j++){
+		other = &g_entities[j];
+		if (other->inuse && other->client && other->entity){
+			player = (Player*)other->entity;
+
+			player->cinematicStopped();
+			player->takedamage = DAMAGE_YES;
+		}
+	}
 }

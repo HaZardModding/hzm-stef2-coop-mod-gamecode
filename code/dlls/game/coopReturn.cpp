@@ -1130,22 +1130,6 @@ Player* coop_returnPlayerClosestTo( Entity *eMe )
 	return coop_returnPlayerFavored();
 }
 
-
-//================================================================
-// Name:        coop_returnPlayerQuantity
-// Class:       -
-//              
-// Description:  returns how many players are currently on the server
-//              
-// Parameters:  void
-//              
-// Returns:     int
-//              
-//================================================================
-int coop_returnPlayerQuantity(void)
-{
-	return coop_returnPlayerQuantity(0);
-}
 //================================================================
 // Name:        coop_returnPlayerQuantityInArena
 // Class:       -

@@ -24,18 +24,17 @@
 #include "PlayerStart.h"
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
+#include "listener.h"
 
 #include "upgStrings.hpp"
 #include "upgGame.hpp"
 
+#include "coopGame.hpp"
+#include "coopWorld.hpp"
 #include "coopChallenges.hpp"
-extern CoopChallenges coopChallenges;
-
 #include "coopRadar.hpp"
 #include "coopReturn.hpp"
 #include "coopCheck.hpp"
-#include "listener.h"
-
 
 char means_of_death_strings[ MOD_TOTAL_NUMBER ][ 32 ] =
 {
@@ -781,27 +780,30 @@ void SelectSpawnPoint( Vector &org, Vector &ang, str &thread )
 		}
 	}
 	
-	//[b60013] chrissstrahl - allow for a better error message
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60013] chrissstrahl - return proper error message
+	//--------------------------------------------------------------
 	str sError = "No Singleplayer info_player_start found!";
-	if ( !spot && !level.spawnpoint.length() )
-	{
+	if ( !spot && !level.spawnpoint.length() ){
 		// there wasn't a spawnpoint without a target, so use any
 		spot = G_FindClass( NULL, "info_player_start" );
-
 		sError += " Please add it to the level!\n";
 	}
 	else {
 		sError += va(" With targetname: %s", level.spawnpoint.c_str());
 	}
-	
 	if ( !spot )
 	{
-		//hzm coop mod chrissstrahl - quit complete game, allow reboot if server is dedicated
+		//--------------------------------------------------------------
+		// [b6xx] Coop Mod chrissstrahl - quit complete game, allow reboot if server is dedicated
+		//--------------------------------------------------------------
 		if ( coop_serverError(sError, true ) ) {
 			return;
 		}
 		else {
-			//hzm gamefix - check for spawn targetname. this error message is way more informative to mappers
+			//--------------------------------------------------------------
+			// GAMEUPGRADE [b6xx] chrissstrahl - this error message is way more informative to mappers
+			//--------------------------------------------------------------
 			gi.Error( ERR_DROP, sError.c_str() );
 		}
 	}
@@ -1567,7 +1569,9 @@ int G_FindConfigstringIndex( const char *name, int start, int max, qboolean crea
 	
 	if ( i == max )
 	{
-		//hzm coop mod chrissstrahl - quit complete game, allow reboot if server is dedicated
+		//--------------------------------------------------------------
+		// [b6xx] Coop Mod chrissstrahl - quit complete game, allow reboot if server is dedicated
+		//--------------------------------------------------------------
 		if ( coop_serverError( "G_FindConfigstringIndex: overflow" , false ) ) {
 			gi.Error( ERR_DROP , "G_FindConfigstringIndex: overflow" );
 		}
@@ -1726,12 +1730,12 @@ void CacheResource( const char * stuff, Entity * ent )
 		int index;
 		index = modelIndex( real_stuff.c_str() );
 
-		//hzm coop mod chrissstrahl - test
-		//we want to find out how the loading of models and the tiki cache are related
+		//--------------------------------------------------------------
+		// [b6xx] Coop Mod chrissstrahl - we want to find out how the loading of models and the tiki cache are related
+		//--------------------------------------------------------------
 		coop_serverMonitorTikiCache( real_stuff );
+		//gi.Printf(va("CacheResource: %s\n", real_stuff.c_str()));
 
-//[b60011] chrisssstrahl - debug
-//gi.Printf(va("CacheResource: %s\n", real_stuff.c_str()));
 
 		if ( index > 0 )
 		{
@@ -1752,16 +1756,21 @@ void CacheResource( const char * stuff, Entity * ent )
 	}
 	else if ( strstr( real_stuff.c_str(), ".spr" ) )
 	{
-		//hzm coop mod chrissstrahl - test
-		//we want to find out how the loading of models and the tiki cache are related
+		//--------------------------------------------------------------
+		// [b6xx] Coop Mod chrissstrahl - we want to find out how the loading of models and the tiki cache are related
+		//--------------------------------------------------------------
 		coop_serverMonitorTikiCache( real_stuff );
+
+
 		gi.modelindex( real_stuff.c_str() );
 	}
 	else if ( strstr( real_stuff.c_str(), ".ska" ) )
 	{
-		//hzm coop mod chrissstrahl - test
-		//we want to find out how the loading of models and the tiki cache are related
+		//--------------------------------------------------------------
+		// [b6xx] Coop Mod chrissstrahl - we want to find out how the loading of models and the tiki cache are related
+		//--------------------------------------------------------------
 		coop_serverMonitorTikiCache( real_stuff );
+
 
 		gi.TIKI_CacheAnim( real_stuff.c_str() );
 	}
@@ -1797,10 +1806,10 @@ void G_CacheStateMachineAnims( Entity *ent, const char *stateMachineName )
 	int i;
 
 
-	//hzm gamefix chrissstrahl - hello guys, how about a few checks here and there ?
-	//hzm gamefix chrissstrahl - what happend to the paranoia ???
-	if ( !ent )
-	{
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - added check to prevent crash
+	//--------------------------------------------------------------
+	if ( !ent ){
 		return;
 	}
 
@@ -1848,19 +1857,15 @@ void ChangeMusic( const char *current, const char *fallback, qboolean force )
 			}
 		}
 
-	//hzm gameupdate chrissstrahl - remember the last music state
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b6xx] chrissstrahl - printout change of music only if there really was a change
+		//--------------------------------------------------------------
 		static str sLastMusicState = "";
-		str sMusicCurrent = current;
-			sMusicCurrent += fallback;
-
-
-		if ( current && fallback )
-		{
-		//hzm gameupdate chrissstrahl - don't print if music was already like that
+		str sMusicCurrent = va("%s%s",current, fallback);
+		if ( current && fallback ){
 			if ( sLastMusicState != sMusicCurrent ){
 				gi.DPrintf( "music set to %s with fallback %s\n" , current , fallback );
 			}
-		//hzm gameupdate chrissstrahl - remember last music state
 			sLastMusicState = sMusicCurrent;
 		}
 	}
@@ -2021,7 +2026,9 @@ Squirrel : #if 0 / 1 block demoted to comment
             {
 				continue;
             }
-			//hzm gamefix chrissstrahl - added ceck if entity exists, might not even be needed but better safe then crashing, eh!
+			//--------------------------------------------------------------
+			// GAMEUPGRADE [b6xx] chrissstrahl - added ceck if entity exists
+			//--------------------------------------------------------------
 			if ( ent && ent->isSubclassOf( Actor ) )
 			{
 				delta = origin - ent->centroid;
@@ -2106,7 +2113,9 @@ Squirrel : #if 0 / 1 block demoted to comment
 				continue;
             }
 			
-			//hzm gamefix chrissstrahl - added check if entity exists, just to be safe
+			//--------------------------------------------------------------
+			// GAMEUPGRADE [b6xx] chrissstrahl - added ceck if entity exists
+			//--------------------------------------------------------------
 			if ( ent && ent->isSubclassOf( Actor ) )
 			{
 				delta = origin - ent->centroid;
@@ -2397,21 +2406,14 @@ void G_MissionFailed( const str& reason )
 
 	ChangeMusic( "failure", "normal", true );
 
-	//hzm coop mod chrissstrahl - if # is used it means set string without $$
-	str ss;
+	str sNewFailureReason = reason;
+	//--------------------------------------------------------------
+	// [b60014] Coop Mod chrissstrahl - allow coop modified failure reason
+	//--------------------------------------------------------------
+	sNewFailureReason = coopGame.missionFailureString(reason);
 
 
-	if ( reason[0] == '#' ) {
-		ss = upgStrings.getStartingFrom( reason , 1 );
-		// Set our failure reason in the config string
-		gi.failedcondition( va( "\n\n  %s^0" , ss.c_str() ) );
-	}
-	else {
-		//[b60011] chrissstrahl - fixed issue possibly destroying user config file - don't use $$ here
-		// Set our failure reason in the config string
-		gi.failedcondition( reason.c_str() );
-	}
-	//end of hzm
+	gi.failedcondition(sNewFailureReason.c_str());
 
 	playerDeathThread = level.getPlayerDeathThread();
 
@@ -2425,62 +2427,19 @@ void G_MissionFailed( const str& reason )
 		G_FinishMissionFailed();
 	}
 
-	//hzm coop mod chrissstrahl - show text and add hud only in mp
-	if ( g_gametype->integer == GT_SINGLE_PLAYER )
-		return;
-
-	gentity_t   *other;
-	Player      *player;
-	int j;
-	for ( j = 0; j < game.maxclients; j++ )
-	{
-		other = &g_entities[j];
-
-		if ( other->inuse && other->client )
-		{
-			player = ( Player * )other->entity;
-
-			if ( player )
-			{
-				str sReason = reason;
-				//Intentionally no $$ wanted
-				if (reason.length() && reason[0] == '#') {
-					sReason = upgStrings.getStartingFrom(sReason, 1);
-				}
-				//If it is just a single word and has no $$ it is extreemly likley a local string, so add $$
-				else if (upgStrings.containsAt(sReason.c_str(),"$$") == -1 && upgStrings.containsAt(sReason.c_str(), " ") == -1) {
-					sReason = va("$$%s$$", sReason.c_str());
-				}
-				
-				//hzm coop mod chrissstrahl - show hud for coop clients and text for others
-				if ( player->coop_getInstalled() ){
-
-					upgPlayerDelayedServerCommand( player->entnum , va( "set ui_failureReason %s\n", sReason.c_str() ) );
-					upgPlayerDelayedServerCommand( player->entnum , "pushmenu coop_failure" );
-				}
-				else {
-					upgPlayerDelayedServerCommand( player->entnum , "hudprint ^1=============^3$$MISSIONFAILED$$^1=============\n" );
-					upgPlayerDelayedServerCommand( player->entnum , va( "hudprint ^3%s\n" , sReason.c_str() ) );
-				}
-			}
-		}
-	}
-	//end of hzm
+	//--------------------------------------------------------------
+	// [b60014] Coop Mod chrissstrahl - allow coop modified failure reason
+	//--------------------------------------------------------------
+	coopGame.missionFailureHud(reason);
 }
-
-//hzm coop mod chrissstrahl - mapload delayed event
-extern Event EV_World_LoadMap;
-//end of hzm
 
 void G_FinishMissionFailed( void )
 {
-	//hzm gamefix chrissstrahl - this was chrashing the server when client 0 was disconnected
-	//hzm gameupdate chrissstrahl - ready all players and show them after cinematic ended
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - this was chrashing the server when client 0 was disconnected
+	//--------------------------------------------------------------
 	gentity_t   *other;
 	Player      *player;
-
-	//hzm coop mod chrissstrahl - make sure this only will be done in sp
-	//fail the mission
 	if ( g_gametype->integer == GT_SINGLE_PLAYER ) {
 		other = &g_entities[0];
 		if ( other->inuse && other->client ) {
@@ -2491,31 +2450,13 @@ void G_FinishMissionFailed( void )
 			}
 		}
 	}
-	else {
-		int validPlayers = 0;
-		int j;
-		for ( j = 0; j < game.maxclients; j++ )
-		{
-			other = &g_entities[j];
 
-			if ( other->inuse && other->client )
-			{
-				player = ( Player * )other->entity;
 
-				if ( player )
-				{
-					validPlayers++;
-				}
-			}
-		}
+	//--------------------------------------------------------------
+	// [b6xx] Coop Mod chrissstrahl - restarts/reloads level if mission has failed and no player is on server
+	//--------------------------------------------------------------
+	coopGame.missionFailureEmptyServer();
 
-		//if no player found exit right here
-		if ( validPlayers == 0 )
-		{
-			gi.SendConsoleCommand( "restart\n" );//load map now
-			return;
-		}
-	}
 
 	// Fade everything out
 	G_FadeOut( 1.0f );
@@ -2535,66 +2476,21 @@ void G_FinishMissionFailed( void )
 		level.m_letterbox_fraction = 1.0f/8.0f;
 	}
 
-	//hzm coop mod chrissstrahl - load map delayed, but not in singleplayer
-	if ( g_gametype->integer != GT_MULTIPLAYER ) {
-		return;
-	}
-
-	Event *ev_loadMap = new Event( EV_World_LoadMap );
-	str sParameters = "";
-
-	//hzm coop mod chrissstrahl - do this only if we know we have a valid scriptfile for this map, cuz scriptmaster keeps values of last script file
-	if ( level.game_script != "" ) {
-		sParameters = program.getStringVariableValue( "coop_string_checkpointParameters" );
-	}
-	if( sParameters != "" ) {
-		ev_loadMap->AddString( va("%s$%s",level.mapname.c_str(), sParameters.c_str()) );
-	}else {
-		ev_loadMap->AddString( level.mapname.c_str() );
-	}
-	world->PostEvent( ev_loadMap , 8.0f );
+	//--------------------------------------------------------------
+	// [b60014] Coop Mod chrissstrahl - multiplayer, reload map with parameters if there are any
+	//--------------------------------------------------------------
+	coopGame.missionFailureLoadMap();
 }
 
 void G_StartCinematic( void )
 {
 	level.cinematic = true;
 	gi.cvar_set( "sv_cinematic", "1" );
-
-	if ( g_gametype->integer == GT_SINGLE_PLAYER ) {
-		return;
-	}
-
-	//hzm gamefix chrissstrahl - this was chrashing the server when client 0 was disconnected
-	//hzm gameupdate chrissstrahl - ready all players and show them after cinematic ended
-	gentity_t   *other;
-	Player      *player;
-
-	int j;
-	for ( j = 0; j < game.maxclients; j++ )
-	{
-		other = &g_entities[j];
-
-		if ( other->inuse && other->client )
-		{
-			player = ( Player * )other->entity;
-
-			if ( player )
-			{
-			//hzm gameupdate chrissstrahl - do this allways
-				player->setSolidType( SOLID_NOT );
-				player->takedamage = DAMAGE_NO;
-				player->SetState( "STAND" , "STAND" );
-				player->cinematicStarted();
-
-				//player->hideModel(); //hzm - does not work right
-
-			//hzm gameupdate chrissstrahl - hide with delay, to fix issues
-				Event *hidePlayer;
-				hidePlayer = new Event( EV_Hide );
-				player->PostEvent( hidePlayer , 0.1f );
-			}
-		}
-	}
+	
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - manage/hide player on cinematic start
+	//--------------------------------------------------------------
+	upgGame.startCinematic();
 }
 
 void G_StopCinematic( void )
@@ -2604,89 +2500,37 @@ void G_StopCinematic( void )
 
 	level.cinematic = false;
 	gi.cvar_set( "sv_cinematic", "0" );
-	SetCamera( NULL , 0.0f );			//this is here in case cueplayer is deleted from script
 
-
-	//hzm gameupdate chrissstrahl 
-	level.playerfrozen = false;			//this is here in case releaseplayer is deleted from script
-
-	//hzm gameupdate chrissstrahl - no need to do the stuff below in singlepplayer
-	//move this code to coop
-	//move this code to coop
-	//move this code to coop
-	//move this code to coop
-	//move this code to coop
-	//move this code to coop
-
-	//[b608] chrissstrahl - Clear all the player's vote text if a vote is vote is activce during cinematic
-	if (g_gametype->integer != GT_SINGLE_PLAYER) {
-		if (game.cinematicSkipping) {// Check if a skipcinematic vote is active
-			for (int i = 0; i < maxclients->integer; i++) {
-				Player* currentPlayer;
-				currentPlayer = multiplayerManager.getPlayer(i);
-				if (currentPlayer) {
-					currentPlayer->clearVoteText();
-				}
-			}
-		}
-		//[b60011] chrissstrahl - reset challenges
-		coopChallenges.reset();
-	}
-
-	//hzm gameupdate chrissstrahl - reset skip status
-	game.cinematicSkipping = false;
-
-	//[GAMEUPGRADE] chrissstrahl - clear current cinematic camera
-	upgGame.setCameraCurrent(NULL);
-
-
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - fix crash if player is disconnected by a exxor message or not yet connected
+	//--------------------------------------------------------------
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		return;
-	}
-
-	//hzm gamefix chrissstrahl - this was chrashing the server when client 0 was disconnected
-	//hzm gameupdate chrissstrahl - ready all players and show them after cinematic ended
-	gentity_t   *other;
-	Player      *player;
-
-	int j;
-	for ( j = 0; j < game.maxclients; j++ )
-	{
-		other = &g_entities[j];
-
-		if ( other->inuse && other->client )
-		{
-			player = ( Player * )other->entity;
-
-			if ( player )
-			{
-				//hzm gameupdate chrissstrahl - make sure spectators remain hidden
-				if ( multiplayerManager.isPlayerSpectator( player ) == false ) {
-					player->showModel();
-					player->_makeSolidASAP = true;
-				}
-				player->cinematicStopped();
-				player->takedamage = DAMAGE_YES;
-
-				//hzm gameupdate chrissstrahl - this should only be done in multiplayer - or chrash chrash goodbye
-				if ( g_gametype->integer > GT_SINGLE_PLAYER ){
-					//clear vote text cinematic overlay
-					upgPlayerDelayedServerCommand( player->entnum , "locationprint -1111 -1111 ^0 0" );
-
-					//hzm coop mod chrissstrahl - sometimes the timer hud reactivates
-					//and also when the level was started with a cinematic sequence, so make sure this doesn't happen
-					//hzm coop mod chrissstrahl - make sure the radar is reset, and does not get stuck
-					if ( game.coop_isActive ) {
-						upgPlayerDelayedServerCommand( player->entnum , "globalwidgetcommand dmTimer disable" );
-						coop_radarReset( player );
-					}
-
-					//reset vote count after cinematic, so votes that have been started during cinematic do not count when the match starts
-					multiplayerManager.resetVoteCount( player );
-				}
-			}
+		Entity* entity;
+		entity = g_entities[0].entity;
+		if (entity && entity->isSubclassOf(Player)) {
+			Player* player = (Player*)entity;
+			player->cinematicStopped();
 		}
 	}
+
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - fix minor script mistakes
+	//--------------------------------------------------------------
+	SetCamera( NULL , 0.0f );			//this is here in case cueplayer is not called from or not present in script
+	level.playerfrozen = false;			//this is here in case releaseplayer is not called from or not present in script
+	
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - handle cinematics for multiplayer
+	//--------------------------------------------------------------
+	upgGame.stopCinematic();
+
+
+	//--------------------------------------------------------------
+	// [b608] Coop Mod chrissstrahl - handle coop related stuff
+	//--------------------------------------------------------------
+	coopGame.stopCinematic();
 }
 
 int G_NumClients( void )

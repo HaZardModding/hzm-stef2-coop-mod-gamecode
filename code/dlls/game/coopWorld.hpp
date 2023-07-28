@@ -6,6 +6,8 @@
 //-----------------------------------------------------------------------------------
 #pragma once
 
+#include "worldspawn.h"
+
 class CoopWorld
 {
 public:
@@ -13,3 +15,5 @@ public:
 };
 
 extern CoopWorld coopWorld;
+extern Event EV_World_LoadMap;
+extern Event EV_World_AutoFailure;

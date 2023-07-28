@@ -640,6 +640,9 @@
     <ClCompile Include="upgBranchdialog.cpp">
       <Filter>HaZardModding\Upgrades</Filter>
     </ClCompile>
+    <ClCompile Include="coopGame.cpp">
+      <Filter>HaZardModding\Coop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1290,11 +1293,14 @@
     <ClInclude Include="upgWorld.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="coopWorld.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="upgBranchdialog.hpp">
       <Filter>HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="coopGame.hpp">
+      <Filter>HaZardModding\Coop\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="coopWorld.hpp">
+      <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

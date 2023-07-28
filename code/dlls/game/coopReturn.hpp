@@ -44,7 +44,6 @@ Player* coop_returnPlayerNotFavored( void );
 Player* coop_returnPlayerFavored( void );
 Player* coop_returnPlayerInCallvolumeClosestTo( Entity *eMe );
 Player* coop_returnPlayerClosestTo(Entity *eMe);
-int coop_returnPlayerQuantity( void );
 int coop_returnPlayerQuantityInArena( void );
 int coop_returnPlayerQuantity(short condition);
 int coop_returnCvarInteger( str cvarName );

@@ -60,7 +60,6 @@ class CoopServer
 public:
 	bool coopIsActive();
 	void enforceLevelSpecificSettings();
-	void flushTikis();
 	void mapLoadEnforce();
 	void svFloodProtectDisable();
 	void svFloodProtectEnable();

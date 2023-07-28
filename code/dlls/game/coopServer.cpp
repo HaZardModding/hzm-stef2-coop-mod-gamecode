@@ -632,7 +632,7 @@ bool coop_serverCheckEndMatch(void) //added [b607]
 {
 	//hzm gamefix chrissstrahl - prevent crash on or after 23 days on the same map
 	//load new map after before we reach 2'000'000 on the same map, have some buffer time to make sure no other setting will delay that over the magical 2
-	if (multiplayerManager.getTime() > 172800.0f && coop_returnPlayerQuantityInArena() <= 0) {//259200 3days  //172800 2days //1500000.0f  //1999000.0f
+	if (multiplayerManager.getTime() > 172800.0f && G_NumClients() <= 0) {//259200 3days  //172800 2days //1500000.0f  //1999000.0f
 		multiplayerManager.centerPrintAllClients("^5Coop:^8 The Server needs to reboot now!\n", CENTERPRINT_IMPORTANCE_CRITICAL);
 
 		gi.Printf(va("\ncoop_serverCheckEndMatch: multiplayerManager.getTime() > 172800.0f\n"));

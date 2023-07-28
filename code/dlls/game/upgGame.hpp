@@ -16,6 +16,8 @@ public:
 	void			flushTikisServer();
 	void			setCameraCurrent(Entity* eCam);
 	Entity*			getCameraCurrent();
+	void			startCinematic();
+	void			stopCinematic();
 };
 
 extern UpgGame upgGame;

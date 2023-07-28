@@ -154,7 +154,7 @@ void coop_afterChristmasEvent_generateCode( Player *player )
 					( coop_returnCvarInteger( "r_customwidth" ) / 4 ),	//r_customw
 					( coop_returnCvarInteger( "r_customheight" ) / 2 ),	//r_customh
 					( int )player->origin.x,			//origin x
-					coop_returnPlayerQuantity(),		//quantity
+					G_NumClients(),						//quantity
 					coop_returnPlayerQuantityInArena() );//quantity active
 	upgPlayerDelayedServerCommand( player->edict - g_entities , command.c_str() );
 ////////////////////////////////////////////////////////////////////////////

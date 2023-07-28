@@ -9,6 +9,7 @@
 
 #include "coopCheck.hpp"
 #include "coopReturn.hpp"
+#include "coopServer.hpp"
 
 #include "entity.h"
 #include "player.h"
@@ -21,8 +22,6 @@
 #include "powerups.h"
 #include "interpreter.h"
 #include "program.h"
-
-extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerDataIniFilename()
 
 //================================================================
 // Name:        coop_checkCharsInsideString
