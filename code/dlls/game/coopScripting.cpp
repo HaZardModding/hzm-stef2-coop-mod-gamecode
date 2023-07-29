@@ -4,19 +4,18 @@
 //
 // CONTAINING SCRIPTING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
+#include "coopScripting.hpp"
+CoopScripting coopScripting;
 
 #include "_pch_cpp.h"
 
 #include "upgCoopInterface.hpp"
 
+#include "coopServer.hpp"
 #include "coopReturn.hpp"
 #include "coopArmory.hpp"
 #include "coopObjectives.hpp"
 #include "coopParser.hpp"
-#include "coopScripting.hpp"
-CoopScripting coopScripting;
-extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerDataIniFilename()
-
 
 #define COOP_SCRIPTING_FILENAME_COOPMODMAIN "coop_mod/matrix/main.scr"
 #define COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU_4 "mom4_coopInput.scr"

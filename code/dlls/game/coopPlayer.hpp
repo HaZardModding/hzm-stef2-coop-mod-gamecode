@@ -4,13 +4,10 @@
 //
 // CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
-
 #ifndef __COOPPLAYER_HPP__
 #define __COOPPLAYER_HPP__
-
-#include "_pch_cpp.h"
 #include "equipment.h"
-#include "coopClass.hpp"
+
 
 #define COOP_RADAR_MAX_BLIPS 9
 #define COOP_RADAR_MAX_OBJCTIVE_BLIPS (COOP_RADAR_MAX_BLIPS - 1)
@@ -157,6 +154,7 @@ public:
 	bool coopNpcTeamHandled = false;
 };
 
+extern CoopPlayer coopPlayer;
 
 extern pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
 //[b607] chrissstrahl - add/remove/update playername for communicator menu
@@ -189,6 +187,4 @@ void coop_playerSpectator( Player *player );
 void coop_playerThink( Player *player );
 void coop_playerLeft( Player *player );
 
-#endif /* coopPlayer.hpp */
-
-
+#endif

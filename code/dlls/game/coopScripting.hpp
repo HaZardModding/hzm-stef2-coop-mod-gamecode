@@ -4,14 +4,10 @@
 //
 // CONTAINING SCRIPTING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
-
-#ifndef __COOPSCRIPTING_HPP__
-#define __COOPSCRIPTING_HPP__
+#pragma once
 
 #include "_pch_cpp.h"
 #include "coopChallenges.hpp"
-extern CoopChallenges coopChallenges;
-
 
 //[b60011] chrissstrahl
 class CoopScripting
@@ -40,8 +36,9 @@ public:
 	bool mrnPlayerReady(Player *player);
 };
 
+extern CoopScripting coopScripting;
+
 //void coop_scriptingFunctionStarted( str sFunctioname );
 void coop_setVectorScriptVariableValue( const char* varname , Vector vSet );
 void coop_setFloatScriptVariableValue( const char* varname , float fSet );
 void coop_setStringScriptVariableValue( const char* varname , const char* sSet );
-#endif

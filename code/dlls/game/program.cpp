@@ -18,6 +18,8 @@
 #include "_pch_cpp.h"
 #include "program.h"
 #include "compiler.h"
+
+#include "coopServer.hpp"
 #include "coopParser.hpp"
 
 inline void type_t::Archive( Archiver &arc )

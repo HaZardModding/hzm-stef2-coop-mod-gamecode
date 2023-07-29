@@ -16,6 +16,8 @@
 #include "_pch_cpp.h"
 #include "actor_posturecontroller.hpp"
 
+#include "coopServer.hpp"
+
 extern Event EV_Actor_SetPostureStateMap;
 
 //--------------------------------------------------------------

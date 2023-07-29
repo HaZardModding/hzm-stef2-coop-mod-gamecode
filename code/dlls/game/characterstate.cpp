@@ -19,6 +19,8 @@
 #include "animate.h"
 #include "scriptmaster.h"
 
+#include "coopServer.hpp"
+
 static const char *MoveControl_Names[] =
 {
 	"user",           // MOVECONTROL_USER

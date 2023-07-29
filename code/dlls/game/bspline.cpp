@@ -18,6 +18,8 @@
 #include "_pch_cpp.h"
 #include "bspline.h"
 
+#include "coopServer.hpp"
+
 void BSpline::Set( const Vector *control_points_, int num_control_points_, splinetype_t type )
 {
 	int i;

@@ -8,6 +8,8 @@
 
 #include "mp_manager.hpp"
 
+#include "upgStrings.hpp"
+
 #include "coopWorld.hpp"
 #include "coopRadar.hpp"
 #include "coopReturn.hpp"

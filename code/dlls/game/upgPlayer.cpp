@@ -20,6 +20,8 @@
 #include "upgCoopInterface.hpp"
 #include "upgWorld.hpp"
 
+#include "coopClass.hpp"
+
 extern Event EV_Player_upgPlayerMessageOfTheDay;
 
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];

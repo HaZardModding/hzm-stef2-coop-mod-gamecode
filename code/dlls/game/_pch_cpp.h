@@ -23,5 +23,4 @@
 #include "player.h"
 #include "entity.h"
 #include "object.h"
-#define COOP_MAX_PLAYERS 8
 #endif /* _pch_cpp.h */

@@ -8,6 +8,7 @@
 #include "_pch_cpp.h"
 #include "mp_manager.hpp"
 
+#include "upgStrings.hpp"
 
 #include "coopText.hpp"
 #include "coopCheck.hpp"

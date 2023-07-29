@@ -17,8 +17,9 @@
 
 #include "_pch_cpp.h"
 #include "lexer.h"
+
 #include "coopParser.hpp"
-extern CoopServer coopServer; //[b60014] chrissstrahl - needed to use getServerDataIniFilename()
+#include "coopServer.hpp"
 
 // longer symbols must be before a shorter partial match
 static const char *pr_punctuation[] =

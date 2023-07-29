@@ -29,7 +29,6 @@
 
 #include "coopTrigger.hpp"
 #include "coopObjectives.hpp"
-#include "coopStory.hpp"
 #include "coopReturn.hpp"
 #include "coopArmory.hpp"
 
@@ -4113,7 +4112,7 @@ void TriggerCoopMissionStory::Activate( Event *ev )
 		if ( !currentPlayer )
 			continue;
 
-		coop_storySet( currentPlayer );
+		coop_objectivesStorySet( currentPlayer );
 	}
 
 	//remove this trigger if it has cnt set	and hits the limit

@@ -4,13 +4,11 @@
 // 
 // Circle Menu Related Code, used to add New Mewnu Type to the game, like known from modern games.
 //-----------------------------------------------------------------------------------
+#pragma once
 
 //void PmoveSingle (pmove_t *pmove)
 // Clear movement flags
 //client->ps.pm_flags &= ~( PMF_FLIGHT | PMF_FROZEN | PMF_NO_PREDICTION | PMF_NO_MOVE | PMF_HAVETARGET | PMF_NO_GRAVITY );
-
-#ifndef __UPGCIRCLEMENU_HPP__
-#define __UPGCIRCLEMENU_HPP__
 
 #define CIRCLEMENU_STARTNUM 0
 #define CIRCLEMENU_MAX_OPTIONS 4
@@ -59,8 +57,6 @@ public:
 };
 
 //UpgCircleMenu::circleMenu();
-
-#endif /* !__UPGCIRCLEMENU_HPP__ */
 
 
 /* THIS WAS ADDED TO: player.cpp at CLASS_DECLARATION( Sentient , Player , "player" )

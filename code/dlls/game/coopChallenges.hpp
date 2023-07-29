@@ -5,9 +5,7 @@
 // CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
 #pragma once
-
 #include "_pch_cpp.h"
-#include "player.h"
 
 extern Event EV_Player_Immobilize;
 extern Event EV_Player_PutawayWeapon;

@@ -11,6 +11,22 @@
 UpgBranchDialog upgBranchDialog;
 
 
+void UpgBranchDialog::setStatus(Player* player,bool bActive)
+{
+	active = bActive;
+}
+
+bool UpgBranchDialog::getStatus(Player* player)
+{
+	return active;
+}
+
+//maybe turn into a event on player and cancel it if a dialog was selected
+//this would allow us to eliminate:
+//game.branchdialog_timeout
+//game.branchdialog_chosenPlayer
+//game.branchdialog_selectionActive
+//game.branchdialog_name
 void UpgBranchDialog::failsave()
 {
 	//hzm gameupdate chrissstrahl - CHECK IF branchdialog failsafe SHOULD BE TRIGGERED
@@ -24,7 +40,7 @@ void UpgBranchDialog::failsave()
 				if (game.branchdialog_chosenPlayer && game.branchdialog_chosenPlayer->isSubclassOf(Player)) {
 					Player* player = (Player*)(Entity*)game.branchdialog_chosenPlayer;
 					gi.SendServerCommand(player->entnum, "stufftext popmenu branchdialog 1\n");
-					player->branchdialog_active = false;
+					setStatus(player,false);
 				}
 
 				game.branchdialog_chosenPlayer = NULL; //[b608] chrissstrahl - used to store player that is valid to select the dialog

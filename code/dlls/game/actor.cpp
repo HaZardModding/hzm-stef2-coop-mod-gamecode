@@ -47,6 +47,8 @@
 //hzm coop mod chrissstrahl - we need to access the awardsystem to handle awards in coop
 #include "mp_awardsystem.hpp"
 
+#include "upgStrings.hpp"
+
 //hzm coop mod chrissstrahl - let we need to include this, I think...
 #include "coopReturn.hpp"
 #include "coopDialog.hpp"

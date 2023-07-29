@@ -4,9 +4,7 @@
 //
 // CONTAINING TEXT AND LOCALIZING RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
-
-#ifndef __COOPTEXT_HPP__
-#define __COOPTEXT_HPP__
+#pragma once
 
 #define COOP_MAX_TRANSMITT_STRING 272		//max string size, limit is menu compatibility whichends at 272
 #define COOP_TRANSMITT_STARTCMD	10			//client start cmd (stufftext ), size of inizial client command
@@ -57,5 +55,3 @@ str coop_textJoinCommands( str sCmd1 , str sCmd2 );
 void coop_textCinematicHudprint( Player *player , str sText );
 void coop_textHudprint( Player *player , str sText );
 void coop_textHudprintAll( str messageToShow );
-
-#endif /* coopText.hpp */

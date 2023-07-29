@@ -4,10 +4,11 @@
 //
 // CONTAINING SERVER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
+#include "coopServer.hpp"
+CoopServer coopServer;
 
 //>>starts everytime a map is changed or a game is closed
 //void MultiplayerManager::cleanup
-
 
 #include "_pch_cpp.h"
 #include "player.h"
@@ -26,22 +27,16 @@
 #include "upgMp_manager.hpp"
 #include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
-extern UpgCircleMenu upgCircleMenu;
 
 #include "coopEvents.hpp"
-#include "coopServer.hpp"
-CoopServer coopServer;
 #include "coopScripting.hpp"
-extern CoopScripting coopScripting;
 #include "coopReturn.hpp"
 #include "coopPlayer.hpp"
 #include "coopObjectives.hpp"
 #include "coopText.hpp"
 #include "coopParser.hpp"
 #include "coopNpcTeam.hpp"//[b60011] chrissstrahl
-extern CoopNpcTeam coopNpcTeam;
 #include "coopChallenges.hpp"
-extern CoopChallenges coopChallenges;
 
 extern Event EV_ScriptThread_StuffCommand;
 
@@ -62,7 +57,7 @@ extern Event EV_ScriptThread_StuffCommand;
 //================================================================
 bool CoopServer::coopIsActive()
 {
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+	if (!multiplayerManager.inMultiplayer() || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
 		return false;
 	}
 	return game.coop_isActive;

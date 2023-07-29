@@ -13,7 +13,6 @@
 #include "coopObjectives.hpp"
 #include "coopParser.hpp"
 #include "coopScripting.hpp"
-
 #include "coopSpawnlocation.hpp"
 CoopSpawnlocation coopSpawnlocation;
 

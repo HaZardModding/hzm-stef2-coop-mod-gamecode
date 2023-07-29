@@ -312,7 +312,10 @@ GOBJ =\
 	$(B)/game/upgStrings.o \
 	$(B)/game/upgGame.o \
 	$(B)/game/upgWorld.o \
+	$(B)/game/upgBranchdialog.o \
     \
+	$(B)/game/coopWorld.o \
+	$(B)/game/coopGame.o \
 	$(B)/game/coopNpcTeam.o \
     $(B)/game/coopArmory.o \
     $(B)/game/coopChallenges.o \
@@ -329,7 +332,6 @@ GOBJ =\
     $(B)/game/coopReturn.o \
     $(B)/game/coopScripting.o \
     $(B)/game/coopServer.o \
-    $(B)/game/coopStory.o \
     $(B)/game/coopParser.o \
 	$(B)/game/coopTrigger.o \
 	$(B)/game/coopActor.o \
@@ -514,9 +516,12 @@ $(B)/game/upgCoopInterface.o : $(GDIR)/upgCoopInterface.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgStrings.o : $(GDIR)/upgStrings.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgGame.o : $(GDIR)/upgGame.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgWorld.o : $(GDIR)/upgWorld.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/upgBranchdialog.o : $(GDIR)/upgBranchdialog.cpp; $(DO_GAME_SHLIB_CC)
 
-$(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/coopWorld.o : $(GDIR)/coopWorld.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/coopGame.o : $(GDIR)/coopGame.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopNpcTeam.o : $(GDIR)/coopNpcTeam.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/coopGamecmds.o : $(GDIR)/coopGamecmds.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopArmory.o : $(GDIR)/coopArmory.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopChallenges.o : $(GDIR)/coopChallenges.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopCheck.o : $(GDIR)/coopCheck.cpp; $(DO_GAME_SHLIB_CC)
@@ -531,7 +536,6 @@ $(B)/game/coopRadar.o : $(GDIR)/coopRadar.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopReturn.o : $(GDIR)/coopReturn.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopScripting.o : $(GDIR)/coopScripting.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopServer.o : $(GDIR)/coopServer.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/coopStory.o : $(GDIR)/coopStory.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopParser.o : $(GDIR)/coopParser.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopTrigger.o : $(GDIR)/coopTrigger.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopActor.o : $(GDIR)/coopActor.cpp; $(DO_GAME_SHLIB_CC)

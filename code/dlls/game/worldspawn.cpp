@@ -843,7 +843,6 @@ void World::SetLightIntensity( Event *ev )
 	//gi.Printf( "COOPDEBUG: Light group (%s) intensity set to %d\n" , light_group_name.c_str() , light_intensity);
 
 	// Set the light info
-
 	dynamic_lights[ light_group_num ].intensity = light_intensity;
 	dynamic_lights[ light_group_num ].fade_time = 0;
 	dynamic_lights[ light_group_num ].lightstyle = "";
@@ -947,7 +946,9 @@ void World::SetLightLightstyle( Event *ev )
 		return;
 	}
 
-	//hzm test chrissstrahl - print out developer testing infos
+	//--------------------------------------------------------------
+	// [b6xx] chrissstrahl - print out developer testing infos
+	//--------------------------------------------------------------
 	//gi.Printf( "Light group style set: %s - %s\n" , light_group_name.c_str() , lightstyle.c_str() );
 
 	dynamic_lights[ light_group_num ].lightstyle = lightstyle;
@@ -1210,7 +1211,9 @@ World::~World()
 
 	freeAllBrokenThings();
 
-	//[GAMEUPGRADE][b60014] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
+	//--------------------------------------------------------------
 	upgGame.flushTikisServer();
 }
 
@@ -1524,6 +1527,8 @@ void World::removeAvailableViewMode( Event *ev )
 void World::clearAvailableViewModes( Event *ev )
 {
 	_availableViewModes.ClearObjectList();
+
+
 	//--------------------------------------------------------------
 	// GAMEUPGRADE [b607] chrissstrahl - fix all viewmodes aviailable when using $world.clearAvailableViewModes(); in script without setting a new viewmodus
 	//--------------------------------------------------------------

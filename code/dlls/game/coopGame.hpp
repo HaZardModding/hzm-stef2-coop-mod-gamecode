@@ -8,6 +8,8 @@
 
 #include "_pch_cpp.h"
 
+#define COOP_MAX_PLAYERS 8
+
 //[b60011] chrissstrahl
 class CoopGame
 {

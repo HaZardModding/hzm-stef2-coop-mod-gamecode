@@ -4,17 +4,19 @@
 //
 // CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
+#include "coopPlayer.hpp"
 
-#include "_pch_cpp.h"
 #include "level.h"
 #include "player.h"
 #include "weapon.h"
+#include "equipment.h"
 #include "mp_manager.hpp"
 #include "mp_modeDm.hpp"
 #include "mp_modeTeamDm.hpp"
 #include "mp_modeCtf.hpp"
 #include <qcommon/gameplaymanager.h>
 
+#include "upgGame.hpp"
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
@@ -22,22 +24,14 @@
 #include "upgCoopInterface.hpp"
 
 //[b60011] chrissstrahl
+#include "coopGame.hpp"
 #include "coopNpcTeam.hpp"
-extern CoopNpcTeam coopNpcTeam;
-extern CoopChallenges coopChallenges;
-extern CoopServer coopServer;
-extern Event EV_Player_coop_playerNpcCheckAutoTeam;
-
 #include "coopSpawnlocation.hpp"
-extern CoopSpawnlocation coopSpawnlocation;
-
-#include "coopPlayer.hpp"
 #include "coopParser.hpp"
 #include "coopModel.hpp"
 #include "coopRadar.hpp"
 #include "coopCheck.hpp"
 #include "coopText.hpp"
-#include "coopStory.hpp"
 #include "coopServer.hpp"
 #include "coopClass.hpp"
 #include "coopArmory.hpp"
@@ -2977,6 +2971,9 @@ void Player::coop_playerLoadingSavegame()
 {
 	coopPlayer.objectivesCycle = 0.1f;
 	coopPlayer.lastTimePrintedObjectivesTitle = 9999.0f;
+
+	coopPlayer.eClassPlacable = NULL;
+	coopPlayer.ePlacable = NULL;
 }
 
 //=========================================================[b60014]

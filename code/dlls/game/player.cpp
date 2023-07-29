@@ -54,6 +54,7 @@
 #include "coopText.hpp"
 #include "coopReturn.hpp"
 #include "coopNpcTeam.hpp"
+#include "upgBranchdialog.hpp"
 
 
 //Forward
@@ -1327,10 +1328,12 @@ EV_DEFAULT ,
 "Sets the name of the model to use as backup if the client doesn't have this one"
 );
 
-
-//HaZardModding Coop Mod - new or modified events
-//HaZardModding Coop Mod - new or modified events
-//HaZardModding Coop Mod - new or modified events
+//--------------------------------------------------------------
+// GAMEUPGRADE chrissstrahl - new or modified events
+//--------------------------------------------------------------
+//--------------------------------------------------------------
+// [b6xx] Coop Mod chrissstrahl - new or modified events
+//--------------------------------------------------------------
 //[b607] chrissstrahl - added optional callvote arguments to allow kicking players with spaces in their name
 Event EV_Player_CallVote
 (
@@ -3722,13 +3725,6 @@ Player::Player()
 	weapons_holstered_by_code = false;
 	actor_camera = NULL;
 	cool_camera = NULL;
-
-	//[GAMEUPGRADE][b607] daggolin - set bot flag
-	if (level.spawn_bot) edict->svflags |= SVF_BOT;
-
-	//hzm gameupdate chrissstrahl - used to check if this player is suppose to take action in a branchdialog situation 
-	branchdialog_active = false;
-
 	_started = false;
 
 	StopWatchingEntity();
@@ -3888,10 +3884,15 @@ Player::Player()
 	_needToSendBranchDialog = false;
 	_branchDialogActor = NULL;
 
+	//--------------------------------------------------------------
 	//[GAMEUPGRADE][b60014] chrissstrahl - run setup
+	//--------------------------------------------------------------
 	upgPlayerSetup();
 
+	
+	//--------------------------------------------------------------
 	//[b60014] chrissstrahl - run setup
+	//--------------------------------------------------------------
 	coop_playerSetup(this);
 }
 
@@ -15014,12 +15015,15 @@ void Player::isPlayerOnGround( Event *ev )
 //-----------------------------------------------------
 void Player::setBranchDialogActor( const Actor* actor )
 {
-	this->branchdialog_active = true;
-
 	if ( _branchDialogActor != 0 )
 		_branchDialogActor->clearBranchDialog();
 
 	_branchDialogActor = ( Actor* )actor;
+
+	//--------------------------------------------------------------
+	// [b6xx] Coop Mod chrissstrahl - keep track of branch dialog
+	//--------------------------------------------------------------
+	upgBranchDialog.setStatus(this, true);
 }
 
 
@@ -15041,7 +15045,10 @@ void Player::clearBranchDialogActor( void )
 
 	_branchDialogActor = 0;
 
-	this->branchdialog_active = false;
+	//--------------------------------------------------------------
+	// [b6xx] Coop Mod chrissstrahl - keep track of branch dialog
+	//--------------------------------------------------------------
+	upgBranchDialog.setStatus(this, false);
 }
 
 void Player::setBackpackAttachOffset( Event *ev )

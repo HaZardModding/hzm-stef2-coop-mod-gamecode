@@ -16,6 +16,9 @@
 // Class definition of the player.
 //
 
+#ifndef __PLAYER_H__
+#define __PLAYER_H__
+
 //==============================
 // Forward Declarations
 //==============================
@@ -25,20 +28,6 @@ class PowerupBase;
 class Rune;
 class HoldableItem;
 
-#ifndef __PLAYER_H__
-#define __PLAYER_H__
-
-//[b60011] Chrissstrahl
-#include "coopChallenges.hpp"
-#include "coopPlayer.hpp"
-#include "coopServer.hpp"
-
-//GAMEUPGRADE
-#include "upgPlayer.hpp"
-#include "upgCircleMenu.hpp"
-#include "upgMp_manager.hpp"
-#include "upgStrings.hpp"
-#include "upgCoopInterface.hpp"
 
 #include "g_local.h"
 #include "vector.h"
@@ -55,6 +44,12 @@ class HoldableItem;
 #include "actor.h"
 #include "vehicle.h"
 #include "playerheuristics.h"
+
+#include "coopPlayer.hpp"
+
+#include "upgCircleMenu.hpp"
+#include "upgPlayer.hpp"
+
 
 extern Event EV_Player_EndLevel;
 extern Event EV_Player_GiveCheat;
@@ -246,8 +241,8 @@ class Player : public Sentient
 		void				coop_playerObjectivesCycleUpdate();
 		void				coop_playerInitWorldEffects();
 		//[b60011] chrissstrahl
-		CoopPlayer			coopPlayer;
 		friend class		CoopPlayer;
+		CoopPlayer			coopPlayer;
 		bool				coop_updateStats(void);
 		int					coop_updateStatsCoopHealth(int statNum);
 		void				coop_playerGetCoopClass(Event* ev);
@@ -262,8 +257,8 @@ class Player : public Sentient
 		//--------------------------------------------------------------
 		//[b60011] - circlemenu stuff
 	public:
-		UpgCircleMenu		upgCircleMenu;
 		friend class		UpgCircleMenu;
+		UpgCircleMenu		upgCircleMenu;
 		void				circleMenu(int iType);
 		bool				circleMenuIsActive(void);
 		float				circleMenuLastTimeActive();
@@ -287,9 +282,9 @@ class Player : public Sentient
 		// GAMEUPGRADE PLAYER
 		//--------------------------------------------------------------
 	public:
-		UpgPlayer			upgPlayer;
-		friend class		UpgPlayer;
 		//[b60014] chrissstrahl
+		friend class		UpgPlayer;
+		UpgPlayer			upgPlayer;
 		void				upgPlayerLoadingSavegame();
 		void				upgPlayerSkipCinematic();
 		void				upgPlayerMessageOfTheDay(Event* ev);
@@ -385,16 +380,13 @@ class Player : public Sentient
 		void				upgPlayerGetNameEvent(Event* ev);
 		void				upgPlayerSetCameraEvent(Event *ev);
 		float				upgPlayerGetLastDamageTime(void);
-		//we want to access them anywhere (they used to be private)
+		//--------------------------------------------------------------
+		// GAMECHANGE PLAYER - we want to access them anywhere (they used to be private)
+		//--------------------------------------------------------------
 		int					_objectiveNameIndex;
 		unsigned int		_objectiveStates;
 		unsigned int		_informationStates;
 		EntityPtr			_targetedEntity;
-		//--------------------------------------------------------------
-		//--------------------------------------------------------------
-		// 
-		//hzm gameupdate chrissstrahl
-		bool				branchdialog_active;
 	public:
 		CLASS_PROTOTYPE( Player );
 		Player();
@@ -1871,13 +1863,10 @@ inline void Player::Archive( Archiver &arc )
 		//[GAMEPUGRADE][b60014] chrissstrahl - do special things when loading a savegame
 		//ultimatively we would want to entirly remove this, but we have other things to take care of first
 		upgPlayerLoadingSavegame();
-		
+
 		//[b60014] chrissstrahl - fixup data, this is a workaround, ultimatively we want to elimenate this
 		coop_playerLoadingSavegame();
 	}
-	//[b60011] chrissstrahl - added for the new features - which are also used in singleplayer
-	arc.ArchiveSafePointer(&coopPlayer.eClassPlacable);
-	arc.ArchiveSafePointer(&coopPlayer.ePlacable);
 
 	//THESE ARE HERE TO CHECK WHY IT IS CRASHING
 	//THESE ARE HERE TO CHECK WHY IT IS CRASHING

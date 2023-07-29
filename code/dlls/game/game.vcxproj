@@ -669,7 +669,6 @@
     <ClCompile Include="coopScripting.cpp" />
     <ClCompile Include="coopServer.cpp" />
     <ClCompile Include="coopSpawnlocation.cpp" />
-    <ClCompile Include="coopStory.cpp" />
     <ClCompile Include="coopText.cpp" />
     <ClCompile Include="coopTrigger.cpp" />
     <ClCompile Include="coopVote.cpp" />
@@ -1504,7 +1503,6 @@
     <ClInclude Include="coopScripting.hpp" />
     <ClInclude Include="coopServer.hpp" />
     <ClInclude Include="coopSpawnlocation.hpp" />
-    <ClInclude Include="coopStory.hpp" />
     <ClInclude Include="coopText.hpp" />
     <ClInclude Include="coopTrigger.hpp" />
     <ClInclude Include="coopVote.hpp" />

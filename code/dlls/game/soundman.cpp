@@ -18,6 +18,7 @@
 
 #include "_pch_cpp.h"
 
+#include "coopServer.hpp"
 #include "coopReturn.hpp"
 
 //#include "g_local.h"

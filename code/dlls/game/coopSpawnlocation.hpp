@@ -4,8 +4,7 @@
 //
 // CONTAINING SPAWNLOCATION RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-------------------------------------------------------------------------//[b60013]
-#ifndef __COOPSPAWNLOCATION_HPP__
-#define __COOPSPAWNLOCATION_HPP__
+#pragma once
 
 #include "_pch_cpp.h"
 
@@ -19,4 +18,4 @@ public:
 private:
 };
 
-#endif
+extern CoopSpawnlocation coopSpawnlocation;

@@ -571,9 +571,6 @@
     <ClCompile Include="coopServer.cpp">
       <Filter>HaZardModding\Coop</Filter>
     </ClCompile>
-    <ClCompile Include="coopStory.cpp">
-      <Filter>HaZardModding\Coop</Filter>
-    </ClCompile>
     <ClCompile Include="coopText.cpp">
       <Filter>HaZardModding\Coop</Filter>
     </ClCompile>
@@ -1219,9 +1216,6 @@
       <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
     <ClInclude Include="coopServer.hpp">
-      <Filter>HaZardModding\Coop\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="coopStory.hpp">
       <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
     <ClInclude Include="coopText.hpp">

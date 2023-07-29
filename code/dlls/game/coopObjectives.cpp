@@ -4,6 +4,7 @@
 //
 // CONTAINING OBJECTIVES RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
+#include "coopObjectives.hpp"
 
 #include "_pch_cpp.h"
 #include "level.h"
@@ -27,11 +28,46 @@
 #include "coopPlayer.hpp"
 #include "coopClass.hpp"
 #include "coopArmory.hpp"
-#include "coopObjectives.hpp"
 #include "coopText.hpp"
-#include "coopStory.hpp"
 
 
+//================================================================
+// Name:        coop_storySet
+// Class:       -
+//              
+// Description: Sets story for Coop Objectives
+//              
+// Parameters:  Player *player , str hudName
+//              
+// Returns:     VOID          
+//================================================================
+void coop_objectivesStorySet(Player* player)
+{
+	if (!player) { return; }
+
+	//send story if it is set by script
+	if (!game.coop_story.length()) {
+		game.coop_story = program.getStringVariableValue("coop_string_story");
+	}
+	if (!game.coop_story_deu.length()) {
+		game.coop_story_deu = program.getStringVariableValue("coop_string_story_deu");
+	}
+	//get localized story
+	str sStory = "";
+	if (player->upgPlayerHasLanguageGerman() && game.coop_story_deu.length()) {
+		sStory = game.coop_story_deu;
+	}
+	//if that failed or player has not a german version, set english story
+	if (!sStory.length() && game.coop_story.length()) {
+		sStory = game.coop_story;
+	}
+	//if that failed set empty
+	if (!sStory.length()) {
+		sStory = "$$Empty$$";
+	}
+	//send story
+	upgPlayerDelayedServerCommand(player->entnum, va("set coop_story %s", sStory.c_str()));
+}
 
 //================================================================
 // Name:        coop_objectivesMarkerUpdate
@@ -208,7 +244,7 @@ void coop_objectivesSetup( Player *player)
 	upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor labeltext %s" , game.coop_author.c_str() ) );
 	
 	//hzm coop mod chrissstrahl - set story right away, need to do this differently in mp see coop_playerSay
-	coop_storySet( player );
+	coop_objectivesStorySet( player );
 }
 
 

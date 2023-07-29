@@ -12,9 +12,10 @@
 
 #include "coopGamecmds.hpp"
 #include "coopText.hpp"
-
 #include "coopSpawnlocation.hpp"
-extern CoopSpawnlocation coopSpawnlocation;
+#include "coopClass.hpp"
+
+#include "upgStrings.hpp"
 
 
 //================================================================

@@ -10,8 +10,11 @@
 
 class UpgBranchDialog
 {
+	bool			active = false;
 public:
-	void failsave();
+	void			failsave();
+	void			setStatus(Player* player, bool bActive);
+	bool			getStatus(Player* player);
 };
 
 extern UpgBranchDialog upgBranchDialog;

@@ -31,6 +31,8 @@
 #include "upgGame.hpp"
 #include "upgWorld.hpp"
 
+#include "coopPlayer.hpp"
+
 
 MultiplayerManager multiplayerManager;
 

@@ -27,6 +27,7 @@
 #include "upgGame.hpp"
 
 #include "coopReturn.hpp"
+#include "coopServer.hpp"
 
 //#define CAMERA_PATHFILE_VERSION 1
 

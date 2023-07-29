@@ -4,8 +4,9 @@
 //
 // General Game related Upgrades, Updates and Fixes
 //-----------------------------------------------------------------------------------
-#ifndef __UPGGAME_HPP__
-#define __UPGGAME_HPP__
+#pragma once
+
+#include "_pch_cpp.h"
 
 class UpgGame
 {
@@ -21,5 +22,3 @@ public:
 };
 
 extern UpgGame upgGame;
-
-#endif /* upgGame.hpp */

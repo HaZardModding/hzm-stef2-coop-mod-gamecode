@@ -46,6 +46,7 @@ public:
 };
 
 extern CoopNpcTeam coopNpcTeam;
+extern Event EV_Player_coop_playerNpcCheckAutoTeam;
 
 /*
 ADDED playerLeft() TO coopPLayer.cpp at coop_playerLeft()

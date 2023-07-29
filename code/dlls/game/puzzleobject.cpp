@@ -23,6 +23,7 @@
 #include "upgMp_manager.hpp"
 
 #include "coopReturn.hpp"
+#include "coopClass.hpp"
 
 Event EV_PuzzleObject_SetOpenDistance
 (

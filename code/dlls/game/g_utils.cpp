@@ -1043,9 +1043,10 @@ qboolean KillBox( Entity *ent )
 	{
 		hit = &g_entities[ touch[ i ] ];
 		
-		//[b600] chrissstrahl - no killbox in coop
-		if ( game.coop_isActive || !hit->inuse || ( hit->entity == ent ) || !hit->entity || ( hit->entity == world ) || ( !hit->entity->edict->solid ) )
-		{
+		//--------------------------------------------------------------
+		// [b600] Coop Mod chrissstrahl - no killbox in coop
+		//--------------------------------------------------------------
+		if (coopServer.coopIsActive() || !hit->inuse || ( hit->entity == ent ) || !hit->entity || ( hit->entity == world ) || ( !hit->entity->edict->solid ) ){
 			continue;
 		}
 
@@ -1572,12 +1573,10 @@ int G_FindConfigstringIndex( const char *name, int start, int max, qboolean crea
 		//--------------------------------------------------------------
 		// [b6xx] Coop Mod chrissstrahl - quit complete game, allow reboot if server is dedicated
 		//--------------------------------------------------------------
-		if ( coop_serverError( "G_FindConfigstringIndex: overflow" , false ) ) {
-			gi.Error( ERR_DROP , "G_FindConfigstringIndex: overflow" );
-		}
-		else {
-			gi.Error( ERR_DROP , "G_FindConfigstringIndex: overflow" );
-		}
+		coop_serverError("G_FindConfigstringIndex: overflow", false);
+
+
+		gi.Error( ERR_DROP , "G_FindConfigstringIndex: overflow" );
 	}
 	
 	gi.setConfigstring( start + i, name );
@@ -1809,9 +1808,8 @@ void G_CacheStateMachineAnims( Entity *ent, const char *stateMachineName )
 	//--------------------------------------------------------------
 	// GAMEUPGRADE [b6xx] chrissstrahl - added check to prevent crash
 	//--------------------------------------------------------------
-	if ( !ent ){
-		return;
-	}
+	if ( !ent ){ return; }
+
 
 	// Cache the statemap
 
@@ -2417,13 +2415,12 @@ void G_MissionFailed( const str& reason )
 
 	playerDeathThread = level.getPlayerDeathThread();
 
-	//[b610] chrissstrahl - changed to accomedate changes made to coop_serverLmsCheckFailure
-	if ( ( upgStrings.containsAt(reason, "PlayerKilled") != -1) && ( playerDeathThread.length() ) )
-	{
+	//--------------------------------------------------------------
+	//[b610] Coop Mod chrissstrahl - changed to accomedate changes made to coop_serverLmsCheckFailure
+	//--------------------------------------------------------------
+	if ( ( upgStrings.containsAt(reason, "PlayerKilled") != -1) && ( playerDeathThread.length() ) ){
 		ExecuteThread( playerDeathThread, true, NULL );
-	}
-	else
-	{
+	}else{
 		G_FinishMissionFailed();
 	}
 
