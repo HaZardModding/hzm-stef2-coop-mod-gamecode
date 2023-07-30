@@ -2707,7 +2707,7 @@ void coop_playerLeft( Player *player )
 		return;
 	}
 
-	//[b60011] chrissstrahl -notify level scripts that the player left - this is used on custom map scripts
+	//[b60011] chrissstrahl - notify level scripts that the player left - this is used on custom map scripts
 	//[b60011] chrissstrahl - moved code here
 	ExecuteThread("coop_justLeft", true, (Entity*)player);
 	coop_serverLmsCheckFailure();	

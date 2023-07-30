@@ -18,6 +18,9 @@
 
 #include "coopPlayer.hpp"
 
+#include "upgStrings.hpp"
+#include "upgBranchDialog.hpp"
+
 #include "gamecmds.h"
 #include "camera.h"
 #include "viewthing.h"
@@ -1072,7 +1075,7 @@ qboolean G_ClientRunThreadCmd( const gentity_t *ent )
 	
 	if ( !threadName.length() )
 		return true;
-	
+
 	thread = Director.CreateThread( threadName );
 	
 	if ( thread )
@@ -1546,7 +1549,6 @@ qboolean G_DropItemCmd( const gentity_t *ent )
 	return true ;
 }
 
-
 //-----------------------------------------------------
 //
 // Name:		
@@ -1560,32 +1562,22 @@ qboolean G_DropItemCmd( const gentity_t *ent )
 //-----------------------------------------------------
 qboolean G_DialogRunThread( const gentity_t *ent )
 {
-	//[b608] chrissstrahl - make sure dialog stuff works right - prevent double execution
-	if (g_gametype->integer != GT_SINGLE_PLAYER && !game.branchdialog_selectionActive ) {
-		//return true so it isn't printed as chat
+	if (g_gametype->integer == GT_SINGLE_PLAYER && ent->entity) {
+		Player* player = (Player*)ent->entity;
+		player->clearBranchDialogActor();
+		return G_ClientRunThreadCmd(ent);
 		return qtrue;
 	}
 
-	//[b608] chrissstrahl - prevent other players from abousing this opertunity
-	if (ent->entity->isSubclassOf(Player)) {
-		Player* player = (Player*)ent->entity;
-		if ((Entity *)player != game.branchdialog_chosenPlayer) {
-			//return true so it isn't printed as chat
-			return qtrue;
-		}
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b608] chrissstrahl - also handle dialog in multiplayer
+	//--------------------------------------------------------------
+	if (ent->entity) {
+		upgBranchDialog.runThread(ent->entity);
 	}
 
-	// clear out the current dialog actor
-	if(ent->entity->isSubclassOf(Player))
-	{
-		Player* player = (Player*)ent->entity;
-		player->clearBranchDialogActor();
-	}
 
-	game.branchdialog_selectionActive = false;
-	game.branchdialog_chosenPlayer = NULL; //[b608] chrissstrahl - used to store player that is valid to select the dialog
-
-	return G_ClientRunThreadCmd( ent );
+	return qtrue;
 }
 
 //[b60011] chrissstrahl - add language detection

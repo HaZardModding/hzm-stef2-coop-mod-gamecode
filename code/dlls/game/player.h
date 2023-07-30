@@ -278,13 +278,20 @@ class Player : public Sentient
 		void				circleMenuDialogClearEvent(Event* ev);
 		void				circleMenuEvent(Event* ev);
 		void				circleMenuSwitchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
+	public:
+		//--------------------------------------------------------------
+		// GAMEUPGRADE BRANCHDIALOG
+		//--------------------------------------------------------------
+		//[b60014] chrissstrahl
+		void				upgBranchDialogCancelEvent();
+		ActorPtr			upgBranchDialogGetActor();
 		//--------------------------------------------------------------
 		// GAMEUPGRADE PLAYER
 		//--------------------------------------------------------------
-	public:
 		//[b60014] chrissstrahl
 		friend class		UpgPlayer;
 		UpgPlayer			upgPlayer;
+		void				upgPlayerDisconnecting();
 		void				upgPlayerLoadingSavegame();
 		void				upgPlayerSkipCinematic();
 		void				upgPlayerMessageOfTheDay(Event* ev);

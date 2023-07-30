@@ -48,6 +48,7 @@
 #include "mp_awardsystem.hpp"
 
 #include "upgStrings.hpp"
+#include "upgBranchDialog.hpp"
 
 //hzm coop mod chrissstrahl - let we need to include this, I think...
 #include "coopReturn.hpp"
@@ -2480,6 +2481,14 @@ Event EV_Actor_SetDeathKnockbackValues
 	"vertical_value horiz_value",
 	"Sets Death Knockback Values"
 	);
+Event EV_Actor_upgBranchDialogFailsafe
+	(
+	"upgActorBranchDialogFailsafe",
+	EV_DEFAULT,
+	"es",
+	"entity_player string_thread",
+	"Sets failsafe thread for player activaing Branch Dialog"
+	);
 
 char actor_flag_strings[ ACTOR_FLAG_MAX ][ 32 ] =
    {
@@ -2598,6 +2607,13 @@ char actor_notify_strings[ ACTOR_FLAG_MAX ][ 32 ] =
 
 CLASS_DECLARATION( Sentient, Actor, "monster_generic" )
 	{
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b60014] chrissstrahl
+		//--------------------------------------------------------------
+		{ &EV_Actor_upgBranchDialogFailsafe,			&Actor::upgBranchDialogFailsafe },
+
+
+		{ &EV_Activate, 								&Actor::ActivateEvent							},
 		{ &EV_Activate, 								&Actor::ActivateEvent							},
 		{ &EV_Actor_BlindlyFollowPath, 					&Actor::BlindlyFollowPath						},
 		{ &EV_Actor_SetSimplifiedThink, 				&Actor::SetSimplifiedThink						},
@@ -11774,38 +11790,25 @@ void Actor::StopDialog()
 //-----------------------------------------------------
 void Actor::setBranchDialog( void )
 {
-	Player* player = NULL;
-
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl - make sure this will not crash in singleplayer
+	//--------------------------------------------------------------
 	if ( g_gametype->integer == GT_SINGLE_PLAYER ){
+		Player* player;
 		player = GetPlayer( 0 );
-	}
-	//hzm gameupdate chrissstrahl - grab player that last used this actor
-	else{
-		player = ( Player* )(Entity *)activator;
-
-		//hzm coop mod chrissstrahl - get closest player if conventional method failed
-		if ( !player ){
-			player = coop_returnPlayerClosestTo( this );
-			activator = (Entity *)player;
+		if (!player) {
+			gi.Error(ERR_DROP, "Actor::setBranchDialog, player not conneted\n");
+			return;
 		}
-
-		//hzm gameupdate chrissstrahl, this is our failsafe
-		game.branchdialog_selectionActive = true;
-		game.branchdialog_name = _branchDialogName;
-		game.branchdialog_startingTime = level.time;
+		player->setBranchDialogActor(this);
+		gi.SendServerCommand(player->entnum, va("stufftext \"displaybranchdialog %s\"\n", _branchDialogName.c_str()));
+		gi.SendServerCommand(player->entnum,"stufftext \"pushmenu branchdialog\"\n");
 	}
-	
-	str commandString;
-	if( player ){
-		//[b608] chrissstrahl - used to store player that is valid to select the dialog
-		game.branchdialog_chosenPlayer = (Entity *)player;
-
-		commandString = "displaybranchdialog ";
-		commandString += _branchDialogName;
-
-		//hzm gameupdate chrissstrahl - make sure this works fine
-		upgPlayerDelayedServerCommand( player->entnum, commandString );
-		upgPlayerDelayedServerCommand( player->entnum, "pushmenu branchdialog" );
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl - handle multiplayer
+	//--------------------------------------------------------------
+	else{
+		upgBranchDialog.setBranchDialog(this,_branchDialogName);
 	}
 }
 
@@ -11840,27 +11843,6 @@ void Actor::clearBranchDialog( void )
 //-----------------------------------------------------
 void Actor::BranchDialog(Event* ev)
 {
-	Player *player = NULL;
-	//hzm gameupdate chrissstrahl - grab player that last used this actor
-	if ( g_gametype->integer == GT_SINGLE_PLAYER ){
-		player = GetPlayer( 0 );
-	}
-	else{
-		player = ( Player* )( Entity * )activator;
-		//hzm coop mod chrissstrahl - get closest player if conventional method failed
-		if ( !player ){
-			player = coop_returnPlayerClosestTo( this );
-			activator = ( Entity * )player;
-		}
-		if ( !player ){
-			gi.Printf( "void Actor::BranchDialog(Event* ev): No Player found; aborted. This could possibly break the script\n" );
-			gi.Printf( "void Actor::BranchDialog(Event* ev): If the script is now broken, please report this error\n" );
-			gi.Printf( "void Actor::BranchDialog(Event* ev): To HaZardModding\n" );
-			return;
-		}
-	}
-	player->setBranchDialogActor(this);
-
 	_branchDialogName = ev->GetString(1);
 	setBranchDialog();
 }

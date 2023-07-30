@@ -370,11 +370,6 @@ void coop_serverInizializeGameVars(void)
 	game.isCoopIncludedLevel = false;
 	game.isStandardLevel = false;
 	game.levelType = 0;
-	game.branchdialog_chosenPlayer = NULL; //[b608] chrissstrahl - used to store player that is valid to select the dialog
-	game.branchdialog_selectionActive = false;
-	game.branchdialog_startingTime = 0.0f;
-	game.branchdialog_name = "";
-	game.branchdialog_timeout = 20;
 	game.cinematicSkipping = false;
 	game.coop_showEventsTime = 0;//[b607] used to manage g_showevents 
 	game.coop_deadBodiesPerArea = 0;//[b607] used to manage actors deadfade
@@ -1762,8 +1757,6 @@ void coop_serverThink( void )
 
 	//hzm coop mod chrissstrahl - this will manage the objective marker
 	coop_objectivesMarkerUpdate();
-
-	upgBranchDialog.failsave();
 }
 
 //[b610] chrissstrahl - executed from Level::CleanUp

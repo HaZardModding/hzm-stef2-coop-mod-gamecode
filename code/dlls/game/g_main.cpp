@@ -2423,8 +2423,17 @@ extern "C" void G_ClientDisconnect( gentity_t *ent )
 		
 		player = ( Player * )ent->entity;
 
-		//hzm coop mod chrissstrahl - notify the coop mod that a player has left the game
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b60014] chrissstrahl - notify upgrade code that player left
+		//--------------------------------------------------------------
+		player->upgPlayerDisconnecting();
+
+
+		//--------------------------------------------------------------
+		// [b6xx] Coop Mod chrissstrahl - notify the coop mod that a player has left the game
+		//--------------------------------------------------------------
 		coop_playerLeft( player );
+
 
 		player->Disconnect();
 		

@@ -51,3 +51,21 @@ bool UpgCoopInterface::playerHasCoop(Player* player)
 	}
 	return false;
 }
+
+//================================================================
+// Name:        playerClosestTo
+// Class:       UpgCoopInterface
+//              
+// Description:	checks if player has the coop mod
+//              
+// Parameters:  Entity*
+//              
+// Returns:     bool
+//================================================================
+Player* UpgCoopInterface::playerClosestTo(Entity* ent)
+{
+	if (!ent) {
+		return nullptr;
+	}
+	return coop_returnPlayerClosestTo(ent);
+}

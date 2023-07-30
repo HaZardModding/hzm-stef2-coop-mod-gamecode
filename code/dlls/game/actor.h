@@ -110,25 +110,32 @@ class Actor : public Sentient
 			ACTOR_CONTROL_LOCKED,
 		} ActorControlType ;
 
-		//[b60013] chrissstrahl - Adds points to the player score and possibly revives a player - coopActor.cpp
-		void coop_Killed(Player* player);
 
-		//[b60013] chrissstrahl - Handles damage to actor from a player based on number of player in game
-		float coop_ArmorDamage(Entity *enemy,float damage);
 
-		//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
-		//remember the current dialog so we can remove it from the configstrings on stop
-		str dialogCurrentPlaying;
-		
+		//--------------------------------------------------------------
+		// GAMEUPGRADE chrissstrahl - 
+		//--------------------------------------------------------------
+		//[b60014] chrissstrahl
+		void				upgBranchDialogFailsafe(Event* ev);
+		str					upgBranchDialogGetName();
+
+
+		//--------------------------------------------------------------
+		// [b6xx] Coop Mod chrissstrahl - 
+		//--------------------------------------------------------------
+		//[b60013] chrissstrahl
+		void				coop_Killed(Player* player);
+		float				coop_ArmorDamage(Entity *enemy,float damage);
+		//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue remember the current dialog so we can remove it from the configstrings on stop
+		str					dialogCurrentPlaying;
 		//hzm gameupdate chrissstrahl - store who used/activated this actor last
-		EntityPtr		activator;
+		EntityPtr			activator;
 		//hzm gameupdate chrissstrahl - store who killed/attacked this actor last
-		EntityPtr		lastAttacker;
-
+		EntityPtr			lastAttacker;
 		//hzm coop mod chrissstrahl - vars to store actions for the new triggers
-		bool coop_behaviourAiOn;
-		EntityPtr coop_behaviourActivate;
-		//end of hzm
+		bool				coop_behaviourAiOn;
+		EntityPtr			coop_behaviourActivate;
+
 
 		//-----------------------------------------------------
 		// Animation Data:		

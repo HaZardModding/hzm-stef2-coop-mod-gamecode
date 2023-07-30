@@ -15019,11 +15019,6 @@ void Player::setBranchDialogActor( const Actor* actor )
 		_branchDialogActor->clearBranchDialog();
 
 	_branchDialogActor = ( Actor* )actor;
-
-	//--------------------------------------------------------------
-	// [b6xx] Coop Mod chrissstrahl - keep track of branch dialog
-	//--------------------------------------------------------------
-	upgBranchDialog.setStatus(this, true);
 }
 
 
@@ -15040,15 +15035,17 @@ void Player::setBranchDialogActor( const Actor* actor )
 //-----------------------------------------------------
 void Player::clearBranchDialogActor( void )
 {
-	if ( _branchDialogActor != 0 )
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl - cancel failsave event
+	//--------------------------------------------------------------
+	upgBranchDialogCancelEvent();
+
+
+	if (_branchDialogActor != 0) {
 		_branchDialogActor->clearBranchDialog();
+	}
 
 	_branchDialogActor = 0;
-
-	//--------------------------------------------------------------
-	// [b6xx] Coop Mod chrissstrahl - keep track of branch dialog
-	//--------------------------------------------------------------
-	upgBranchDialog.setStatus(this, false);
 }
 
 void Player::setBackpackAttachOffset( Event *ev )

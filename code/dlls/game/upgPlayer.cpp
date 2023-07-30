@@ -23,8 +23,23 @@
 #include "coopClass.hpp"
 
 extern Event EV_Player_upgPlayerMessageOfTheDay;
+extern Event EV_Actor_upgBranchDialogFailsafe;
 
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
+
+//=========================================================[b60014]
+// Name:        upgPlayerDisconnecting
+// Class:       Player
+//              
+// Description: Executed when the player is about to disconnect/leaving/left
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void Player::upgPlayerDisconnecting()
+{
+}
 
 //=========================================================[b60014]
 // Name:        upgPlayerLoadingSavegame

@@ -12,9 +12,8 @@ class UpgBranchDialog
 {
 	bool			active = false;
 public:
-	void			failsave();
-	void			setStatus(Player* player, bool bActive);
-	bool			getStatus(Player* player);
+	void			runThread(Entity* ent);
+	void			setBranchDialog(Actor* actor, str sDialogName);
 };
 
 extern UpgBranchDialog upgBranchDialog;

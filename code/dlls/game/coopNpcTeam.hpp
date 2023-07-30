@@ -11,11 +11,6 @@
 #include "player.h"
 
 #define COOP_NPC_TEAM_MATE_MAX 4
-#define COOP_NPC_TEAM_MATE_VALID_MODEL_1 "xxx.tik"
-#define COOP_NPC_TEAM_MATE_VALID_MODEL_2 "xxx.tik"
-#define COOP_NPC_TEAM_MATE_VALID_MODEL_3 "xxx.tik"
-#define COOP_NPC_TEAM_MATE_VALID_MODEL_4 "xxx.tik"
-#define COOP_NPC_TEAM_MATE_VALID_MODEL_22 "readValidModelsFromIni and put into container"
 
 class CoopNpcTeam
 {
