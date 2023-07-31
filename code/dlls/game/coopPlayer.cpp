@@ -1160,7 +1160,7 @@ void coop_playerCommunicator(Player* player, int iAdd)
 				sListName = upgStrings.getReplacedSpaceWithUnderscore(sListName);
 			}
 
-			upgPlayerDelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTran%i title %s\n",j, sListName.c_str()));
+			upgPlayerDelayedServerCommand(currentPlayer->entnum, va("globalwidgetcommand coop_comTran%i title %s",j, sListName.c_str()));
 			//multiplayerManager.HUDPrint(player->entnum, va("\nCOOPDEBUG coop_comTran%i title %s\n",j, sListName.c_str()));
 			//gi.Printf(va("COOPDEBUG [%s] coop_comTran%i title %s\n", currentPlayer->client->pers.netname, j, sListName.c_str()));
 		}
