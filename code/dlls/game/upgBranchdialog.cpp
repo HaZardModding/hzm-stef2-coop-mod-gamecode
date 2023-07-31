@@ -45,9 +45,13 @@ void UpgBranchDialog::runThread(Entity* ent)
 			if (gi.argc()) {
 				sGivenThread = gi.argv(1);
 			}
-			if (sGivenThread.length() && sDialogName.length() && upgStrings.containsAt(sGivenThread, "Option") != -1) {
-				player->clearBranchDialogActor();
-				G_ClientRunThreadCmd(&g_entities[player->entnum]);
+			if (sGivenThread.length() && sDialogName.length()) {
+				if (upgStrings.containsAt(sGivenThread, "_DialogChoice") != -1 ||
+					upgStrings.containsAt(sGivenThread, "Option") != -1)
+				{
+					player->clearBranchDialogActor();
+					G_ClientRunThreadCmd(&g_entities[player->entnum]);
+				}
 			}
 		}
 	}
