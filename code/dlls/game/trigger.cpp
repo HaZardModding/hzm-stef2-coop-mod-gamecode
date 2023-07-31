@@ -20,7 +20,6 @@
 
 #include "upgGame.hpp"
 
-#include "coopTrigger.hpp"
 #include "coopReturn.hpp"
 #include "coopEvents.hpp"
 #include "coopText.hpp"

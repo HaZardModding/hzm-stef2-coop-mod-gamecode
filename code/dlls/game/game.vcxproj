@@ -670,7 +670,6 @@
     <ClCompile Include="coopServer.cpp" />
     <ClCompile Include="coopSpawnlocation.cpp" />
     <ClCompile Include="coopText.cpp" />
-    <ClCompile Include="coopTrigger.cpp" />
     <ClCompile Include="coopVote.cpp" />
     <ClCompile Include="coopWorld.cpp" />
     <ClCompile Include="corridorCombatWithRangedWeapon.cpp" />
@@ -1504,7 +1503,6 @@
     <ClInclude Include="coopServer.hpp" />
     <ClInclude Include="coopSpawnlocation.hpp" />
     <ClInclude Include="coopText.hpp" />
-    <ClInclude Include="coopTrigger.hpp" />
     <ClInclude Include="coopVote.hpp" />
     <ClInclude Include="coopWorld.hpp" />
     <ClInclude Include="corridorCombatWithRangedWeapon.hpp" />

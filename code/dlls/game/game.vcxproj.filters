@@ -580,9 +580,6 @@
     <ClCompile Include="coopArmory.cpp">
       <Filter>HaZardModding\Coop</Filter>
     </ClCompile>
-    <ClCompile Include="coopTrigger.cpp">
-      <Filter>HaZardModding\Coop</Filter>
-    </ClCompile>
     <ClCompile Include="coopActor.cpp">
       <Filter>HaZardModding\Coop</Filter>
     </ClCompile>
@@ -1234,9 +1231,6 @@
       <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
     <ClInclude Include="coopDialog.hpp">
-      <Filter>HaZardModding\Coop\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="coopTrigger.hpp">
       <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
     <ClInclude Include="coopActor.hpp">
