@@ -333,7 +333,6 @@ GOBJ =\
     $(B)/game/coopScripting.o \
     $(B)/game/coopServer.o \
     $(B)/game/coopParser.o \
-	$(B)/game/coopTrigger.o \
 	$(B)/game/coopActor.o \
 	$(B)/game/coopVote.o \
     $(B)/game/coopText.o \
@@ -537,7 +536,6 @@ $(B)/game/coopReturn.o : $(GDIR)/coopReturn.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopScripting.o : $(GDIR)/coopScripting.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopServer.o : $(GDIR)/coopServer.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopParser.o : $(GDIR)/coopParser.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/coopTrigger.o : $(GDIR)/coopTrigger.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopActor.o : $(GDIR)/coopActor.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopVote.o : $(GDIR)/coopVote.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopText.o : $(GDIR)/coopText.cpp; $(DO_GAME_SHLIB_CC)
