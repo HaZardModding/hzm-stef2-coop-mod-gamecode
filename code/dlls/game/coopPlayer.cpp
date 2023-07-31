@@ -1551,9 +1551,7 @@ void coop_playerSetupHost(Player* player)
 	player->coop_setInstalled(true);
 
 	//[b60014] chrissstrahl - move widget back into the correct place
-	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER){
-		upgPlayerDelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
-	}
+	upgPlayerDelayedServerCommand(player->entnum, "globalwidgetcommand DialogConsole rect 8 7 304 89");
 	
 	//[b60014] chrissstrahl - [SINGLEPLAYER] EXIT
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
