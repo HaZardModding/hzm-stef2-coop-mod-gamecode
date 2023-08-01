@@ -2,7 +2,7 @@
 // Code by:	HaZardModding, Christian Sebastian Strahl
 // E-Mail:		chrissstrahl@yahoo.de
 //
-//  GAMEUPGRADE code for dialog stuff in multiplayer
+//  GAMEUPGRADE code for branch dialog (player selecting from presented options) stuff in multiplayer
 //-----------------------------------------------------------------------------------
 #pragma once
 
