@@ -68,7 +68,7 @@ bool coop_parserReadFile( const str sFile , str &buffer )
 
 	// Make sure the file exists
 
-	if ( !gi.FS_Exists( sFile.c_str() ) ) {
+	if ( !gi.FS_Exists( sFile.c_str() ) && stricmp(sFileExt.c_str(), ".vlp") != 0) {
 		gi.Printf( "=============================================\n" );
 		gi.Printf( va( "WARNING: coop_phraserReadFile FILE NOT FOUND (%s) \n" , sFile.c_str() ) );
 		gi.Printf( "=============================================\n" );
