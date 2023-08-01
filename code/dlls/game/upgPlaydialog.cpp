@@ -7,6 +7,9 @@
 #include "upgPlaydialog.hpp"
 UpgPlayDialog upgPlayDialog;
 
+//Related to
+//void Actor::PlayDialog(Sentient* user, float volume, float min_dist, const char* dialog_name, const char* state_name, qboolean headDisplay, bool useTalk, bool important)
+
 
 //================================================================
 // Name:        dialogSetupPlayers
