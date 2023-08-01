@@ -652,7 +652,6 @@
     <ClCompile Include="coopArmory.cpp" />
     <ClCompile Include="coopCheck.cpp" />
     <ClCompile Include="coopClass.cpp" />
-    <ClCompile Include="coopDialog.cpp" />
     <ClCompile Include="coopEvents.cpp" />
     <ClCompile Include="coopForcefield.cpp" />
     <ClCompile Include="coopGame.cpp" />
@@ -1331,6 +1330,7 @@
     <ClCompile Include="upgGame.cpp" />
     <ClCompile Include="upgMp_manager.cpp" />
     <ClCompile Include="upgPlayer.cpp" />
+    <ClCompile Include="upgPlaydialog.cpp" />
     <ClCompile Include="upgStrings.cpp" />
     <ClCompile Include="upgWorld.cpp" />
     <ClCompile Include="useAlarm.cpp" />
@@ -1485,7 +1485,6 @@
     <ClInclude Include="coopArmory.hpp" />
     <ClInclude Include="coopCheck.hpp" />
     <ClInclude Include="coopClass.hpp" />
-    <ClInclude Include="coopDialog.hpp" />
     <ClInclude Include="coopEvents.hpp" />
     <ClInclude Include="coopForcefield.hpp" />
     <ClInclude Include="coopGame.hpp" />
@@ -1621,6 +1620,7 @@
     <ClInclude Include="torsoAimAndFireWeapon.hpp" />
     <ClInclude Include="trigger.h" />
     <ClInclude Include="umap.h" />
+    <ClInclude Include="upgPlaydialog.hpp" />
     <ClInclude Include="upgStrings.hpp" />
     <ClInclude Include="upgWorld.hpp" />
     <ClInclude Include="useAlarm.hpp" />

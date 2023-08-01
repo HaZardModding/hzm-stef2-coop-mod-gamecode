@@ -42,23 +42,23 @@
 #include "teammateroster.hpp"
 #include "talk.hpp"
 #include "equipment.h"
-//hzm coop mod daggolin - we need to access the multiplayerManager to add points to the player in coop
+
+
+//[hzm review this segment]	//hzm coop mod daggolin - we need to access the multiplayerManager to add points to the player in coop
 #include "mp_manager.hpp"
-//hzm coop mod chrissstrahl - we need to access the awardsystem to handle awards in coop
+//[hzm review this segment]	//hzm coop mod chrissstrahl - we need to access the awardsystem to handle awards in coop
 #include "mp_awardsystem.hpp"
 
 #include "upgStrings.hpp"
-#include "upgBranchDialog.hpp"
+#include "upgBranchdialog.hpp"
+#include "upgPlaydialog.hpp"
 
-//hzm coop mod chrissstrahl - let we need to include this, I think...
+//[hzm review this segment]	//hzm coop mod chrissstrahl - we need to include this, I think...
 #include "coopReturn.hpp"
-#include "coopDialog.hpp"
 #include "coopCheck.hpp"
 #include "coopActor.hpp"
 
-//hzm coop mod chrissstrahl - here we go declare externals
-extern void coop_dialogSetupPlayerAll( Actor *speaker , char localizedDialogName[MAX_QPATH] , bool headDisplay );
-extern void coop_dialogResetPlayerAll( void );
+//[hzm review this segment]	//hzm coop mod chrissstrahl - here we go declare externals
 extern Player* coop_returnPlayerClosestTo( Entity *eMe );
 
 Container<Actor *> SleepList;                   //All actors in the level that are asleep
@@ -68,7 +68,7 @@ Container<BehaviorPackageType_t *> PackageList; //Global list of all behavior pa
 
 extern Container<int> SpecialPathNodes;
 
-//[b608] chrissstrahl - stop electrified or other effects in -> void Actor::Dead( Event *ev )
+//[hzm review this segment]	//[b608] chrissstrahl - stop electrified or other effects in -> void Actor::Dead( Event *ev )
 extern Event EV_ClearCustomShader;
 
 Event EV_Actor_SetSelfDetonateModel
@@ -2936,16 +2936,16 @@ Actor::Actor()
 	{
 	Event *immunity_event;
 
-//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
+//[hzm review this segment]	//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
 //remember the current dialog so we can remove it from the configstrings on stop
 	dialogCurrentPlaying = "";
 
-//hzm gameupdate chrissstrahl - remember who activated/used this actor last
+//[hzm review this segment]	//hzm gameupdate chrissstrahl - remember who activated/used this actor last
 	activator = NULL;
-//hzm gameupdate chrissstrahl - store who killed/attacked this actor last
+//[hzm review this segment]	//hzm gameupdate chrissstrahl - store who killed/attacked this actor last
 	lastAttacker = NULL;
 
-//hzm coop mod chrissstrahl - vars to store actions for the new triggers
+//[hzm review this segment]	//hzm coop mod chrissstrahl - vars to store actions for the new triggers
 	coop_behaviourAiOn = false;
 	coop_behaviourActivate = NULL;
 //end of hzm
@@ -11373,6 +11373,9 @@ void Actor::PlayDialog(	Event *ev )
 	PlayDialog( user, volume, min_dist, dialog_name, state_name, headDisplay, useTalk , true );
 	}
 
+//[hzm review this segment]	
+//[hzm review this segment]	
+//[hzm review this segment]	
 void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char *dialog_name, const char *state_name, qboolean headDisplay , bool useTalk , bool important )
 {
 	str real_dialog;
@@ -11543,26 +11546,29 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 
 	dialog_done_time = level.time + dialog_length;
 
-	if ( g_gametype->integer == GT_SINGLE_PLAYER )
-	{
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - Make Sure we don't chrash
+	//--------------------------------------------------------------
+	Entity* eActor = nullptr;
+	if (headDisplay) {
+		eActor = (Entity*)this;
+		SetActorFlag(ACTOR_FLAG_USING_HUD, true);
+	}
+	if ( g_gametype->integer == GT_SINGLE_PLAYER ){
 		// Add dialog to player
 		Player *player = GetPlayer( 0 );
-
 		if ( player ){
-			if ( headDisplay ){
-				player->SetupDialog( this , localizedDialogName );
-				SetActorFlag( ACTOR_FLAG_USING_HUD , true );
-			}else{
-				player->SetupDialog( NULL , localizedDialogName );
-			}
+			player->SetupDialog( eActor , localizedDialogName );
 		}
-	}else{
-		if ( headDisplay ){
-			SetActorFlag( ACTOR_FLAG_USING_HUD , true );
-		}
-		coop_dialogSetupPlayerAll( this , localizedDialogName , headDisplay );
+	}
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - Multiplayer handle
+	//--------------------------------------------------------------
+	else{
+		upgPlayDialog.dialogSetupPlayers(eActor, localizedDialogName , headDisplay );
 	}
 	
+
 	if ( dialog_length > 0.0f ){
 		Event *headTwitchEvent;
 		
@@ -11757,21 +11763,22 @@ void Actor::StopDialog()
 	CancelEventsOfType( EV_Actor_BroadcastDialog );
 	ProcessEvent( EV_Actor_DialogDone );
 
-	if ( GetActorFlag( ACTOR_FLAG_USING_HUD ) )
-	{
-		if ( g_gametype->integer == GT_SINGLE_PLAYER )
-		{
+	if ( GetActorFlag( ACTOR_FLAG_USING_HUD ) ){
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b6xx] chrissstrahl - make sure we don't ever crash
+		//--------------------------------------------------------------
+		if ( g_gametype->integer == GT_SINGLE_PLAYER ){
 			Player *player = GetPlayer( 0 );
-		
-			if ( player )
-			{
+			if ( player ){
 				player->ClearDialog();
 			}
 		}
-		//hzm gameupdate chrissstrahl - clear dialog for each player
-		else
-		{
-			coop_dialogResetPlayerAll( );
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b6xx] chrissstrahl - clear dialog for each player in Multiplayer
+		//--------------------------------------------------------------
+		else{
+			upgPlayDialog.dialogResetPlayers();
 		}
 	}
 }

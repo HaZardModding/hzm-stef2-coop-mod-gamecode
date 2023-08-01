@@ -541,9 +541,6 @@
     <ClCompile Include="coopClass.cpp">
       <Filter>HaZardModding\Coop</Filter>
     </ClCompile>
-    <ClCompile Include="coopDialog.cpp">
-      <Filter>HaZardModding\Coop</Filter>
-    </ClCompile>
     <ClCompile Include="coopEvents.cpp">
       <Filter>HaZardModding\Coop</Filter>
     </ClCompile>
@@ -636,6 +633,9 @@
     </ClCompile>
     <ClCompile Include="coopGame.cpp">
       <Filter>HaZardModding\Coop</Filter>
+    </ClCompile>
+    <ClCompile Include="upgPlaydialog.cpp">
+      <Filter>HaZardModding\Upgrades</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1230,9 +1230,6 @@
     <ClInclude Include="coopClass.hpp">
       <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
-    <ClInclude Include="coopDialog.hpp">
-      <Filter>HaZardModding\Coop\Header</Filter>
-    </ClInclude>
     <ClInclude Include="coopActor.hpp">
       <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
@@ -1289,6 +1286,9 @@
     </ClInclude>
     <ClInclude Include="coopWorld.hpp">
       <Filter>HaZardModding\Coop\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="upgPlaydialog.hpp">
+      <Filter>HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
