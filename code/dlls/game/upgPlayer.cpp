@@ -22,10 +22,41 @@
 
 #include "coopClass.hpp"
 
-extern Event EV_Player_upgPlayerMessageOfTheDay;
-extern Event EV_Actor_upgBranchDialogFailsafe;
 
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
+
+
+extern Event EV_Actor_upgBranchDialogFailsafe;
+
+
+//[GAMEUPGRADE][b60014] chrissstrahl - print message of the day (delayed)
+Event EV_Player_upgPlayerMessageOfTheDay
+(
+	"upgPlayerMessageOfTheDay",
+	EV_DEFAULT,
+	"",
+	"",
+	"Prints the message of the day from cvar mp_motd"
+);
+//[b60011] chrissstrahl - checks player has ger/eng langauge
+Event EV_Player_HasLanguageGerman
+(
+	"hasLanguageGerman",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player has English Language of the game"
+);
+//[b60011] chrissstrahl - checks player has ger/eng langauge
+Event EV_Player_HasLanguageEnglish
+(
+	"hasLanguageEnglish",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player has English Language of the game"
+);
+
 
 //=========================================================[b60014]
 // Name:        upgPlayerDisconnecting

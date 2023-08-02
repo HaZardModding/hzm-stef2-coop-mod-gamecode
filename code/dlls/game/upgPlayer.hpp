@@ -26,3 +26,6 @@ void	upgPlayerHandleDelayedServerCommands(void);
 void	upgPlayerclearDelayedServerCommands(int entNum);
 
 extern UpgPlayer upgPlayer;
+extern Event EV_Player_upgPlayerMessageOfTheDay;
+extern Event EV_Player_HasLanguageGerman;
+extern Event EV_Player_HasLanguageEnglish;

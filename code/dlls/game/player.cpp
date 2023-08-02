@@ -1587,25 +1587,6 @@ Event EV_Player_IsHeavyWeapons
 	"bool-yes-or-no",
 	"Check if Player Coop class is HeavyWeapons"
 );
-
-//[b60011] chrissstrahl - checks player has ger/eng langauge
-Event EV_Player_HasLanguageGerman
-(
-	"hasLanguageGerman",
-	EV_SCRIPTONLY,
-	"@f",
-	"bool-yes-or-no",
-	"Check if Player has English Language of the game"
-);
-Event EV_Player_HasLanguageEnglish
-(
-	"hasLanguageEnglish",
-	EV_SCRIPTONLY,
-	"@f",
-	"bool-yes-or-no",
-	"Check if Player has English Language of the game"
-);
-
 //[b60013] chrissstrahl - Returns Int/Bool if player is pressing jump button
 Event EV_Player_checkCrouch
 (
@@ -1775,16 +1756,6 @@ Event EV_Player_coop_playerNpcCheckAutoTeam
 	"",
 	"Checks if the coop mod can add npc teammates"
 );
-//[GAMEUPGRADE][b60014] chrissstrahl - print message of the day (delayed)
-Event EV_Player_upgPlayerMessageOfTheDay
-(
-	"upgPlayerMessageOfTheDay",
-	EV_DEFAULT,
-	"",
-	"",
-	"Prints the message of the day from cvar mp_motd"
-);
-
 //[b60014] Coop Mod chrissstrahl - print message to update (delayed)
 Event EV_Player_coopMessageUpdateYourMod
 (
