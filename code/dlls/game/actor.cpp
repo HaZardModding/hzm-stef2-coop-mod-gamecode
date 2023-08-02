@@ -12492,7 +12492,7 @@ void Actor::SpawnItems( void )
 	int i;
 	qboolean spawn_random = false;
 	str spawn_item_name;
-	Player *player;
+	Player *player = nullptr;
 	float health_chance;
 	//float water_chance;
 	float plasma_chance;
@@ -12537,16 +12537,24 @@ void Actor::SpawnItems( void )
 			plasma_chance = 1.0f;
 			bullets_chance = 1.0f;
 
+			// See what he player needs
 
-			//hzm gamefix chrissstrahl - not sure what we need this func for, let us build in a notification... also prevent it from crashing!
-			if ( g_gametype->integer < GT_SINGLE_PLAYER )
-			{
-				gi.Printf( "HZM WARNING! void Actor::SpawnItems( void ) function dissabled by chrissstrahl\n" );
-				return;
+			//--------------------------------------------------------------
+			// GAMNEFIX [b6xx] chrissstrahl - make sure if it is called it does not crash
+			//--------------------------------------------------------------
+			if (g_gametype->integer == GT_SINGLE_PLAYER) {
+				player = (Player*)g_entities[0].entity;
+			}
+			else {
+				if (!lastAttacker) {
+					player = coop_returnPlayerClosestTo(this); //[hzm review this segment]
+				}
+				else {
+					player = (Player*)(Entity*)lastAttacker;
+				}
 			}
 
-			// See what he player needs
-			player = ( Player * )g_entities[0].entity;
+
 			player_health  = player->health;
 			player_plasma  = player->AmmoCount( "Plasma" );
 			player_bullets = player->AmmoCount( "Bullet" );
@@ -13356,7 +13364,10 @@ void Actor::UseEvent( Event *ev )
 
 	entity = ev->GetEntity( 1 );
 
-//hzm gameupdate chrissstrahl - just to be safe, check for null entity
+	
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - just to be safe, check for null entity
+	//--------------------------------------------------------------
 	if ( !entity || entity->isSubclassOf( Equipment ) )
 		return;
 
@@ -13373,8 +13384,13 @@ void Actor::UseEvent( Event *ev )
 	{
 		Sentient *user;
 		user = (Sentient *)entity;
-//hzm gameupdate chrissstrahl - remember who activated/used this actor last
+
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b6xx] chrissstrahl - remember who activated/used this actor last
+		//--------------------------------------------------------------
 		activator = entity;
+
 		
 		StartTalkBehavior( user );
 	}
