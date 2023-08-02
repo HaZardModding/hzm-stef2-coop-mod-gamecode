@@ -16,3 +16,4 @@ public:
 };
 
 extern UpgPlayDialog upgPlayDialog;
+extern Event EV_Actor_upgBranchDialogFailsafe;

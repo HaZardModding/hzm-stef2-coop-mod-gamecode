@@ -52,6 +52,7 @@
 #include "upgStrings.hpp"
 #include "upgBranchdialog.hpp"
 #include "upgPlaydialog.hpp"
+#include "upgGame.hpp"
 
 //[hzm review this segment]	//hzm coop mod chrissstrahl - we need to include this, I think...
 #include "coopReturn.hpp"
@@ -2480,14 +2481,6 @@ Event EV_Actor_SetDeathKnockbackValues
 	"ff",
 	"vertical_value horiz_value",
 	"Sets Death Knockback Values"
-	);
-Event EV_Actor_upgBranchDialogFailsafe
-	(
-	"upgActorBranchDialogFailsafe",
-	EV_DEFAULT,
-	"es",
-	"entity_player string_thread",
-	"Sets failsafe thread for player activaing Branch Dialog"
 	);
 
 char actor_flag_strings[ ACTOR_FLAG_MAX ][ 32 ] =
@@ -11710,7 +11703,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 	if(useTalk)
 		StartTalkBehavior(user);
 }
-   
+
 
 void Actor::PlayRadiusDialog( Sentient* user )
    {
@@ -12020,10 +12013,11 @@ void Actor::DialogDone( Event *ev )
 	SetActorFlag( ACTOR_FLAG_DIALOG_PLAYING, false );
 	SetActorFlag( ACTOR_FLAG_RADIUS_DIALOG_PLAYING, false );
 
-	//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
-	if (g_gametype->integer != GT_SINGLE_PLAYER) {
-		coop_serverConfigstringRemove(dialogCurrentPlaying);
-	}
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b607] chrissstrahl -  try to minimize the usage of configstrings due to cl_parsegamestate issue
+	//--------------------------------------------------------------
+	if (g_gametype->integer != GT_SINGLE_PLAYER) { upgGame.configstringRemove(dialogCurrentPlaying); }
+
 
 	if ( dialog_state_name ){
 		dialog_state_name = "";

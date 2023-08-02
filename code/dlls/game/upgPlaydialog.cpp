@@ -4,11 +4,22 @@
 //
 //  GAMEUPGRADE code for Actor Playdialog (when a actor talks) in multiplayer
 //-----------------------------------------------------------------------------------
+//Related to: void Actor::PlayDialog(Sentient* user, float volume, float min_dist, const char* dialog_name, const char* state_name, qboolean headDisplay, bool useTalk, bool important)
 #include "upgPlaydialog.hpp"
 UpgPlayDialog upgPlayDialog;
 
-//Related to
-//void Actor::PlayDialog(Sentient* user, float volume, float min_dist, const char* dialog_name, const char* state_name, qboolean headDisplay, bool useTalk, bool important)
+
+//-----------------------------------------------------------------------------------
+// Events, these have external Dependencies
+//-----------------------------------------------------------------------------------
+Event EV_Actor_upgBranchDialogFailsafe
+(
+	"upgActorBranchDialogFailsafe",
+	EV_DEFAULT,
+	"es",
+	"entity_player string_thread",
+	"Sets failsafe thread for player activaing Branch Dialog"
+);
 
 
 //================================================================
