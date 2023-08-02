@@ -2229,7 +2229,7 @@ void Entity::IsEntityInsideOfEntity(Event* ev)
 		ev->ReturnFloat(0.0f);
 		return;
 	}
-	ev->ReturnFloat((float)(int)coop_checkIsEntityInBoundingBox(this,entity1));
+	ev->ReturnFloat((float)(int)upgEntityInBoundingBox(entity1));
 }
 
 //--------------------------------------------------------------
@@ -4326,7 +4326,7 @@ void Entity::BecomeSolid
 				_makeSolidASAP = false;
 				_makeSolidASAPTime = 0.0f;
 
-				if (coop_checkInsidePlayerOrActor(this)) {
+				if (isInsidePlayerOrActor()) {
 					return;
 				}
 			}

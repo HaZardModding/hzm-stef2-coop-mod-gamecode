@@ -49,79 +49,6 @@ bool coop_checkCharsInsideString(str sSource, str sObjectsOfIntrest)
 	} while ( i < iLen );
 	return false;
 }
-//================================================================
-// Name:        coop_checkInsidePlayerOrActor
-// Class:       -
-//              
-// Description:  checks if the given player should be made solid or if he is still inside another player or any actor
-//              
-// Parameters:  Player *player
-//              
-// Returns:     void
-//              
-//================================================================
-bool coop_checkInsidePlayerOrActor( Entity *entity1 )
-{
-	//return if not existing
-	if ( !entity1 )
-		return false;
-
-	//exit if player or actor but dead
-	if ( entity1->isSubclassOf( Player ) && entity1->health <= 0.0f || !entity1->isSubclassOf( Actor ) && entity1->health <= 0.0f )
-		return false;
-
-	//exit if player but spectator
-	if ( entity1->isSubclassOf( Player ) && multiplayerManager.isPlayerSpectator( ( Player * )entity1 ) )
-		return false;
-
-	int i;
-	Entity *entity2=NULL;
-
-	//check (all) entities against this entity
-	for ( i = 0; i < maxentities->integer; i++ ) {
-
-		entity2 = g_entities[i].entity;
-
-		//skip if missing,same,not player/actor or dead
-		if ( !entity2 || entity1 == entity2 )
-			continue;
-
-		if ( !entity2->isSubclassOf( Player ) && !entity2->isSubclassOf( Actor ) )
-			continue;
-
-		if ( entity2->health <= 0 )
-			continue;
-
-		if ( entity2->isSubclassOf( Player ) && multiplayerManager.isPlayerSpectator( ( Player * )entity2 ) )
-			continue;
-
-		//do not check actor on actor, because this creates more trouble than it is useful
-		if ( entity1->isSubclassOf( Actor ) && entity2->isSubclassOf( Actor ) )
-			continue;
-
-		//ai_off and hidden
-		//make sure we skip notsolid and hidden actors as they are probably left over from cinematic
-		Actor *a = NULL;
-		if ( entity1->isSubclassOf( Actor ) ) {
-			a = ( Actor * )entity1;
-		}else if( entity2->isSubclassOf( Actor ) ){
-			a = ( Actor * )entity2;
-		}
-		if ( a && a->isSubclassOf( Actor) && (!a->GetActorFlag( ACTOR_FLAG_AI_ON ) /* && a->hidden() && a->edict->svflags & SVF_NOCLIENT*/)) {
-			continue;
-		}
-
-		//player inside actor or another plyer, make sure the other is also set not solid
-		if (coop_checkIsEntityInBoundingBox( entity1 , entity2 ) ) {
-			entity2->setSolidType( SOLID_NOT );
-			entity2->_makeSolidASAP = true;
-			entity2->_makeSolidASAPTime = 0.0f;
-			return true;
-		}
-	}
-	return false;
-}
-
 
 //================================================================
 // Name:        coop_checkEntityInsideDoor
@@ -166,7 +93,7 @@ bool coop_checkEntityInsideDoor( Entity *entity1 )
 				continue;
 			}
 
-			if ( entity2->edict->solid == SOLID_BSP && coop_checkIsEntityInBoundingBox( entity1 , entity2 ) )
+			if ( entity2->edict->solid == SOLID_BSP && entity1->upgEntityInBoundingBox( entity2 ) )
 			{
 				return true;
 			}
@@ -252,33 +179,6 @@ bool coop_checkStringInUservarsOf( Entity * ent , str sStringPart )
 		}
 	}
 	return false;
-}
-
-//================================================================
-// Name:        coop_checkIsEntityInBoundingBox
-// Class:       -
-//              
-// Description:  checks if given Entity is inside of the boundingbox of the secound given entity
-//              
-// Parameters:  Entity *eIntruder , Entity *eTheBox 
-//              
-// Returns:     bool
-//              
-//================================================================
-bool coop_checkIsEntityInBoundingBox( Entity *eIntruder , Entity *eTheBox )
-{
-
-	if ( !eIntruder || !eTheBox || eIntruder == eTheBox ||
-		( eIntruder->absmin[0] > eTheBox->absmax[0] ) ||
-		( eIntruder->absmin[1] > eTheBox->absmax[1] ) ||
-		( eIntruder->absmin[2] > eTheBox->absmax[2] ) ||
-		( eIntruder->absmax[0] < eTheBox->absmin[0] ) ||
-		( eIntruder->absmax[1] < eTheBox->absmin[1] ) ||
-		( eIntruder->absmax[2] < eTheBox->absmin[2] ) )
-	{
-		return false;
-	}
-	return true;
 }
 
 

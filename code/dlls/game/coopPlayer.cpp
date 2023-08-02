@@ -2486,7 +2486,7 @@ bool coop_playerMakeSolidASAPThink(Player* player)
 {
 	//check if inside a actor or a player
 	if ( player->_makeSolidASAP ) {
-		if ( coop_checkInsidePlayerOrActor( ( Entity* )player ) || level.cinematic ) {
+		if ((Entity*)player->isInsidePlayerOrActor() || level.cinematic ) {
 			player->setSolidType( SOLID_NOT );
 			player->_makeSolidASAP = true;
 			return false;

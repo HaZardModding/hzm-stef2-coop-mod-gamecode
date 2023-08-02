@@ -451,9 +451,17 @@ class Entity : public Listener
 		// underwater variables
 		int					watertype;
 		int					waterlevel;
-		
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE chrissstrahl - 
+		//--------------------------------------------------------------
+		//[b60014] chrissstrahl
+		void				upgEntityMakeSolidAsap();
+		bool				isInsidePlayerOrActor();
+		bool				upgEntityInBoundingBox(Entity* eIntruder);
+
 		//hzm gameupdate - new function to handle the bubbles (for drowning players)
-		void			BubbleThink(void);
+		void				BubbleThink(void);
 
 		//[b606] chrisstrahl - added support for 6 more uservars
 		void				SetUserVar5(Event* ev);

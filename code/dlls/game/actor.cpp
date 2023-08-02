@@ -13436,25 +13436,11 @@ void Actor::Think( void )
 	else
 		LevelAIOn();
 
-	//hzm coop mod chrissstrahl - check if player is in actor or actor in player
-	if ( _makeSolidASAP ){
-		if ( edict->solid == SOLID_NOT ) {
-			if ( !coop_checkInsidePlayerOrActor( ( Entity* )this ) ) {
-				setSolidType( SOLID_BBOX );
-				_makeSolidASAP = false;
-			}
-		}
-		else {
-			if ( coop_checkInsidePlayerOrActor( ( Entity* )this ) ) {
-				setSolidType( SOLID_NOT );
-			}
-			else {
-				_makeSolidASAP = false;
-				setSolidType( SOLID_BBOX );
-			}
-		}
-	}
-	//end of hzm
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - check if actor is inside a player or actor
+	//--------------------------------------------------------------
+	upgEntityMakeSolidAsap();
 }
 
 qboolean Actor::GetClosestTag( const str &tag_name, int number_of_tags, const Vector &target, Vector *orig )

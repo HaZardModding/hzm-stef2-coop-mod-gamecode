@@ -637,6 +637,9 @@
     <ClCompile Include="upgPlaydialog.cpp">
       <Filter>HaZardModding\Upgrades</Filter>
     </ClCompile>
+    <ClCompile Include="upgEntity.cpp">
+      <Filter>HaZardModding\Upgrades</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1275,9 +1278,6 @@
     <ClInclude Include="upgGame.hpp">
       <Filter>HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
-    <ClInclude Include="upgWorld.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="upgBranchdialog.hpp">
       <Filter>HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
@@ -1288,6 +1288,12 @@
       <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
     <ClInclude Include="upgPlaydialog.hpp">
+      <Filter>HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="upgEntity.hpp">
+      <Filter>HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="upgWorld.hpp">
       <Filter>HaZardModding\Upgrades\Header</Filter>
     </ClInclude>
   </ItemGroup>

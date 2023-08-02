@@ -2542,7 +2542,7 @@ void TriggerHurt::Hurt( Event *ev )
 
 		entity2 = g_entities[i].entity;
 
-		if ( !entity2 || other == entity2 || !entity2->isSubclassOf( Player ) && !entity2->isSubclassOf( Actor ) || !coop_checkIsEntityInBoundingBox( this , entity2 ) )
+		if ( !entity2 || other == entity2 || !entity2->isSubclassOf( Player ) && !entity2->isSubclassOf( Actor ) || !upgEntityInBoundingBox(entity2 ) )
 			continue;
 
 		if ( ( damage != 0 ) && !entity2->deadflag && !( entity2->flags & FL_GODMODE ) )

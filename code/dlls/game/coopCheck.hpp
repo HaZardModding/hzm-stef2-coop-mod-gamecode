@@ -15,10 +15,8 @@
 
 //check if player has german game version
 bool coop_checkCharsInsideString( str sSource , str sObjectsOfIntrest );
-bool coop_checkInsidePlayerOrActor( Entity *entity1 );
 str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId);
 bool coop_checkStringInUservarsOf( Entity * ent , str sStringPart );
-bool coop_checkIsEntityInBoundingBox( Entity *eIntruder , Entity *eTheBox );
 bool coop_checkEntityInsideDoor( Entity *entity1 );
 bool coop_checkIsPlayerActiveAliveInBoundingBox( Player *player , Entity *eTheBox );
 bool coop_checkCanPickUpItem(Entity *entity, str sModel );
