@@ -17,6 +17,11 @@
 
 UpgCircleMenu upgCircleMenu;
 
+
+
+//-----------------------------------------------------------------------------------
+// Events, these have external Dependencies
+//-----------------------------------------------------------------------------------
 //hzm gameupdate chrissstrahl [b60011] - add new commands for script use
 Event EV_Player_circleMenu
 (

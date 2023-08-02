@@ -29,6 +29,9 @@ pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 extern Event EV_Actor_upgBranchDialogFailsafe;
 
 
+//-----------------------------------------------------------------------------------
+// Events, these have external Dependencies
+//-----------------------------------------------------------------------------------
 //[GAMEUPGRADE][b60014] chrissstrahl - print message of the day (delayed)
 Event EV_Player_upgPlayerMessageOfTheDay
 (
