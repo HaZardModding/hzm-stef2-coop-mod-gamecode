@@ -313,6 +313,7 @@ GOBJ =\
 	$(B)/game/upgGame.o \
 	$(B)/game/upgWorld.o \
 	$(B)/game/upgBranchdialog.o \
+	$(B)/game/upgPlayDialog.o \
     \
 	$(B)/game/coopWorld.o \
 	$(B)/game/coopGame.o \
@@ -515,6 +516,7 @@ $(B)/game/upgStrings.o : $(GDIR)/upgStrings.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgGame.o : $(GDIR)/upgGame.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgWorld.o : $(GDIR)/upgWorld.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgBranchdialog.o : $(GDIR)/upgBranchdialog.cpp; $(DO_GAME_SHLIB_CC)
+$(B)/game/upgPlayDialog.o : $(GDIR)/upgPlayDialog.cpp; $(DO_GAME_SHLIB_CC)
 
 $(B)/game/coopWorld.o : $(GDIR)/coopWorld.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopGame.o : $(GDIR)/coopGame.cpp; $(DO_GAME_SHLIB_CC)
