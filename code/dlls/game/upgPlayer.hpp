@@ -67,3 +67,4 @@ extern Event EV_Player_GetTargetedEntity;
 extern Event EV_Player_upgPlayerMessageOfTheDay;
 extern Event EV_Player_HasLanguageGerman;
 extern Event EV_Player_HasLanguageEnglish;
+extern Event EV_Actor_upgBranchDialogFailsafe;

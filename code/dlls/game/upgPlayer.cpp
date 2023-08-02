@@ -26,9 +26,6 @@
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
 
-extern Event EV_Actor_upgBranchDialogFailsafe;
-
-
 //-----------------------------------------------------------------------------------
 // Events, these have external Dependencies
 //-----------------------------------------------------------------------------------
