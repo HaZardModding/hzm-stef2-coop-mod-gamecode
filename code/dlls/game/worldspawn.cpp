@@ -479,17 +479,6 @@ Event EV_World_AutoFailure
 	"",
 	"event to start a mission failure on empty server"
 );
-//--------------------------------------------------------------
-// GAMEUPGRADE [b60014] chrissstrahl
-//--------------------------------------------------------------
-Event EV_World_GetPhysicsVar
-(
-	"getPhysicsVar",
-	EV_SCRIPTONLY,
-	"@fs",
-	"return-float physicsvar-name",
-	"returns gravity, airaccelerate and maxspeed Physics values"
-);
 
 CLASS_DECLARATION( Entity, World, "worldspawn" )
 {

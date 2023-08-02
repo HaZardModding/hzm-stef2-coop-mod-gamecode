@@ -6,6 +6,8 @@
 //-----------------------------------------------------------------------------------
 #pragma once
 
+#include "_pch_cpp.h"
+
 class UpgWorld
 {
 	bool			updateDynamicLights = false;
@@ -15,3 +17,4 @@ public:
 };
 
 extern UpgWorld upgWorld;
+extern Event EV_World_GetPhysicsVar;

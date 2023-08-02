@@ -4,10 +4,24 @@
 //
 // WORLD Class related Upgrades, Updates and Fixes
 //-----------------------------------------------------------------------------------
-#include "worldspawn.h"
-
 #include "upgWorld.hpp"
 UpgWorld upgWorld;
+
+#include "worldspawn.h"
+
+
+//-----------------------------------------------------------------------------------
+// Events, these have external Dependencies
+//-----------------------------------------------------------------------------------
+Event EV_World_GetPhysicsVar
+(
+	"getPhysicsVar",
+	EV_SCRIPTONLY,
+	"@fs",
+	"return-float physicsvar-name",
+	"returns gravity, airaccelerate and maxspeed Physics values"
+);
+
 
 //================================================================
 // Name:        upgWorldAdjustForLevelScript
