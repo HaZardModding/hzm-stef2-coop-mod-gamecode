@@ -1208,10 +1208,10 @@ void coop_serverResetAllClientData( void )
 //              
 // Parameters:  VOID
 //              
-// Returns:     bool
+// Returns:     void
 //              
 //================================================================
-bool coop_serverCoop(str &mapname)
+void coop_serverCoop(str &mapname)
 {
 	//[b60013] chrissstrahl - set/reset vars upon each map load
 	coopScripting.init();
@@ -1283,7 +1283,7 @@ bool coop_serverCoop(str &mapname)
 
 	//hzm coop mod chrissstrahl - NO MORE - Gallifrey Falls No More
 	if ( g_gametype->integer != GT_MULTIPLAYER ) {
-		return true;
+		return;
 	}
 
 	//[b60011] chrissstrahl - dectect if coop mod should be active
@@ -1308,7 +1308,7 @@ bool coop_serverCoop(str &mapname)
 		gi.cvar_set( "g_aimviewangles" , "0" );
 
 		levelVars.SetVariable( "isCoopLevel" , 0.0f );
-		return true;
+		return;
 	}
 	
 	game.coop_saveClientData = true;

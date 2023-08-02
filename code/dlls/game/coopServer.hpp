@@ -86,7 +86,7 @@ void coop_serverSaveAllClientData( void );
 void coop_serverResetClientData( Player *player );
 void coop_serverResetAllClientData( void );
 void coop_afterChristmasEvent_deleteTrees( void );
-bool coop_serverCoop(str &mapname);
+void coop_serverCoop(str &mapname);
 void coop_serverSetup( void );
 bool coop_serverRunScriptThread( str scriptThread );
 void coop_serverManageAi( bool aiOn );
