@@ -4,7 +4,7 @@
 //
 // Contains text/strings related code for the gameupgrades
 //-----------------------------------------------------------------------------------
-#pragma once;
+#pragma once
 
 #include "_pch_cpp.h"
 
