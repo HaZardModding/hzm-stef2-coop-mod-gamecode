@@ -1566,7 +1566,6 @@ qboolean G_DialogRunThread( const gentity_t *ent )
 		Player* player = (Player*)ent->entity;
 		player->clearBranchDialogActor();
 		return G_ClientRunThreadCmd(ent);
-		return qtrue;
 	}
 
 	//--------------------------------------------------------------
