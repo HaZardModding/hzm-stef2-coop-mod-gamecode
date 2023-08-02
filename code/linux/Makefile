@@ -321,7 +321,6 @@ GOBJ =\
     $(B)/game/coopChallenges.o \
     $(B)/game/coopCheck.o \
     $(B)/game/coopClass.o \
-    $(B)/game/coopDialog.o \
     $(B)/game/coopEvents.o \
 	$(B)/game/coopGamecmds.o \
     $(B)/game/coopHuds.o \
@@ -525,7 +524,6 @@ $(B)/game/coopArmory.o : $(GDIR)/coopArmory.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopChallenges.o : $(GDIR)/coopChallenges.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopCheck.o : $(GDIR)/coopCheck.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopClass.o : $(GDIR)/coopClass.cpp; $(DO_GAME_SHLIB_CC)
-$(B)/game/coopDialog.o : $(GDIR)/coopDialog.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopEvents.o : $(GDIR)/coopEvents.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopHuds.o : $(GDIR)/coopHuds.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopModel.o : $(GDIR)/coopModel.cpp; $(DO_GAME_SHLIB_CC)
