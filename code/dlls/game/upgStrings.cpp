@@ -4,13 +4,11 @@
 //
 // Contains text/strings related code for the gameupgrades
 //-----------------------------------------------------------------------------------
-
-#include "_pch_cpp.h"
-
 #include "upgStrings.hpp"
+UpgStrings upgStrings;
+
 #include "upgCoopInterface.hpp"
 
-UpgStrings upgStrings;
 
 //================================================================
 // Name:        replace

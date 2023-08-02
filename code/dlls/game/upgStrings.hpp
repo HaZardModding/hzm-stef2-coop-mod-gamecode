@@ -4,9 +4,9 @@
 //
 // Contains text/strings related code for the gameupgrades
 //-----------------------------------------------------------------------------------
+#pragma once;
 
-#ifndef __UPGSTRINGS_HPP__
-#define __UPGSTRINGS_HPP__
+#include "_pch_cpp.h"
 
 class UpgStrings
 {
@@ -32,5 +32,3 @@ public:
 };
 
 extern UpgStrings upgStrings;
-
-#endif /* upgStrings.cpp */
