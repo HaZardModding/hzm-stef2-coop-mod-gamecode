@@ -137,9 +137,14 @@ class CThread : public Interpreter
 		//[b60011] chrissstrahl - allow to enable/disable challenges from script
 		void challengesDisabled(Event *ev);
 		void challengeDisabledNamed(Event* ev);
-		//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b607] chrissstrahl - configstrings in multiplayer
+		//--------------------------------------------------------------
 		void configstringRemoveCombatSounds(Event *ev);
-		void configstringRemove(Event *ev);
+		void upgGameConfigstringRemove(Event *ev);
+		
+		
 		//hzm coop mod chrissstrahl - add new script functionality
 		void getStringFromStringWithLengt( Event *ev );
 		void getStringToUpper( Event *ev );

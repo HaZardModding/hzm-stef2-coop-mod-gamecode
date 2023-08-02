@@ -4,13 +4,115 @@
 //
 // General Game related Upgrades, Updates and Fixes
 //-----------------------------------------------------------------------------------
+#include "upgGame.hpp"
+UpgGame upgGame;
 
 #include "_pch_cpp.h"
 #include "mp_manager.hpp"
 
-#include "upgGame.hpp"
 
-UpgGame upgGame;
+//-----------------------------------------------------------------------------------
+// Events, these have external Dependencies
+//-----------------------------------------------------------------------------------
+Event EV_ScriptThread_ConfigstringRemove
+(
+	"configstringRemove",
+	EV_SCRIPTONLY,
+	"s",
+	"String",
+	"Removes given string from the configstrings to fix cl_parsegamestate"
+);
+
+
+//===========================================================[b607]
+// Name:        configstringRemove
+// Class:       UpgGame
+//              
+// Description: Removes the given string from the configstrings
+//              
+// Parameters:  STRING to remove
+//              
+// Returns:     int
+//              
+//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
+//================================================================
+int UpgGame::configstringRemove(str sRem)
+{
+	if (!sRem.length()) {
+		return 0;
+	}
+
+	int iRem = 0;
+	char* s;
+	for (int i = 1; i < MAX_CONFIGSTRINGS; i++) {
+		s = gi.getConfigstring(i);
+		str ss = "";
+		ss += s;
+
+		if (ss.length() > 0) {
+			//if this is a dialog try to handle german and english localized strings as well
+			if (!strnicmp(ss.c_str(), "localization/", 13)) {
+				//regular dialog
+				if (strcmpi(ss.c_str(), sRem.c_str()) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+
+				//handle deu version of dialog
+				char unlocal[96]; //MAX_QPATH + 5 <- did not work!
+				memset(unlocal, 0, sizeof(unlocal));
+				Q_strncpyz(unlocal, va("loc/deu/%s", sRem.c_str() + 13), sizeof(unlocal));
+				if (strcmpi(ss.c_str(), unlocal) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+
+				//handle eng version of dialog
+				memset(unlocal, 0, sizeof(unlocal));
+				Q_strncpyz(unlocal, va("loc/eng/%s", sRem.c_str() + 13), sizeof(unlocal));
+				if (strcmpi(ss.c_str(), unlocal) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+			}
+			else {
+				if (strcmpi(ss.c_str(), sRem.c_str()) == 0) {
+					//gi.Printf(va("#REMOVED CS: #%i: %s\n", i, ss.c_str()));
+					gi.setConfigstring(i, "");
+					iRem++;
+				}
+			}
+		}
+	}
+	return iRem;
+}
+
+//===========================================================[b607]
+// Name:        upgGameConfigstringRemove
+// Class:       CThread
+//              
+// Description: Removes the given string from the configstrings
+//				Called from level scripts
+//              
+// Parameters:  Event*
+//              
+// Returns:     void
+//              
+//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
+//================================================================
+
+//[b607] chrissstrahl - remove given string from configstrings
+void CThread::upgGameConfigstringRemove(Event* ev)
+{
+	if (ev->NumArgs() < 1) { return; }
+
+	str sName = ev->GetString(1);
+	int iNum = upgGame.configstringRemove(sName);
+	gi.Printf("upgGame.configstringRemove(%s) removed %i items\n", sName.c_str(), iNum);
+}
 
 //===========================================================[b6xx]
 // Name:        upgGame.checkMpGametype

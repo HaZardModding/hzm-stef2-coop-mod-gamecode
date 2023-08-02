@@ -8,10 +8,12 @@
 
 #include "_pch_cpp.h"
 
+
 class UpgGame
 {
 	Entity*			cinematicCurrentCam = NULL;
 public:
+	int				configstringRemove(str sRem);
 	void			checkMpGametype();
 	void			flushTikisPlayers();
 	void			flushTikisServer();
@@ -22,3 +24,4 @@ public:
 };
 
 extern UpgGame upgGame;
+extern Event EV_ScriptThread_ConfigstringRemove;

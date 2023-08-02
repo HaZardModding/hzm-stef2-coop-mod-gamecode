@@ -1112,16 +1112,6 @@ Event EV_ScriptThread_DisconnectPathnodes
 );
 
 //[b607] chrissstrahl configstrings stuff issue
-Event EV_ScriptThread_ConfigstringRemove
-(
-	"configstringRemove",
-	EV_SCRIPTONLY,
-	"s",
-	"sString",
-	"Removes given string from the configstrings"
-);
-
-//[b607] chrissstrahl configstrings stuff issue
 Event EV_ScriptThread_ConfigstringRemoveCombatSounds
 (
 	"configstringRemoveCombatSounds",
@@ -1539,7 +1529,7 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_challengesDisabled,			&CThread::challengesDisabled } ,
 	{ &EV_ScriptThread_challengeDisabledNamed,		&CThread::challengeDisabledNamed } ,
 	//[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
-	{ &EV_ScriptThread_ConfigstringRemove, &CThread::configstringRemove },
+	{ &EV_ScriptThread_ConfigstringRemove, &CThread::upgGameConfigstringRemove },
 	{ &EV_ScriptThread_ConfigstringRemoveCombatSounds, &CThread::configstringRemoveCombatSounds },
 	//hzm coop mod chrissstrahl try to add a new script function
 	{ &EV_ScriptThread_getStringFromStringWithLengt, &CThread::getStringFromStringWithLengt } ,
@@ -2147,18 +2137,6 @@ void CThread::setIniData(Event *ev)
 	bScuccsess = coop_parserIniSet(sFilename, sKeyname, sValue, sCategoryname);
 	ev->ReturnFloat(float(bScuccsess));
 	gi.Printf(va("setIniData::%s at %s - %s\n", sFilename.c_str(),sCategoryname.c_str(), sKeyname.c_str()));
-}
-
-//[b607] chrissstrahl - remove given string from configstrings
-void CThread::configstringRemove(Event *ev)
-{
-	if (ev->NumArgs() < 1) {
-		return;
-	}
-
-	str sName = ev->GetString(1);
-	int iNum = coop_serverConfigstringRemove(sName);
-	gi.Printf("configstringRemove(%s) removed %i items\n", sName.c_str(), iNum);
 }
 //[b607] chrissstrahl - remove combatsounds for named actor, to save configstrings in multiplayer
 void CThread::configstringRemoveCombatSounds(Event *ev)
