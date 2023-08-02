@@ -4,8 +4,7 @@
 //
 // CONTAINING PLAYER RELATED FUNCTIONS FOR THE HZM CO-OP MOD
 //-----------------------------------------------------------------------------------
-#ifndef __COOPPLAYER_HPP__
-#define __COOPPLAYER_HPP__
+#pragma once
 #include "equipment.h"
 
 
@@ -155,8 +154,16 @@ public:
 };
 
 extern CoopPlayer coopPlayer;
-
+extern Event EV_Player_coopMessageUpdateYourMod;
+extern Event EV_Player_SetClassLocked;
+extern Event EV_Player_SetClassLocked;
+extern Event EV_Player_GetCoopClass;
+extern Event EV_Player_IsTechnichian;
+extern Event EV_Player_IsMedic;
+extern Event EV_Player_IsHeavyWeapons;
+extern Event EV_Player_getCoopVersion;
 extern pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
+
 //[b607] chrissstrahl - add/remove/update playername for communicator menu
 void coop_playerCommunicator(Player* player, int iAdd);
 //[b607] chrissstrahl - added to handle stuff when a player is connecting
@@ -186,5 +193,3 @@ void coop_playerEnterArena( int entnum , float health );
 void coop_playerSpectator( Player *player );
 void coop_playerThink( Player *player );
 void coop_playerLeft( Player *player );
-
-#endif

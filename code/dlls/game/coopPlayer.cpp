@@ -47,6 +47,86 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+
+
+//-----------------------------------------------------------------------------------
+// Events, these have external Dependencies
+//-----------------------------------------------------------------------------------
+//hzm gameupdate chrissstrahl - get coop version of player
+Event EV_Player_getCoopVersion
+(
+	"getCoopVersion",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns player coop mod installed version"
+);
+//[b60011] chrissstrahl - locks player to his currently selected coop class
+Event EV_Player_SetClassLocked
+(
+	"setClassLocked",
+	EV_SCRIPTONLY,
+	"f",
+	"bool-yes-or-no",
+	"Locks/Unlocks player to his current Coop class"
+);
+//[b60011] chrissstrahl - get coop class name
+Event EV_Player_GetCoopClass
+(
+	"getCoopClass",
+	EV_SCRIPTONLY,
+	"@s",
+	"string-classname",
+	"returns Player Coop class name"
+);
+//[b60011] chrissstrahl - check if coop class is Technician
+Event EV_Player_IsTechnichian
+(
+	"isCoopClassTechnician",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player Coop class is Technician"
+);
+//[b60011] chrissstrahl - check if coop class is Medic
+Event EV_Player_IsMedic
+(
+	"isCoopClassMedic",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player Coop class is Medic"
+);
+
+//[b60011] chrissstrahl - check if coop class is HeavyWeapons
+Event EV_Player_IsHeavyWeapons
+(
+	"isCoopClassHeavyWeapons",
+	EV_SCRIPTONLY,
+	"@f",
+	"bool-yes-or-no",
+	"Check if Player Coop class is HeavyWeapons"
+);
+//[b60014] chrissstrahl - try to add automatic team npc (delayed)
+Event EV_Player_coop_playerNpcCheckAutoTeam
+(
+	"npcCheckAutoTeam",
+	EV_DEFAULT,
+	"",
+	"",
+	"Checks if the coop mod can add npc teammates"
+);
+//[b60014] Coop Mod chrissstrahl - print message to update (delayed)
+Event EV_Player_coopMessageUpdateYourMod
+(
+	"coop_playerMessageUpdateYourMod",
+	EV_DEFAULT,
+	"",
+	"",
+	"Prints a message to player to update the HZM Coop Mod"
+);
+
+
 //[b60014] chrissstrahl - used to autospawn npc teammates
 //================================================================
 // HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
