@@ -38,6 +38,192 @@ Event EV_Player_upgPlayerMessageOfTheDay
 	"",
 	"Prints the message of the day from cvar mp_motd"
 );
+
+//hzm gameupdate daggolin - new commands
+Event EV_Player_GetScriptVariablesCommand
+(
+	"getScriptVariable",
+	EV_CHEAT,
+	NULL,
+	"type",
+	"Lists all script-variables of the specified type"
+);
+//hzm gameupdate chrissstrahl - add new commands for script use
+Event EV_Player_setKillThread
+(
+	"killthread",
+	EV_SCRIPTONLY,
+	"s",
+	"kill_thread",
+	"Sets the thread to run if player gets killed."
+);
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
+Event EV_Player_getLanguage
+(
+	"getLanguage",
+	EV_SCRIPTONLY,
+	"@s",
+	"language-string",
+	"Gets language string from player."
+);
+//hzm gameupdate chrissstrahl [b60011] - add new commands for script use
+Event EV_Player_setCamera
+(
+	"setCamera",
+	EV_SCRIPTONLY,
+	"eF",
+	"camera switchtime",
+	"Sets view of this player to this camera"
+);
+//hzm gameupdate chrissstrahl [b60011] - widgetcommand
+Event EV_Player_WidgetCommand
+(
+	"widgetCmd",
+	EV_SCRIPTONLY,
+	"ssS",
+	"string-widgetname string-command string-parameter",
+	"Allowes to set widget text using SPACE and NEWLINE in text"
+);
+//hzm gameupdate chrissstrahl - get player name
+Event EV_Player_getName
+(
+	"getName",
+	EV_SCRIPTONLY,
+	"@sS",
+	"retunedString string-replace-space-with",
+	"Returns multiplayer name of given player-entity"
+);
+//hzm gameupdate chrissstrahl - gets score
+Event EV_Player_getScore
+(
+	"getScore",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns points/score of the player entity"
+);
+//hzm gameupdate chrissstrahl - gets deaths
+Event EV_Player_getDeaths
+(
+	"getDeaths",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns number of deaths of the player entity"
+);
+//hzm gameupdate chrissstrahl - get player kills
+Event EV_Player_getKills
+(
+	"getKills",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns number of kills by the player entity"
+);
+//hzm gameupdate chrissstrahl - adds to player score
+Event EV_Player_addScore
+(
+	"addScore",
+	EV_SCRIPTONLY,
+	"f",
+	"integer",
+	"Adds given ammount of score to player"
+);
+//hzm gameupdate chrissstrahl - get time player was last injured
+Event EV_Player_getLastDamaged
+(
+	"getLastDamaged",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Float",
+	"Returns time when player was last time hit"
+);
+//hzm gameupdate chrissstrahl - get name/color of players team
+Event EV_Player_getTeamName
+(
+	"getTeamName",
+	EV_SCRIPTONLY,
+	"@s",
+	"return-String",
+	"Returns team color/name of player"
+);
+//hzm gameupdate chrissstrahl - get score of players team
+Event EV_Player_getTeamScore
+(
+	"getTeamScore",
+	EV_SCRIPTONLY,
+	"@f",
+	"return-Integer",
+	"Returns team score of player"
+);
+//[b60011] chrissstrahl - Returns Int/Bool if player was pressing use or not
+Event EV_Player_checkUse
+(
+	"checkUse",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player was pressing use or not"
+);
+
+//[b60011] chrissstrahl - Returns Int/Bool if player is in third person view or not
+Event EV_Player_checkThirdperson
+(
+	"checkThirdperson",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is in third person view"
+);
+
+//[b60011] chrissstrahl - Returns Int/Bool if player is pressing fire button
+Event EV_Player_checkFire
+(
+	"checkFire",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing fire button"
+);
+
+//[b60011] chrissstrahl - Returns Int/Bool if player is pressing alternative fire button
+Event EV_Player_checkFirealt
+(
+	"checkFirealt",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing alternatvive fire button"
+);
+
+//[b60011] chrissstrahl - allowes a player entity to start a thread
+Event EV_Player_RunThread
+(
+	"runthread",
+	EV_DEFAULT,
+	"s",
+	"threadname",
+	"Runs the specified thread. and sets this player as currententity"
+);
+
+//[b60011] chrissstrahl - get player viewangle
+Event EV_Player_GetViewangles
+(
+	"getViewAngles",
+	EV_DEFAULT,
+	"@v",
+	"vector-viewangle",
+	"Returns the player current viewangles"
+);
+//[b607] chrissstrahl - get targeted Entity (entity player is aiming at)
+Event EV_Player_GetTargetedEntity
+(
+	"getTargetedEntity",
+	EV_DEFAULT,
+	"@e",
+	"targetedentity",
+	"Returns the entity the player is currently targeting"
+);
 //[b60011] chrissstrahl - checks player has ger/eng langauge
 Event EV_Player_HasLanguageGerman
 (
@@ -55,6 +241,166 @@ Event EV_Player_HasLanguageEnglish
 	"@f",
 	"bool-yes-or-no",
 	"Check if Player has English Language of the game"
+);
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing jump button
+Event EV_Player_checkCrouch
+(
+	"checkCrouch",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing Crouch button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing jump button
+Event EV_Player_checkJump
+(
+	"checkJump",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing jump button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing forward button
+Event EV_Player_checkForward
+(
+	"checkForward",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing forward button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing backward button
+Event EV_Player_checkBackward
+(
+	"checkBackward",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing backward button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing left button
+Event EV_Player_checkLeft
+(
+	"checkLeft",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing left button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing right button
+Event EV_Player_checkRight
+(
+	"checkRight",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing right button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing lean right button
+Event EV_Player_checkLeanRight
+(
+	"checkLeanRight",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing lean right button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing lean right button
+Event EV_Player_checkLeanLeft
+(
+	"checkLeanLeft",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing lean left button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing drop rune button
+Event EV_Player_checkDropRune
+(
+	"checkDropRune",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing drop rune button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing run button
+Event EV_Player_checkRun
+(
+	"checkRun",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing run button"
+);
+
+//[b60013] chrissstrahl - Returns Int/Bool if player is pressing reload button
+Event EV_Player_checkReload
+(
+	"checkReload",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing reload button"
+);
+//[b60013] chrissstrahl - get offsets for player skins/models used in specialities and ctf, this might come in handy in coop
+Event EV_Player_getBackpackAttachOffset
+(
+	"getBackpackAttachOffset",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined offset data for backpacks"
+);
+Event EV_Player_getBackpackAttachAngles
+(
+	"getBackpackAttachAngles",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined Angle data for backpacks"
+);
+Event EV_Player_getFlagAttachOffset
+(
+	"getFlagAttachOffset",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined offset data for CTF Flags"
+);
+Event EV_Player_getFlagAttachAngles
+(
+	"getFlagAttachAngles",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector of player skin defined Angle data for CTF Flags"
+);
+//[b60014] chrissstrahl - grab userfov
+Event EV_Player_getUserFov
+(
+	"getUserFov",
+	EV_DEFAULT,
+	"@f",
+	"return-float",
+	"Returns player their userfov setting"
+);
+//[b60014] chrissstrahl - grab vector the player targeting end location
+Event EV_Player_getViewtraceEndpos
+(
+	"getViewtraceEndpos",
+	EV_DEFAULT,
+	"@v",
+	"return-vector",
+	"Returns vector at wich players aim ends at"
 );
 
 
