@@ -237,15 +237,14 @@ void Actor::coop_Killed(Player *player)
 //              
 // Description: Handles damage to actor from a player based on number of player in game
 //              
-// Parameters:  Player*
+// Parameters:  Entity*, float
 //              
-// Returns:     VOID
-//              
+// Returns:     VOID             
 //========================================================[b60013]
-float Actor::coop_ArmorDamage(Entity* enemy,float damage)
+void Actor::coop_ArmorDamage(Entity* enemy,float &damage)
 {
 	if (!game.coop_isActive || !enemy->isSubclassOf(Player)) {
-		return damage;
+		return;
 	}
 
 	if (damage < max_health) {//only check if enemy can't be killed withg one hit
@@ -262,5 +261,4 @@ float Actor::coop_ArmorDamage(Entity* enemy,float damage)
 
 		damage = (damage * fMultiplicator);
 	}
-	return damage;
 }
