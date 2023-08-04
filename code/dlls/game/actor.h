@@ -25,6 +25,8 @@ class FindMovement;
 class FindFleeMovement;
 class FindEnemyMovement;
 
+class UpgActor;
+
 #ifndef __ACTOR_H__
 #define __ACTOR_H__
 
@@ -52,6 +54,8 @@ class FindEnemyMovement;
 #include "actorincludes.h"
 #include "RageAI.h"
 #include "FollowPath.h"
+
+#include "upgActor.hpp"
 
 //-------------------------------------------
 // Global Functions
@@ -118,8 +122,10 @@ class Actor : public Sentient
 		//[b60014] chrissstrahl
 		void				upgBranchDialogFailsafe(Event* ev);
 		str					upgBranchDialogGetName();
-		Player*				upgActorSetHeadWatchTarget(str watchTarget);
+		friend class		UpgActor;
+		UpgActor			upgActor;
 		void				upgActorGrabValidFollowTarget();
+		void				upgActorFollowPlayer();
 
 
 		//--------------------------------------------------------------

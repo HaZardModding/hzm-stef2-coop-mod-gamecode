@@ -28,7 +28,6 @@ class PowerupBase;
 class Rune;
 class HoldableItem;
 
-
 #include "g_local.h"
 #include "vector.h"
 #include "entity.h"
@@ -284,7 +283,7 @@ class Player : public Sentient
 		//--------------------------------------------------------------
 		//[b60014] chrissstrahl
 		void				upgBranchDialogCancelEvent();
-		ActorPtr			upgBranchDialogGetActor();
+		Actor*				upgBranchDialogGetActor();
 		//--------------------------------------------------------------
 		// GAMEUPGRADE PLAYER
 		//--------------------------------------------------------------

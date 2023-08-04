@@ -16,7 +16,7 @@
 //
 #include "_pch_cpp.h"
 
-
+#include "upgActor.hpp"
 
 //#include "g_local.h"
 #include "actor.h"
@@ -45,7 +45,7 @@
 
 
 //[hzm review this segment]	//hzm coop mod daggolin - we need to access the multiplayerManager to add points to the player in coop
-#include "mp_manager.hpp"
+//#include "mp_manager.hpp"
 //[hzm review this segment]	//hzm coop mod chrissstrahl - we need to access the awardsystem to handle awards in coop
 #include "mp_awardsystem.hpp"
 
@@ -53,6 +53,7 @@
 #include "upgBranchdialog.hpp"
 #include "upgPlaydialog.hpp"
 #include "upgGame.hpp"
+
 
 //[hzm review this segment]	//hzm coop mod chrissstrahl - we need to include this, I think...
 #include "coopReturn.hpp"
@@ -16792,7 +16793,7 @@ void Actor::SetHeadWatchTarget( Event *ev )
 		if ( g_gametype->integer == GT_SINGLE_PLAYER ){
 			player = GetPlayer( 0 );
 		}else{
-			player = upgActorSetHeadWatchTarget(watchTarget);
+			player = GetPlayer(upgActor.setHeadWatchTarget((Entity*)this,watchTarget));
 		}
 
 
@@ -19508,9 +19509,6 @@ const str Actor::FindDialog( Sentient *user, DialogType_t dialogType , const str
 
 	dialog_node = dialog_list;
 
-	//hzm coop mod chrissstrahl - we need this to know when a player actually used a ai and when the ai did start a dialog by any other event
-	bool bUsedByPlayer = false;
-
 	while(dialog_node != NULL)
 		{
 		// See if we should play the current dialog
@@ -19518,9 +19516,11 @@ const str Actor::FindDialog( Sentient *user, DialogType_t dialogType , const str
 
 		if ( dialogType == DIALOG_TYPE_NORMAL )
 			{
+			//--------------------------------------------------------------
+			// GAMEUPGRADE [b6xx] chrissstrahl - make that the ai is responding after being used by a player
+			//--------------------------------------------------------------
+			upgActor.setUsedByPlayer(this, true);
 
-			//hzm coop mod chrissstrahl - make that the ai is responding after being used by a player
-			bUsedByPlayer = true;
 
 			//If we're looking for normal dialog, 
 			//We don't play radius dialog.
@@ -19673,17 +19673,12 @@ const str Actor::FindDialog( Sentient *user, DialogType_t dialogType , const str
 
 			if (good_dialog)
 				{
-				//hzm coop mod chrissstrahl - make ai follow this player now, if ai_on and actor follows any player (using entity numn to determin if it could be a player)
-				if ( bUsedByPlayer && g_gametype->integer != GT_SINGLE_PLAYER && this->activator && this->GetActorFlag( ACTOR_FLAG_AI_ON ) && this->personality->GetTendency( "follow" ) == 1.0f ){
-					Entity *ePlayer = this->activator;
-					if ( ePlayer && ePlayer->isSubclassOf( Player ) ){
-						multiplayerManager.HUDPrint( ePlayer->entnum , "^5INFO^8: Teammate is now following you!\n" );
-						Event *followThisPlayer;
-						followThisPlayer = new Event( EV_Actor_SetFollowTarget );
-						followThisPlayer->AddEntity( ePlayer );
-						ProcessEvent( followThisPlayer );
-					}
-				}
+				//--------------------------------------------------------------
+				// GAMEUPGRADE [b6xx] chrissstrahl - make that the ai is responding after being used by a player
+				//--------------------------------------------------------------
+				upgActorFollowPlayer();
+
+
 
 				// Found a good dialog now get the real sound name from the alias
 				the_dialog = NULL;
@@ -19727,10 +19722,11 @@ qboolean Actor::checkWithinFollowRangeMin( Conditional &condition )
 
 qboolean Actor::checkWithinFollowRangeMin()
 {
-	if ( !followTarget.specifiedFollowTarget ){
-//hzm coop mod chrissstrahl - get the closest active player to the ai
-		followTarget.specifiedFollowTarget = coop_returnPlayerClosestTo( (Entity *)this );
-	}
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6xx] chrissstrahl - 
+	//--------------------------------------------------------------
+	upgActorGrabValidFollowTarget();
+
 
 	if ( !followTarget.specifiedFollowTarget )
 		return false;
@@ -19792,7 +19788,9 @@ qboolean Actor::checkWithinFollowRangeMin()
 	return false;
 }
 
-//[b607] chrissstrahl - changed str name (VS WARNING)
+//--------------------------------------------------------------
+// GAMEUPGRADE [b607] chrissstrahl - changed str name (VS WARNING)
+//--------------------------------------------------------------
 void Actor::SetTalkWatchMode( Event *ev )
 {
 	str sMode = ev->GetString( 1 );
@@ -19930,7 +19928,7 @@ qboolean Actor::checkHavePathToEnemy()
 		find.heuristic.setSize( size );
 		find.heuristic.entnum = entnum;
 
-		//hzm coop mod chrissstrahl - try to fix this, it won't work in multiplayer - fixme, needs work
+		//[hzm review this segment]	- try to fix this, it won't work in multiplayer - fixme, needs work
 		path = find.FindPath( this->origin, currentEnemy->origin );		
 		
 		if ( !path )

@@ -176,7 +176,7 @@ str Actor::upgBranchDialogGetName()
 //              
 // Returns:     void
 //================================================================
-ActorPtr Player::upgBranchDialogGetActor()
+Actor* Player::upgBranchDialogGetActor()
 {
-	return _branchDialogActor;
+	return (Actor*)_branchDialogActor;
 }

@@ -5,12 +5,18 @@
 // Contains Actor related code for the gameupgrades
 //-----------------------------------------------------------------------------------
 #pragma once
-
-#include "_pch_cpp.h"
+class Entity;
+class Actor;
+class str;
 
 class UpgActor
 {
+	friend Actor;
+	bool usedByPlayer = false;
 public:
+	int					setHeadWatchTarget(Entity* entity, str watchTarget);
+	void				setUsedByPlayer(Actor* actor, bool bUsed);
+	bool				getUsedByPlayer(Actor* actor);
 };
 
 extern UpgActor upgActor;
