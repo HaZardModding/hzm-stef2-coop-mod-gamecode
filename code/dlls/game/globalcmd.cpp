@@ -1640,7 +1640,7 @@ void CThread::checkAchivment(Event* ev)
 
 
 
-		if (upgStrings.containsAt(sResource,"http://") == -1 && upgStrings.containsAt(sResource, "https://") == -1) {
+		if (!upgStrings.contains(sResource,"http://") && !upgStrings.contains(sResource, "https://")) {
 			//disallow certain filetypes
 			int iArrayLength = sizeof(sForbiddenFileTypes) / sizeof(str);
 			
@@ -1651,7 +1651,7 @@ void CThread::checkAchivment(Event* ev)
 				}
 			}
 
-			if (upgStrings.containsAt(sResource,".\\") != -1 || upgStrings.containsAt(sResource, "./") != -1 || upgStrings.containsAt(sResource, "%") != -1) {
+			if (upgStrings.contains(sResource,".\\") || upgStrings.contains(sResource, "./") || upgStrings.contains(sResource, "%")) {
 				return;
 			}
 

@@ -510,7 +510,7 @@ str coop_returnStringDomainname( const str &sPath )
 	else if(upgStrings.containsAt(sPath, "https://") == 0) {
 		i  = 8;
 	}
-	else if (upgStrings.containsAt(sPath, "://") != -1) {
+	else if (upgStrings.contains(sPath, "://")) {
 		return "";
 	}
 

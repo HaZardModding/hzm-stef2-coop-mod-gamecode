@@ -11,6 +11,35 @@ UpgStrings upgStrings;
 
 
 //================================================================
+// Name:        contains
+// Class:       UpgStrings
+//              
+// Description: checks if any given char is inside the first string
+//              
+// Parameters:  str, str
+//              
+// Returns:     bool
+//              
+//================================================================
+int UpgStrings::contains(str sSource, str sObjectsOfIntrest)
+{
+	sSource				= sSource.tolower();
+	sObjectsOfIntrest	= sObjectsOfIntrest.tolower();
+
+	int iLen = strlen(sObjectsOfIntrest);
+	int i = 0;
+	do
+	{
+		char c = sObjectsOfIntrest[i];
+		if (c != NULL && strstr(sSource, (str)c) != NULL){
+			return true;
+		}
+		i++;
+	} while (i < iLen);
+	return false;
+}
+
+//================================================================
 // Name:        replace
 // Class:       UpgStrings
 //              
@@ -94,7 +123,6 @@ int UpgStrings::containsAt(str sSource, str sKeyword)
 	return iFoundAt;
 }
 
-
 //================================================================
 // Name:        manipulateFromWithLength
 // Class:       UpgStrings
@@ -121,7 +149,7 @@ void UpgStrings::manipulateFromWithLength(str& sString, const int& iStart, int i
 		}
 	}
 	else{
-		throw("Contact HZM with this info data: COOP PROGRAMMING ERROR IN: _returnStringFromWithLength ERROR INFORMATION READS: start pos > then strlen");
+		throw("Contact HZM with this info data: COOP PROGRAMMING ERROR IN: manipulateFromWithLength ERROR INFORMATION READS: start pos > then strlen");
 	}
 }
 
@@ -440,7 +468,7 @@ str UpgStrings::getReplacedForLabeltext(str sPure)
 	if (strlen(sPure) > 10) {
 		str sTemp = sPure;
 		sTemp = sTemp.tolower();
-		if (upgStrings.containsAt(sTemp, "labeltext ") != -1) {
+		if (upgStrings.contains(sTemp, "labeltext ")) {
 			i = 11;
 		}
 	}

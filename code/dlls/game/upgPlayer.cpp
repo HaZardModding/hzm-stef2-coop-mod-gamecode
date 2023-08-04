@@ -1845,7 +1845,7 @@ void Player::upgPlayerWidgetCommand(str sWidget, str sParameters)
 {
 	//SPECIALS: ~=NEWLINE ^=SPACER #=NEWLINE
 	//str sTemp;
-	if (upgStrings.containsAt(sParameters.c_str(), "labeltext") != -1) {
+	if (upgStrings.contains(sParameters.c_str(), "labeltext")) {
 		sParameters = upgStrings.getReplacedForLabeltext(sParameters);
 	}
 	str sData = "stufftext \"globalwidgetcommand ";

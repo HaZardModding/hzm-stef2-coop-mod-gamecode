@@ -64,7 +64,7 @@ void CoopGame::missionFailureHud(const str &reason)
 				sReason = upgStrings.getStartingFrom(sReason, 1);
 			}
 			//If it is just a single word and has no $$ it is extreemly likley a local string, so add $$
-			else if (upgStrings.containsAt(sReason.c_str(), "$$") == -1 && upgStrings.containsAt(sReason.c_str(), " ") == -1) {
+			else if (!upgStrings.contains(sReason.c_str(), "$$") && !upgStrings.contains(sReason.c_str(), " ")) {
 				sReason = va("$$%s$$", sReason.c_str());
 			}
 

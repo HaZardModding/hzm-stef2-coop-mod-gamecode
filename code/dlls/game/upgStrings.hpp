@@ -11,6 +11,7 @@
 class UpgStrings
 {
 public:
+	int				contains(str sSource, str sObjectsOfIntrest);
 	bool			replace(str& sHeystack, const str& sDildo, const str& sNedle);
 	int				containsAt(str sSource, str sKeyword);
 	str				getStartingFrom(const str& sString, const int& iStart);

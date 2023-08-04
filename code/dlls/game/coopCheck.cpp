@@ -23,32 +23,6 @@
 #include "interpreter.h"
 #include "program.h"
 
-//================================================================
-// Name:        coop_checkCharsInsideString
-// Class:       -
-//              
-// Description:  checks if any given char is inside the first string
-//              
-// Parameters:  Player *player
-//              
-// Returns:     bool
-//              
-//================================================================
-bool coop_checkCharsInsideString(str sSource, str sObjectsOfIntrest)
-{
-	int iLen = strlen( sObjectsOfIntrest );
-	int i = 0;
-	do
-	{
-		char c = sObjectsOfIntrest[i];
-		if (c != NULL && strstr( sSource, (str)c ) != NULL )
-		{
-			return true;
-		}
-		i++;
-	} while ( i < iLen );
-	return false;
-}
 
 //================================================================
 // Name:        coop_checkEntityInsideDoor

@@ -113,7 +113,7 @@ int coop_parserGetNumberOfItemsFromCategory( str sFile , const str section )
 	}
 
 	//section not in the file
-	if ( upgStrings.containsAt( buffer , va("[%s]", section.c_str() ) ) == -1 ){
+	if ( !upgStrings.contains( buffer , va("[%s]", section.c_str() ) )){
 		return -1;
 	}
 
@@ -152,9 +152,8 @@ int coop_parserGetNumberOfItemsFromCategory( str sFile , const str section )
 				}
 			}
 			else {
-				//checp check if there could really be a item
-				int iPosEqu = upgStrings.containsAt( value , "=" );
-				if ( iPosEqu != -1 ) {
+				//check if there could really be a item
+				if ( upgStrings.contains( value , "=" ) ) {
 					iItemsFound++;
 				}
 			}
@@ -188,7 +187,7 @@ void coop_parserGetItemsFromCategory( str sFile , ListenKnoten * &start , Listen
 	}
 
 	//section not in the file
-	if ( upgStrings.containsAt( buffer , va( "[%s]" , section.c_str() ) ) == -1 ) {
+	if ( !upgStrings.contains( buffer , va( "[%s]" , section.c_str() ) ) ) {
 		gi.Printf( "=============================================\n" );
 		gi.Printf( va( "INFO: coop_phraserGetItemsFromCategory SECTION NOT FOUND (%s) \n" , section.c_str() ) );
 		gi.Printf( "=============================================\n" );
@@ -354,7 +353,7 @@ str coop_parserIniGet( str sFile, const str key, const str section )
 	}
 
 	//section not in the file
-	if ( upgStrings.containsAt( buffer , va( "[%s]" , section.c_str() ) ) == -1 ) {
+	if (!upgStrings.contains( buffer , va( "[%s]" , section.c_str() ) )) {
 		gi.Printf( va( "INFO: coop_phraserIniGet section not found: %s\n" , section.c_str() ) );
 		return "";
 	}
@@ -573,7 +572,7 @@ bool coop_parserIniSet( str sFile , const str &key , const str &value , const st
 		newValue = coop_returnStringUntilNewline(value);
 
 		//key found overwrite
-		if ( !Q_stricmp( sCurrentSection.c_str() , section ) && upgStrings.containsAt( sLine , key ) > -1 && !bKeySet )
+		if ( !Q_stricmp( sCurrentSection.c_str() , section ) && upgStrings.contains( sLine , key ) && !bKeySet )
 		{
 			sNewBuffer += va( "%s%s=%s\n" , sExtraLine.c_str() , key.c_str() , newValue.c_str() );
 			//fprintf( pFileWrite , va( "%s%s=%s\n" , sExtraLine.c_str() , key.c_str() , value.c_str() ) );

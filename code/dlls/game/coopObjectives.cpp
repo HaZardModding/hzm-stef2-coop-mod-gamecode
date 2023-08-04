@@ -660,7 +660,7 @@ void coop_objectivesUpdate( str sObjectiveState, str sObjectiveItem, str sObject
 		sLocalString = "";
 	}
 	//do not localize if it already is //[b60011] chrissstrahl - update checking alternatively for space
-	else if (sObjective[0] == '$' && sObjective[1] == '$' || upgStrings.containsAt(sObjective.c_str(), " ") != -1){
+	else if (sObjective[0] == '$' && sObjective[1] == '$' || upgStrings.contains(sObjective.c_str(), " ")){
 		sLocalString = "";
 	}
 
@@ -749,7 +749,7 @@ void coop_objectivesShow( Player *player , int iObjectiveItem , int iObjectiveSt
 		}
 		if ( sObjective.length() > 1 ){
 		//make sure it is not localized twiche... //[b60011] chrissstrahl - update checking alternatively for space
-			if (sObjective[0] == '$' && sObjective[1] == '$' || upgStrings.containsAt(sObjective.c_str(), " ") != -1) {
+			if (sObjective[0] == '$' && sObjective[1] == '$' || upgStrings.contains(sObjective.c_str(), " ")) {
 				sLocalString = "";
 			}
 

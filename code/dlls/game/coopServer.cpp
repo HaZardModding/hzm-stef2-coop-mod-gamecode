@@ -428,7 +428,7 @@ int coop_serverConfigstringRemoveCombatSounds(str sActorname)
 		ss += s;
 
 		if (ss.length()) {
-			if (upgStrings.containsAt(ss,va("/sound/dialog/combat/%s_",sActorname.c_str())) != -1) {
+			if (upgStrings.contains(ss,va("/sound/dialog/combat/%s_",sActorname.c_str()))) {
 				iNum++;
 				//gi.Printf(va("#REMOVED COMBAT SOUND: #%i: %s\n", i, ss.c_str()));
 				gi.setConfigstring(i, "");

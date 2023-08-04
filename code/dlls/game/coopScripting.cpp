@@ -58,7 +58,7 @@ str CoopScripting::checkIncludedFiles(str sLex)
 
 bool CoopScripting::checkIncludedCoop(str sLex)
 {
-	if (upgStrings.containsAt(sLex, COOP_SCRIPTING_FILENAME_COOPMODMAIN) != -1) {
+	if (upgStrings.contains(sLex, COOP_SCRIPTING_FILENAME_COOPMODMAIN)) {
 		includedCoop = true;
 	}
 	return includedCoop;
@@ -66,7 +66,7 @@ bool CoopScripting::checkIncludedCoop(str sLex)
 
 bool CoopScripting::checkIncludedMrm(str sLex)
 {
-	if (upgStrings.containsAt(sLex, COOP_SCRIPTING_FILENAME_MISSIONRESOURCEMENU) != -1) {
+	if (upgStrings.contains(sLex, COOP_SCRIPTING_FILENAME_MISSIONRESOURCEMENU)) {
 		includedMrm = true;
 	}
 	return includedMrm;
@@ -74,7 +74,7 @@ bool CoopScripting::checkIncludedMrm(str sLex)
 
 bool CoopScripting::checkIncludedMom4(str sLex)
 {
-	if (upgStrings.containsAt(sLex, COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU_4) != -1) {
+	if (upgStrings.contains(sLex, COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU_4)) {
 		includedMom4 = true;
 	}
 	return includedMom4;
@@ -82,7 +82,7 @@ bool CoopScripting::checkIncludedMom4(str sLex)
 
 bool CoopScripting::checkIncludedMom(str sLex)
 {
-	if (upgStrings.containsAt(sLex, COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU) != -1) {
+	if (upgStrings.contains(sLex, COOP_SCRIPTING_FILENAME_MULTIOPTIONSMENU)) {
 		includedMom = true;
 	}
 	return includedMom;
@@ -90,7 +90,7 @@ bool CoopScripting::checkIncludedMom(str sLex)
 
 bool CoopScripting::checkIncludedNoscript(const str sLex)
 {
-	if (upgStrings.containsAt(sLex, COOP_SCRIPTING_FILENAME_NOSCRIPT) != -1) {
+	if (upgStrings.contains(sLex, COOP_SCRIPTING_FILENAME_NOSCRIPT)) {
 		includedNoscript = true;
 	}
 	return includedNoscript;
