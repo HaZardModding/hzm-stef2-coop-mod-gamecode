@@ -118,6 +118,8 @@ class Actor : public Sentient
 		//[b60014] chrissstrahl
 		void				upgBranchDialogFailsafe(Event* ev);
 		str					upgBranchDialogGetName();
+		Player*				upgActorSetHeadWatchTarget(str watchTarget);
+		void				upgActorGrabValidFollowTarget();
 
 
 		//--------------------------------------------------------------
@@ -125,7 +127,7 @@ class Actor : public Sentient
 		//--------------------------------------------------------------
 		//[b60013] chrissstrahl
 		void				coop_Killed(Player* player);
-		float				coop_ArmorDamage(Entity *enemy,float damage);
+		void				coop_ArmorDamage(Entity *enemy,float &damage);
 		//[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue remember the current dialog so we can remove it from the configstrings on stop
 		str					dialogCurrentPlaying;
 		//hzm gameupdate chrissstrahl - store who used/activated this actor last
@@ -1485,7 +1487,7 @@ class Actor : public Sentient
 		qboolean							checkEnemyCanSeeCurrentNode();
 
 		//hzm gameupgrade chrissstrahl - make sure the followtarget is not ins spec
-		qboolean							coop_checkIsSpectator();
+		qboolean							upgActorIsSpectator();
 
 		qboolean							checkSpecifiedFollowTargetOutOfRange( Conditional &condition );
 		qboolean							checkSpecifiedFollowTargetOutOfRange();

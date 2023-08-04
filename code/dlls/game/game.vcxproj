@@ -1187,6 +1187,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release CDROM|Win32'">_pch_cpp.h</PrecompiledHeaderFile>
     </ClCompile>
     <ClCompile Include="puzzleobject.cpp" />
+    <ClCompile Include="upgActor.cpp" />
     <ClCompile Include="upgBranchdialog.cpp" />
     <ClCompile Include="upgCircleMenu.cpp" />
     <ClCompile Include="q_math.c" />
@@ -1542,6 +1543,7 @@
     <ClInclude Include="g_public.h" />
     <ClInclude Include="g_spawn.h" />
     <ClInclude Include="g_utils.h" />
+    <ClInclude Include="upgActor.hpp" />
     <ClInclude Include="upgBranchdialog.hpp" />
     <ClInclude Include="upgCoopInterface.hpp" />
     <ClInclude Include="upgEntity.hpp" />

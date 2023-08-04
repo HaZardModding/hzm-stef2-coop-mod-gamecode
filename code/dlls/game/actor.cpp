@@ -14016,9 +14016,10 @@ void Actor::ArmorDamage( Event *ev )
 		if ( actortype == IS_TEAMMATE )
 		{
 			int MOD = ev->GetInteger( 9 );
-//hzm coop mod chrissstrahl - do not do this in multiplayer
+			//--------------------------------------------------------------
+			// GAMEUPGRADE [b6xx] chrissstrahl - do not do this in multiplayer
+			//--------------------------------------------------------------
 			if ( g_gametype->integer == GT_SINGLE_PLAYER ) {
-//end of hzm
 				if ( MOD != MOD_EXPLOSION ) {
 					AddStateFlag( STATE_FLAG_ATTACKED_BY_PLAYER );
 				}
@@ -14035,8 +14036,13 @@ void Actor::ArmorDamage( Event *ev )
 
 	::Damage damage(ev);
 
-	//[b60013] chrissstrahl - Handles damage to actor from a player based on number of player in game
-	damage.damage = coop_ArmorDamage(enemy,damage.damage);
+
+	//--------------------------------------------------------------
+	// [b60013] Coop Mod chrissstrahl - Handles damage to actor from a player based on number of player in game
+	//--------------------------------------------------------------
+	coop_ArmorDamage(enemy,damage.damage);
+
+
 
 	// Only react to an attack if we respond to pain
 	if ( sensoryPerception && sensoryPerception->ShouldRespondToStimuli( STIMULI_PAIN ) )
@@ -16541,7 +16547,11 @@ inline void Actor::Archive( Archiver &arc )
 	arc.ArchiveFloat( &lastPathCheck_Patrol );
 	arc.ArchiveBoolean( &testing );
 
-	//[b60011] chrissstrahl - fix variables not being properly saved and loaded
+	
+	//[hzm review this segment]	
+	//--------------------------------------------------------------
+	// [b60011] Coop Mod chrissstrahl - fix variables not being properly saved and loaded
+	//--------------------------------------------------------------
 	// This is either a loadgame or a restart
 	if (LoadingSavegame) {}
 	// When saveing the game
@@ -16771,38 +16781,34 @@ void Actor::SetHeadWatchTarget( Event *ev )
       headWatcher->SetWatchTarget( NULL );
       return;
       }
-   
-//hzm gameupdate chrissstrahl - get the correct player in multiplayer
-	if ( Q_stricmpn( "player" , watchTarget.c_str(), 6 ) == 0 ){
+
+
+	if ( !Q_stricmpn( "player" , watchTarget.c_str(), 6 ) ){
 		Player *player = NULL;
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b6xx] chrissstrahl - get the correct player in singleplayer/multiplayer
+		//--------------------------------------------------------------
 		if ( g_gametype->integer == GT_SINGLE_PLAYER ){
 			player = GetPlayer( 0 );
 		}else{
-			if ( watchTarget.length() == 7 ){
-				str sNumberMe = "";
-				sNumberMe += watchTarget[6];
-				if ( watchTarget.length() == 8 ){
-					sNumberMe += watchTarget[7];
-				}
-				player = GetPlayer( atoi( sNumberMe ) );
-			}
-//hzm coop mod chrissstrahl - get the closest player if the given player did not exist
-			if ( !player ){
-				player = coop_returnPlayerClosestTo( this );
-			}
+			player = upgActorSetHeadWatchTarget(watchTarget);
 		}
-		
-		if ( player )//hzm coop mod chrissstrahl - fix making sure it will not cause troubbles during mp
-		{
-			headWatcher->SetWatchTarget( player );
-			return;
-		}
+
+
+		headWatcher->SetWatchTarget( player );
+		return;
 	}
    if ( !Q_stricmp( "teammate" , watchTarget.c_str() ) )
 		{
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b6xx] chrissstrahl - return the closest player
+		//--------------------------------------------------------------
+		Sentient *teammate = coop_returnPlayerClosestTo( (Entity*)this );
+
+
 		float bestDist = 99999;
 		Vector selfToTeammate;
-		Sentient *teammate = coop_returnPlayerClosestTo( this );//hzm coop mod chrissstrahl - return the closest player during coop
 		Sentient *closestTeammate = NULL;
 
 		for ( int i = 1 ; i <= TeamMateList.NumObjects() ; i++ )
@@ -16862,7 +16868,10 @@ void Actor::SetFuzzyEngineActive( Event *ev )
    fuzzyEngine_active = active;
    }
 
-//[b607] chrissstrahl - changed variable name (VS WARNING)
+
+//--------------------------------------------------------------
+// GAMEUPGRADE [b607] chrissstrahl - changed variable name (VS WARNING)
+//--------------------------------------------------------------
 qboolean Actor::_isWorkNodeValid( PathNode *node )
    {
    WorkTrigger *targetWt = NULL;
@@ -17064,7 +17073,12 @@ qboolean Actor::checkForwardDirectionClear(float dist)
    Vector endPos;
    Vector startPos;
    Vector forward;
-   Vector vAngles;//[b607] chrissstrahl - changed var name (VS WARNING)
+
+   //--------------------------------------------------------------
+   // GAMEUPGRADE [b607] chrissstrahl - changed var name (VS WARNING)
+   //--------------------------------------------------------------
+   Vector vAngles;
+
 
    startPos = origin;
    startPos.z += 32;
@@ -17230,14 +17244,16 @@ void Actor::SetFollowTarget( Event *ev )
    Entity *ent = NULL;
    ent = ev->GetEntity( 1 );
 
-  if ( ent )
-  {
+  if ( ent ){
 	followTarget.specifiedFollowTarget = ent;
 	//gi.Printf( va( "Actor::SetFollowTarget TARGET SET: %s\n" , ev->GetString( 1 ) ) ); //hzm gameupdate chrissstrahl - debug
   }
-  //hzm gameupdate chrissstrahl, we want to know if the target could not be set
-  else{ gi.Printf( va( "Actor::SetFollowTarget can't find entity: %s\n" , ev->GetString( 1 ) ) ); }
-
+  //--------------------------------------------------------------
+  // GAMEUPGRADE [b6xx] chrissstrahl - we want to know if the target could not be set
+  //--------------------------------------------------------------
+  else{
+	  gi.Printf( va( "Actor::SetFollowTarget can't find entity: %s\n" , ev->GetString( 1 ) ) );
+  }
 }
 
 void Actor::SetSteeringDirectionPreference( Event *ev )
@@ -17314,7 +17330,9 @@ void Actor::SetTendency( Event *ev )
 void AI_DisplayInfo( void )
 {
    if ( ai_numactive->integer ){
-	//hzm gameupdate chrissstrahl - this prints now the info into the console everytime the number of actors actually changes, rather than spamming the console every few frames
+	   //--------------------------------------------------------------
+	   // GAMEUPGRADE [b6xx] chrissstrahl - this prints now the info into the console everytime the number of actors actually changes, rather than spamming the console every few frames
+	   //--------------------------------------------------------------
 	   static int lastNumOfActiveActors = -1;
 	   int currentNumOfActors = ActiveList.NumObjects();
 	   if ( currentNumOfActors != lastNumOfActiveActors ){
@@ -18642,7 +18660,9 @@ qboolean Actor::checkEnemyWeaponNamed( Conditional &condition )
 //
 // Returns:		true or false
 //--------------------------------------------------------------
-//[b607] chrissstrahl - changed parameter name (VS WARNING)
+//--------------------------------------------------------------
+// GAMEUPGRADE [b607] chrissstrahl - changed parameter name (VS WARNING)
+//--------------------------------------------------------------
 qboolean Actor::checkEnemyWeaponNamed( const str& sName )
 {
 	Entity *enemy;
@@ -19427,24 +19447,13 @@ qboolean Actor::checkSpecifiedFollowTargetOutOfRange( Conditional &condition )
 	return checkSpecifiedFollowTargetOutOfRange();
 }
 
-qboolean Actor::coop_checkIsSpectator()
-{
-	//[b607] chrissstrahl - added check if followtarget player is in spectator
-	if ( game.coop_isActive && followTarget.specifiedFollowTarget->isClient() && followTarget.specifiedFollowTarget->isSubclassOf( Player ) ) {
-		if ( multiplayerManager.isPlayerSpectator( ( Player * )(Entity *)followTarget.specifiedFollowTarget ) ) {
-			return true;
-		}
-	}
-	return false;
-}
-
 qboolean Actor::checkSpecifiedFollowTargetOutOfRange()
 {
-	//[b607] chrissstrahl - added check if followtarget player is in spectator 
-	if ( !followTarget.specifiedFollowTarget || coop_checkIsSpectator() ) {
-		//hzm coop mod chrissstrahl - get the closest active player to the ai
-		followTarget.specifiedFollowTarget = coop_returnPlayerClosestTo( ( Entity * )this );
-	}
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b607] chrissstrahl - added check if followtarget player is in spectator, sets new target if needed
+	//--------------------------------------------------------------
+	upgActorGrabValidFollowTarget();
+
 
 	if ( followTarget.specifiedFollowTarget )
 		{
