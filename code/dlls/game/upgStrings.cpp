@@ -26,16 +26,9 @@ int UpgStrings::contains(str sSource, str sObjectsOfIntrest)
 	sSource				= sSource.tolower();
 	sObjectsOfIntrest	= sObjectsOfIntrest.tolower();
 
-	int iLen = strlen(sObjectsOfIntrest);
-	int i = 0;
-	do
-	{
-		char c = sObjectsOfIntrest[i];
-		if (c != NULL && strstr(sSource, (str)c) != NULL){
-			return true;
-		}
-		i++;
-	} while (i < iLen);
+	if (sObjectsOfIntrest.length() && strstr(sSource.c_str(), sObjectsOfIntrest.c_str()) != NULL) {
+		return true;
+	}
 	return false;
 }
 
