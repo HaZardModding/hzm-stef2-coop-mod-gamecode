@@ -57,7 +57,7 @@ bool UpgStrings::replace(str& sHeystack, const str& sFind, const str& sNedle)
 	str sLighter = sHeystack;
 	manipulateFromWithLength(sLighter, 0, (iWater - 1));
 	sLighter += sNedle;
-	sLighter += getStartingFrom(sLighter, ((iWater - 1) + strlen(sFind)));
+	sLighter += getStartingFrom(sHeystack, ((iWater) + strlen(sFind)));
 
 	//be manipulative
 	sHeystack = sLighter;
