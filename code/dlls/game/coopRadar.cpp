@@ -294,7 +294,8 @@ void coop_radarUpdate( Player *player )
 
 	//update (enable/disable) selected marker
 	//bugfix - chrissstrahl - make sure it is deactivated if not needed
-	if (targetedStillValid) {
+	//[b60013] chrissstrahl - make sure it is not enabled during cinematic
+	if (targetedStillValid && !level.cinematic) {
 		if (!player->coopPlayer.radarSelectedActive) {
 			player->coopPlayer.radarSelectedActive = true;
 			//[b607] chrissstrahl - made seperate, because we need it to be reliable
