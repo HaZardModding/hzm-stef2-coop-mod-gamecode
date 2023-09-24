@@ -399,7 +399,7 @@ void PuzzleObject::Think( void )
 	if ( _hudOn && ( _lastTimeUsed + 0.25 < level.time ) &&
 		(	 _timed							||
 			(level.getSkill() <= _minSkill) ||
-			multiplayerManager.inMultiplayer() && game.coop_isActive && player && player->isSubclassOf(Player) && player->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN)
+			player->isSubclassOf(Player) && coopPuzzleobjectUsePuzzleCheck(player))
 		)
 	{
 		_lastTimeUsed = 0.0f;
@@ -785,10 +785,9 @@ void PuzzleObject::useEvent(Event* event)
 
 	//[b60014] chrissstrahl - tricorder puzzle should become a timer bar for coop class technician
 	//if (_timed || (level.getSkill() <= _minSkill)) {
-	if (_timed || (level.getSkill() <= _minSkill) || multiplayerManager.inMultiplayer() && game.coop_isActive && player && player->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
-		if (_timeToUse <= 0.0f){
-			_timeToUse = 3.0f;
-		}
+	if (_timed || (level.getSkill() <= _minSkill) || coopPuzzleobjectUsePuzzleCheck(player)) {
+		//[b60016] chrissstrahl - deactivated, because we need the default behaviour
+		//if (_timeToUse <= 0.0f){_timeToUse = 3.0f;}
 
 		timedUse( event );
 	}		

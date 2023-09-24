@@ -118,6 +118,9 @@ class PuzzleObject : public Entity
 		int					_minSkill; // if skill level is <= this, the puzzle becomes a mod bar
 
 		EntityPtr	      activator;
+
+		//[b60016] chrissstrahl - coop
+		bool coopPuzzleobjectUsePuzzleCheck(Player* player);
 };
 
 
