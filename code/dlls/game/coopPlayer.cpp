@@ -2814,11 +2814,11 @@ void coop_playerLeft( Player *player )
 		}
 
 		//let us be a little paranoid
-		if (iFailtime == 0) {
+		if (iFailtime < 1) {
 			iFailtime = 1;
 		}
-		else if (iFailtime > 3000) {
-			iFailtime = 3000;
+		else if (iFailtime > 30) { //[b60016] chrissstrahl - changed limit to 30 to prevent cl_parseGamesate
+			iFailtime = 30;
 		}
 
 		//[b60011] chrissstrahl - reset air accelerate, to prevent new players to get confused or stuck
