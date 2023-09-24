@@ -2255,6 +2255,12 @@ void MultiplayerManager::vote( Player *player, const str &vote )
 
 	if ( !_voteTime )
 	{
+		//[b60014] chrissstrahl - prevent spamming, if player is sleeping on the escape button 
+		if ((coop_returnEntityFloatVar(player, "VoteNoVote") + 3) > level.time) {
+			return;
+		}
+		player->entityVars.SetVariable("VoteNoVote", level.time);
+
 		HUDPrint( player->entnum, "$$NoVote$$\n" );
 		return;
 	}
@@ -3358,8 +3364,9 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 	}
 
 	//[GAMEUPGRADE][b60014] chrissstrahl - make player view from the current camera
-	if ( level.cinematic == 1 && upgGame.getCameraCurrent() != NULL ){
-		player->SetCamera( (Camera *)upgGame.getCameraCurrent(), 0 );
+	Camera* gameCurrentCamera =(Camera*) upgGame.getCameraCurrent();
+	if ( level.cinematic == 1 && gameCurrentCamera != NULL ){
+		player->SetCamera(gameCurrentCamera, 0 );
 	}
 
 	//hzm coop mod chrissstrahl - coop mod prevent player from respawning if LMS is active and player died
