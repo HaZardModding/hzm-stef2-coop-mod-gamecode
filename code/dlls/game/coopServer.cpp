@@ -1727,6 +1727,9 @@ void coop_serverCleanup(bool restart)
 	//[b60011] chrissstrahl
 	coopChallenges.cleanUp(restart);
 	coopNpcTeam.cleanUp(restart);
+	//[b60016] chrissstrahl - fix camera crash issues when changing levels
+	upgGame.cleanUp(restart);
+
 
 	//be smart, clean these at the very end
 	game.coop_author = "";

@@ -13,6 +13,7 @@ class UpgGame
 {
 	Entity*			cinematicCurrentCam = NULL;
 public:
+	void			cleanUp(bool restart);
 	int				configstringRemove(str sRem);
 	void			checkMpGametype();
 	void			flushTikisPlayers();

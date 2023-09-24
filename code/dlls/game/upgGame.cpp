@@ -24,6 +24,21 @@ Event EV_ScriptThread_ConfigstringRemove
 );
 
 
+//========================================================[b60016]
+// Name:        cleanUp 
+// Class:       UpgGame
+//              
+// Description: Resets and cleans up UpgGame class related stuff
+//              
+// Parameters:  bool
+//              
+// Returns:     void
+//================================================================
+void UpgGame::cleanUp(bool restart)
+{
+	setCameraCurrent(NULL);
+}
+	
 //===========================================================[b607]
 // Name:        configstringRemove
 // Class:       UpgGame
