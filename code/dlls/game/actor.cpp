@@ -11468,8 +11468,12 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 	//WHY?!! BECAUSE: The server can run in eng or deu, but client might have deu or eng dialog playing that is longer as the opposite lang the server is running
 	float fDialogEngLength = 0;
 	float fDialogDeuLength = 0;
-	if (g_gametype->integer != GT_SINGLE_PLAYER) {
-		sLazyCodingSolutionHack = upgStrings.getStartingFrom(sLazyCodingSolutionHack, 13);
+	//[b60015] chrissstrahl - quick fix to eliminate loadFile error on vlp files for playdialog when used by cinematics for playing .wav files
+	if (g_gametype->integer != GT_SINGLE_PLAYER && upgStrings.getFileExtension(sLazyCodingSolutionHack).tolower() == ".mp3") {
+		sLazyCodingSolutionHack = upgStrings.getStartingFrom(sLazyCodingSolutionHack,13);
+		if (sLazyCodingSolutionHack[0] == '/') {
+			sLazyCodingSolutionHack = upgStrings.getStartingFrom(sLazyCodingSolutionHack,2);
+		}
 		sLazyCodingSolutionHack = coop_returnStringPathFileNoExtension(sLazyCodingSolutionHack);
 		sLazyCodingSolutionHack += ".vlp";
 //GERMAN DIALOG
