@@ -91,36 +91,36 @@ bool coop_vote_modifyVoteText(const str _voteString, str& sVoteText, Player* pla
 		}
 	}
 	else {
-		if (upgStrings.containsAt(_voteString, "coop_maxspeed") == 0)
+		if (upgStrings.containsAt(_voteString, "coop_maxspeed") > -1)
 		{
 			sVoteText = "Set Movement Speed to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 13);
 		}
-		else if (upgStrings.containsAt(_voteString, "coop_ff") )
+		else if (upgStrings.containsAt(_voteString, "coop_ff") > -1)
 		{
 			sVoteText = "Set Friendly Fire to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 7);
 		}
-		else if (upgStrings.containsAt(_voteString, "coop_next") == 0)
+		else if (upgStrings.containsAt(_voteString, "coop_next") > -1)
 		{
 			sVoteText = "Load Next Coop Map - NOW!"; sVoteText += upgStrings.getStartingFrom(_voteString, 9);
 		}
-		else if (upgStrings.containsAt(_voteString, "coop_prev") == 0)
+		else if (upgStrings.containsAt(_voteString, "coop_prev") > -1)
 		{
 			sVoteText = "Load Previous Coop Map - NOW!"; sVoteText += upgStrings.getStartingFrom(_voteString, 9);
 		}
-		else if (upgStrings.containsAt(_voteString, "coop_skill") == 0)
+		else if (upgStrings.containsAt(_voteString, "coop_skill") > -1)
 		{
 			sVoteText = "Set Dificulty to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 5);
 		}
 		//chrissstrahl - print readable string instead of command [b607]
-		else if (upgStrings.containsAt(_voteString, "coop_teamicon") == 0)
+		else if (upgStrings.containsAt(_voteString, "coop_teamicon") > -1)
 		{
 			sVoteText = "Set Challenge to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 13);
 		}
-		else if (upgStrings.containsAt(_voteString, "coop_lms") == 0)
+		else if (upgStrings.containsAt(_voteString, "coop_lms") > -1)
 		{
 			sVoteText = "Set Last Man Standing to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 8);
 		}
-		else if (upgStrings.containsAt(_voteString, "coop_awards") == 0)
+		else if (upgStrings.containsAt(_voteString, "coop_awards") > -1)
 		{
 			sVoteText = "Set Awards to:"; sVoteText += upgStrings.getStartingFrom(_voteString, 11);
 		}
