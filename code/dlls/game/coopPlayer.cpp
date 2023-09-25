@@ -1644,7 +1644,12 @@ void coop_playerSetupHost(Player* player)
 	//[b60014] chrissstrahl - [BOTMATCH] EXIT
 	if (g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
 		return;
-	}	
+	}
+
+	//[b60016] chrissstrahl - restore class
+	if (game.coop_isActive) {
+		upgPlayerDelayedServerCommand(player->entnum, "vstr coop_class");
+	}
 
 	coop_playerRestore(player);
 }
