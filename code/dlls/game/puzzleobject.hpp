@@ -119,8 +119,9 @@ class PuzzleObject : public Entity
 
 		EntityPtr	      activator;
 
-		//[b60016] chrissstrahl - coop
+		//[b60016] chrissstrahl - allowes Technicians to modulate puzzles, instead of solving them the regular way
 		bool coopPuzzleobjectUsePuzzleCheck(Player* player);
+		bool coopPuzzleobjectUsePuzzleGetTime(Player* player);
 };
 
 

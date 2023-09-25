@@ -16,13 +16,22 @@
 
 bool PuzzleObject::coopPuzzleobjectUsePuzzleCheck(Player* player)
 {
-	return false;
 	if (player && multiplayerManager.inMultiplayer() && game.coop_isActive) {
-		if (_timed || (level.getSkill() <= _minSkill)) {
-			if (player->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN) {
+		if(_itemUsedThread.length() || _solvedThread.length()){
+			if (player->coopPlayer.className == COOP_CLASS_NAME_TECHNICIAN || _timed || (level.getSkill() <= _minSkill)) {
 				return true;
 			}
 		}
 	}
 	return false;
+}
+
+bool PuzzleObject::coopPuzzleobjectUsePuzzleGetTime(Player* player)
+{
+	if (coopPuzzleobjectUsePuzzleCheck(player)) {
+		if (_timeToUse < 2) {
+			return 3;
+		}
+	}
+	return _timeToUse;
 }

@@ -786,9 +786,6 @@ void PuzzleObject::useEvent(Event* event)
 	//[b60014] chrissstrahl - tricorder puzzle should become a timer bar for coop class technician
 	//if (_timed || (level.getSkill() <= _minSkill)) {
 	if (_timed || (level.getSkill() <= _minSkill) || coopPuzzleobjectUsePuzzleCheck(player)) {
-		//[b60016] chrissstrahl - deactivated, because we need the default behaviour
-		//if (_timeToUse <= 0.0f){_timeToUse = 3.0f;}
-
 		timedUse( event );
 	}		
 	else {
@@ -878,7 +875,7 @@ void PuzzleObject::timedUse( Event* event )
 
 	if ( !_hudOn )
 	{
-		//[b60011] chrissstrahl - thread called when puzzle is started to be used
+		//[b60011] chrissstrahl - gameupdate, thread called when puzzle is started to be used
 		if (_usedStartThread.length() != 0) {
 			ExecuteThread(_usedStartThread, true, this);
 		}
@@ -889,7 +886,9 @@ void PuzzleObject::timedUse( Event* event )
 	_lastTimeUsed = level.time;
 	_usedTime += level.frametime;
 
-	percent = _usedTime / _timeToUse * 100.0f;
+	//[b60016] chrissstrahl - allow technicians to modulate all puzzles, instead of solving them
+	//percent = _usedTime / _timeToUse * 100.0f;
+	percent = _usedTime / coopPuzzleobjectUsePuzzleGetTime(player) * 100.0f;
 
 	eventStat = new Event( EV_Player_SetStat );
 	eventStat->AddString( "generic" );
