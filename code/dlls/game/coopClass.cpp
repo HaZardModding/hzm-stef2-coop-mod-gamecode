@@ -23,6 +23,57 @@
 #include "mp_modeCtf.hpp"
 
 
+//[b60017] chrissstrahl - used to manage regeneration cycles
+//================================================================
+// Name:        coop_classRegenerationCycleSet
+// Class:       Player
+//              
+// Description: Updates the cycles for regenerations
+// 
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_classRegenerationCycleSet()
+{
+	coopPlayer.regenerationCycles = COOP_CLASS_REGENERATION_CYCLES;
+}
+
+//[b60017] chrissstrahl - used to manage regeneration cycles
+//================================================================
+// Name:        coop_classRegenerationCycleGet
+// Class:       Player
+//              
+// Description: Updates the cycles for regenerations
+// 
+// Parameters:  void
+//              
+// Returns:     int
+//              
+//================================================================
+int Player::coop_classRegenerationCycleGet()
+{
+	return coopPlayer.regenerationCycles;
+}
+
+//[b60017] chrissstrahl - used to manage regeneration cycles
+//================================================================
+// Name:        coop_classRegenerationCycleSubstract
+// Class:       Player
+//              
+// Description: Substract from the cycles for regenerations
+// 
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_classRegenerationCycleSubstract()
+{
+	coopPlayer.regenerationCycles--;
+}
+
 //================================================================
 // Name:        coop_classCheckApplay
 // Class:       -
@@ -43,7 +94,6 @@ void coop_classCheckApplay( Player *player )
 		player->coopPlayer.lastTimeAppliedClass = player->coopPlayer.lastTimeChangedClass;
 	}
 }
-
 
 //================================================================
 // Name:        coop_classCeckUpdateStat
@@ -88,35 +138,37 @@ void coop_classRegenerate( Player *player )
 	if (	/* haloThingActive || */
 			player->health <= 0 ||
 			!multiplayerManager.inMultiplayer() ||
-			game.coop_isActive ||
+			!game.coop_isActive ||
 			player->coop_playerNeutralized() ||
 			(player->upgPlayerGetLastDamageTime() + COOP_CLASS_HURT_WAITTIME) > level.time )
 	{
 		return;
 	}
 
-	//[b60014] chrissstrahl - deactivating regeneration to motivate players to work closer together
-	return;
+	//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
+	if (player->coop_classRegenerationCycleGet() > 0) {
+		player->coop_classRegenerationCycleSubstract();
 
-	//[b60012] chrissstrahl - fix missing .c_str()
-	if ( !Q_stricmp( player->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC) ){
-		player->AddHealth( COOP_CLASS_REGENERATE_HEALTH );
-	}
-	else if ( !Q_stricmp( player->coopPlayer.className.c_str(), COOP_CLASS_NAME_TECHNICIAN) ){
-		float fArmorCurrent = player->GetArmorValue();
-		if ( ( fArmorCurrent + COOP_CLASS_REGENERATE_ARMOR ) <= COOP_MAX_ARMOR ){
-			fArmorCurrent++;
-			Event *armorEvent;
-			armorEvent = new Event( EV_Sentient_GiveArmor );
-			armorEvent->AddString( "BasicArmor" );
-			armorEvent->AddInteger( COOP_CLASS_REGENERATE_ARMOR );
-			player->ProcessEvent( armorEvent );
+		//[b60012] chrissstrahl - fix missing .c_str()
+		if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC)) {
+			player->AddHealth(COOP_CLASS_REGENERATE_HEALTH);
 		}
-	}
-	else if ( !Q_stricmp( player->coopPlayer.className.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS) ){
-		player->GiveAmmo( "Fed" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_FED );
-		player->GiveAmmo( "Plasma" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_PLASMA );
-		player->GiveAmmo( "Idryll" , COOP_CLASS_REGENERATE_AMMO , false , COOP_MAX_HW_AMMO_IDRYLL );
+		else if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_TECHNICIAN)) {
+			float fArmorCurrent = player->GetArmorValue();
+			if ((fArmorCurrent + COOP_CLASS_REGENERATE_ARMOR) <= COOP_MAX_ARMOR) {
+				fArmorCurrent++;
+				Event* armorEvent;
+				armorEvent = new Event(EV_Sentient_GiveArmor);
+				armorEvent->AddString("BasicArmor");
+				armorEvent->AddInteger(COOP_CLASS_REGENERATE_ARMOR);
+				player->ProcessEvent(armorEvent);
+			}
+		}
+		else if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS)) {
+			player->GiveAmmo("Fed", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_FED);
+			player->GiveAmmo("Plasma", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_PLASMA);
+			player->GiveAmmo("Idryll", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_IDRYLL);
+		}
 	}
 }
 
@@ -460,6 +512,9 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 
 						//give full health
 						usedPlayer->health = usedPlayer->max_health;
+
+						//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
+						usingPlayer->coop_classRegenerationCycleSet();
 					}
 					else if ( !Q_stricmp( usingPlayer->coopPlayer.className, COOP_CLASS_NAME_TECHNICIAN) ){
 						float fArmorToGive = COOP_MAX_ARMOR_TO_GIVE;
@@ -485,6 +540,9 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						armorEvent->AddString( "BasicArmor" );
 						armorEvent->AddInteger( fArmorToGive );
 						usedPlayer->ProcessEvent( armorEvent );
+
+						//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
+						usingPlayer->coop_classRegenerationCycleSet();
 					}
 					else{
 						if ( usedPlayer->upgPlayerHasLanguageGerman() ){
@@ -509,6 +567,9 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 						ammoEvent->AddFloat( 1.5 );
 						usedPlayer->ProcessEvent( ammoEvent );
 						//PostEvent( ammoEvent , level.frametime );
+
+						//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
+						usingPlayer->coop_classRegenerationCycleSet();
 					}
 				}
 				/*

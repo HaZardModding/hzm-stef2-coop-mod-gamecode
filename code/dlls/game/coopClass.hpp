@@ -68,6 +68,9 @@
 #define COOP_MAX_AMMO_TO_GIVE_IDRYLL 800
 #define COOP_MAX_AMMO_TO_GIVE_FED 800
 
+//[b60017] chrissstrahl - how many cycles a player regenerates after giving stuff to other class
+#define COOP_CLASS_REGENERATION_CYCLES 5
+
 #include "_pch_cpp.h"
 //#include "equipment.h"
 
