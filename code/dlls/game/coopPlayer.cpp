@@ -3017,7 +3017,8 @@ float Player::coop_getSpawnedLastTime()
 void Player::coop_setShowTargetedEntity(bool bShow)
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
-		gi.Error(ERR_DROP, "FATAL: coopPlayer.showTargetedEntity Access VIOLATION!\n");
+		gi.Error(ERR_DROP, "FATAL: coopPlayer.showTargetedEntity - Only works in Coop!\n");
+		return;
 	}
 	coopPlayer.showTargetedEntity = bShow;
 }

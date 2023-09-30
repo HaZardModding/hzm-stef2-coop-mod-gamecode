@@ -2255,7 +2255,7 @@ void MultiplayerManager::vote( Player *player, const str &vote )
 
 	if ( !_voteTime )
 	{
-		//[b60014] chrissstrahl - prevent spamming, if player is sleeping on the escape button 
+		//[b60014] chrissstrahl - prevent spamming, if player is sleeping on the vote button 
 		if ((coop_returnEntityFloatVar(player, "VoteNoVote") + 3) > level.time) {
 			return;
 		}
