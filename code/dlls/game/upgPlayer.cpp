@@ -451,19 +451,19 @@ void Player::upgPlayerLoadingSavegame()
 //              
 // Parameters:  void
 //              
-// Returns:     void
+// Returns:     bool
 //================================================================
-void Player::upgPlayerSkipCinematic()
+bool Player::upgPlayerSkipCinematic()
 {
 	if (g_gametype->integer == GT_SINGLE_PLAYER) {
-		return;
+		return true;
 	}
 
 	//player presses long or repeatedly ESC
 	if ((upgPlayerGetSkipCinematicTimeLast() + 0.25) > level.time && !game.cinematicSkipping) {
 		upgPlayerSetSkipCinematicTimeLast();
 		multiplayerManager.callVote(this, "skipcinematic", "");
-		return;
+		return false;
 	}
 	//player presses short ESC
 	//player presses long ESC and a cinematic skip vote is active
@@ -476,13 +476,13 @@ void Player::upgPlayerSkipCinematic()
 				multiplayerManager.vote(this, "y");
 			}
 			upgPlayerSetSkipCinematicTimeLast();
-			return;
+			return false;
 		}
 
 		//if ESC is pressed only shortly or if no skip is active, show/hide menu
 		upgPlayerSetSkipCinematicTimeLast();
 		upgPlayerDelayedServerCommand(this->entnum, "pushmenu ingame_multiplayer");
-		return;
+		return false;
 	}
 }
 

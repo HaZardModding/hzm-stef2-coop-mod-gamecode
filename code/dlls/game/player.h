@@ -292,7 +292,7 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		void				upgPlayerDisconnecting();
 		void				upgPlayerLoadingSavegame();
-		void				upgPlayerSkipCinematic();
+		bool				upgPlayerSkipCinematic();
 		void				upgPlayerMessageOfTheDay(Event* ev);
 		float				upgPlayerGetSkipCinematicTimeLast();
 		void				upgPlayerSetSkipCinematicTimeLast();

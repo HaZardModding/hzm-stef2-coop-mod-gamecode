@@ -548,11 +548,13 @@ void Player::SkipCinematic( Event *ev )
 	//--------------------------------------------------------------
 	// GAMEUPGRADE [b6xx] chrissstrahl - make sure mp_gametype is within bounds
 	//--------------------------------------------------------------
-	upgPlayerSkipCinematic();
+	//[b60014] chrissstrahl - fixed - skip cinematic skipping cinematics without checking votes
+	if (!upgPlayerSkipCinematic()) {
+		return;
+	}
 
-	str skipthread;
 	G_ClearFade();
-		
+	str skipthread;
 	skipthread = world->skipthread;
 	// now that we have executed it, lets kill it so we don't call it again
 	world->skipthread = "";
