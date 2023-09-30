@@ -404,6 +404,28 @@ Event EV_Player_getViewtraceEndpos
 );
 
 
+//=========================================================[b60017]
+// Name:        upgPlayerCanTaunt
+// Class:       Player
+//              
+// Description: Check if a player can actually taunt (again)
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool Player::upgPlayerCanTaunt()
+{
+	//[b60017] chrissstrahl - set a cooldown time for taunt - also don't play during cinematic
+	ScriptVariable* entityData = entityVars.GetVariable("_mpTauntCool");
+	if (level.cinematic || entityData != NULL && entityData->floatValue() + 3 > level.time) {
+		return false;
+	}
+	//[b60017] chrissstrahl - update a cooldown time for taunt
+	entityVars.SetVariable("_mpTauntCool", level.time);
+	return true;
+}
+
 //=========================================================[b60014]
 // Name:        upgPlayerDisconnecting
 // Class:       Player

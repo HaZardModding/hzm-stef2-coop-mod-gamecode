@@ -291,9 +291,11 @@ class Player : public Sentient
 		//--------------------------------------------------------------
 		// GAMEUPGRADE PLAYER
 		//--------------------------------------------------------------
-		//[b60014] chrissstrahl
 		friend class		UpgPlayer;
 		UpgPlayer			upgPlayer;
+		//[b60017] chrissstrahl
+		bool				upgPlayerCanTaunt();
+		//[b60014] chrissstrahl
 		void				upgPlayerDisconnecting();
 		void				upgPlayerLoadingSavegame();
 		bool				upgPlayerSkipCinematic();
