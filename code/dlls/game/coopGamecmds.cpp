@@ -1327,7 +1327,8 @@ qboolean G_coopCom_levelend(const gentity_t* ent)
 //================================================================
 qboolean G_coopCom_targeted(const gentity_t* ent)
 {
-	if (g_gametype->integer = GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
+	//[b60017] chrissstrahl - fixed bad check changing the actual gametype, creating crashes
+	if (g_gametype->integer == GT_SINGLE_PLAYER || !multiplayerManager.inMultiplayer()) {
 		return qtrue;
 	}
 
