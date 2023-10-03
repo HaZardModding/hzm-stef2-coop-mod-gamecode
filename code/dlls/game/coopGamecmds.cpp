@@ -746,6 +746,8 @@ qboolean G_coopCom_login(const gentity_t* ent)
 	player->entityVars.SetVariable("!login", level.time);
 
 	if (player->coop_playerCheckAdmin()) {
+		//[b60018] chrissstrahl
+		//upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.getReplacedForLabeltext("Allready logged in, use !logout to log out.").c_str()));
 		player->hudPrint("^3You are already logged in - use ^2!logout^3 to log out.\n");
 		return true;
 	}

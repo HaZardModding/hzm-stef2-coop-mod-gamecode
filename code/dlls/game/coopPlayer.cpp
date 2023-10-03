@@ -270,6 +270,8 @@ bool Player::coop_playerCheckAdmin()
 	//[b610] chrissstrahl - auto login if player is host
 	if (upgPlayerIsHost()) {
 		coop_playerAdmin(true);
+		//[b60018] chrissstrahl - show message in communicator menu that player auto-ligged in as host
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.getReplacedForLabeltext("Automatically logged you in as Host.").c_str()));
 		hudPrint("^3You are now logged in (Host auto-!login).\n");
 		return true;
 	}
