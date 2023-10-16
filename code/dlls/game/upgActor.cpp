@@ -16,6 +16,20 @@ extern Event EV_Actor_SetFollowTarget;
 
 
 //================================================================
+// Name:        upgActorUsedByEquipment
+// Class:       Actor
+//              
+// Description: Handles actor being used (by player equipment)
+//              
+// Parameters:  Entity
+//              
+// Returns:     void           
+//================================================================
+void Actor::upgActorUsedByEquipment(Entity* entityEquipment)
+{
+}
+
+//================================================================
 // Name:        upgActorFollowPlayer
 // Class:       Actor
 //              

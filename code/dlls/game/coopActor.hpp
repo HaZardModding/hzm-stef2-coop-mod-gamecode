@@ -5,6 +5,7 @@
 
 #include "_pch_cpp.h"
 
+void coop_actorUsedByEquipment(Actor* actor, Entity* entityEquipment);
 bool coop_actorDeadBodiesHandle(Entity* actor);
 void coop_actorDeadBodiesRemove();
 

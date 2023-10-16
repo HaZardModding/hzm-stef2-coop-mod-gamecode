@@ -119,6 +119,8 @@ class Actor : public Sentient
 		//--------------------------------------------------------------
 		// GAMEUPGRADE chrissstrahl - 
 		//--------------------------------------------------------------
+		//[b60018] chrissstrahl
+		void				upgActorUsedByEquipment(Entity* eUser);
 		//[b60014] chrissstrahl
 		void				upgBranchDialogFailsafe(Event* ev);
 		str					upgBranchDialogGetName();

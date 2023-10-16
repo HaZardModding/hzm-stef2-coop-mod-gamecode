@@ -18,8 +18,65 @@
 
 #include "coopActor.hpp"
 #include "coopReturn.hpp"
+#include "coopClass.hpp"
 
 extern Event EV_Actor_Fade;
+
+//========================================================[b60018]
+// Name:        coop_actorUsedByEquipment
+// Class:       -
+//              
+// Description: 
+//              
+// Parameters:  Actor, Entity
+//              
+// Returns:     VOID
+//              
+//================================================================
+void coop_actorUsedByEquipment(Actor* actor, Entity* entityEquipment)
+{
+	//don't allow to handle these
+	if (actor->actortype == IS_INANIMATE ||
+		actor->actortype == IS_MONSTER ||
+		actor->actortype == IS_ENEMY )
+	{
+		return;
+	}
+
+	Equipment* equipment = (Equipment*)entityEquipment;
+	Player* player = (Player*)equipment->GetOwner();
+	if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC) && coop_returnEntityFloatVar((Entity*)actor, "_playerCanNotHeal") != 1.0f) {
+		//heal up the actor
+		float fCurHealth = actor->getHealth();
+		float fMaxHealth = actor->getMaxHealth();
+		float fMaxBossHealth = actor->max_boss_health;
+
+		if (fMaxBossHealth < fMaxHealth) {
+			fMaxBossHealth = fMaxHealth;
+		}
+
+		if (fCurHealth < fMaxBossHealth) {
+			actor->setHealth(fMaxBossHealth);
+			player->hudPrint(va("^2You ^5healed^2: ^5%s\n",actor->getName()));
+			player->entityVars.SetVariable("coopHealMessage", level.time);
+		}
+		else {
+			if ((coop_returnEntityFloatVar((Entity*)player, "coopHealMessage") + 3) < level.time) {
+				player->hudPrint(va("^2Health already ^5maxed out^2 for ^5%s\n", actor->getName()));
+				player->entityVars.SetVariable("coopHealMessage", level.time);
+			}
+		}
+
+
+		/* TEST CODE
+		Event* event = new Event(EV_Killed);
+		event->AddEntity(player);
+		event->AddInteger(0);
+		event->AddEntity(player);
+		event->AddInteger(MOD_SUICIDE);
+		player->ProcessEvent(event);*/
+	}
+}
 
 //================================================================
 // Name:        coop_actorDeadBodiesRemove

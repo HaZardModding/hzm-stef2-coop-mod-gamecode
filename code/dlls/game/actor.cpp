@@ -53,6 +53,7 @@
 #include "upgBranchdialog.hpp"
 #include "upgPlaydialog.hpp"
 #include "upgGame.hpp"
+#include "upgActor.hpp"
 
 
 //[hzm review this segment]	//hzm coop mod chrissstrahl - we need to include this, I think...
@@ -13366,16 +13367,35 @@ void Actor::UseEvent( Event *ev )
 		return;
 
 	// Actors can't be used by equipment
-
+	//[b60018] chrissstrahl - Now they can
 	entity = ev->GetEntity( 1 );
 
-	
 	//--------------------------------------------------------------
-	// GAMEUPGRADE [b6xx] chrissstrahl - just to be safe, check for null entity
+	// GAMEUPGRADE [b60018] chrissstrahl - just to be safe, check for null entity
 	//--------------------------------------------------------------
-	if ( !entity || entity->isSubclassOf( Equipment ) )
-		return;
+	if (!entity) { return; }
 
+	if (entity->isSubclassOf(Equipment)) {
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b60018] chrissstrahl - allow actors being used by equipment (Heal with tricorder)
+		//--------------------------------------------------------------
+		upgActorUsedByEquipment(entity);
+
+
+		//--------------------------------------------------------------
+		// [b60018] chrissstrahl - allow Actors being handled with equipment (Heal Actors)
+		//--------------------------------------------------------------
+		coop_actorUsedByEquipment(this, entity);
+		
+
+		return;
+	}
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60018] chrissstrahl - remember who activated/used this actor last [moved up here b60018]
+	//--------------------------------------------------------------
+	activator = entity;
+	
 	last_used_time = level.time;
 
 	AddStateFlag( STATE_FLAG_USED );
@@ -13388,15 +13408,7 @@ void Actor::UseEvent( Event *ev )
 	if ( entity->isSubclassOf( Sentient ) && getSolidType() == SOLID_BBOX && !hidden() )
 	{
 		Sentient *user;
-		user = (Sentient *)entity;
-
-
-		//--------------------------------------------------------------
-		// GAMEUPGRADE [b6xx] chrissstrahl - remember who activated/used this actor last
-		//--------------------------------------------------------------
-		activator = entity;
-
-		
+		user = (Sentient *)entity;		
 		StartTalkBehavior( user );
 	}
 }
