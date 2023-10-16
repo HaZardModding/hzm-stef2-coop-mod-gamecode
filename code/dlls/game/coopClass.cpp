@@ -22,9 +22,7 @@
 #include "mp_modeTeamDm.hpp"
 #include "mp_modeCtf.hpp"
 
-
-//[b60017] chrissstrahl - used to manage regeneration cycles
-//================================================================
+//========================================================[b60017]
 // Name:        coop_classRegenerationCycleSet
 // Class:       Player
 //              
@@ -40,8 +38,7 @@ void Player::coop_classRegenerationCycleSet()
 	coopPlayer.regenerationCycles = COOP_CLASS_REGENERATION_CYCLES;
 }
 
-//[b60017] chrissstrahl - used to manage regeneration cycles
-//================================================================
+//========================================================[b60017]
 // Name:        coop_classRegenerationCycleGet
 // Class:       Player
 //              
@@ -57,8 +54,7 @@ int Player::coop_classRegenerationCycleGet()
 	return coopPlayer.regenerationCycles;
 }
 
-//[b60017] chrissstrahl - used to manage regeneration cycles
-//================================================================
+//=========================================================[b60017]
 // Name:        coop_classRegenerationCycleSubstract
 // Class:       Player
 //              
