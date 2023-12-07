@@ -1922,6 +1922,9 @@ void coop_playerEnterArena(int entnum, float health)
 		return;
 	}
 
+	//[b60018] chrissstrahl - fix attributes not being applied after each spawn/rejoin
+	player->coopPlayer.lastTimeAppliedClass = (level.time + 0.1);
+
 	//[b60014] chrissstrahl - reset/hide radar blips
 	//coop_radarResetCFG( player );
 	//now managed in ea.cfg, which is executed at the end of this function
