@@ -9,6 +9,7 @@
 #include "actor.h"
 #include "player.h"
 #include "mp_manager.hpp"
+#include <qcommon/gameplaymanager.h>
 
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
@@ -35,10 +36,15 @@ extern Event EV_Actor_Fade;
 //================================================================
 void coop_actorUsedByEquipment(Actor* actor, Entity* entityEquipment)
 {
+	GameplayManager* gpm = GameplayManager::getTheGameplayManager();
+	str type = actor->getArchetype();
+	str interactiveType = gpm->getStringValue(type, "InteractiveType");
+
 	//don't allow to handle these
 	if (actor->actortype == IS_INANIMATE ||
 		actor->actortype == IS_MONSTER ||
-		actor->actortype == IS_ENEMY )
+		actor->actortype == IS_ENEMY ||
+		interactiveType == "Enemy")
 	{
 		return;
 	}
@@ -54,15 +60,40 @@ void coop_actorUsedByEquipment(Actor* actor, Entity* entityEquipment)
 		if (fMaxBossHealth < fMaxHealth) {
 			fMaxBossHealth = fMaxHealth;
 		}
-
+		
+		str descr1 = gpm->getStringValue(type, "Description1");
+		//str nameActor = actor->getName();
+				
+		str sPrint = "";
+		if (descr1.length()) {
+			sPrint += "$$";
+			sPrint += descr1;
+			sPrint += "$$";
+		}
+		else {
+			sPrint += interactiveType;
+		}
+		
 		if (fCurHealth < fMaxBossHealth) {
 			actor->setHealth(fMaxBossHealth);
-			player->hudPrint(va("^2You ^5healed^2: ^5%s\n",actor->getName()));
+
+			if (player->upgPlayerHasLanguageGerman()) {
+				player->hudPrint(va("^2Sie haben ^5geheilt^2: ^5%s\n", sPrint.c_str())); 
+			}
+			else {
+				player->hudPrint(va("^2You ^5healed^2: ^5%s\n", sPrint.c_str()));
+			}
+
 			player->entityVars.SetVariable("coopHealMessage", level.time);
 		}
 		else {
 			if ((coop_returnEntityFloatVar((Entity*)player, "coopHealMessage") + 3) < level.time) {
-				player->hudPrint(va("^2Health already ^5maxed out^2 for ^5%s\n", actor->getName()));
+				if (player->upgPlayerHasLanguageGerman()) {
+					player->hudPrint(va("^2Gesundheit bereits ^5maximal^2 fuer^2:^5 %s\n", sPrint.c_str()));
+				}
+				else {
+					player->hudPrint(va("^2Health already ^5maxed out^2 for^2:^5 %s\n", sPrint.c_str()));
+				}
 				player->entityVars.SetVariable("coopHealMessage", level.time);
 			}
 		}
