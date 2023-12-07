@@ -40,6 +40,7 @@ qboolean G_coopCom_reboot(const gentity_t* ent);
 qboolean G_coopCom_levelend(const gentity_t* ent);
 qboolean G_coopCom_targeted(const gentity_t* ent);
 qboolean G_coopCom_showspawn(const gentity_t* ent);
+qboolean G_coopCom_flushtikis(const gentity_t* ent);
 qboolean G_coopCom_hidespawn(const gentity_t* ent);
 qboolean G_coopCom_testspawn(const gentity_t* ent);
 qboolean G_coopCom_noclip(const gentity_t* ent);

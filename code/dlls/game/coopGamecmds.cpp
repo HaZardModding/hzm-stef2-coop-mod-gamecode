@@ -16,6 +16,7 @@
 #include "coopClass.hpp"
 
 #include "upgStrings.hpp"
+#include "upgGame.hpp"
 
 
 //================================================================
@@ -1388,6 +1389,35 @@ qboolean G_coopCom_showspawn(const gentity_t* ent)
 
 	ExecuteThread("globalCoop_level_showSpawn", true, (Entity*)player);
 	return qtrue;
+}
+
+//================================================================
+// Name:        G_coopCom_flushtikis
+// Class:       -
+//              
+// Description: allows admins to clean model cache
+//              
+// Parameters:  const gentity_t* ent
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_coopCom_flushtikis(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+	if (!player->coop_playerCheckAdmin()) {
+		player->hudPrint(COOP_TEXT_LOGIN_NEEDLOGINASADMIN);
+		return true;
+	}
+
+	if ((coop_returnEntityFloatVar((Entity*)player, "!flushtikis") + 3) > level.time) {
+		return qtrue;
+	}
+	player->entityVars.SetVariable("!flushtikis", level.time);
+
+	upgGame.flushTikisServer();
+	upgGame.flushTikisPlayers();
+	return true;
 }
 
 //================================================================
