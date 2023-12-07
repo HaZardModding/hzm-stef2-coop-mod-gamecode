@@ -817,14 +817,17 @@ void Teleporter::Teleport( Event *ev )
 	{
 		warning( "Teleport", "Couldn't find destination (target entity)\n" );
 
-//hzm coop mod chrissstrahl - fix not teleported player beeing  invisible
-		Event *event;
-		event = new Event( EV_Teleporter_Teleport );
-		event->AddEntity( other );
-		PostEvent( event , 4.0f );
-		other->PostEvent( EV_Show , 2.0f );
+		//[b60018] chrissstrahl - fix not teleported player beeing invisible
+		//adjusted to print a helpful message and no longer get player stuck in any kind of loop
 		Player *player = ( Player* )other;
-		player->hudPrint( va("Current Teleport trigger has no valid target (func_teleportdest)\n") );
+		player->hudPrint(va("Teleport trigger $%s (%i %i %i) has no valid target (func_teleportdest)\n", targetname.c_str(), (int)origin[0], (int)origin[1], (int)origin[2]));
+
+		Event* newEvent = new Event(EV_DisplayEffect);
+		newEvent->AddString("TransportIn");
+		newEvent->AddString("Multiplayer");
+		other->PostEvent(newEvent, 0.0f);
+		in_use = false;
+		wait = 4;
 //hzm eof
 		return;
 	}
