@@ -1982,7 +1982,7 @@ void upgPlayerDelayedServerCommand(int entNum,const char* commandText)
 		{
 			temp = temp->next;
 		}
-		gi.Printf("upgPlayerDelayedServerCommand (appended): %s\n", command->command);
+		gi.Printf("upgPlayerDelayedServerCommand (%s): %s\n", player->client->pers.netname, command->command);
 		temp->next = command;
 	}
 }
