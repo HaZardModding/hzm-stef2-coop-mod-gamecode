@@ -11,4 +11,4 @@ class coopPuzzleobject
 };
 
 //bool PuzzleObject::coopPuzzleobjectUsePuzzleCheck(Player *player);
-//bool PuzzleObject::coopPuzzleobjectUsePuzzleGetTime(Player* player);
+//float PuzzleObject::coopPuzzleobjectUsePuzzleGetTime(Player* player);
