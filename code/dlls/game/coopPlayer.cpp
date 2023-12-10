@@ -1540,6 +1540,11 @@ bool coop_playerSetup(Player* player)
 	//[b60013] chrissstrahl - moved here - execute clientside inizialisation for coop - for all clients
 	upgPlayerDelayedServerCommand(player->entnum, "exec coop_mod/cfg/init.cfg");
 
+	//[b60018] chrissstrahl - handle player model selection, enable only in coop, reset in: reset_loading.cfg
+	if (game.coop_isActive) {
+		upgPlayerDelayedServerCommand(player->entnum, "exec coop_mod/cfg/enable_modelsel.cfg");
+	}
+
 	//hzm coop mod chrissstrahl - mark as not respawned
 	//hzm coop mod chrissstrahl - mark to respawn next time where player died
 	player->coopPlayer.deathViewangleY = 0;
