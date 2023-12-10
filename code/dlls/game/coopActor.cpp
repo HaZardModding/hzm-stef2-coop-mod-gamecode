@@ -24,6 +24,28 @@
 extern Event EV_Actor_Fade;
 
 //========================================================[b60018]
+// Name:        coop_actorIgnoreAnimationWarning
+// Class:       -
+//              
+// Description: Checks if the warningmessage for a missing animation should be ignored
+//				This exists because we can't change the tikis without requireing everyone
+//				to have the coop mod installed, but we want stock maps playable without
+//				WARNING: Actor::SetAnim Actor  has no anim named
+//            
+// Parameters:  str model, str anim
+//              
+// Returns:     bool
+//              
+//================================================================
+bool coop_actorIgnoreAnimationWarning(const str &modelName, const str &animName)
+{
+	if (modelName == "models/char/attrexian-m7-pistol-followplayer-colonist-m.tik") {
+		if(animName == "attrexpistol_calm_idle" || animName == "attrexpistol_idle") return true;
+	}
+	return false;
+}
+
+//========================================================[b60018]
 // Name:        coop_actorUsedByEquipment
 // Class:       -
 //              

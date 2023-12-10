@@ -6732,7 +6732,11 @@ qboolean Actor::SetAnim( const str &anim,	Event *ev, bodypart_t part, const floa
 		
 		}
 
-	warning( "Actor::SetAnim", "Actor \"%s\" has no anim named \"%s\"\n", model.c_str(), anim.c_str() );
+	//[b60018] chrissstrahl - prevent certain error messages
+	//we can not really change the tikis or they become incompatible for clients without coop on standard maps
+	if (!coop_actorIgnoreAnimationWarning(model,anim)) {
+		warning( "Actor::SetAnim", "Actor \"%s\" has no anim named \"%s\"\n", model.c_str(), anim.c_str() );
+	}
 	
 	// kill the event
 	if ( ev )
