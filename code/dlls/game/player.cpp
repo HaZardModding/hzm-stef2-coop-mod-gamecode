@@ -1580,6 +1580,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	{ &EV_Player_getBackpackAttachAngles,		&Player::upgPlayerGetBackpackAttachAngles },
 	{ &EV_Player_getFlagAttachOffset,			&Player::upgPlayerGetFlagAttachOffset },
 	{ &EV_Player_getFlagAttachAngles,			&Player::upgPlayerGetFlagAttachAngles },
+	{ &EV_Player_checkAnyButton,				&Player::upgPlayerCheckAnyButton },
 	{ &EV_Player_checkForward,					&Player::upgPlayerCheckForward },
 	{ &EV_Player_checkBackward,					&Player::upgPlayerCheckBackward },
 	{ &EV_Player_checkLeft,						&Player::upgPlayerCheckLeft },
