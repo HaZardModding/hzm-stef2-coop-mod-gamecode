@@ -1967,7 +1967,7 @@ void coop_playerEnterArena(int entnum, float health)
 
 	//[b60011] chrissstrahl - changed: player is now starting the thread, player number removed
 	//notify level scripts that the player just spawned - this is used on custom map scripts
-	ExecuteThread("coop_justSpawnedplayer", true, (Entity *)player);
+	ExecuteThread("coop_justSpawned", true, (Entity *)player); //[b60018] chrissstrahl - fixed calling wrong thread
 
 	//hzm coop mod chrissstrahl - add all mission relevant huds to the players interface
 	str sValue;
