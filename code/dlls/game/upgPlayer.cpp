@@ -262,6 +262,16 @@ Event EV_Player_checkJump
 	"Returns Int/Bool if player is pressing jump button"
 );
 
+//[b60018] chrissstrahl - Returns Int/Bool if player is pressing any button
+Event EV_Player_checkAnyButton
+(
+	"checkAnyButton",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is pressing any button"
+);
+
 //[b60013] chrissstrahl - Returns Int/Bool if player is pressing forward button
 Event EV_Player_checkForward
 (
@@ -1353,6 +1363,9 @@ void Player::upgPlayerCheckLeanRight(Event* ev){ qboolean bJump = last_ucmd.lean
 void Player::upgPlayerCheckDropRune(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_DROP_RUNE) != 0); }
 void Player::upgPlayerCheckRun(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_RUN) != 0); }
 void Player::upgPlayerCheckReload(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_RELOAD) != 0); }
+
+//[b60018] chrissstrahl - checks if player is pressing a specific button
+void Player::upgPlayerCheckAnyButton(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ANY) != 0); }
 
 //[b60011] chrissstrahl - checks if player is pressing a specific button
 void Player::upgPlayerCheckFire(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0); }
