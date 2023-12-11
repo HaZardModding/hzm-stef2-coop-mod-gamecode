@@ -1871,9 +1871,20 @@ Event EV_Entity_TurnOnShadow
 	NULL,
 	"Turns on the shadow (plus extra light and precise shadow) for this entity."
 );
+//[b60018] gameupdate chrissstrahl - return entity number of entity
+Event EV_GetEntityNumberEvent
+(
+	"getEntityNumber",
+	EV_SCRIPTONLY,
+	"@f",
+	"retunedFloat",
+	"Returns entity number of entity"
+);
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
+		//[b60018] chrissstrahl - 
+		{ &EV_GetEntityNumberEvent,			&Entity::GetEntityNumber },
 		//[b60013] chrissstrahl - allow to turn on/off shadow on odenary entities
 		{ &EV_Entity_TurnOffShadow,			&Entity::TurnOffShadow },
 		{ &EV_Entity_TurnOnShadow,			&Entity::TurnOnShadow },
@@ -2100,6 +2111,21 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	
 		{ NULL, NULL }
 	};
+
+//--------------------------------------------------------[b60018]
+// Name:			GetEntityNumber
+// Class:			Entity
+//
+// Description:		Returns entity Number
+//
+// Parameters:		Event *ev
+//
+// Returns:			None
+//----------------------------------------------------------------
+void Entity::GetEntityNumber(Event* ev)
+{
+	ev->ReturnFloat(entnum);
+}
 
 //--------------------------------------------------------[b60013]
 // Name:			TurnOffShadow
