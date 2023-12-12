@@ -354,6 +354,13 @@ qboolean EnemyManager::Hates( Entity *ent )
 //
 qboolean EnemyManager::IsValidEnemy( Entity *enemy )
 {
+	//[b60018] chrissstrahl - ignore actors that have thair ai off
+	if (enemy->isSubclassOf(Actor)) {
+		Actor* enemyActor = (Actor*)(Entity*)enemy;
+		if (!enemyActor->GetActorFlag(ACTOR_FLAG_AI_ON)) {
+			return false;
+		}
+	}
 	
 	if ( !enemy || ( enemy == world ) || ( enemy == act ) || ( enemy->flags & FL_NOTARGET ) || ( enemy->takedamage == DAMAGE_NO ) || enemy->deadflag )
 		return false;
