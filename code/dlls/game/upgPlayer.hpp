@@ -53,6 +53,7 @@ extern Event EV_Player_getBackpackAttachAngles;
 extern Event EV_Player_getFlagAttachOffset;
 extern Event EV_Player_getFlagAttachAngles;
 extern Event EV_Player_checkAnyButton;
+extern Event EV_Player_checkMenu;
 extern Event EV_Player_checkForward;
 extern Event EV_Player_checkBackward;
 extern Event EV_Player_checkLeft;

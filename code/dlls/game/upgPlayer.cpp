@@ -271,6 +271,15 @@ Event EV_Player_checkAnyButton
 	"return-int",
 	"Returns Int/Bool if player is pressing any button"
 );
+//[b60018] chrissstrahl - Returns Int/Bool if player is in chat, menu or console
+Event EV_Player_checkMenu
+(
+	"checkMenu",
+	EV_DEFAULT,
+	"@i",
+	"return-int",
+	"Returns Int/Bool if player is in chat, menu or console"
+);
 
 //[b60013] chrissstrahl - Returns Int/Bool if player is pressing forward button
 Event EV_Player_checkForward
@@ -1366,6 +1375,7 @@ void Player::upgPlayerCheckReload(Event* ev) { ev->ReturnFloat((last_ucmd.button
 
 //[b60018] chrissstrahl - checks if player is pressing a specific button
 void Player::upgPlayerCheckAnyButton(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ANY) != 0); }
+void Player::upgPlayerCheckMenu(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_TALK) != 0); }
 
 //[b60011] chrissstrahl - checks if player is pressing a specific button
 void Player::upgPlayerCheckFire(Event* ev) { ev->ReturnFloat((last_ucmd.buttons & BUTTON_ATTACKLEFT) != 0); }
