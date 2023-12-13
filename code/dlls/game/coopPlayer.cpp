@@ -2721,21 +2721,22 @@ void coop_playerThink( Player *player )
 				coopSpawnlocation.placeAtSpawnPoint(player);
 			}
 		}
-
-		if ( player->health > 1 ){
-			player->coop_playerNeutralized(false);
-			player->upgPlayerDisableUseWeapon( false );
-		//do no longer ignore this player
-			if ( ( player->flags & FL_NOTARGET ) ){
-				player->flags ^= FL_NOTARGET;
+		
+		//[b60018] chrissstrahl - fix notarget being applied all the time
+		if ( player->coop_playerNeutralized() ){
+			if (player->health > 1) {
+				player->coop_playerNeutralized(false);
+				player->upgPlayerDisableUseWeapon( false );
+				//do no longer ignore this player
+				if ( ( player->flags & FL_NOTARGET ) ){
+					player->flags ^= FL_NOTARGET;
+				}
 			}
 		}
-		else{
-			if ( (player->coopPlayer.lastTimeNeutralized + 0.25f) > level.time ){
-				if ( stricmp( weaponName , "phaser-stx" ) == 0 ){
-					//disable weapon use from now on - means player can no longer change his weapon
-					player->upgPlayerDisableUseWeapon( true );
-				}
+		else if ( (player->coopPlayer.lastTimeNeutralized + 0.25f) > level.time ){
+			if ( stricmp( weaponName , "phaser-stx" ) == 0 ){
+				//disable weapon use from now on - means player can no longer change his weapon
+				player->upgPlayerDisableUseWeapon( true );
 			}
 		}
 	}
