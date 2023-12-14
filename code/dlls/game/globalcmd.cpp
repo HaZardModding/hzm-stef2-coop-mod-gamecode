@@ -1364,6 +1364,15 @@ Event EV_ScriptThread_challengeDisabledNamed
 	"returnIsDisabled name SetDisabledOrNot",
 	"Returns current status of named challenge, if parameter2 given 0=enables/1=disables challenge on current level"
 );
+//[b60018] chrissstrahl - returns pathnode location also is used to check if a pathnode even exists
+Event EV_ScriptThread_getPathnodeOrigin
+(
+	"getPathnodeOrigin",
+	EV_SCRIPTONLY,
+	"@vs",
+	"returnVector string",
+	"Returns pathnode origin vector if it exists, otherwhise '0 0 0'"
+);
 //end of hzm
 
 CLASS_DECLARATION( Interpreter, CThread, NULL )
@@ -1511,6 +1520,9 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 	{ &EV_ScriptThread_ConnectPathnodes,			&CThread::connectPathnodes },
 	{ &EV_ScriptThread_DisconnectPathnodes,			&CThread::disconnectPathnodes },
 
+	//[b60018] chrissstrahl - returns pathnode location also is used to check if a pathnode even exists
+	{ &EV_ScriptThread_getPathnodeOrigin,			&CThread::getPathnodeOrigin },
+
 	//[b60011] chrissstral - allow to retrive real screen resolution
 	{ &EV_ScriptThread_getTimeStamp,				&CThread::getTime },
 	{ &EV_ScriptThread_getMapByServerIp,			&CThread::getMapByServerIp },
@@ -1550,6 +1562,17 @@ CLASS_DECLARATION( Interpreter, CThread, NULL )
 //end of hzm
 	{ NULL, NULL }
 };
+
+//[b60012] chrissstrahl - get real time
+void CThread::getPathnodeOrigin(Event* ev)
+{
+	str sTargetname = ev->GetString(1);
+	Vector vOrigin = Vector(0, 0, 0);
+	if (sTargetname.length()) {
+		vOrigin = coop_returnPathnodeOrigin(sTargetname.c_str());
+	}
+	ev->ReturnVector(vOrigin);
+}
 
 /*
 //[b60011] chrissstrahl - sets status of named achivment for a player

@@ -33,6 +33,27 @@ extern CoopRPG coopRpg;
 #include "trigger.h"
 #include "weaputils.h"
 
+//=========================================================[b60018]
+// Name:        coop_returnPathnodeOrigin
+// Class:       -
+//              
+// Description: Grabspathnode location if it exists
+//
+// Parameters:  str
+//              
+// Returns:     Vector
+//              
+//================================================================
+Vector coop_returnPathnodeOrigin(str sNodeName)
+{
+	Vector vPathnode = Vector(0,0,0);
+	PathNode* node = thePathManager.FindNode(sNodeName.c_str());
+	if (node) {
+		vPathnode = node->origin;
+	}
+	return vPathnode;
+}
+
 //=========================================================[b60014]
 // Name:        coop_returnEntityFloatVar
 // Class:       -

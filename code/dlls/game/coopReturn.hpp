@@ -9,6 +9,9 @@
 #define __COOPRETURN_HPP__
 #include "_pch_cpp.h"
 
+//[b60018]chrissstrahl - return pathnode position
+Vector coop_returnPathnodeOrigin(str sNodeName);
+
 //[b60014] chrissstrahl - to use entity vars more convinently
 int coop_returnEntityIntegerVar(Entity* e, str sVarName);
 float coop_returnEntityFloatVar(Entity* e, str sVarName);

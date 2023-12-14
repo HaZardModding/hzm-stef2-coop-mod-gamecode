@@ -117,6 +117,8 @@ class CThread : public Interpreter
 		CLASS_PROTOTYPE( CThread );
 
 		CThread();
+		//[b60018] chrissstrahl - grab pathnode origin
+		void getPathnodeOrigin(Event* ev);
 		//[b60012] chrissstrahl - allow to grab real time
 		void getTime(Event* ev);
 		//[b60011] chrissstrahl - add command allow reading player specific data from ini
