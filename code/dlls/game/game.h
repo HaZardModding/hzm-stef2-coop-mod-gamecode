@@ -24,7 +24,7 @@
 #define COOP_MAX_TIKI_LISTING 2200	//stock game has 2093 TIKIS
 #define COOP_MAX_SKA_LISTING 3600	//stock game has 3473 animations
 #define COOP_MAX_SPRITES_LISTING 250//guessed value
-#define COOP_BUILD 60016 //used to be 3 digits like 610, changed to allow for more frequent relases
+#define COOP_BUILD 60018 //used to be 3 digits like 610, changed to allow for more frequent relases
 #define MAPTYPE_MULTIPLAYER 0
 #define MAPTYPE_SECRET 1
 #define MAPTYPE_IGM 2
