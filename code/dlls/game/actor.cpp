@@ -73,6 +73,7 @@ extern Container<int> SpecialPathNodes;
 
 //[hzm review this segment]	//[b608] chrissstrahl - stop electrified or other effects in -> void Actor::Dead( Event *ev )
 extern Event EV_ClearCustomShader;
+extern Event EV_Actor_GetActorType;
 
 Event EV_Actor_SetSelfDetonateModel
    (
@@ -2601,12 +2602,17 @@ char actor_notify_strings[ ACTOR_FLAG_MAX ][ 32 ] =
    };
 
 CLASS_DECLARATION( Sentient, Actor, "monster_generic" )
-	{
+	{	
+		
 		//--------------------------------------------------------------
+		// GAMEUPGRADE [b60018] chrissstrahl
+		//--------------------------------------------------------------
+		{ &EV_Actor_GetActorType,						&Actor::GetActorType },
+		
+			//--------------------------------------------------------------
 		// GAMEUPGRADE [b60014] chrissstrahl
 		//--------------------------------------------------------------
 		{ &EV_Actor_upgBranchDialogFailsafe,			&Actor::upgBranchDialogFailsafe },
-
 
 		{ &EV_Activate, 								&Actor::ActivateEvent							},
 		{ &EV_Activate, 								&Actor::ActivateEvent							},

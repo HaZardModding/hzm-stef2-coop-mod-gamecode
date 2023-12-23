@@ -23,6 +23,16 @@
 
 extern Event EV_Actor_Fade;
 
+
+Event EV_Actor_GetActorType
+(
+	"getactortype",
+	EV_DEFAULT,
+	"@s",
+	"string-type-name",
+	"gets the actortype: inanimate,monster,enemy,civilian,friend,animal,teammate"
+);
+
 //========================================================[b60018]
 // Name:        coop_actorIgnoreAnimationWarning
 // Class:       -
@@ -371,4 +381,50 @@ void Actor::coop_ArmorDamage(Entity* enemy,float &damage)
 
 		damage = (damage * fMultiplicator);
 	}
+}
+
+//================================================================
+// Name:       Actor::GetActorType -> actor.h/actor.cpp
+// Class:      ACTOR
+//              
+// Description: Retrives Actor Type name from actor
+// inanimate,monster,enemy,civilian,friend,animal,teammate
+//              
+// Parameters:  VOID
+//              
+// Returns:     STRING     
+//========================================================[b60018]
+void Actor::GetActorType(Event* ev)
+{
+	str sActorType;
+	sActorType = "";
+
+	switch (actortype)
+	{
+	case IS_INANIMATE:
+		sActorType = "inanimate";
+		break;
+	case IS_MONSTER:
+		sActorType = "monster";
+		break;
+	case IS_CIVILIAN:
+		sActorType = "civilian";
+		break;
+	case IS_ENEMY:
+		sActorType = "enemy";
+		break;
+	case IS_FRIEND:
+		sActorType = "friend";
+		break;
+	case IS_ANIMAL:
+		sActorType = "animal";
+		break;
+	case IS_TEAMMATE:
+		sActorType = "teammate";
+		break;
+	default:
+		gi.Printf(va("getActorType: WARNING Actortype of $%s not in List!\n",targetname.c_str()));
+		break;
+	}
+	ev->ReturnString(sActorType.c_str());	
 }
