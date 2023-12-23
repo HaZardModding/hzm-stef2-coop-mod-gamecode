@@ -1871,9 +1871,21 @@ Event EV_Entity_TurnOnShadow
 	NULL,
 	"Turns on the shadow (plus extra light and precise shadow) for this entity."
 );
+//[b60018] chrissstrahl - allow to turn on shadow on odenary entities
+Event EV_Entity_traceHitsSky
+(
+	"traceHitsSky",
+	EV_SCRIPTONLY,
+	"@vsf",
+	"tagName length surfaceToCheck",
+	"Does a trace to check to see if it hits a specific surface\n."
+	"Use this very rarely or a programmer will kill you!"
+);
 
 CLASS_DECLARATION( Listener, Entity, NULL )
 	{
+		//[b60018] chrissstrahl - checks if trace hits specific surface type 
+		{ &EV_Entity_traceHitsSky,		&Entity::traceHitsSky },
 		//[b60013] chrissstrahl - allow to turn on/off shadow on odenary entities
 		{ &EV_Entity_TurnOffShadow,			&Entity::TurnOffShadow },
 		{ &EV_Entity_TurnOnShadow,			&Entity::TurnOnShadow },
@@ -2100,6 +2112,54 @@ CLASS_DECLARATION( Listener, Entity, NULL )
 	
 		{ NULL, NULL }
 	};
+
+//--------------------------------------------------------[b60018]
+// Name:			traceHitsSky
+// Class:			Entity
+//
+// Description:		Checks if trace actually hits a specific surface type
+//
+// Parameters:		Event *ev
+//
+// Returns:			None
+//----------------------------------------------------------------
+void Entity::traceHitsSky(Event* ev)
+{
+	trace_t	trace;
+	Vector end;
+	Vector start;
+	Vector dir;
+	str tagName;
+	//str surface;
+	float length;
+	//Entity* entityToCheck;
+
+
+	// Get the event info
+
+	tagName = ev->GetString(1);
+	length = ev->GetFloat(2);
+	//surface = ev->GetString(3);
+	//entityToCheck = ev->GetEntity(3);
+
+	// Determine the start and end point of the trace
+
+	GetTag(tagName, &start, &dir);
+
+	end = start + dir * length;
+
+	// Do the actual trace
+
+	trace = G_Trace(start, vec_zero, vec_zero, end, NULL, MASK_SHOT, false, "traceHitsEntity");
+
+	// Determine if we hit this surface
+	bool bHit = false;
+	if (trace.ent && trace.ent->entity && trace.surfaceFlags & SURF_SKY) {
+		ev->ReturnVector(trace.endpos);
+		return;	
+	}
+	ev->ReturnVector(Vector(0,0,0));
+}
 
 //--------------------------------------------------------[b60013]
 // Name:			TurnOffShadow

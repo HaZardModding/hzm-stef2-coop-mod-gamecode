@@ -454,7 +454,9 @@ class Entity : public Listener
 
 		//--------------------------------------------------------------
 		// GAMEUPGRADE chrissstrahl - 
-		//--------------------------------------------------------------		
+		//--------------------------------------------------------------
+		//[b60018] chrissstrahl
+		void				traceHitsSky(Event* ev);
 		//[b60014] chrissstrahl
 		void				upgEntityMakeSolidAsap();
 		bool				isInsidePlayerOrActor();
