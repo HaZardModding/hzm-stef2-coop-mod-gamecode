@@ -89,9 +89,9 @@ Event EV_Player_getName
 (
 	"getName",
 	EV_SCRIPTONLY,
-	"@sS",
-	"retunedString string-replace-space-with",
-	"Returns multiplayer name of given player-entity"
+	"@sF",
+	"retunedString float-filter-option",
+	"Returns multiplayer name of player, filters 1=replace space,2=colorcodes,3=both"
 );
 //hzm gameupdate chrissstrahl - gets score
 Event EV_Player_getScore
@@ -1834,35 +1834,60 @@ void Player::upgPlayerGetTeamScore(Event* ev)
 //hzm gameupdate chrissstrahl - get player name
 void Player::upgPlayerGetNameEvent(Event* ev)
 {
+	//[b60019] chrissstrahl upgraded function
+	str playerName = "";
+
 	//[b60014] chrissstrahl - return also player name when not in multiplayer instead of crashing
 	if (!multiplayerManager.inMultiplayer()) {
 		cvar_t* cvar = gi.cvar_get("name");
-		ev->ReturnString(cvar ? cvar->string : "");
-		return;
-	}
-
-	str s;
-	s = multiplayerManager._playerData[entnum]._name;
-
-	//[b609] chrissstrahl - updated to allow replacing of SPACE
-	// orientate on func SetCanBeFinishedBy for a neat solution with multiple arguments
-	str sReplace = "_";
-	if (ev->NumArgs() > 0) {
-		sReplace = ev->GetString(1);
-		str sPlayername = s;
-		int		i;
-		s = "";
-
-		for (i = 0; i < sPlayername.length(); i++) {
-			if (sPlayername[i] == ' ') {
-				s += sReplace;
-			}
-			else {
-				s += sPlayername[i];
-			}
+		if (cvar) {
+			playerName = cvar->string;
 		}
 	}
-	ev->ReturnString(s.c_str());
+	//multiplayer
+	else {
+		playerName = multiplayerManager._playerData[entnum]._name;
+	}
+
+	//filter 
+	str new_playerName = "";
+	str sReplace = "_";
+	if (ev->NumArgs() > 0) {
+		int filterOption = ev->GetInteger(1);
+
+		//filter space
+		if (filterOption == 1 || filterOption == 3) {
+			for (int i = 0; i < playerName.length(); i++) {
+				if (playerName[i] == ' ') {
+					new_playerName += sReplace;
+				}
+				else {
+					new_playerName += playerName[i];
+				}
+			}
+			playerName = new_playerName;
+			new_playerName = "";
+		}
+
+		//filter color codes
+		if (filterOption == 2 || filterOption == 3) {
+			bool skipNext = false;
+			for (int i = 0; i < playerName.length(); i++) {
+				if (playerName[i] == '^' && playerName.length() > (i + 1) && IsNumeric(str(playerName[i + 1]))) {
+					i++;
+					continue;
+				}
+				else {
+					new_playerName += playerName[i];
+				}
+			}
+			playerName = new_playerName;
+		}
+	}
+	else {
+		new_playerName = playerName;
+	}
+	ev->ReturnString(new_playerName.c_str());
 }
 
 //[b60011] chrissstrahl - add ability to set a proper widgetCommand that contains spaces
