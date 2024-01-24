@@ -892,27 +892,17 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 	{
 		modelToUse = modelName;
 
-		// Verify that this is an acceptable model to use
+		//[b60019] chrissstrahl - detect if the model is actually being changed
+		str actualCurrentModel = player->model;
+		bool notAcceptableModelToUse = false;
+		bool actuallyChangedModel = false;
 
+		// Verify that this is an acceptable model to use
 		if ( !isValidPlayerModel( player, modelToUse ) )
 		{
-//hzm gamefix chrissstrahl - do not show that the spectator model (no model) is not a acceptable model, THIS is NOT helping!
-			if ( modelToUse.length() > 3 && level.cinematic == false )
-			{
-				//hzm gameupdate chrissstrahl - if the mission has failed, don't show this anymore, keep text minimal to focus players on the failure text
-				if ( !level.mission_failed )
-				{
-					if ( !game.coop_isActive || ( player->coop_getSpawnedLastTime() + 2 ) < level.time ) {
-						if (player->upgPlayerHasLanguageGerman()) {
-							centerPrint( player->entnum , va( "^3 %s %s" , modelName, COOP_TEXT_PLAYER_MODEL_NOT_ALLOWED_DEU) , CENTERPRINT_IMPORTANCE_NORMAL );
-						}
-						else {
-							centerPrint( player->entnum , va( "^3 %s %s" , modelName, COOP_TEXT_PLAYER_MODEL_NOT_ALLOWED_ENG) , CENTERPRINT_IMPORTANCE_NORMAL );
-						}
-					}
-				}
-			}
+			//[b60019] chrissstrahl - moved up here
 			modelToUse = getDefaultPlayerModel( player );
+			notAcceptableModelToUse = true;
 		}
 
 		if ( checkFlag( MP_FLAG_FORCE_DEFAULT_MODEL ) )
@@ -921,11 +911,9 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 		}
 
 		// Setup the default backup model
-
 		player->setBackupModel( getDefaultPlayerModel( player ) );
 
 		// Setup the model
-
 		player->InitModel( modelToUse );
 
 		player->CancelEventsOfType( EV_ProcessInitCommands );
@@ -953,8 +941,25 @@ void MultiplayerManager::changePlayerModel( Player *player, const char *modelNam
 		
 		player->modelChanged();
 
+		//[b60019] chrissstrahl - detect if the model is actually being changed
+		if (actualCurrentModel != modelToUse) {
+			actuallyChangedModel = true;
+			
+		}
+		//hzm gameupdate chrissstrahl - if the mission has failed, don't show this anymore, keep text minimal to focus players on the failure text
+		if (notAcceptableModelToUse && actuallyChangedModel && !level.mission_failed && modelToUse.length() > 3 && level.cinematic == false && (player->coop_getSpawnedLastTime() + 2) < level.time) {
+			if (player->upgPlayerHasLanguageGerman()) {
+				centerPrint(player->entnum, va("^3 %s %s", modelName, COOP_TEXT_PLAYER_MODEL_NOT_ALLOWED_DEU), CENTERPRINT_IMPORTANCE_NORMAL);
+			}
+			else {
+				centerPrint(player->entnum, va("^3 %s %s", modelName, COOP_TEXT_PLAYER_MODEL_NOT_ALLOWED_ENG), CENTERPRINT_IMPORTANCE_NORMAL);
+			}
+		}
+
 		//hzm coop mod chrissstrahl - handle coop mod related model stuff
-		coop_playerModelChanged(player);
+		if (actuallyChangedModel) {
+			coop_playerModelChanged(player);
+		}
 	}
 }
 
