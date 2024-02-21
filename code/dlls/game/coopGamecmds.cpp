@@ -1161,7 +1161,7 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 	player->getActiveWeaponName(hand, player->coopPlayer.transportUnholsterWeaponName);
 	player->coopPlayer.transportUnholster = true;
 	player->SafeHolster(true);
-	player->upgPlayerDisableUseWeapon(true);
+	//player->upgPlayerDisableUseWeapon(true); //[b60020] chrissstrahl - there is no event yet to have weapons enabled with delay, not sure there should be
 
 	player->client->ps.pm_time = 100;
 	player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
