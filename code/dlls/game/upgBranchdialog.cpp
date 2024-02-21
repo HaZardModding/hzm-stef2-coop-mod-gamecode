@@ -46,8 +46,13 @@ void UpgBranchDialog::runThread(Entity* ent)
 				sGivenThread = gi.argv(1);
 			}
 			if (sGivenThread.length() && sDialogName.length()) {
-				if (upgStrings.containsAt(sGivenThread, "_DialogChoice") != -1 ||
-					upgStrings.containsAt(sGivenThread, "Option") != -1)
+				if (upgStrings.containsAt(sGivenThread, "Choice") != -1 ||
+					upgStrings.containsAt(sGivenThread, "_DialogChoice") != -1 ||
+					upgStrings.containsAt(sGivenThread, "Option") != -1 ||
+					upgStrings.containsAt(sGivenThread, "cinematicArm") != -1 ||
+					upgStrings.containsAt(sGivenThread, "failedBranch") != -1 ||
+					upgStrings.containsAt(sGivenThread, "successBranch") != -1
+					)
 				{
 					player->clearBranchDialogActor();
 					G_ClientRunThreadCmd(&g_entities[player->entnum]);
