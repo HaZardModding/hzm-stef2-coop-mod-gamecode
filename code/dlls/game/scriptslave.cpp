@@ -38,6 +38,8 @@
 #include "equipment.h"
 #include <qcommon/gameplaymanager.h>
 
+#include "upgScriptSlave.hpp"
+
 /*****************************************************************************/
 /*QUAKED script_object (0 0.5 1) ? NOT_SOLID
 
@@ -669,6 +671,12 @@ Event EV_ScriptSlave_SetCanBeAttackedByOtherScriptObjects
 
 CLASS_DECLARATION( Trigger, ScriptSlave, "script_object" )
 {
+	//--------------------------------------------------------------
+	// GAMEUPGRADE SCRIPTSLAVE	[b60021] - allow to accsess activator
+	//--------------------------------------------------------------
+	{ &EV_ScriptSlave_GetLastActivatingEntity,	&ScriptSlave::upgGetLastActivatingEntity },
+
+
 	{ &EV_Bind,									&ScriptSlave::BindEvent },
 	{ &EV_Unbind,								&ScriptSlave::EventUnbind },
 	{ &EV_ScriptSlave_DoMove,					&ScriptSlave::DoMove },

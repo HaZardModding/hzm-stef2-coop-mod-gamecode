@@ -38,6 +38,14 @@ extern Event EV_ScriptSlave_NewOrders;
 
 class ScriptSlave : public Trigger
 	{
+	//--------------------------------------------------------------
+	// GAMEUPGRADE SCRIPTSLAVE	[b60021] - allow to accsess activator
+	//--------------------------------------------------------------
+	public:
+		void				upgGetLastActivatingEntity(Event* ev);
+		EntityPtr			upgGetLastActivatingEntity();
+
+
 	private:
 		Vector				_newAngles;
 		Vector				_newPosition;
