@@ -91,7 +91,7 @@ void PuzzleObject::upgCancelPlayer(Player* player)
 	}
 }
 
-//[b60012] chrissstrahl - return last activator
+//[b60012] chrissstrahl - return last activator for script/event usage
 //-----------------------------------------------------
 void PuzzleObject::upgGetLastActivatingEntity(Event* ev)
 {
