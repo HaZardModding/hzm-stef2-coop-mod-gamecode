@@ -40,6 +40,11 @@ public:
 	Vector	longtimeViewangle = Vector(0, 0, 0);
 	str		lastWidget = "";
 	int		lastSegment = -1;
+	
+	//[b60021] chrissstrahl
+	str			lastWeapon = "None";
+	bool		holdingRightButton = false;
+	bool		holdingLeftButton = false;
 
 	//circlemenu options
 	str		optionThreadOrCommand	[CIRCLEMENU_MAX_OPTIONS];

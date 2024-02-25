@@ -17,6 +17,9 @@
 
 UpgCircleMenu upgCircleMenu;
 
+extern Event EV_Player_ActivateNewWeapon;
+extern Event EV_Player_DeactivateWeapon;
+
 
 
 //-----------------------------------------------------------------------------------
@@ -150,8 +153,9 @@ float Player::circleMenuLastTimeActive()
 //================================================================
 void Player::circleMenu(int iType)
 {
-	//prevent premature closing/opening
-	if ((upgCircleMenu.activatingTime + 0.3) >= level.time) {
+	//prevent premature re-opening
+	if (upgCircleMenu.active <= 0 && (upgCircleMenu.activatingTime + 0.5) >= level.time) {
+		//hudPrint("c open/close tosoon\n");
 		return;
 	}
 
@@ -161,34 +165,84 @@ void Player::circleMenu(int iType)
 		return;
 	}
 
-	upgPlayerDelayedServerCommand(entnum, "-attackLeft");
-	upgPlayerDelayedServerCommand(entnum, "-attackRight");
+	//[b60012] chrissstrahl
+	//upgPlayerDelayedServerCommand(entnum, "-attackLeft");
+	//upgPlayerDelayedServerCommand(entnum, "-attackRight");
 
+	/*
 	Event* StopFireEvent;
 	StopFireEvent = new Event(EV_Sentient_StopFire);
 	StopFireEvent->AddString("dualhand");
 	this->ProcessEvent(StopFireEvent);
+	*/
 
 	upgCircleMenu.numOfSegments = 4;
 
 	upgCircleMenu.activatingTime = level.time;
 
 	if (upgCircleMenu.active <= 0) {
+//hudPrint("c start\n");
+
+		//reset holding buttons - precent acidental activation
+		upgCircleMenu.holdingLeftButton = true;
+		upgCircleMenu.holdingRightButton = true;
+
+		upgCircleMenu.lastSegment = 0; //reset selected segment
+
 		upgCircleMenu.viewAngle = getViewAngles();
 		upgCircleMenu.lastViewangle = upgCircleMenu.viewAngle;
 
 		upgCircleMenu.active = iType;
 		circleMenuHud(true);
 
+		//[b60021] chrissstrahl - stop weapon from fireing
+		upgCircleMenu.lastWeapon = "None";
+		getActiveWeaponName(WEAPON_ANY, upgCircleMenu.lastWeapon);
+
+		Event* StopFireEvent;
+		StopFireEvent = new Event(EV_Sentient_StopFire);
+		StopFireEvent->AddString("dualhand");
+		this->ProcessEvent(StopFireEvent);
+
+		Event* deactivateWeaponEv;
+		deactivateWeaponEv = new Event(EV_Player_DeactivateWeapon);
+		deactivateWeaponEv->AddString("dualhand");
+		this->PostEvent(deactivateWeaponEv,0.05);
+
 		disableInventory();
-		upgPlayerDisableUseWeapon(true);
+
+		Event* StopFireEvent2;
+		StopFireEvent2 = new Event(EV_Sentient_StopFire);
+		StopFireEvent2->AddString("dualhand");
+		this->PostEvent(StopFireEvent2,0.1);
+
+		//upgPlayerDisableUseWeapon(true);
 	}
 	else {
+//hudPrint("c end\n");
+		upgPlayerDelayedServerCommand(entnum, "-attackLeft");
+		
 		circleMenuHud(false);
 		upgCircleMenu.active = 0;
 
 		enableInventory();
-		upgPlayerDisableUseWeapon(false);
+
+		//[b60021] chrissstrahl - restore prev weapon
+		Event* useWeaponEv;
+		useWeaponEv = new Event(EV_Player_UseItem);
+		useWeaponEv->AddString(upgCircleMenu.lastWeapon);
+		useWeaponEv->AddString("dualhand");
+		this->ProcessEvent(useWeaponEv);
+
+		Event* StopFireEvent;
+		StopFireEvent = new Event(EV_Sentient_StopFire);
+		StopFireEvent->AddString("dualhand");
+		this->PostEvent(StopFireEvent,0.1f);
+
+		Event* activateWeaponEv;
+		activateWeaponEv = new Event(EV_Player_ActivateNewWeapon);
+		this->PostEvent(activateWeaponEv,0.1f);
+		//upgPlayerDisableUseWeapon(false);
 	}
 }
 
@@ -330,7 +384,7 @@ void Player::circleMenuThink()
 
 	//detect which movedirection the player did move towards
 	//on menu show exec reset
-	if (upgCircleMenu.active <= 0 || upgCircleMenu.thinkTime > level.time) {
+	if (upgCircleMenu.active <= 0 /* || upgCircleMenu.thinkTime > level.time */) {
 		return;
 	}
 	
@@ -346,10 +400,17 @@ void Player::circleMenuThink()
 	}
 
 	//player is clicking fire
-	if (last_ucmd.buttons & BUTTON_ATTACKLEFT || last_ucmd.buttons & BUTTON_ATTACKRIGHT) {
-		upgCircleMenu.thinkTime = level.time;
-		circleMenuSelect(upgCircleMenu.lastSegment);
-		return;
+	if (last_ucmd.buttons & BUTTON_ATTACKLEFT) {
+		if (!upgCircleMenu.holdingLeftButton) {
+			upgCircleMenu.holdingLeftButton = true;
+//hudPrint("c select\n");
+			upgCircleMenu.thinkTime = level.time;
+			circleMenuSelect(upgCircleMenu.lastSegment);
+			return;
+		}
+	}
+	else {
+		upgCircleMenu.holdingLeftButton = false;
 	}
 
 	//detect and record the mouse move directions
@@ -358,11 +419,50 @@ void Player::circleMenuThink()
 	GetPlayerView(NULL, &vViewangle);
 
 	//if all the same, we can abbort ?
+	/* //[b60021] chrissstrahl - deactivated to allow attackright button test
 	if (vViewangle == upgCircleMenu.lastViewangle) {
 		upgCircleMenu.thinkTime = level.time;
 		return;
+	}*/
+
+
+	if ((upgCircleMenu.thinkTime + 0.05) > level.time) { return; }
+	upgCircleMenu.thinkTime = level.time;
+
+	str sWidgetName;
+	int fSegmentNum = upgCircleMenu.lastSegment;
+	//[b60021] chrissstrahl - select widget by right click
+	if (last_ucmd.buttons & BUTTON_ATTACKRIGHT) {
+		if (upgCircleMenu.holdingRightButton) {
+			return;
+		}
+
+		upgCircleMenu.holdingRightButton = true;
+		fSegmentNum = (upgCircleMenu.lastSegment + 1);
+		if (fSegmentNum >= 4) {
+			fSegmentNum = 0;
+		}
+		//hudPrint(va("c next %d\n", fSegmentNum));
+	}
+	else {
+		upgCircleMenu.holdingRightButton = false;
 	}
 
+	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
+	//gi.Printf("Player::circleMenuThink()->circleMenuGetWidgetName\n");
+
+	if (sWidgetName != "" && sWidgetName != upgCircleMenu.lastWidget) {
+		str sCmd;
+		G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 0 0 0 1", sWidgetName.c_str()));
+		G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 1 1 1 1", upgCircleMenu.lastWidget.c_str()));
+	}
+
+	//gi.Printf(va("Reset: %s\n", upgCircleMenu.lastWidget));
+	//str sPrint = va("prev: %s curr: %s\n", upgCircleMenu.lastWidget.c_str(), sWidgetName.c_str());
+	upgCircleMenu.lastWidget = sWidgetName;
+	upgCircleMenu.lastSegment = fSegmentNum;
+
+	/* OLD CODE WITH MOUSE MOVE DETECTION - janky!!!
 	//get difference - remember last viewangle
 	vDifference = (upgCircleMenu.lastViewangle - vViewangle);
 	upgCircleMenu.lastViewangle = vViewangle;
@@ -372,18 +472,16 @@ void Player::circleMenuThink()
 
 	//angle on 2d screen - circle menu
 	float fAngle;
-
-	if ((upgCircleMenu.thinkTime + 0.1) > level.time) { return; }
+	if ((upgCircleMenu.thinkTime + 0.05) > level.time) { return; }
 	upgCircleMenu.thinkTime = level.time;
 
 	//here is where the magic happens
 	float radians = atan2(upgCircleMenu.longtimeViewangle[1], upgCircleMenu.longtimeViewangle[0]);
 	float degrees = RAD2DEG(radians);
 	fAngle = AngleNormalize360( degrees );
-
-	float fSegmentNum;
-	str sWidgetName;
 	fSegmentNum = circleMenuGetSegmentNumForAngle(fAngle);
+
+
 //gi.Printf("Player::circleMenuThink()->circleMenuGetWidgetName\n");
 	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
 
@@ -409,8 +507,8 @@ void Player::circleMenuThink()
 	}
 	gi.Printf(va("Angle: %d\n", fAngle));
 	gi.Printf(va("length: %f\n", vDifference.length()));
-	*/
-	upgCircleMenu.lastSegment = fSegmentNum;
+	
+	upgCircleMenu.lastSegment = fSegmentNum;*/
 }
 
 //[b60011] chrissstrahl
@@ -429,6 +527,7 @@ void Player::circleMenuSelect(int iOption)
 {
 	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONS) {
 		gi.Printf(va("circleMenuSelect: Given Option %d is out of Range for Client[%d]\n", iOption,entnum));
+		hudPrint("c select outofrange\n");
 		return;
 	}
 
@@ -491,6 +590,8 @@ void Player::circleMenuSelect(int iOption)
 void Player::circleMenuHud(bool show)
 {
 	str sMenu;
+	str sWidgetName;
+	int iSegments;
 	str sCommand = "ui_removehud";
 
 	upgCircleMenu.lastWidget = "";
@@ -501,13 +602,20 @@ void Player::circleMenuHud(bool show)
 	{
 	case 3:
 		sMenu = "coop_circle8";
+		iSegments = 8;
 		break;
 	case 2:
 		sMenu = "coop_circleD";
+		iSegments = 4;
 		break;
 	default:
 		sMenu = "coop_circle";
+		iSegments = 4;
 		break;
+	}
+
+	for (int i = 0; i < iSegments; i++) {
+		G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 0.5 0.5 0.5 0.8", circleMenuGetWidgetName(i)));
 	}
 
 	gi.SendServerCommand(entnum, va("stufftext \"%s %s\"\n", sCommand.c_str(), sMenu.c_str()));
