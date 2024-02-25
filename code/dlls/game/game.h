@@ -32,6 +32,8 @@
 #define MAPTYPE_CUSTOM 4
 #define MAPTYPE_RPG 5 //[b60013] chrissstrahl - allow rpg_ maps to be handled differently
 //end of chrissstrahl - added this commentary [b607]
+//[b60021] chrissstrahl - set failsave time for EV_Actor_upgBranchDialogFailsafe
+#define COOP_BRANCHDIALOG_FAILSAVE_TIME 30
 
 //
 // this structure is left intact through an entire game

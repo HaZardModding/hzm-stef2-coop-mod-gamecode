@@ -11,8 +11,6 @@ UpgBranchDialog upgBranchDialog;
 
 #include "upgCoopInterface.hpp"
 
-
-extern Event EV_Actor_upgBranchDialogFailsafe;
 extern qboolean G_DialogRunThread(const gentity_t* ent);
 extern qboolean G_ClientRunThreadCmd(const gentity_t* ent);
 
@@ -105,7 +103,7 @@ void UpgBranchDialog::setBranchDialog(Actor* actor, str sDialogName)
 	Event* e = new Event(EV_Actor_upgBranchDialogFailsafe);
 	e->AddEntity((Entity*)player); //player that did talk
 	e->AddString(va("%s_failsafe", sDialogName.c_str())); //thread to execute on failure
-	actor->PostEvent(e,20.0f);
+	actor->PostEvent(e, float(COOP_BRANCHDIALOG_FAILSAVE_TIME));
 }
 
 //=========================================================[b60014]
