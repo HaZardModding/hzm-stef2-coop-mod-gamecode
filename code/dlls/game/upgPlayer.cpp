@@ -1390,8 +1390,8 @@ void Player::upgPlayerCancelPuzzle()
 	puzzle = G_FindClass(NULL, "puzzle_object");
 	while (puzzle) {
 		PuzzleObject* puzObj = (PuzzleObject*)puzzle;
-		if (puzObj->GetLastActivatingEntity() == this) {
-			puzObj->cancelPlayer(this);
+		if (puzObj->upgGetLastActivatingEntity() == this) {
+			puzObj->upgCancelPlayer(this);
 			return;
 		}
 		puzzle = G_FindClass(puzzle, "puzzle_object");

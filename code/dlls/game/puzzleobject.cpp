@@ -21,6 +21,7 @@
 #include "upgPlayer.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
+#include "upgPuzzleObject.hpp"
 
 #include "coopReturn.hpp"
 #include "coopClass.hpp"
@@ -154,26 +155,6 @@ Event EV_PuzzleObject_BecomeModBarInSkill
 	"Tells a puzzleobject to just display a timed modulation bar in any skill less than or equal to the specified one."
 );
 
-//[b60011] chrissstrahl - thread called when puzzle is started to be used
-Event EV_PuzzleObject_SetUsedStartThread
-(
-	"puzzleobject_usedStartThread",
-	EV_DEFAULT,
-	"s",
-	"threadname",
-	"The thread to call when the puzzle is used, works on any puzzle type"
-);
-
-//[b60012] chrissstrahl - get last activating entity for this puzzle
-Event EV_PuzzleObject_GetLastActivatingEntity
-(
-	"getLastActivatingEntity",
-	EV_DEFAULT,
-	"@e",
-	"entity",
-	"Returns last entity activating this puzzle"
-);
-
 //---------------------------------------------------------
 //             PUZZLE OBJECT
 //---------------------------------------------------------
@@ -202,12 +183,15 @@ puzzleobject_solvedthread	 <thread name>	- the name of the thread called when th
 ******************************************************************************/
 CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 {
+	//[b60011] chrissstrahl - upgrade puzzle object functionality 
+	{ &EV_PuzzleObject_SetItemUsedThread,		&PuzzleObject::upgSetItemUsedThread	}, //Chrissstrahl - This only works if there is no time set on the puzzle, since we do not want to change the behaviour we added new functionality below
+	{ &EV_PuzzleObject_SetUsedStartThread,		&PuzzleObject::upgSetUsedStartThread	}, //[b60011] chrissstrahl - thread called when puzzle is started to be used
+	{ &EV_PuzzleObject_GetLastActivatingEntity,	&PuzzleObject::upgGetLastActivatingEntity }, //[b60012] chrissstrahl - return last activator
+	
+
 	{ &EV_PuzzleObject_SetOpenDistance,		&PuzzleObject::setOpenDistance		},
 	{ &EV_PuzzleObject_AnimationDone,		&PuzzleObject::animationDone		},
 	{ &EV_PuzzleObject_SetItemToUse,		&PuzzleObject::setItemToUse		},
-	{ &EV_PuzzleObject_SetItemUsedThread,	&PuzzleObject::setItemUsedThread	}, //Chrissstrahl - This only works if there is no time set on the puzzle, since we do not want to change the behaviour we added new functionality below
-	{ &EV_PuzzleObject_SetUsedStartThread,	&PuzzleObject::setUsedStartThread	}, //[b60011] chrissstrahl - thread called when puzzle is started to be used
-	{ &EV_PuzzleObject_GetLastActivatingEntity,		&PuzzleObject::GetLastActivatingEntity }, //[b60012] chrissstrahl - return last activator
 	{ &EV_PuzzleObject_SetFailedThread,		&PuzzleObject::setFailedThread		},
 	{ &EV_PuzzleObject_SetSolvedThread,		&PuzzleObject::setSolvedThread		},
 	{ &EV_PuzzleObject_SetCanceledThread,	&PuzzleObject::setCanceledThread	},
@@ -223,54 +207,6 @@ CLASS_DECLARATION( Entity, PuzzleObject, "puzzle_object" )
 	{ &EV_PuzzleObject_BecomeModBarInSkill, &PuzzleObject::becomeModBarInSkill },
 	{NULL, NULL}
 };
-
-//[b60012] chrissstrahl - I was so FUCKING tempted to call this cancelculture
-//-----------------------------------------------------
-void PuzzleObject::cancelPlayer(Player* player)
-{
-	if (!player) {
-		return;
-	}
-	if (_hudOn) {
-		hideTimerHud(player);
-		_usedTime = 0.0f;
-
-		if (_canceledThread.length())
-		{
-			ProcessEvent(EV_PuzzleObject_Canceled);
-		}
-
-		//switch to any weapon, avoids the issue that the player might start to modulate to early again
-		Weapon* weap = player->BestWeapon();
-		if (weap) {
-			//player->useWeapon(weap, WEAPON_ANY);
-			player->useWeapon(weap, WEAPON_DUAL);
-		}
-	}
-}
-
-//[b60012] chrissstrahl - return last activator
-//-----------------------------------------------------
-void PuzzleObject::GetLastActivatingEntity(Event *ev)
-{
-	ev->ReturnEntity(activator);
-}
-
-//[b60012] chrissstrahl - return last activator
-//-----------------------------------------------------
-EntityPtr PuzzleObject::GetLastActivatingEntity()
-{
-	return activator;
-}
-
-//[b60011] chrissstrahl - thread called when puzzle is started to be used
-//-----------------------------------------------------
-void PuzzleObject::setUsedStartThread(Event* event)
-{
-	_usedStartThread = event->GetString(1);
-}
-
-
 
 //-----------------------------------------------------
 //
@@ -315,9 +251,8 @@ PuzzleObject::PuzzleObject()
 	_hudName = "timerhud";
 	_minSkill = -1;
 
-	//hzm coop mod chrissstrahl - added for multiplayer compatibility
-	activator = NULL;
-	entityVars.SetVariable( "_activator" , -1.0f );
+	//[b600xx] chrissstrahl - reset activating player info - added for multiplayer compatibility
+	upgNullPlayer(); //activator = NULL
 }
 
 
@@ -336,9 +271,7 @@ PuzzleObject::PuzzleObject()
 PuzzleObject::~PuzzleObject()
 {
 	//[b60014] chrissstrahl - added fix to remove hud from player currently modulating
-	if (activator && activator->isSubclassOf(Player) && _hudOn ){
-		gi.SendServerCommand(activator->entnum, va("stufftext \"popmenu %s 1\"\n",_hudName.c_str()));
-	}
+	upgPlayerResetHud();
 }
 
 
@@ -444,7 +377,7 @@ void PuzzleObject::setItemToUse(Event* event)
 //
 // Returns:		
 //-----------------------------------------------------
-void PuzzleObject::setItemUsedThread(Event* event)
+void PuzzleObject::upgSetItemUsedThread(Event* event)
 {
 	_itemUsedThread = event->GetString(1);
 }

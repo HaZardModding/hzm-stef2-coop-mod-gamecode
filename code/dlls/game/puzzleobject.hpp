@@ -57,9 +57,9 @@ class PuzzleObject : public Entity
 		void				setOpenDistance(Event* event);
 
 		//Thread setting functions
-		void				setUsedStartThread(Event* event); //[b60011] chrissstrahl - thread called when puzzle is started to be used
+		void				upgSetUsedStartThread(Event* event); //[b60011] chrissstrahl - thread called when puzzle is started to be used
 
-		void				setItemUsedThread(Event* event);
+		void				upgSetItemUsedThread(Event* event);
 		void				setFailedThread(Event* event);
 		void				setSolvedThread(Event* event);
 		void				setCanceledThread(Event* event);
@@ -90,13 +90,31 @@ class PuzzleObject : public Entity
 
 		/*virtual*/ void	Archive(Archiver &arc);
 		/*virutal*/ void	Think( void );
-		void				cancelPlayer(Player* player); //[b60012] chrissstrahl - allow camncellation of current puzzle
-		EntityPtr			GetLastActivatingEntity(); //[b60012] chrissstrahl - return last activator
+
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE PLAYER	[b60021]
+		//--------------------------------------------------------------
+	public:
+		void				upgCancelPlayer(Player* player);	//[b60012] chrissstrahl - allow cancellation of current puzzle
+		EntityPtr			upgGetLastActivatingEntity();		//[b60012] chrissstrahl - return last activator
+	private:
+		void				upgPlayerResetHud();	//[b60021] chrissstrahl - remove hud from player currently modulating
+		void				upgNullPlayer();		//[b60021] chrissstrahl - reset activator info
+		void				upgGetLastActivatingEntity(Event* ev);	//[b60012] chrissstrahl - return last activator
+		str					_usedStartThread;		//[b60011] chrissstrahl - thread called when puzzle is started to be used
+
+		//--------------------------------------------------------------
+		// COOP PUZZLE - Specific to the Coop Mod	[b60021]
+		//--------------------------------------------------------------
+		//[b60016] chrissstrahl - coop mod - allowes Technicians to modulate puzzles, instead of solving them the regular way
+		bool				coopPuzzleobjectUsePuzzleCheck(Player* player);
+		float				coopPuzzleobjectUsePuzzleGetTime(Player* player);
+
 	private:
 		str					_itemToUse;
 		//Animations to use based up the state.
-		void				GetLastActivatingEntity(Event* ev); //[b60012] chrissstrahl - return last activator
-		str					_usedStartThread;  //[b60011] chrissstrahl - thread called when puzzle is started to be used
+
 		str					_itemUsedThread;
 		str					_failedThread;
 		str					_solvedThread;
@@ -119,9 +137,7 @@ class PuzzleObject : public Entity
 
 		EntityPtr	      activator;
 
-		//[b60016] chrissstrahl - allowes Technicians to modulate puzzles, instead of solving them the regular way
-		bool coopPuzzleobjectUsePuzzleCheck(Player* player);
-		float coopPuzzleobjectUsePuzzleGetTime(Player* player);
+
 };
 
 
@@ -129,9 +145,12 @@ inline void PuzzleObject::Archive( Archiver &arc )
 {
 	Entity::Archive( arc );
 
+	//[b60011] chrissstrahl - thread called when puzzle is started to be used
+	arc.ArchiveString( &_usedStartThread		);
+
+
 	arc.ArchiveString( &_itemToUse				);
 	arc.ArchiveString( &_itemUsedThread			);
-	arc.ArchiveString( &_usedStartThread		); //[b60011] chrissstrahl - thread called when puzzle is started to be used
 	arc.ArchiveString( &_failedThread			);
 	arc.ArchiveString( &_solvedThread			);
 	arc.ArchiveString( &_canceledThread			);
