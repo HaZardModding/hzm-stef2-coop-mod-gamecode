@@ -22,6 +22,8 @@
 
 #include "coopClass.hpp"
 
+extern Event EV_Player_ActivateNewWeapon;
+extern Event EV_Player_DeactivateWeapon;
 
 pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 
@@ -1084,13 +1086,13 @@ void Player::upgPlayerSetup()
 		str sCvar = (cvar ? cvar->string : "Eng");
 		upgPlayerSetLanguage(sCvar);
 
-		cvar = gi.cvar_get("cl_maxpackets");
-		sCvar = (cvar ? cvar->string : "0");
-		if (atoi(sCvar) < 60) {
-			sCvar = "60";
-			gi.cvar_set("cl_maxpackets",va("%s", sCvar.c_str()));
+		cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
+		str sCvar2 = (cvar2 ? cvar2->string : "0");
+		if (atoi(sCvar2) < 60) {
+			sCvar2 = "60";
+			gi.cvar_set("cl_maxpackets",va("%s", sCvar2.c_str()));
 		}
-		upgPlayer.clMaxPackets = atoi(sCvar);
+		upgPlayer.clMaxPackets = atoi(sCvar2);
 	}
 	else {
 		//[b60011] chrissstrahl - make sure we do not handle bots
