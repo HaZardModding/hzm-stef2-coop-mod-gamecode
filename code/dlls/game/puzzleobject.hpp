@@ -93,7 +93,7 @@ class PuzzleObject : public Entity
 
 
 		//--------------------------------------------------------------
-		// GAMEUPGRADE PLAYER	[b60021]
+		// GAMEUPGRADE PUZZLEOBJECT	[b60021]
 		//--------------------------------------------------------------
 	public:
 		void				upgCancelPlayer(Player* player);	//[b60012] chrissstrahl - allow cancellation of current puzzle
