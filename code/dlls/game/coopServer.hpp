@@ -72,7 +72,6 @@ extern CoopServer coopServer;
 int coop_serverConfigstringRemoveCombatSounds(str sActorname);//[b607] chrissstrahl - used to remove combatsounds for named actor
 void coop_serverConfigstringRemoveNonCoopStrings(); //[b607] chrissstrahl - try to minimize the usage of configstrings due to cl_parsegamestate issue
 bool coop_serverCheckEndMatch(void);
-bool coop_serverLmsCheckFailure( void );
 bool coop_serverError( str sError , bool bFatal );
 void coop_serverInizializeGameVars( void );
 void coop_serverSaveGameVars( const str &name , const str &value );

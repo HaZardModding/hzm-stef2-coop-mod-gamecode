@@ -296,9 +296,9 @@ int coop_vote_lastmanstandingValidate(Player* player, const str &command, const 
 	if (Q_stricmp(command.c_str(), "coop_lms") != 0) {
 		return 0;
 	}
-	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet(coopServer.getServerDataIniFilename(), "lastmanstanding", "server"), 0, 10, (int)COOP_DEFAULT_LASTMANSTANDING);
+	coop_lmsSetLives(coop_returnIntWithinOrDefault(coop_parserIniGet(coopServer.getServerDataIniFilename(), "lastmanstanding", "server"), 0, 10, (int)COOP_DEFAULT_LASTMANSTANDING));
 	if (!stricmp(arg.c_str(), "")) {
-		multiplayerManager.HUDPrint(player->entnum, va("Current LMS Status: %d\nRange: 0 - 10\n", game.coop_lastmanstanding));
+		multiplayerManager.HUDPrint(player->entnum, va("Current LMS Status: %d\nRange: 0 - 10\n", coop_lmsGetLives()));
 		return 1;
 	}
 	int iLms = atoi(arg.c_str());
@@ -1363,13 +1363,13 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 		sValueNew += _voteString[i];
 	}
 
-	int iValueOld = game.coop_lastmanstanding;
+	int iValueOld = coop_lmsGetLives();
 	int iValueNew = atoi(sValueNew);
 	iValueNew =	coop_returnIntWithinOrDefault(iValueNew,0,10,0);
 
 	//[b60011] chrissstrahl - save changes directly to ini
 	coop_parserIniSet(coopServer.getServerDataIniFilename(), "lastmanstanding", (str)iValueNew, "server");
-	game.coop_lastmanstanding = iValueNew;
+	coop_lmsSetLives(iValueNew);
 
 	Player *player = NULL;
 
@@ -1382,7 +1382,7 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 	}
 
 	//[b60011] chrissstrahl - check if player is allowed back in
-	if (game.coop_lastmanstanding == 0 || iValueOld == 0) {
+	if (coop_lmsGetLives() == 0 || iValueOld == 0 || iValueNew != iValueOld) { //[b60021]
 		for (int i = 0; i < maxclients->integer; i++) {
 			player = (Player*)g_entities[i].entity;
 			if (player && player->client && player->isSubclassOf(Player)) {
@@ -1395,7 +1395,8 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 					else {
 						multiplayerManager.HUDPrint(player->entnum, "^5INFO^8: Last Man Standing is only active on Missionmaps!\n");
 					}
-				}else{
+				}
+				else{
 					if (player->upgPlayerHasLanguageGerman()) {
 						multiplayerManager.HUDPrint(player->entnum, va("^5INFO^8: Last Man Standing gesetzet auf:^5 %d\n", iValueNew));
 					}
@@ -1404,18 +1405,16 @@ bool coop_vote_lastmanstandingSet(const str _voteString)
 					}
 				}
 
-				if (player->upgPlayerDeathTime() > game.coop_levelStartTime) {
-					player->upgPlayerDeathTimeSet(0);
-					if (multiplayerManager.isPlayerSpectator(player) &&
-						!multiplayerManager.isPlayerSpectatorByChoice(player) &&
-						game.levelType >= MAPTYPE_MISSION)
-					{
-						multiplayerManager.respawnPlayer(player, true);
-					}
-				}
+				//[b60021] chrissstrahl - try to move player back to team after player lost all their lives before
+				//at least do reset the last death time
+				player->coop_lmsRevitalise(iValueOld, iValueNew);
 			}
 		}
 	}
+
+	//[b60021] chrissstrahl - Check LMS, since player can lower number of lives and then go into spec but not rejoin
+	coop_lmsCheckFailure();
+
 	return true;
 }
 

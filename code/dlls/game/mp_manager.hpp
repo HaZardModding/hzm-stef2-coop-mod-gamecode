@@ -44,6 +44,7 @@ typedef SafePtr<Player> PlayerPtr;
 #include "coopHuds.hpp"
 #include "coopVote.hpp"
 #include "coopChallenges.hpp"
+#include "coopLMS.hpp"
 extern CoopChallenges coopChallenges;
 
 #include "upgPlayer.hpp"
@@ -109,6 +110,14 @@ public:
 
 class MultiplayerManager : public Class
    {
+	//--------------------------------------------------------------
+	// COOP PLAYER - Specific to the Coop Mod
+	//--------------------------------------------------------------
+   public:
+	   //[b60021] chrissstrahl
+	   bool								coop_lmsMpManagerUpdate(Player* player);
+
+
 	private:
 		//hzm coop mod - add new entity to store player that started the current vote
 		Player							*_voteOwner;

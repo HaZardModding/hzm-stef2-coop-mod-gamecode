@@ -170,7 +170,6 @@ extern pendingServerCommand *pendingServerCommandList[MAX_CLIENTS];
 void coop_playerCommunicator(Player* player, int iAdd);
 //[b607] chrissstrahl - added to handle stuff when a player is connecting
 void coop_playerConnect(Entity *ePlayer); 
-bool coop_playerSpawnLms( Player *player );
 str coop_playerGetDataSegment( Player *player , short int iNumber );
 void coop_manageIntervalTransmit( Player* player , str sData , float fInterval , float &last );
 void coop_playerRestore( Player *player );

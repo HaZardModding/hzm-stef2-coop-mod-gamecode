@@ -45,6 +45,7 @@ class HoldableItem;
 #include "playerheuristics.h"
 
 #include "coopPlayer.hpp"
+#include "coopLMS.hpp"
 
 #include "upgCircleMenu.hpp"
 #include "upgPlayer.hpp"
@@ -188,6 +189,13 @@ class Player : public Sentient
 		//--------------------------------------------------------------
 		// COOP PLAYER - Specific to the Coop Mod
 		//--------------------------------------------------------------
+		//[b60021] chrissstrahl
+		void				coop_lmsCheckReconnectHack();
+		void				coop_lmsPlayerKilled();
+		bool				coop_lmsSpawn();
+		void				coop_lmsRevitalise(int iOldLives, int iNewLives);
+		void				coop_lmsInfo();
+		void				coop_playerAdd();
 		//[b60017] chrissstrahl
 		void				coop_classRegenerationCycleSet();
 		int					coop_classRegenerationCycleGet();

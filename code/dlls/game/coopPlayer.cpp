@@ -127,6 +127,16 @@ Event EV_Player_coopMessageUpdateYourMod
 );
 
 
+//[b60021] chrissstrahl
+//================================================================
+// handle for new player being added to the game
+//================================================================
+void Player::coop_playerAdd()
+{
+	coop_lmsInfo();
+	coop_lmsCheckReconnectHack();
+}
+
 //[b60014] chrissstrahl - used to autospawn npc teammates
 //================================================================
 // HAS EVENT DEFINED IN: CLASS_DECLARATION( Sentient , Player , "player" )
@@ -822,7 +832,7 @@ bool Player::coop_playerScore()
 		gi.SendServerCommand(this->entnum, "stufftext \"-objectives_score\"\n");
 		
 		//Show Press Fire to Spawn Hud - but only if he really could (LMS!)
-		if (this->coop_getInstalled() && coop_playerSpawnLms(this)) {
+		if (this->coop_getInstalled() && this->coop_lmsSpawn()) {
 			this->addHud("coop_fireToSpawn");
 		}
 	}
@@ -1315,48 +1325,6 @@ void coop_manageIntervalTransmit( Player* player , str sData , float fInterval ,
 	upgPlayerDelayedServerCommand( player->entnum , sData.c_str() );
 }
 
-
-//================================================================
-// Name:        coop_playerSpawnLms
-// Class:       -
-//              
-// Description: tries to spawn the player if in lms or prevent the spawn
-//              
-// Parameters:  Player *player
-//              
-// Returns:     BOOL
-//              
-//================================================================
-bool coop_playerSpawnLms( Player *player )
-{
-	//no coop or lms
-	if ( !game.coop_isActive || game.coop_lastmanstanding == 0 || game.levelType < MAPTYPE_MISSION )
-		return true;
-
-	//player died after this map was started and
-	//player is more than 3 sec on level and
-	//player dies more often than allowed
-	if (	player->upgPlayerDeathTime() > game.coop_levelStartTime &&
-			(player->upgPlayerGetLevelTimeEntered() + 3 ) < level.time &&
-			player->coopPlayer.lmsDeaths >= game.coop_lastmanstanding
-	){
-		multiplayerManager.makePlayerSpectator(player, SPECTATOR_TYPE_FOLLOW, false);
-
-		if ( !level.mission_failed && ( player->coopPlayer.lastTimeHudMessage + 3 ) < level.time ){
-			player->coopPlayer.lastTimeHudMessage = level.time;
-
-			if (player->upgPlayerHasLanguageGerman()) {
-				multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Aktiv^8 - ^1Sie sind momentan ausgeschaltet.\n" );
-			}
-			else {
-				multiplayerManager.HUDPrint( player->entnum , "^5Coop^8 ^5L^8ast ^5M^8an ^5S^8tanding ^2Active^8 - ^1You are neutralised for the Moment.\n" );
-			}
-		}
-		return false;
-	}
-	return true;
-}
-
 //================================================================
 // Name:        coop_playerRestore
 // Class:       -
@@ -1378,7 +1346,7 @@ void coop_playerRestore( Player *player )
 	{
 		int iTime = atoi( coop_playerGetDataSegment( player , 7 ).c_str() );
 		player->upgPlayerDeathTimeSet(iTime);
-		if ( game.coop_lastmanstanding )
+		if (coop_lmsActive())
 		{
 			if ( !multiplayerManager.isPlayerSpectatorByChoice( player ) )
 			{
@@ -1414,7 +1382,8 @@ void coop_playerRestore( Player *player )
 	}
 	
 	//[b60012] chrissstrahl - if it is not a sublevel, do not restore
-	if (!gi.areSublevels(level.mapname.c_str(), coop_playerGetDataSegment(player, 8).c_str()))
+	str sLevelName = coop_playerGetDataSegment(player, 8);
+	if (!gi.areSublevels(level.mapname.c_str(), sLevelName.c_str()) && strcmp(level.mapname,sLevelName) != 0)
 		return;
 
 	//health armor phaser plasma fed idryll timestamp mapname/enviroment
@@ -1751,7 +1720,7 @@ void coop_playerSetupCoop( Player *player )
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSkill title %s", coop_returnStringSkillname(skill->integer).c_str()));
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoMvSpd title %d", game.coop_maxspeed));
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoRspwt title %d", game.coop_respawnTime));
-		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoLms title %d", game.coop_lastmanstanding));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoLms title %d", coop_lmsGetLives()));
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoAw title %d", (int)game.coop_awardsActive));
 
 		//[b607] chrissstrahl - deadbodies option
@@ -2048,12 +2017,6 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	//[b607] chrissstrahl - remember when this player died last in this level
 	playerPrey->coop_playerDiedLastUpdate();
 
-	//[b60011] chrissstrahl - count up deaths
-	playerPrey->coopPlayer.lmsDeaths++;
-	if (playerPrey->coopPlayer.lmsDeaths > game.coop_lastmanstanding) {
-		playerPrey->coopPlayer.lmsDeaths = game.coop_lastmanstanding;
-	}
-
 	//hzm coop mod chrissstrahl - remember where the player was alive the last time
 	playerPrey->coopPlayer.lastAliveLocation = killedPlayer->origin;
 
@@ -2062,6 +2025,9 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		return true;
 	}
 
+	//[b60021] chrissstrahl - handle LMS death-count
+	playerPrey->coop_lmsPlayerKilled();
+
 	playerPrey->coopPlayer.respawnAtRespawnpoint = false;
 
 	//[b60013]chrissstrahl - used to determin if player should respawn at where he is or at a predefinied spawn location
@@ -2069,9 +2035,6 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 	if (!Q_stricmp(entityInflictor->getClassname(), "TriggerHurt")) {
 		playerPrey->coopPlayer.respawnAtRespawnpoint = true;
 	}
-
-	//hzm coop mod chrissstrahl - check if mission failed
-	coop_serverLmsCheckFailure();
 
 	//hzm coop mod chrissstrahl - force update to the restore data of the player
 	coop_serverSaveClientData( playerPrey );
@@ -2444,9 +2407,13 @@ void coop_playerSpectator( Player *player )
 		return;
 	}
 
+	//[b60021] chrissstrahl - Check LMS, since player can lower number of lives and then go into spec but not rejoin
+	coop_lmsCheckFailure();
+
 	//hzm coop mod chrissstrahl - remove huds - [b607] now using a centralized function
 	coop_hudsKilled(player);
 
+	//[b60021] chrissstrahl - disabled, I don't know why we would like to save data from a spectator
 	//hzm coop mod chrissstrahl - save latest data from player
 	if ( ( mp_warmUpTime->integer + 20 ) < level.time ){
 		coop_serverSaveClientData( player );
@@ -2804,7 +2771,9 @@ void coop_playerLeft( Player *player )
 	//[b60011] chrissstrahl - notify level scripts that the player left - this is used on custom map scripts
 	//[b60011] chrissstrahl - moved code here
 	ExecuteThread("coop_justLeft", true, (Entity*)player);
-	coop_serverLmsCheckFailure();	
+
+	//check if mission should fail
+	coop_lmsCheckFailure();
 
 	//hzm coop mod chrissstrahl - save current status when player leaves the game (unless he is spec)
 	if ( !multiplayerManager.isPlayerSpectator( player ) ){

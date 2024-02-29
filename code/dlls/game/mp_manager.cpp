@@ -393,31 +393,13 @@ void MultiplayerManager::update( float frameTime )
 				player->SetViewAngles( playerFollowing->getViewAngles() );
 			}
 		}
-
-		//hzm coop mod chrissstrahl - if lms (last man standing) is active
-		if ( game.coop_lastmanstanding > 0 && game.levelType >= MAPTYPE_MISSION )
-		{
-			if ( player->upgPlayerDeathTime() < game.coop_levelStartTime && multiplayerManager.isPlayerSpectator( player ) && !multiplayerManager.isPlayerSpectatorByChoice( player ) )
-			{
-				if ( _gameStarted )
-				{
-					multiplayerManager.playerEnterArena( player->entnum , 999 );
-				}
-			}
-
-			if ( player->health <= 0 )
-			{
-				time_t result = time( NULL );
-				localtime( &result );
-				
-				if ( (player->upgPlayerDeathTime() + 6 ) <= ( int )result )
-				{
-					makePlayerSpectator( player , SPECTATOR_TYPE_FOLLOW , false );
-				}
-			}
-			return;
-		}
-
+		
+		//--------------------------------------------------------------
+		// HAZARDMODDING COOP MOD //[b60021] - chrissstrahl - handle LMS Last Man Standing
+		//--------------------------------------------------------------
+		//if (coop_lmsMpManagerUpdate(player)) {
+			//return;
+		//}
 
 		//if player has to wait for some time, make him spectator and follow, instead of staring at the scoreboard
 		if ( player->health <= 0.0f &&  getRespawnTime() > 0.0f )
@@ -827,9 +809,17 @@ void MultiplayerManager::addPlayer( Player *player )
 	// Inform the award system about the new player
 	_awardSystem->addPlayer ( player );
 
-	//[GAMEUPGRADE][b60014] chrissstrahl - we don't need that for bots on level start
+	//--------------------------------------------------------------
+	// [GAMEUPGRADE][b60014] chrissstrahl - we don't need that for bots on level start
+	//--------------------------------------------------------------
 	if (player->upgPlayerIsBot() && level.time < (mp_warmUpTime->integer + 2))
 		return;
+
+	//--------------------------------------------------------------
+	// COOP PLAYER - [b60021] chrissstrahl - add player to game/coop handle
+	//--------------------------------------------------------------
+	player->coop_playerAdd();
+
 
 	//Update Dynamic lights - or they will stay black for player joing midgame
 	upgWorld.upgWorldSetUpdateDynamicLights(true);
@@ -1357,11 +1347,14 @@ void MultiplayerManager::respawnPlayer( Player *player, bool forced )
 	if ( multiplayerManager.isPlayerSpectator( player ) && multiplayerManager.isPlayerSpectatorByChoice( player ) )
 		return;
 
-	//hzm coop mod chrissstrahl - coop mod prevent player from respawning if LMS is active
-	if ( !coop_playerSpawnLms( player ) )
-	{
+	//--------------------------------------------------------------
+	// COOP LMS - [b60021] chrissstrahl - Prevent player from respawning if LMS is active
+	//--------------------------------------------------------------
+	if (!player->coop_lmsSpawn() ){
 		return;
 	}
+	//print lifes info
+	player->coop_lmsInfo();
 	//end of hzm
 
 	if ( getRespawnTime() > 0.0f && !forced )
@@ -2451,8 +2444,18 @@ void MultiplayerManager::joinTeam( Player *player, const str &teamName )
 		_playerData[ player->entnum ]._spectatorByChoice = false;
 	}
 
-	// See if we can change to the specified team
+	//--------------------------------------------------------------
+	// COOP LMS - [b60021] chrissstrahl - Prevent player from respawning if LMS is active
+	//--------------------------------------------------------------
+	if (!player->coop_lmsSpawn()) {
+		return;
+	}
+	//print lifes info
+	player->coop_lmsInfo();
+	//end of hzm
 
+
+	// See if we can change to the specified team
 	if ( !_multiplayerGame->canJoinTeam( player, realTeamName ) )
 		return;
 
@@ -3157,7 +3160,9 @@ void MultiplayerManager::makePlayerSpectator( Player *player, SpectatorTypes spe
 
 	if ( player )
 	{
-		//hzm coop mod chrissstrahl - manage coop related spectator stuff
+		//--------------------------------------------------------------
+		// COOP PLAYER - manage coop related spectator stuff
+		//--------------------------------------------------------------
 		//[b607] this must be executed first before the spectatordata is set on player
 		coop_playerSpectator( player );
 		
@@ -3368,29 +3373,27 @@ void MultiplayerManager::playerEnterArena( int entnum, float health )
 		}
 	}
 
-	//[GAMEUPGRADE][b60014] chrissstrahl - make player view from the current camera
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE - [b60014] chrissstrahl - Make player view from cinematic camera
+	//--------------------------------------------------------------
 	Camera* gameCurrentCamera =(Camera*) upgGame.getCameraCurrent();
-	if ( level.cinematic == 1 && gameCurrentCamera != NULL ){
-		player->SetCamera(gameCurrentCamera, 0 );
+	if (level.cinematic == 1 && gameCurrentCamera != NULL) {
+		player->SetCamera(gameCurrentCamera, 0);
 	}
 
-	//hzm coop mod chrissstrahl - coop mod prevent player from respawning if LMS is active and player died
-	if ( !coop_playerSpawnLms(player) ){
-		return;
-	}
-
-	//hzm gameupdate chrissstrahl - prevent player from going into spec when dead and then reentering the game without waiting
-	if ( getRespawnTime() > 0.0f )
-	{
-		if ( game.coop_lastmanstanding <= 0 && _playerData[player->entnum]._waitingForRespawn )
-		{
+	//--------------------------------------------------------------
+	// GAMEUPGRADE - [b600xx] chrissstrahl - prevent player from going into spec when dead and then reentering the game without waiting
+	//--------------------------------------------------------------
+	if ( getRespawnTime() > 0.0f ){
+		if (!coop_lmsActive() && _playerData[player->entnum]._waitingForRespawn) {
 			makePlayerSpectator( player , SPECTATOR_TYPE_FOLLOW , false );
 			return;
 		}
 	}
-
 	_playerData[player->entnum]._waitingForRespawn = false;
 	//end of hzm
+
 
 	_playerData[ entnum ]._spectator = false;
 	_playerData[ entnum ]._spectatorByChoice = false;

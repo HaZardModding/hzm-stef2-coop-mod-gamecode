@@ -29,6 +29,7 @@ CoopServer coopServer;
 #include "upgCoopInterface.hpp"
 #include "upgGame.hpp"
 
+#include "coopLMS.hpp"
 #include "coopEvents.hpp"
 #include "coopScripting.hpp"
 #include "coopReturn.hpp"
@@ -577,58 +578,6 @@ bool coop_serverCheckEndMatch(void) //added [b607]
 	return false;
 }
 
-
-//================================================================
-// Name:        coop_serverLmsCheckFailure
-// Class:       -
-//              
-// Description: Checking if the mission should fail during LMS
-//              
-// Parameters:  NONE
-//              
-// Returns:     BOOL
-//              
-//================================================================
-bool coop_serverLmsCheckFailure( void )
-{
-	if ( !game.coop_isActive ||
-		game.coop_lastmanstanding <= 0 ||
-		level.mission_failed ||
-		game.levelType < MAPTYPE_MISSION )
-	{
-		return false;
-	}
-	
-	Player *player;
-
-	int iAll = 0;
-	int iActive = 0;
-	int i;
-
-	for ( i = 0; i < maxclients->integer; i++ )
-	{
-		player = ( Player * )g_entities[i].entity;
-		if ( player && player->client && player->isSubclassOf( Player ) )
-		{
-			iAll++;
-			if (player->coopPlayer.lmsDeaths < game.coop_lastmanstanding) {
-				iActive++;
-			}
-		}
-	}
-
-	//gi.Printf("COOPDEBUG coop_serverLmsCheckFailure: all[%i] vs active[%i]\n", iAll, iActive);
-
-	//fail mission if all are dead
-	if ( iAll > 0 && iActive == 0 )
-	{
-		//[b607] needs to be exactly this to trigger playerDeathThread
-		G_MissionFailed(va("PlayerKilled%i", ((int)G_Random(9.0f) + 1)));
-		return true;
-	}
-	return false;
-}
-
 //================================================================
 // Name:        coop_serverManageReboot
 // Class:       -
@@ -1108,7 +1057,7 @@ void coop_serverRestoreGameVars()
 	coopChallenges.iCurrentChallenge = (short)coop_returnIntWithinOrDefault(coop_parserIniGet(coopServer.getServerDataIniFilename(), "challenge", "server"), 0,1 ,(short)COOP_DEFAULT_CHALLENGE);
 	
 	//LMS - LAST MAN STANDING
-	game.coop_lastmanstanding = coop_returnIntWithinOrDefault(coop_parserIniGet(coopServer.getServerDataIniFilename(), "lastmanstanding", "server"), 0,10 ,(int)COOP_DEFAULT_LASTMANSTANDING );
+	coop_lmsSetLives(coop_returnIntWithinOrDefault(coop_parserIniGet(coopServer.getServerDataIniFilename(), "lastmanstanding", "server"), 0,10 ,(int)COOP_DEFAULT_LASTMANSTANDING ));
 	
 	//DEAD BODIES STAYING
 	game.coop_deadBodiesPerArea = coop_returnIntWithinOrDefault(coop_parserIniGet(coopServer.getServerDataIniFilename(), "deadbodies", "server"),0,25 , COOP_DEFAULT_DEADBODIES);
@@ -1137,9 +1086,8 @@ void coop_serverSaveAllClientData( void )
 	}
 	//end of hzm
 
-	int	i;
 	Player	*player = NULL;
-	for ( i = 0; i < maxclients->integer; i++ ){
+	for (int i = 0; i < maxclients->integer; i++ ){
 		player = ( Player * )g_entities[i].entity;
 		if ( player && player->isSubclassOf( Player ) ){
 			coop_serverSaveClientData(player);
