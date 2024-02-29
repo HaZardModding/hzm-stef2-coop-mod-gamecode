@@ -1850,11 +1850,13 @@ void ScriptSlave::OnDamage( Event *ev )
 	}
 	
 	damagelabel = jumpto;
+	//gi.Printf(va("ScriptSlave::OnDamage: %s, %s, %s\n", targetname.c_str(), damagelabel.c_str(), model.c_str())); //[b60021] debug
 }
 
 void ScriptSlave::NoDamage( Event *ev )
 {
 	damagelabel = "";
+	//gi.Printf(va("ScriptSlave::NoDamage: %s, %s\n", targetname.c_str(),model.c_str())); //[b60021] debug
 }
 
 void ScriptSlave::DamageFunc( Event *ev )
@@ -1890,6 +1892,9 @@ void ScriptSlave::DamageFunc( Event *ev )
 			damagelabel = "";
 			return;
 		}
+
+		//gi.Printf(va("ScriptSlave::DamageFunc: %s, %s\n", targetname.c_str(), model.c_str())); //[b60021] debug
+
 		
 		if( _requiredMODlist.NumObjects() != 0 )
 		{
