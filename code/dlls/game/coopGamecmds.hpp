@@ -5,6 +5,8 @@
 #include "mp_manager.hpp"
 #include "coopCheck.hpp"
 
+//[b60021] chrissstrahl - takes a live of a player and gives it to a dead player
+qboolean G_coopCom_notransferlive(const gentity_t* ent);
 //hzm coop mod chrissstrahl - allwoing players to signal that they have the coop mod installed
 qboolean G_coopInstalled(const gentity_t* ent);
 //hzm coop mod chrissstrahl - allow client to send a idendification string
@@ -35,6 +37,8 @@ qboolean G_coopCom_leader(const gentity_t* ent);
 //[b60014] chrissstrahl - add coop ! commads
 qboolean G_coopCom_follow(const gentity_t* ent);
 qboolean G_coopCom_notransport(const gentity_t* ent);
+//[b60021] chrissstrahl - added
+qboolean G_coopCom_transferlive(const gentity_t* ent);
 // COOP COMMANDS - DEVELOPER SPECIFIC
 qboolean G_coopCom_reboot(const gentity_t* ent);
 qboolean G_coopCom_levelend(const gentity_t* ent);

@@ -18,6 +18,107 @@
 #include "upgStrings.hpp"
 #include "upgGame.hpp"
 
+//================================================================
+// Name:        G_coopCom_transferlive
+// Class:       -
+//              
+// Description: takes 1 live from player and gives it to a dead player
+//              
+// Parameters:  const gentity_t* ent
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_coopCom_transferlive(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	//deny usage of command if player executed command to quickly
+	if ((coop_returnEntityFloatVar((Entity*)player, "!") + 3) > level.time) {
+		return true;
+	}
+	player->entityVars.SetVariable("!transferlive", level.time);
+
+
+	//coop only command
+	if (!game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+		return true;
+	}
+
+	//transfer live
+	bool hasTransferedLive = false;
+	int iLivesRemaining = (coop_lmsGetLives() - player->coopPlayer.lmsDeaths);
+	
+	//if not a spectator player needs one live for him self
+	if (!multiplayerManager.isPlayerSpectator(player)) {
+		iLivesRemaining--;
+	}
+
+	//check if player can give away a live at all
+	if (iLivesRemaining > 0) {
+
+		Player* playerOther = NULL;
+		for (int i = 0; i < maxclients->integer; i++) {
+			playerOther = (Player*)g_entities[i].entity;
+			if (!hasTransferedLive && playerOther  && player  != playerOther && playerOther->isSubclassOf(Player) && !playerOther->upgPlayerIsBot() ) {
+				if (playerOther->coopPlayer.lmsDeaths >= coop_lmsGetLives()) {
+					playerOther->coopPlayer.lmsDeaths--;
+
+					//print message to let player know whats going on
+					if (playerOther->upgPlayerHasLanguageGerman()) {
+						multiplayerManager.HUDPrint(playerOther->entnum, va("^5Coop ^2Last Man Standing^8 %s ^2hat 1 Leben transferiert.\n", player->client->pers.netname));
+					}
+					else {
+						multiplayerManager.HUDPrint(playerOther->entnum, va("^5Coop ^2Last Man Standing^8 %s ^2has transfered 1 live to you.\n", player->client->pers.netname));
+					}
+					//print info
+					playerOther->coop_lmsInfo();
+
+					//try spawn player
+					multiplayerManager.respawnPlayer(playerOther, true);
+
+					
+					player->coopPlayer.lmsDeaths++;
+					//print message to let player know whats going on
+					if (player->upgPlayerHasLanguageGerman()) {
+						multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing^5 1 ^2Leben transferiert an^8 %s.\n", playerOther->client->pers.netname));
+					}
+					else {
+						multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing^5 1 ^2live transfered to^8 %s.\n", playerOther->client->pers.netname));
+					}
+					//print info
+					player->coop_lmsInfo();
+
+					hasTransferedLive = true;
+					return true;
+				}
+			}
+		}
+		//has not transfered live
+		if (!hasTransferedLive) {
+			//print message to let player know whats going on
+			if (player->upgPlayerHasLanguageGerman()) {
+				multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing - Kein valieden Spieler zum Transfer gefunden.\n"));
+			}
+			else {
+				multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing - No valid Player for transfer found.\n"));
+			}
+		}
+	}
+	//Can not transfer live
+	else {
+		//print message to let player know whats going on
+		if (player->upgPlayerHasLanguageGerman()) {
+			multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing - Nicht genug Leben zum Transfer.\n"));
+		}
+		else {
+			multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing - Not enough lives for transfer.\n"));
+		}
+	}
+	return true;
+}
 
 //================================================================
 // Name:        G_coopClientId
@@ -168,8 +269,9 @@ qboolean G_coopCom_class(const gentity_t* ent)
 		return true;
 	}
 
+	//[b60021] chrissstrahl - disabled saving of client data here, why would we save here, also this saves imidiately after joining the game, which we don't want
 	//hzm coop mod chrissstrahl - remember current health/armor/ammo status
-	coop_serverSaveClientData(player);
+	//coop_serverSaveClientData(player);
 
 	//grab intended class
 	str classSelected = gi.argv(1);
@@ -578,7 +680,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	if (player->coop_getInstalledVersion() >= 60014) {
 		str sInfoPrint = "YOU:\n";
 		sInfoPrint += va("Coop Ver.: %i, C-Id: %d\n",player->coop_getInstalledVersion(),player->entnum);
-		sInfoPrint += va("Coop Class: %s\n", player->coopPlayer.className.c_str());
+		sInfoPrint += va("Coop Class: %s - LMS Lives: %d of %d\n", player->coopPlayer.className.c_str(),coop_lmsGetLives() - player->coopPlayer.lmsDeaths, coop_lmsGetLives());
 		sInfoPrint += va("Lang.: %s, Entered: %.2f\n", player->upgPlayerGetLanguage().c_str(),player->client->pers.enterTime);
 		sInfoPrint += va("Pers.Id: %s\n", player->coop_getId().c_str());
 	
