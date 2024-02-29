@@ -6263,6 +6263,7 @@ void Entity::TakeDamageEvent
 	)
 	{
    takedamage = DAMAGE_YES;
+	//gi.Printf(va("Entity::TakeDamageEvent: %s, YES, %s \n", targetname.c_str(), model.c_str())); //[b60021] debug
    }
 
 void Entity::NoDamageEvent
@@ -6271,6 +6272,7 @@ void Entity::NoDamageEvent
 	)
 	{
    takedamage = DAMAGE_NO;
+	//gi.Printf(va("Entity::NoDamageEvent: %s, NO, %s\n", targetname.c_str(), model.c_str())); //[b60021] debug
    }
 
 void Entity::Gravity
