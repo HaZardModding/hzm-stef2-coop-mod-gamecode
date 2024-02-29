@@ -319,6 +319,7 @@ GOBJ =\
 	$(B)/game/upgScriptSlave.o \
 	$(B)/game/upgPuzzleObject.o \
     \
+	$(B)/game/coopLMS.o \
 	$(B)/game/coopPuzzleobject.o \
 	$(B)/game/coopWorld.o \
 	$(B)/game/coopGame.o \
@@ -527,6 +528,7 @@ $(B)/game/upgActor.o : $(GDIR)/upgActor.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgScriptSlave.o : $(GDIR)/upgScriptSlave.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgPuzzleObject.o : $(GDIR)/upgPuzzleObject.cpp; $(DO_GAME_SHLIB_CC)
 
+$(B)/game/coopLMS.o : $(GDIR)/coopLMS.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopPuzzleobject.o : $(GDIR)/coopPuzzleobject.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopWorld.o : $(GDIR)/coopWorld.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopGame.o : $(GDIR)/coopGame.cpp; $(DO_GAME_SHLIB_CC)
