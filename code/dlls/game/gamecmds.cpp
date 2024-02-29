@@ -82,6 +82,8 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!follow",G_coopCom_follow,			true },
 	{ "!notransport",G_coopCom_notransport,	true },
 	{ "!flushtikis",G_coopCom_flushtikis,	true },
+	//[b60021] chrissstrahl - added
+	{ "!transferlive",G_coopCom_transferlive,	true },
 
 //Coop Commands End
 //Coop Commands End
