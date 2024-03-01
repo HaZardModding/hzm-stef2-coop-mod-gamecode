@@ -800,7 +800,7 @@ void coop_serverSaveClientData( Player *player )
 {
 	if ( !game.coop_saveClientData || !game.coop_isActive )
 		return;
-	if ( !player )
+	if ( !player || player->upgPlayerIsBot()) //[b60021] chrissstrahl - added bot check
 		return;
 	if ( !player->isSubclassOf( Player ) )
 		return;
@@ -845,8 +845,7 @@ void coop_serverSaveClientDataWrite( Player *player )
 		}
 	}
 
-
-	str sData = va( "%d %d %d %d %d %d %d %s" ,
+	str sData = va( "%d %d %d %d %d %d %d %s %d" ,
 		( int )player->getHealth() ,
 		( int )player->GetArmorValue() ,
 		( int )player->AmmoCount( "Phaser" ) ,
@@ -854,7 +853,8 @@ void coop_serverSaveClientDataWrite( Player *player )
 		( int )player->AmmoCount( "Fed" ) ,
 		( int )player->AmmoCount( "Idryll" ),
 		( int )player->upgPlayerDeathTime(),
-		sMapname.c_str()
+		sMapname.c_str(),
+		( int )player->coopPlayer.lmsDeaths	//[b60021] chrissstrahl - added LMS deaths to ini
 		);
 
 	//[b60012] chrissstrahl - have a printout
