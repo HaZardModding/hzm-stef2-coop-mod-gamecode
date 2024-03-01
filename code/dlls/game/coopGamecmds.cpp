@@ -149,7 +149,12 @@ qboolean G_coopClientId(const gentity_t* ent)
 
 	if ((player->upgPlayerGetLevelTimeEntered() + 10) > level.time) {
 		upgStrings.getTrimmed(sId, " \t\r\n;[]=");
-		str sClientIdNew = coop_checkPlayerCoopIdExistInIni(player,sId);
+		str sClientId = coop_checkPlayerCoopIdExistInIni(player,sId);
+		//[b60021] chrissstrahl - check if id was on server before
+		if (sClientId.length()) {
+			//[b60021] chrissstrahl - prevent players from cheating lms by reconnecting
+			player->coop_lmsCheckReconnectHack();
+		}
 	}
 	else {
 		player->hudPrint("COOPDEBUG: coop_cId - Timed Out: Rejected!\n");

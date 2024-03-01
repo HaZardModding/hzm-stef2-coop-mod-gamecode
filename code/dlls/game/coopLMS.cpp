@@ -34,23 +34,28 @@
 //================================================================
 void Player::coop_lmsCheckReconnectHack()
 {
-	//grab data when did this player last die on this map, and was it before this current game session
-	str sData = coop_playerGetDataSegment(this, 7);
-	gi.Printf(va("\n\ncoop_lmsCheckReconnectHack %s\n\n\n", sData.c_str()));
+	if (game.coop_lastmanstanding < 1) {
+		return;
+	}
 
-	//game.coop_levelStartTime && ( mp_warmUpTime->integer + 20 ) < level.time
-	
-	//if player died on this server after this current level was started, we can assume a reconnect cheat atempt
-	if(atoi(sData.c_str()) > game.coop_levelStartTime) {
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
-		gi.Printf("\n\ncoop_lmsCheckReconnectHack cheat!!!\n\n\n");
+	//grab data when did this player last die, was it after current map has started ?
+	int deathTimeStamp = atoi(coop_playerGetDataSegment(this, 7));
+	if (deathTimeStamp > game.coop_levelStartTime) {
+		upgPlayerDeathTimeSet(deathTimeStamp);
+
+		//grab deaths and restore
+		int iDeaths = atoi(coop_playerGetDataSegment(this, 9));
+		coopPlayer.lmsDeaths = iDeaths;
+		
+		//player died more often than they should have
+		if (iDeaths >= game.coop_lastmanstanding) {
+			if (upgPlayerHasLanguageGerman()) {
+				hudPrint(va("^5Coop:^2Last Man Standing: Sie haben bereits^1 %d von^5 %d ^2erlaubte Tode.\n", iDeaths, game.coop_lastmanstanding));
+			}else {
+				hudPrint(va("^5Coop:^ 2Last Man Standing: You allready had^1 %d out of^5 %d ^2allowed deaths.\n", iDeaths, game.coop_lastmanstanding));
+			}
+			multiplayerManager.makePlayerSpectator(this, SPECTATOR_TYPE_FOLLOW, false);
+		}
 	}
 }
 
