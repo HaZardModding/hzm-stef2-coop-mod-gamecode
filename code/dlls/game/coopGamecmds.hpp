@@ -39,6 +39,7 @@ qboolean G_coopCom_follow(const gentity_t* ent);
 qboolean G_coopCom_notransport(const gentity_t* ent);
 //[b60021] chrissstrahl - added
 qboolean G_coopCom_transferlive(const gentity_t* ent);
+qboolean G_coopCom_classability(const gentity_t* ent);
 // COOP COMMANDS - DEVELOPER SPECIFIC
 qboolean G_coopCom_reboot(const gentity_t* ent);
 qboolean G_coopCom_levelend(const gentity_t* ent);

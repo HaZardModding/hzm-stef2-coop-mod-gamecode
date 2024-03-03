@@ -1539,6 +1539,10 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 
 	{ &EV_Player_BackupModel , &Player::setBackupModel } ,
 	//--------------------------------------------------------------
+	// HAZARDMODDING COOP MOD //[b60021] - chrissstrahl - 
+	//--------------------------------------------------------------
+	{ &EV_Player_RecoverAbilityHud ,			&Player::coopClassRecoverAbilityHud},
+	//--------------------------------------------------------------
 	// HAZARDMODDING COOP MOD //[b60014] - chrissstrahl - mostly script related
 	//--------------------------------------------------------------
 	{ &EV_Player_coopMessageUpdateYourMod ,		&Player::coop_playerMessageUpdateYourMod },

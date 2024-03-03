@@ -29,6 +29,62 @@
 // Returns:     qboolean
 //              
 //================================================================
+qboolean G_coopCom_classability(const gentity_t* ent)
+{
+	Player* player = (Player*)ent->entity;
+
+	//[b60014] chrissstrahl - add spam protection
+	//deny usage of command if player executed command to quickly
+	float cooldownTime = coop_returnEntityFloatVar((Entity*)player, "!ability");
+	cooldownTime += COOP_CLASS_REGENERATION_COOLDOWN;
+	if (cooldownTime > level.time) {
+		//have printout on a cooldown for 3 sec
+		float cooldownTimePrintout = coop_returnEntityFloatVar((Entity*)player, "!abilityPrintout");
+		if (cooldownTimePrintout < level.time) {
+			player->entityVars.SetVariable("!abilityPrintout",(level.time + 3));
+			if (player->upgPlayerHasLanguageGerman()) {
+				player->hudPrint(va("^5Coop Klasse Talent^2 am abklang^5 %d ^2sekunden verbleibend.\n", (int)(cooldownTime - level.time)));
+			}
+			else {
+				player->hudPrint(va("^5Coop Class ability^2 in cool-down^5 %d ^2secounds remaining.\n", (int)(cooldownTime - level.time)));
+			}
+		}
+		return true;
+	}
+
+	player->entityVars.SetVariable("!ability", level.time);
+	player->entityVars.SetVariable("!abilityPrintout", (level.time + 3));
+
+	if (player->upgPlayerHasLanguageGerman()) {
+		player->hudPrint(va("^5Coop Klasse Talent^2 eingesetzt, erneut bereit in:^5 %d.\n", (int)COOP_CLASS_REGENERATION_COOLDOWN));
+	}
+	else {
+		player->hudPrint(va("^5Coop Class ability^2 used, ready again in:^5 %d.\n", (int)COOP_CLASS_REGENERATION_COOLDOWN));
+	}
+
+	//coop only command
+	if (!game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+		return true;
+	}
+
+	//activate ability now
+	player->coop_classAbilityUse();
+
+	return true;
+}
+	
+//================================================================
+// Name:        G_coopCom_transferlive
+// Class:       -
+//              
+// Description: takes 1 live from player and gives it to a dead player
+//              
+// Parameters:  const gentity_t* ent
+//              
+// Returns:     qboolean
+//              
+//================================================================
 qboolean G_coopCom_transferlive(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;

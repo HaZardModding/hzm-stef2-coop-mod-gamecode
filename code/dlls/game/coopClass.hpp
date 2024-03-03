@@ -20,6 +20,12 @@
 #ifndef __COOPCLASS_HPP__
 #define __COOPCLASS_HPP__
 
+//[b60021] chrissstrahl
+extern Event EV_Player_RecoverAbilityHud;
+constexpr auto COOP_CLASS_MEDIC_ICON = "sysimg/icons/mp/specialty_medic";
+constexpr auto COOP_CLASS_TECHNICIAN_ICON = "sysimg/icons/mp/specialty_technician";
+constexpr auto COOP_CLASS_HEAVYWEAPONS_ICON = "sysimg/icons/mp/specialty_heavyweapons";
+
 //[b60011] chrissstrahl - have the classnames fixed
 #define COOP_CLASS_NAME_TECHNICIAN "Technician"
 #define COOP_CLASS_NAME_MEDIC "Medic"
@@ -70,6 +76,8 @@
 
 //[b60017] chrissstrahl - how many cycles a player regenerates after giving stuff to other class
 #define COOP_CLASS_REGENERATION_CYCLES 5
+//[b60021] chrissstrahl - added cooldowntime for using class ability
+#define COOP_CLASS_REGENERATION_COOLDOWN 60
 
 #include "_pch_cpp.h"
 //#include "equipment.h"

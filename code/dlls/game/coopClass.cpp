@@ -22,6 +22,113 @@
 #include "mp_modeTeamDm.hpp"
 #include "mp_modeCtf.hpp"
 
+Event EV_Player_RecoverAbilityHud
+(
+	"recoverAbilityHud",
+	EV_DEFAULT,
+	"s",
+	"string-widgetname",
+	"Recovers the class ability widget displayed at coop classhud"
+);
+
+
+//[b60021] chrissstrahl
+//================================================================
+// handle restoration of ability hud bars
+//================================================================
+void Player::coopClassRecoverAbilityHud(Event* ev)
+{
+	//make sure we have at least widgetname and a commandparameter
+	if (ev->NumArgs() < 1) {
+		return;
+	}
+	upgPlayerWidgetCommand(ev->GetString(1), "enable");
+}
+
+//========================================================[b60021]
+// Name:        coop_classPlayerKilled
+// Class:       Player
+//              
+// Description: Handles the ability stuff on player death
+// 
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_classPlayerKilled()
+{
+	entityVars.SetVariable("!ability", (level.time - COOP_CLASS_REGENERATION_COOLDOWN) - 1);
+	entityVars.SetVariable("!abilityPrintout", (level.time + 3));
+	coopPlayer.regenerationCycles = 0;
+
+	//cancel events of type
+	CancelEventsOfType(EV_Player_RecoverAbilityHud);
+}
+
+//========================================================[b60021]
+// Name:        coop_classAbilityRecoverHud
+// Class:       Player
+//              
+// Description: Handles the ability revovery bar on the coop class hud
+//				Enables each widget timmed
+//				also restored via "ea.cfg"
+// 
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_classAbilityRecoverHud()
+{
+	Event* recover25 = new Event(EV_Player_RecoverAbilityHud);
+	recover25->AddString("coop_class25");
+	//recover25->AddString("enable");
+	PostEvent(recover25, (COOP_CLASS_REGENERATION_COOLDOWN / 4) * 1);
+
+	Event* recover50 = new Event(EV_Player_RecoverAbilityHud);
+	recover50->AddString("coop_class50");
+	//recover50->AddString("enable");
+	PostEvent(recover50, (COOP_CLASS_REGENERATION_COOLDOWN / 4) * 2);
+
+	Event* recover75 = new Event(EV_Player_RecoverAbilityHud);
+	recover75->AddString("coop_class75");
+	//recover75->AddString("enable");
+	PostEvent(recover75, (COOP_CLASS_REGENERATION_COOLDOWN / 4) * 3);
+
+	Event* recover100 = new Event(EV_Player_RecoverAbilityHud);
+	recover100->AddString("coop_class100");
+	//recover100->AddString("enable");
+	PostEvent(recover100, ((COOP_CLASS_REGENERATION_COOLDOWN / 4) * 4) - 0.1); // make sure the hud reappaers just a lil bit earlier so it won't overlap
+}
+
+//========================================================[b60021]
+// Name:        coop_classAbilityUse
+// Class:       Player
+//              
+// Description: Player wants to use his class ability
+// 
+// Parameters:  void
+//              
+// Returns:     void
+//              
+//================================================================
+void Player::coop_classAbilityUse()
+{
+	if (!game.coop_isActive) {
+		return;
+	}
+
+	//use the regeneration function to recover health to all players
+	//coop_classRegenerate
+	coop_classRegenerationCycleSet();
+
+	//hide the ability status bars
+	upgPlayerDelayedServerCommand(entnum, "exec coop_mod/cfg/coop_classResetA.cfg");
+	//make the status bars reappear over time
+	coop_classAbilityRecoverHud();
+}
+
 //========================================================[b60017]
 // Name:        coop_classRegenerationCycleSet
 // Class:       Player
@@ -42,7 +149,7 @@ void Player::coop_classRegenerationCycleSet()
 // Name:        coop_classRegenerationCycleGet
 // Class:       Player
 //              
-// Description: Updates the cycles for regenerations
+// Description: Get the cycles for regenerations
 // 
 // Parameters:  void
 //              
@@ -135,8 +242,9 @@ void coop_classRegenerate( Player *player )
 			player->health <= 0 ||
 			!multiplayerManager.inMultiplayer() ||
 			!game.coop_isActive ||
-			player->coop_playerNeutralized() ||
-			(player->upgPlayerGetLastDamageTime() + COOP_CLASS_HURT_WAITTIME) > level.time )
+			player->coop_playerNeutralized() //||
+			//(player->upgPlayerGetLastDamageTime() + COOP_CLASS_HURT_WAITTIME) > level.time
+			)
 	{
 		return;
 	}
@@ -145,25 +253,43 @@ void coop_classRegenerate( Player *player )
 	if (player->coop_classRegenerationCycleGet() > 0) {
 		player->coop_classRegenerationCycleSubstract();
 
-		//[b60012] chrissstrahl - fix missing .c_str()
-		if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC)) {
-			player->AddHealth(COOP_CLASS_REGENERATE_HEALTH);
-		}
-		else if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_TECHNICIAN)) {
-			float fArmorCurrent = player->GetArmorValue();
-			if ((fArmorCurrent + COOP_CLASS_REGENERATE_ARMOR) <= COOP_MAX_ARMOR) {
-				fArmorCurrent++;
-				Event* armorEvent;
-				armorEvent = new Event(EV_Sentient_GiveArmor);
-				armorEvent->AddString("BasicArmor");
-				armorEvent->AddInteger(COOP_CLASS_REGENERATE_ARMOR);
-				player->ProcessEvent(armorEvent);
+		Entity* eOther = nullptr;
+
+		for (int i = 0; i < maxclients->integer; i++) {
+			eOther = (Player*)g_entities[i].entity;
+			if (!eOther || !eOther->isSubclassOf(Player)) {
+				continue;
 			}
-		}
-		else if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS)) {
-			player->GiveAmmo("Fed", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_FED);
-			player->GiveAmmo("Plasma", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_PLASMA);
-			player->GiveAmmo("Idryll", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_IDRYLL);
+
+			Player* other = (Player*)eOther;
+
+			//criteria that prevent player getting regenerated
+			if (other->upgPlayerIsBot() || other->getHealth() < 1 || other->upgPlayerIsBot() || multiplayerManager.isPlayerSpectator((Player*)other)) {
+				continue;
+			}
+
+			//medic
+			if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC)) {
+				other->AddHealth(COOP_CLASS_REGENERATE_HEALTH);
+			}
+			//technician
+			else if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_TECHNICIAN)) {
+				float fArmorCurrent = other->GetArmorValue();
+				if ((fArmorCurrent + COOP_CLASS_REGENERATE_ARMOR) <= COOP_MAX_ARMOR) {
+					fArmorCurrent++;
+					Event* armorEvent;
+					armorEvent = new Event(EV_Sentient_GiveArmor);
+					armorEvent->AddString("BasicArmor");
+					armorEvent->AddInteger(COOP_CLASS_REGENERATE_ARMOR);
+					other->ProcessEvent(armorEvent);
+				}
+			}
+			//heavy weapons
+			else if (!Q_stricmp(player->coopPlayer.className.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS)) {
+				other->GiveAmmo("Fed", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_FED);
+				other->GiveAmmo("Plasma", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_PLASMA);
+				other->GiveAmmo("Idryll", COOP_CLASS_REGENERATE_AMMO, false, COOP_MAX_HW_AMMO_IDRYLL);
+			}
 		}
 	}
 }
@@ -347,8 +473,17 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 	int classGiveAmmoPlasma = 0;
 	int classGiveAmmoIdryll = 0;
 
+	//[b60021] chrissstrahl - circle menu related
+	str circleText1 = "";
+	str circleImg1 = "";
+
 	//[b60012] chrissstrahl - fix missing .c_str()
 	if ( !Q_stricmp( currentClass.c_str(), COOP_CLASS_NAME_MEDIC) ){
+		//[b60021] chrissstrahl - handle circle menu
+		circleImg1 = COOP_CLASS_MEDIC_ICON;
+		if (player->upgPlayerHasLanguageGerman()) {circleText1 = COOP_TEXT_CLASS_MEDIC_ABILITY_DEU;}
+		else {circleText1 = COOP_TEXT_CLASS_MEDIC_ABILITY_ENG;}
+
 		classMaxHealth		= COOP_CLASS_MEDIC_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_MEDIC_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_MEDIC_MAX_AMMO_PHASER;
@@ -359,6 +494,11 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->mass		= COOP_CLASS_MEDIC_MASS;
 	}
 	else if ( !Q_stricmp( currentClass.c_str(), COOP_CLASS_NAME_HEAVYWEAPONS) ){
+		//[b60021] chrissstrahl - handle circle menu
+		circleImg1 = COOP_CLASS_HEAVYWEAPONS_ICON;
+		if (player->upgPlayerHasLanguageGerman()) { circleText1 = COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_DEU; }
+		else { circleText1 = COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_ENG; }
+
 		classMaxHealth		= COOP_CLASS_HEAVYWEAPONS_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_HEAVYWEAPONS_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_HEAVYWEAPONS_MAX_AMMO_PHASER;
@@ -369,7 +509,12 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		player->mass		= COOP_CLASS_HEAVYWEAPONS_MASS;
 	}
 	else{ //technician
-		currentClass = COOP_CLASS_NAME_TECHNICIAN;
+		//[b60021] chrissstrahl - handle circle menu
+		circleImg1 = COOP_CLASS_TECHNICIAN_ICON;
+		if (player->upgPlayerHasLanguageGerman()) { circleText1 = COOP_TEXT_CLASS_TECHNICIAN_ABILITY_DEU; }
+		else { circleText1 = COOP_TEXT_CLASS_TECHNICIAN_ABILITY_ENG; }
+
+		currentClass		= COOP_CLASS_NAME_TECHNICIAN;
 		classMaxHealth		= COOP_CLASS_TECHNICIAN_MAX_HEALTH;
 		classStartArmor		= COOP_CLASS_TECHNICIAN_START_ARMOR;
 		classMaxAmmoPhaser	= COOP_CLASS_TECHNICIAN_MAX_AMMO_PHASER;
@@ -388,8 +533,21 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 
 	//hzm coop mod chrissstrahl - add a background shader to the hud, this shows the player his current class
 	if ( player->coop_getInstalled() ) {
+		//[b60021] chrissstrahl - add circlemenu features
+		Event* evCircleSet1;
+		evCircleSet1 = new Event(EV_Player_circleMenuSet);
+		evCircleSet1->AddInteger(1);
+		evCircleSet1->AddString(circleText1.c_str());
+		evCircleSet1->AddString("!ability");
+		evCircleSet1->AddString(circleImg1.c_str());
+		evCircleSet1->AddInteger(0);
+		player->PostEvent(evCircleSet1,1.2f);
+
 		//DelayedServerCommand( player->entnum , va( "globalwidgetcommand classBg shader coop_%s" , currentClass.c_str() ) );
 		upgPlayerDelayedServerCommand( player->entnum , va( "exec coop_mod/cfg/%s.cfg" , currentClass.c_str() ) );
+	}
+	else {
+		player->hudPrint( va( "^5Coop:^2 You are now: ^5$$%s$$\n" , currentClass.c_str() ) );
 	}
 
 	//hzm coop mod chrissstrahl - make sure we don't give more than we can
@@ -418,12 +576,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		//armorEvent->AddInteger( ( classStartArmor - fArmorCurrent ) );
 		//player->ProcessEvent( armorEvent );
 	//}
-
-	//hzm coop mod chrissstrahl - display info to player
-	if ( !player->coop_getInstalled() ){
-		player->hudPrint( va( "^5Coop:^2 You are now: ^5$$%s$$\n" , currentClass.c_str() ) );
-	}
-
+	
 	//update statistic for all players
 	coop_classUpdateClassStats();
 
@@ -495,7 +648,10 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 			}
 			else{
 				if ( equipment ){
-					if ( !Q_stricmp( usingPlayer->coopPlayer.className, COOP_CLASS_NAME_MEDIC) ){
+					//[b60021] chrissstrahl - we are using the ability now, makes transition easier to the new way of doing it
+					upgPlayerDelayedServerCommand(usingPlayer->entnum, "!ability");
+
+					/*if ( !Q_stricmp( usingPlayer->coopPlayer.className, COOP_CLASS_NAME_MEDIC) ){
 						if ( usedPlayer->health >= usedPlayer->max_health ){
 							return;
 						}
@@ -539,6 +695,7 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 
 						//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
 						usingPlayer->coop_classRegenerationCycleSet();
+						
 					}
 					else{
 						if ( usedPlayer->upgPlayerHasLanguageGerman() ){
@@ -566,18 +723,17 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 
 						//[b60017] chrissstrahl - changed regeneration that a player gets some ammount of regeneration cycles for him self after player gave something to other player class
 						usingPlayer->coop_classRegenerationCycleSet();
-					}
+					}*/
 				}
-				/*
 				else{
-					if ( coop_checkPlayerLanguageGerman(usedPlayer) ){
+					/*if ( coop_checkPlayerLanguageGerman(usedPlayer) ){
 						usedPlayer->hudPrint( va( "^5COOP^8 - Sie wurden benutzt von: %s [%s]\n" , usingPlayer->client->pers.netname , sEquipment.c_str() ) );
 					}
 					else{
 						usedPlayer->hudPrint( va( "^5COOP^8 - You have been used by: %s [%s]\n" , usingPlayer->client->pers.netname , sEquipment.c_str() ) );
-					}
+					}*/
 				}
-				*/
+				
 			}
 
 		}
@@ -594,8 +750,10 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 			}
 			else{
 				if ( equipment ){
-					//[b60012] chrissstrahl - fix missing .c_str()
-					if ( !Q_stricmp( usingPlayer->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC) ){
+					//[b60021] chrissstrahl - we are using the ability now, makes transition easier to the new way of doing it
+					upgPlayerDelayedServerCommand(usingPlayer->entnum, "!ability");
+
+					/*if ( !Q_stricmp( usingPlayer->coopPlayer.className.c_str(), COOP_CLASS_NAME_MEDIC) ){
 						if ( usedPlayer->health >= usedPlayer->max_health ){
 
 							//[b60012][cleanup] chrissstrahl - this could be put into a func
@@ -658,16 +816,17 @@ void coop_classPlayerUsed( Player *usedPlayer , Player *usingPlayer , Equipment 
 							usingPlayer->hudPrint( va( "^5COOP^8 - You charged %ss ammo\n" , usedPlayer->client->pers.netname ) );
 						}
 					}
+				*/
 				}
-				/*
 				else{
-					if ( coop_checkPlayerLanguageGerman(usingPlayer) ){
+					/* not shown to all players - something fishy here
+					if ( usingPlayer->upgPlayerHasLanguageGerman() ){
 						usingPlayer->hudPrint( va( "^5COOP^8 - Gebraucht: %s [%s]\n" , usedPlayer->client->pers.netname , sEquipment.c_str() ) );
 					}else{
 						usingPlayer->hudPrint( va( "^5COOP^8 - USED: %s [%s]\n" , usedPlayer->client->pers.netname , sEquipment.c_str() ) );
-					}
+					}*/
 				}
-				*/
+				
 			}
 		}
 
