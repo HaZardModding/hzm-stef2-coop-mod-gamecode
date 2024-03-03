@@ -11,6 +11,14 @@
 #define COOP_JOIN_SEPERATOR_SIZE 1			//size of join seperator (;) for console commands
 #define COOP_JOIN_MAX_SINGLE_COMMAND (((COOP_MAX_TRANSMITT_STRING / 2 ) - (COOP_TRANSMITT_STARTCMD / 2)) - 1)
 
+//[b60021] chrissstrahl - class ability
+constexpr auto COOP_TEXT_CLASS_MEDIC_ABILITY_ENG = "Heal Team";
+constexpr auto COOP_TEXT_CLASS_MEDIC_ABILITY_DEU = "Team heilen";
+constexpr auto COOP_TEXT_CLASS_TECHNICIAN_ABILITY_ENG = "Charge Team shields";
+constexpr auto COOP_TEXT_CLASS_TECHNICIAN_ABILITY_DEU = "Schilde aufladen";
+constexpr auto COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_ENG = "Charge Team ammo";
+constexpr auto COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_DEU = "Munition aufladen";
+
 //[b60011] chrissstrahl - text for variouse outputs
 #define COOP_TEXT_CLASS_MEDIC_ONLY_DEU "Benutzen nur durch: ^5$$Medic$$^8!\n"
 #define COOP_TEXT_CLASS_MEDIC_ONLY_ENG "To use, you need to be: ^5$$Medic$$^8!\n"
