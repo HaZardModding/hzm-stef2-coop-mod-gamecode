@@ -126,6 +126,69 @@ Event EV_Player_coopMessageUpdateYourMod
 	"Prints a message to player to update the HZM Coop Mod"
 );
 
+//[b60021] chrissstrahl
+//================================================================
+// handle setup of circle menu-hud
+//================================================================
+void Player::coopPlayerCircleMenuSetup()
+{
+	//[b60021] chrissstrahl - circle menu related
+	str circleText1 = "";
+	str circleText2 = "$$MissionObjectives$$";
+	str circleText3_eng = "Communicator";
+	str circleText3_deu = "Kommunikator";
+	str circleText4 = "";
+	str circleCmd1 = "";
+	str circleCmd2 = "togglemenu coop_objectives";
+	str circleCmd3 = "togglemenu coop_com";
+	str circleCmd4 = "";
+	str circleImg1 = "";
+	str circleImg2 = "sysimg/hud/radar/blip-obj.tga";
+	str circleImg3 = "sysimg/icons/levelawards/level_award1.tga";
+	str circleImg4 = "";
+
+	//[b60021] chrissstrahl - add circlemenu features
+	
+	/* - overwritten by coop_classApplayAttributes() anyway
+	Event* evCircleSet1;
+	evCircleSet1 = new Event(EV_Player_circleMenuSet);
+	evCircleSet1->AddInteger(1);
+	evCircleSet1->AddString(circleText1.c_str());
+	evCircleSet1->AddString("!ability");
+	evCircleSet1->AddString(circleImg1.c_str());
+	evCircleSet1->AddInteger(0);
+	PostEvent(evCircleSet1,1.1f);*/
+
+	Event* evCircleSet2;
+	evCircleSet2 = new Event(EV_Player_circleMenuSet);
+	evCircleSet2->AddInteger(2);
+	evCircleSet2->AddString(circleText2.c_str());
+	evCircleSet2->AddString(circleCmd2.c_str());
+	evCircleSet2->AddString(circleImg2.c_str());
+	evCircleSet2->AddInteger(0);
+	PostEvent(evCircleSet2,2.2f);
+	
+	Event* evCircleSet3;
+	evCircleSet3 = new Event(EV_Player_circleMenuSet);
+	evCircleSet3->AddInteger(3);
+
+	if(upgPlayerHasLanguageGerman()){evCircleSet3->AddString(circleText3_deu.c_str());}
+	else{evCircleSet3->AddString(circleText3_eng.c_str());}
+	
+	evCircleSet3->AddString(circleCmd3.c_str());
+	evCircleSet3->AddString(circleImg3.c_str());
+	evCircleSet3->AddInteger(0);
+	PostEvent(evCircleSet3,2.3f);
+
+	Event* evCircleSet4;
+	evCircleSet4 = new Event(EV_Player_circleMenuSet);
+	evCircleSet4->AddInteger(4);
+	evCircleSet4->AddString(circleText4.c_str());
+	evCircleSet4->AddString(circleCmd4.c_str());
+	evCircleSet4->AddString(circleImg4.c_str());
+	evCircleSet4->AddInteger(0);
+	PostEvent(evCircleSet4,2.4f);
+}
 
 //[b60021] chrissstrahl
 //================================================================
@@ -280,7 +343,7 @@ bool Player::coop_playerCheckAdmin()
 	//[b610] chrissstrahl - auto login if player is host
 	if (upgPlayerIsHost()) {
 		coop_playerAdmin(true);
-		//[b60018] chrissstrahl - show message in communicator menu that player auto-ligged in as host
+		//[b60018] chrissstrahl - show message in communicator menu that player auto-logged in as host
 		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_comCmdLoginMsg labeltext %s\n", upgStrings.getReplacedForLabeltext("Automatically logged you in as Host.").c_str()));
 		hudPrint("^3You are now logged in (Host auto-!login).\n");
 		return true;
@@ -1756,6 +1819,12 @@ void coop_playerSetupCoop( Player *player )
 
 		//[b60011] chrissstrahl 
 		coopChallenges.playerEnteredWarning(player);
+
+		//[b60021] chrissstrahl - allow usage of !ability right away
+		player->entityVars.SetVariable("!ability", (level.time - COOP_CLASS_REGENERATION_COOLDOWN));
+
+		//[b60021] chrissstrahl - setup circle menu
+		player->coopPlayerCircleMenuSetup();
 	}
 
 	player->coop_playerSetupComplete(true);
@@ -2025,6 +2094,11 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		return true;
 	}
 
+
+
+	//[b60021] chrissstrahl - handle LMS death-count
+	playerPrey->coop_classPlayerKilled();
+	
 	//[b60021] chrissstrahl - handle LMS death-count
 	playerPrey->coop_lmsPlayerKilled();
 

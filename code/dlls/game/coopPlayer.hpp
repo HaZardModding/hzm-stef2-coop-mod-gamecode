@@ -48,7 +48,7 @@ public:
 //[b60014] chrissstrahl - moved here to make sure it is not illegally accessed
 private:
 	//[b60017] chrissstrahl - how many cycles the player will regenerate after giving stuff to other player
-	int		regenerationCycles = 5;
+	int		regenerationCycles = 0;
 
 	//used to determin if player has coop mod installed and which version
 	int		installed = 0;
