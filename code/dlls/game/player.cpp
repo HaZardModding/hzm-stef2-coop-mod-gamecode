@@ -50,6 +50,7 @@
 #include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
 
+#include "coopClass.hpp"
 #include "coopPlayer.hpp"
 #include "coopText.hpp"
 #include "coopReturn.hpp"
