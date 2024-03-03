@@ -741,9 +741,11 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 		gi.Printf(va("circleMenuSet: Given Option %i is out of Range\n", iOption));
 		return;
 	}
-	if (upgCircleMenu.active <= 0) {
-		gi.Printf(va("%s.circleMenuSet() - Can only be used while menu active.\n", targetname.c_str()));
-	}
+
+	//[b60021] chrissstrahl - disabled - we want to use circlemenu in conjunction with class !ability
+	//if (upgCircleMenu.active <= 0) {
+		//gi.Printf(va("%s.circleMenuSet() - Can only be used while menu active.\n", targetname.c_str()));
+	//}
 
 	if (!sImage.length()) { sImage = "weapons/empty"; }
 	if (!sText.length()) { sText = "^"; }

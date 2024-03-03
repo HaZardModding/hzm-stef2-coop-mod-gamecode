@@ -24,7 +24,7 @@ class UpgCircleMenu
 {
 public:
 	int		active = 0;
-	int		numOfSegments = 0;
+	int		numOfSegments = 4; //[b60021] chrissstrahl - changed so we can SETUP circlemenu without inizialising/opening it first
 	//viewangle - stored upon opening the menu
 	Vector	viewAngle = Vector(0, 0, 0);
 	//last time the menu did think
