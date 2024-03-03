@@ -84,6 +84,7 @@ consolecmd_t G_ConsoleCmds[] =
 	{ "!flushtikis",G_coopCom_flushtikis,	true },
 	//[b60021] chrissstrahl - added
 	{ "!transferlive",G_coopCom_transferlive,	true },
+	{ "!ability",G_coopCom_classability,	true },
 
 //Coop Commands End
 //Coop Commands End
