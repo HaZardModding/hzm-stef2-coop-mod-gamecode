@@ -18,7 +18,7 @@
 #include "upgStrings.hpp"
 #include "upgGame.hpp"
 
-//================================================================
+//=========================================================[b60021]
 // Name:        G_coopCom_transferlive
 // Class:       -
 //              
@@ -33,7 +33,16 @@ qboolean G_coopCom_classability(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
 
-	//[b60014] chrissstrahl - add spam protection
+	//coop only command
+	if (!game.coop_isActive) {
+		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
+		return true;
+	}
+
+	if (player->getHealth() <= 0 || multiplayerManager.isPlayerSpectator(player) || level.cinematic) {
+		return true;
+	}
+
 	//deny usage of command if player executed command to quickly
 	float cooldownTime = coop_returnEntityFloatVar((Entity*)player, "!ability");
 	cooldownTime += COOP_CLASS_REGENERATION_COOLDOWN;
@@ -62,11 +71,7 @@ qboolean G_coopCom_classability(const gentity_t* ent)
 		player->hudPrint(va("^5Coop Class ability^2 used, ready again in:^5 %d.\n", (int)COOP_CLASS_REGENERATION_COOLDOWN));
 	}
 
-	//coop only command
-	if (!game.coop_isActive) {
-		player->hudPrint(COOP_TEXT_COOP_COMMAND_ONLY);
-		return true;
-	}
+
 
 	//activate ability now
 	player->coop_classAbilityUse();
@@ -74,7 +79,7 @@ qboolean G_coopCom_classability(const gentity_t* ent)
 	return true;
 }
 	
-//================================================================
+//========================================================[b60021]
 // Name:        G_coopCom_transferlive
 // Class:       -
 //              
