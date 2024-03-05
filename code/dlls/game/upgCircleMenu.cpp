@@ -154,7 +154,7 @@ float Player::circleMenuLastTimeActive()
 void Player::circleMenu(int iType)
 {
 	//prevent premature re-opening
-	if (upgCircleMenu.active <= 0 && (upgCircleMenu.activatingTime + 0.5) >= level.time) {
+	if (upgCircleMenu.active <= 0 && (upgCircleMenu.activatingTime + 0.5) >= level.time || level.cinematic || getHealth() <= 0 || multiplayerManager.isPlayerSpectator(this)) {
 		//hudPrint("c open/close tosoon\n");
 		return;
 	}
