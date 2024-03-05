@@ -25,6 +25,36 @@ Event EV_ScriptThread_ConfigstringRemove
 
 
 //========================================================[b60016]
+// Name:        setEnvironment 
+// Class:       UpgGame
+//              
+// Description: Sets the name of the current Enviroment (loadingscreen/sublevels/localstrings)
+//              
+// Parameters:  str
+//              
+// Returns:     void
+//================================================================
+void UpgGame::setEnvironment(str name)
+{
+	environmentName = name;
+}
+
+//========================================================[b60016]
+// Name:        getEnvironment 
+// Class:       UpgGame
+//              
+// Description: Sets the name of the current Enviroment (loadingscreen/sublevels/localstrings)
+//              
+// Parameters:  void
+//              
+// Returns:     str
+//================================================================
+str UpgGame::getEnvironment()
+{
+	return environmentName;
+}
+
+//========================================================[b60016]
 // Name:        cleanUp 
 // Class:       UpgGame
 //              

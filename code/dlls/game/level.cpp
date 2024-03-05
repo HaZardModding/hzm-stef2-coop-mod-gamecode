@@ -16,6 +16,8 @@
 
 #include "_pch_cpp.h"
 
+#include "upgGame.hpp"
+
 #include "coopScripting.hpp"
 #include "coopParser.hpp"
 #include "coopArmory.hpp"
@@ -926,18 +928,19 @@ void Level::loadLevelStrings( void )
 	
 	gi.GetLevelDefs(mapname, &environmentName, &levelName, &sublevelName);
 
-	//hzm coop mod chrissstrahl - load localstrings for each map
-	//localstring files must go to:
-	//loc/deu/stringresource/mapname.loc
-	//loc/eng/stringresource/mapname.loc
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE GAME/LEVEL [b60011] and [b60021] chrissstrahl - load localstrings for each map
+	//--------------------------------------------------------------
+	//localstring files must go to: loc/deu/stringresource/mapname.loc AND loc/eng/stringresource/mapname.loc
+	//--------------------------------------------------------------
 	if ( !strlen(environmentName) ) {
 		environmentName = mapname;
-		//i think they only have a effect on the loading screen
-		//[b60011] chrissstrahl - reactivated - for testing
 		levelName = mapname;
 		sublevelName = mapname;
 	}
-	//end of hzm
+	upgGame.setEnvironment(va("%s",environmentName));
+
 
 	gi.SR_LoadLevelStrings(environmentName);
 }

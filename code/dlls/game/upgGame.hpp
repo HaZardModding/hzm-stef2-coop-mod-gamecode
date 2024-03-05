@@ -12,7 +12,10 @@
 class UpgGame
 {
 	Entity*			cinematicCurrentCam = NULL;
+	str				environmentName = "";
 public:
+	void			setEnvironment(str name);
+	str				getEnvironment();
 	void			cleanUp(bool restart);
 	int				configstringRemove(str sRem);
 	void			checkMpGametype();
