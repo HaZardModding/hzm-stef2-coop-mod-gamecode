@@ -2371,7 +2371,16 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 		str sDeathListFile = "deathlist.ini";
 		str sActorResolved = coop_parserIniGet(sDeathListFile, actor->name.c_str(), "actorname");
 		if ( !sActorResolved.length() ) {
-			printString += va(" # Unhandled (in %s) actorname: %s\n", sDeathListFile.c_str(), actor->name.c_str());
+			//[b60021] chrissstrahl - this is a special handling
+			//because the same models have different localstrings in two enviroments
+			sActorResolved = coop_parserIniGet(sDeathListFile, actor->name.c_str(), va("actorname+%s", upgGame.getEnvironment().c_str()));
+			
+			if (!sActorResolved.length()) {
+				printString += va(" # Unhandled (in %s) actorname: %s\n", sDeathListFile.c_str(), actor->name.c_str());
+			}
+			else {
+				printString += sActorResolved;
+			}
 		}
 		else {
 			printString += sActorResolved;
