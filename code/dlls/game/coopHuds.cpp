@@ -92,6 +92,11 @@ void coop_huds_setupMultiplayerUI(Player *player) //chrissstrahl - added [b607]
 //================================================================
 void coop_hudsKilled(Player *player) //chrissstrahl - added [b607]
 {
+	//[b60021] chrissstrahl - don't handle bots
+	if (player->upgPlayerIsBot()) {
+		return;
+	}
+
 	//if player does not have the coop mod installed handle [b607]
 	if (!player->coop_getInstalled()) {
 		upgPlayerDelayedServerCommand(player->entnum, "ui_removehud targetedhud"); //sniper red dot when being targeted
