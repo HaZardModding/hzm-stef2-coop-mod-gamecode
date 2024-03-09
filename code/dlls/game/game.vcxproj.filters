@@ -643,6 +643,18 @@
     <ClCompile Include="upgActor.cpp">
       <Filter>HaZardModding\Upgrades</Filter>
     </ClCompile>
+    <ClCompile Include="coopPuzzleobject.cpp">
+      <Filter>HaZardModding\Coop</Filter>
+    </ClCompile>
+    <ClCompile Include="upgPuzzleObject.cpp">
+      <Filter>HaZardModding\Upgrades</Filter>
+    </ClCompile>
+    <ClCompile Include="upgScriptSlave.cpp">
+      <Filter>HaZardModding\Upgrades</Filter>
+    </ClCompile>
+    <ClCompile Include="coopLMS.cpp">
+      <Filter>HaZardModding\Coop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="be_ea.h">
@@ -1301,6 +1313,18 @@
     </ClInclude>
     <ClInclude Include="upgActor.hpp">
       <Filter>HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="coopPuzzleobject.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="upgPuzzleObject.hpp">
+      <Filter>HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="upgScriptSlave.hpp">
+      <Filter>HaZardModding\Upgrades\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="coopLMS.hpp">
+      <Filter>HaZardModding\Coop\Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
