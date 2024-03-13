@@ -408,8 +408,9 @@ void Item::DropToFloor( Event *ev )
 	{
 		if ( !droptofloor( 8192.0f ) )
 		{
-			gi.WDPrintf( "%s (%d) stuck in world at '%5.1f %5.1f %5.1f'\n",
-				getClassID(), entnum, origin.x, origin.y, origin.z );
+			//[b60021] chrissstrahl - have more information Print Out
+			gi.WDPrintf( "%s - %s (%d) stuck in world at '%5.1f %5.1f %5.1f'\n",
+				getClassID(), model.c_str(), entnum, origin.x, origin.y, origin.z );
 			setOrigin( save );
 			setMoveType( MOVETYPE_NONE );
 		}
@@ -1128,7 +1129,7 @@ Item* SecretItem::ItemPickup( Entity *other, qboolean add_to_inventory = true, q
 				if (player) {
 					str sMessage = "^5Secret golden Starship^2 found by:^8 ";
 					if (player->upgPlayerHasLanguageGerman()) {
-						sMessage = "^5Geheimes goldenes Raumschiffe^2 gefunden von:^8 ";
+						sMessage = "^5Geheimes goldenes Raumschiff^2 gefunden von:^8 ";
 					}
 
 					gi.centerprintf(player->edict, CENTERPRINT_IMPORTANCE_NORMAL, va("%s%s", sMessage.c_str(), other->client->pers.netname));
