@@ -46,10 +46,10 @@ qboolean G_coopCom_classability(const gentity_t* ent)
 	//deny usage of command if player executed command to quickly
 	float cooldownTime = coop_returnEntityFloatVar((Entity*)player, "!ability");
 	cooldownTime += COOP_CLASS_REGENERATION_COOLDOWN;
-	if (cooldownTime > level.time) {
+	if ((cooldownTime - level.time) >= 1) { //make sure we don't get the "less than a sec remaining" situation
 		//have printout on a cooldown for 3 sec
 		float cooldownTimePrintout = coop_returnEntityFloatVar((Entity*)player, "!abilityPrintout");
-		if (cooldownTimePrintout < level.time) {
+		if (cooldownTimePrintout < level.time ) {
 			player->entityVars.SetVariable("!abilityPrintout",(level.time + 3));
 			if (player->upgPlayerHasLanguageGerman()) {
 				player->hudPrint(va("^5Coop Klasse Talent^2 am abklang^5 %d ^2sekunden verbleibend.\n", (int)(cooldownTime - level.time)));
