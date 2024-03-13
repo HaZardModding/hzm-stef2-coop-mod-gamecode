@@ -15666,7 +15666,7 @@ void Actor::_dropActorToGround()
 	if ( stuck && !GetActorFlag( ACTOR_FLAG_IGNORE_STUCK_WARNING ) )
 		{
 		groundentity = world->edict;
-		gi.WDPrintf( "%s (%d) stuck in world at '%5.1f %5.1f %5.1f'\n", actor_name.c_str(), entnum, origin.x, origin.y, origin.z );
+		gi.WDPrintf( "%s - %s (%d) stuck in world at '%5.1f %5.1f %5.1f'\n", actor_name.c_str(),model.c_str(), entnum, origin.x, origin.y, origin.z );
 		}
 
 	SetActorFlag( ACTOR_FLAG_HAVE_MOVED, false );
