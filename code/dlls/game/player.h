@@ -278,6 +278,7 @@ class Player : public Sentient
 		void				circleMenu(int iType);
 		bool				circleMenuIsActive(void);
 		float				circleMenuLastTimeActive();
+		void				circleMenuSetup(); //[b60021]
 	private:
 		str					circleMenuGetWidgetName(int iDirection);
 		int					circleMenuGetSegmentNumForAngle(float fAngle);

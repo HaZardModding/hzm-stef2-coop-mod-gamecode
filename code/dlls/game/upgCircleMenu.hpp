@@ -42,9 +42,11 @@ public:
 	int		lastSegment = -1;
 	
 	//[b60021] chrissstrahl
-	str			lastWeapon = "None";
-	bool		holdingRightButton = false;
-	bool		holdingLeftButton = false;
+	str		lastWeapon = "None";
+	bool	holdingRightButton = false;
+	bool	holdingLeftButton = false;
+	str		optionTextLastSend[CIRCLEMENU_MAX_OPTIONS];
+	str		optionIconLastSend[CIRCLEMENU_MAX_OPTIONS];
 
 	//circlemenu options
 	str		optionThreadOrCommand	[CIRCLEMENU_MAX_OPTIONS];
@@ -79,6 +81,7 @@ public:
 		UpgCircleMenu		upgCircleMenu;
 		friend class		UpgCircleMenu;
 	private:
+		void				CircleMenuSetup();
 		void				circleMenu(int iType);
 		bool				circleMenuIsActive(void);
 		float				circleMenuLastTimeActive();

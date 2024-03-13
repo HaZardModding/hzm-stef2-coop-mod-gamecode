@@ -1569,6 +1569,9 @@ bool coop_playerSetup(Player* player)
 		return true;
 	}
 
+	//[b60021] chrissstrahl - init vars
+	player->circleMenuSetup();
+
 	//[b60013] chrissstrahl - moved here - execute clientside inizialisation for coop - for all clients
 	upgPlayerDelayedServerCommand(player->entnum, "exec coop_mod/cfg/init.cfg");
 

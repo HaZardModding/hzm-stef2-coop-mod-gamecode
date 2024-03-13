@@ -72,10 +72,30 @@ Event EV_Player_circleMenuClear
 );
 
 
+//[b60021] chrissstrahl
+//================================================================
+// Name:        switchWidgets
+// Class:       Player
+//              
+// Description: Sets up variables for circelmenu to work
+//              
+// Parameters:  -
+//              
+// Returns:     -
+//              
+//================================================================
+void Player::circleMenuSetup()
+{
+	for (short i = 0; i < CIRCLEMENU_MAX_OPTIONS;i++) {
+		upgCircleMenu.optionIconLastSend[i] = "";
+		upgCircleMenu.optionTextLastSend[i] = "";
+	}
+}
+
 //[b60011] chrissstrahl
 //================================================================
 // Name:        switchWidgets
-// Class:       -
+// Class:       Player
 //              
 // Description: This sends a command to enable/disable a widget in a single burst
 //              
@@ -162,6 +182,7 @@ void Player::circleMenu(int iType)
 	//make sure bad value is catched
 	if (iType <= 0 || iType > 2) {
 		gi.Printf("player::circleMenu( %i ) <- unsupported Menu Type number in parameter 1\n", iType);
+		hudPrint(va("player::circleMenu( %i ) <- unsupported Menu Type number in parameter 1\n", iType));
 		return;
 	}
 
@@ -181,7 +202,7 @@ void Player::circleMenu(int iType)
 	upgCircleMenu.activatingTime = level.time;
 
 	if (upgCircleMenu.active <= 0) {
-//hudPrint("c start\n");
+//hudPrint("circleMenu - start\n");//hzm coopdebug circlemenu
 
 		//reset holding buttons - precent acidental activation
 		upgCircleMenu.holdingLeftButton = true;
@@ -219,7 +240,7 @@ void Player::circleMenu(int iType)
 		//upgPlayerDisableUseWeapon(true);
 	}
 	else {
-//hudPrint("c end\n");
+//hudPrint("circleMenu - end\n");//hzm coopdebug circlemenu
 		upgPlayerDelayedServerCommand(entnum, "-attackLeft");
 		
 		circleMenuHud(false);
@@ -396,6 +417,8 @@ void Player::circleMenuThink()
 			circleMenuHud(false);
 			upgCircleMenu.active = 0;
 		}
+//hudPrint("circleMenuThink - dead or spec\n");//hzm coopdebug circlemenu
+
 		return;
 	}
 
@@ -406,6 +429,8 @@ void Player::circleMenuThink()
 //hudPrint("c select\n");
 			upgCircleMenu.thinkTime = level.time;
 			circleMenuSelect(upgCircleMenu.lastSegment);
+
+//hudPrint(va("circleMenuThink - select %d\n", upgCircleMenu.lastSegment));//hzm coopdebug circlemenu
 			return;
 		}
 	}
@@ -434,6 +459,7 @@ void Player::circleMenuThink()
 	//[b60021] chrissstrahl - select widget by right click
 	if (last_ucmd.buttons & BUTTON_ATTACKRIGHT) {
 		if (upgCircleMenu.holdingRightButton) {
+//hudPrint("circleMenuThink - holding right\n");//hzm coopdebug circlemenu
 			return;
 		}
 
@@ -442,7 +468,7 @@ void Player::circleMenuThink()
 		if (fSegmentNum >= 4) {
 			fSegmentNum = 0;
 		}
-		//hudPrint(va("c next %d\n", fSegmentNum));
+//hudPrint(va("circleMenuThink - next %d\n",fSegmentNum));//hzm coopdebug circlemenu
 	}
 	else {
 		upgCircleMenu.holdingRightButton = false;
@@ -454,7 +480,7 @@ void Player::circleMenuThink()
 	if (sWidgetName != "" && sWidgetName != upgCircleMenu.lastWidget) {
 		str sCmd;
 		G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 0 0 0 1", sWidgetName.c_str()));
-		G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 1 1 1 1", upgCircleMenu.lastWidget.c_str()));
+		G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 0.5 0.5 0.5 1", upgCircleMenu.lastWidget.c_str()));
 	}
 
 	//gi.Printf(va("Reset: %s\n", upgCircleMenu.lastWidget));
@@ -765,10 +791,18 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 	str sWidgetName = circleMenuGetWidgetName(iOptionToArrayNum);
 
 	//send commands to menu
-	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
+	if (upgCircleMenu.optionIconLastSend[iOptionToArrayNum] != sImage) { //[b60021] chrissstrahl - make sure not to resend unnessary data
+		upgCircleMenu.optionIconLastSend[iOptionToArrayNum] = sImage;
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
+	}
+
 	//replace withespace and newline to make it work with labeltext
-	sText = upgStrings.getReplacedForLabeltext(sText);
-	upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
+
+	if (upgCircleMenu.optionTextLastSend[iOptionToArrayNum] != sText) { //[b60021] chrissstrahl - make sure not to resend unnessary data
+		upgCircleMenu.optionTextLastSend[iOptionToArrayNum] = sText;
+		sText = upgStrings.getReplacedForLabeltext(sText);
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
+	}
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
