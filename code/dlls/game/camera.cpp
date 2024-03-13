@@ -1962,7 +1962,8 @@ void Camera::FollowEvent( Event* ev )
 	}
 	else
 	{
-		gi.WDPrintf( "FollowEvent :: Entity does not exist." );
+		//[b60021] chrissstrahl - have additional data print out
+		gi.Printf( va("FollowEvent :: Entity ($%s.follow(NULL-ENT)) does not exist.", this->targetname.c_str()));
 	}
 }
 
