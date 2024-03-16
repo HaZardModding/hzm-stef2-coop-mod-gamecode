@@ -6966,6 +6966,7 @@ void Player::Kill( Event *ev )
 	//hzm coop mod chrissstrahl - this fixes: kill not working during coop, because we handle damage specific based upon armor value
 	SetArmorValue( 0 );
 	health = 0.0f;
+	takedamage = DAMAGE_YES; //[b60021] chrissstrahl - fix bug that the killed player doesn't really die fully because of nodamage flag
 	//hzm eof
 
 	Damage( this , this , 10.0f , origin , vec_zero , vec_zero , 0 , DAMAGE_NO_PROTECTION , MOD_SUICIDE );
