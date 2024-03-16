@@ -68,11 +68,11 @@ public:
 
 /* THIS WAS ADDED TO: player.cpp at CLASS_DECLARATION( Sentient , Player , "player" )
 //hzm gameupdate chrissstrahl [b60011] circlemenu
-{ &EV_Player_circleMenu,					&Player::circleMenuEvent},
-{ &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent },
-{ &EV_Player_circleMenuDialogClear,			&Player::circleMenuDialogClearEvent },
-{ &EV_Player_circleMenuSet,					&Player::circleMenuSetEvent },
-{ &EV_Player_circleMenuClear,				&Player::circleMenuClearEvent },
+{ &EV_Player_circleMenu,					&Player::upgCircleMenuEvent},
+{ &EV_Player_circleMenuDialogSet,			&Player::upgCircleMenuDialogSetEvent },
+{ &EV_Player_circleMenuDialogClear,			&Player::upgCircleMenuDialogClearEvent },
+{ &EV_Player_circleMenuSet,					&Player::upgCircleMenuSetEvent },
+{ &EV_Player_circleMenuClear,				&Player::upgCircleMenuClearEvent },
 */
 
 /* THIS WAS ADDED TO: player.h at class Player : public Sentient
@@ -87,17 +87,17 @@ public:
 		float				circleMenuLastTimeActive();
 		str					circleMenuGetWidgetName(int iDirection);
 		int					getSegmentNumForAngle(float fAngle);
-		void				circleMenuThink(void);
-		void				circleMenuSelect(int iSelection);
-		void				circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType);
-		void				circleMenuClear(int iOption);
-		void				circleMenuDialogSet(int iOption, str sText, str sThread, str sImage);
-		void				circleMenuDialogClear(int iOption);
-		void				circleMenuHud(bool show);
-		void				circleMenuSetEvent(Event* ev);
-		void				circleMenuClearEvent(Event* ev);
-		void				circleMenuDialogSetEvent(Event* ev);
-		void				circleMenuDialogClearEvent(Event* ev);
-		void				circleMenuEvent(Event* ev);
+		void				upgCircleMenuThink(void);
+		void				upgCircleMenuSelect(int iSelection);
+		void				upgCircleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType);
+		void				upgCircleMenuClear(int iOption);
+		void				upgCircleMenuDialogSet(int iOption, str sText, str sThread, str sImage);
+		void				upgCircleMenuDialogClear(int iOption);
+		void				upgCircleMenuHud(bool show);
+		void				upgCircleMenuSetEvent(Event* ev);
+		void				upgCircleMenuClearEvent(Event* ev);
+		void				upgCircleMenuDialogSetEvent(Event* ev);
+		void				upgCircleMenuDialogClearEvent(Event* ev);
+		void				upgCircleMenuEvent(Event* ev);
 		//circlemenu - end
 */

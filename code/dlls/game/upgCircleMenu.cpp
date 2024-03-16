@@ -214,7 +214,7 @@ void Player::circleMenu(int iType)
 		upgCircleMenu.lastViewangle = upgCircleMenu.viewAngle;
 
 		upgCircleMenu.active = iType;
-		circleMenuHud(true);
+		upgCircleMenuHud(true);
 
 		//[b60021] chrissstrahl - stop weapon from fireing
 		upgCircleMenu.lastWeapon = "None";
@@ -243,7 +243,7 @@ void Player::circleMenu(int iType)
 //hudPrint("circleMenu - end\n");//hzm coopdebug circlemenu
 		upgPlayerDelayedServerCommand(entnum, "-attackLeft");
 		
-		circleMenuHud(false);
+		upgCircleMenuHud(false);
 		upgCircleMenu.active = 0;
 
 		enableInventory();
@@ -385,7 +385,7 @@ int Player::circleMenuGetSegmentNumForAngle(float fAngle)
 
 //[b60011] chrissstrahl
 //================================================================
-// Name:        circleMenuThink
+// Name:        upgCircleMenuThink
 // Class:       -
 //              
 // Description:	Checks if circle menu is active and manages interactions
@@ -395,7 +395,7 @@ int Player::circleMenuGetSegmentNumForAngle(float fAngle)
 // Returns:     -
 //              
 //================================================================
-void Player::circleMenuThink()
+void Player::upgCircleMenuThink()
 {
 	//0 + = down
 	//0 - = up
@@ -409,15 +409,15 @@ void Player::circleMenuThink()
 		return;
 	}
 	
-//gi.Printf(va("Player::circleMenuThink()->circleMenuGetWidgetName %i - %f\n", upgCircleMenu.active, upgCircleMenu.thinkTime));
+//gi.Printf(va("Player::upgCircleMenuThink()->circleMenuGetWidgetName %i - %f\n", upgCircleMenu.active, upgCircleMenu.thinkTime));
 
 	//make sure it can not be abused by spec
 	if (this->getHealth() <= 0 || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this)) {
 		if (upgCircleMenu.active) {
-			circleMenuHud(false);
+			upgCircleMenuHud(false);
 			upgCircleMenu.active = 0;
 		}
-//hudPrint("circleMenuThink - dead or spec\n");//hzm coopdebug circlemenu
+//hudPrint("upgCircleMenuThink - dead or spec\n");//hzm coopdebug circlemenu
 
 		return;
 	}
@@ -428,9 +428,9 @@ void Player::circleMenuThink()
 			upgCircleMenu.holdingLeftButton = true;
 //hudPrint("c select\n");
 			upgCircleMenu.thinkTime = level.time;
-			circleMenuSelect(upgCircleMenu.lastSegment);
+			upgCircleMenuSelect(upgCircleMenu.lastSegment);
 
-//hudPrint(va("circleMenuThink - select %d\n", upgCircleMenu.lastSegment));//hzm coopdebug circlemenu
+//hudPrint(va("upgCircleMenuThink - select %d\n", upgCircleMenu.lastSegment));//hzm coopdebug circlemenu
 			return;
 		}
 	}
@@ -459,7 +459,7 @@ void Player::circleMenuThink()
 	//[b60021] chrissstrahl - select widget by right click
 	if (last_ucmd.buttons & BUTTON_ATTACKRIGHT) {
 		if (upgCircleMenu.holdingRightButton) {
-//hudPrint("circleMenuThink - holding right\n");//hzm coopdebug circlemenu
+//hudPrint("upgCircleMenuThink - holding right\n");//hzm coopdebug circlemenu
 			return;
 		}
 
@@ -468,14 +468,14 @@ void Player::circleMenuThink()
 		if (fSegmentNum >= 4) {
 			fSegmentNum = 0;
 		}
-//hudPrint(va("circleMenuThink - next %d\n",fSegmentNum));//hzm coopdebug circlemenu
+//hudPrint(va("upgCircleMenuThink - next %d\n",fSegmentNum));//hzm coopdebug circlemenu
 	}
 	else {
 		upgCircleMenu.holdingRightButton = false;
 	}
 
 	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
-	//gi.Printf("Player::circleMenuThink()->circleMenuGetWidgetName\n");
+	//gi.Printf("Player::upgCircleMenuThink()->circleMenuGetWidgetName\n");
 
 	if (sWidgetName != "" && sWidgetName != upgCircleMenu.lastWidget) {
 		str sCmd;
@@ -508,7 +508,7 @@ void Player::circleMenuThink()
 	fSegmentNum = circleMenuGetSegmentNumForAngle(fAngle);
 
 
-//gi.Printf("Player::circleMenuThink()->circleMenuGetWidgetName\n");
+//gi.Printf("Player::upgCircleMenuThink()->circleMenuGetWidgetName\n");
 	sWidgetName = circleMenuGetWidgetName(fSegmentNum);
 
 	//reset
@@ -539,7 +539,7 @@ void Player::circleMenuThink()
 
 //[b60011] chrissstrahl
 //================================================================
-// Name:        circleMenuSelect
+// Name:        upgCircleMenuSelect
 // Class:       -
 //              
 // Description:	Manages if the player has selected a item on the circle menu
@@ -549,7 +549,7 @@ void Player::circleMenuThink()
 // Returns:     -
 //              
 //================================================================
-void Player::circleMenuSelect(int iOption)
+void Player::upgCircleMenuSelect(int iOption)
 {
 	if (iOption < 0 || iOption >= CIRCLEMENU_MAX_OPTIONS) {
 		gi.Printf(va("circleMenuSelect: Given Option %d is out of Range for Client[%d]\n", iOption,entnum));
@@ -589,7 +589,7 @@ void Player::circleMenuSelect(int iOption)
 		sThread = upgCircleMenu.optionDialogThread[iOption];
 	}
 
-//gi.Printf(va("circleMenuSelect: %i selected\n", (iOption + 1)));
+//gi.Printf(va("upgCircleMenuSelect: %i selected\n", (iOption + 1)));
 	
 	if (bIsScript) {
 		upgPlayerRunThread(sThread);
@@ -603,7 +603,7 @@ void Player::circleMenuSelect(int iOption)
 
 //[b60011] chrissstrahl
 //================================================================
-// Name:        circleMenuHud
+// Name:        upgCircleMenuHud
 // Class:       -
 //              
 // Description:	Hides/Shows related circle menu
@@ -613,7 +613,7 @@ void Player::circleMenuSelect(int iOption)
 // Returns:     -
 //              
 //================================================================
-void Player::circleMenuHud(bool show)
+void Player::upgCircleMenuHud(bool show)
 {
 	str sMenu;
 	str sWidgetName;
@@ -648,7 +648,7 @@ void Player::circleMenuHud(bool show)
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - starts circle menu
-void Player::circleMenuEvent(Event* ev)
+void Player::upgCircleMenuEvent(Event* ev)
 {
 	if (health <= 0 || multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator(this, SPECTATOR_TYPE_ANY)) { return; }
 
@@ -657,7 +657,7 @@ void Player::circleMenuEvent(Event* ev)
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
-void Player::circleMenuDialogSetEvent(Event* ev)
+void Player::upgCircleMenuDialogSetEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
 	str sText = ev->GetString(2);
@@ -666,11 +666,11 @@ void Player::circleMenuDialogSetEvent(Event* ev)
 	if (ev->NumArgs() > 3) {
 		sImage = ev->GetString(4);
 	}
-	circleMenuDialogSet(iOption, sText, sThread, sImage);
+	upgCircleMenuDialogSet(iOption, sText, sThread, sImage);
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
-void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage)
+void Player::upgCircleMenuDialogSet(int iOption, str sText, str sThread, str sImage)
 {
 	//range 1 to CIRCLEMENU_MAX_OPTIONSDIALOG
 	if (iOption < 1 || iOption > CIRCLEMENU_MAX_OPTIONSDIALOG) {
@@ -679,7 +679,7 @@ void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage
 	}
 	
 	//if (upgCircleMenu.active <= 0) {
-		//gi.Printf(va("%s.circleMenuDialogSet() - Can only be used while menu active.\n", targetname.c_str()));
+		//gi.Printf(va("%s.upgCircleMenuDialogSet() - Can only be used while menu active.\n", targetname.c_str()));
 	//}
 
 	int iOptionToArrayNum = (iOption - 1); //make it so that players can start with 1 instead of 0, substract 1
@@ -690,7 +690,7 @@ void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage
 	if (!sImage.length()) { sImage = "weapons/empty"; }
 	if (!sText.length()) { sText = "^"; }
 
-	//gi.Printf("Player::circleMenuDialogSet()->circleMenuGetWidgetName\n");
+	//gi.Printf("Player::upgCircleMenuDialogSet()->circleMenuGetWidgetName\n");
 	str sWidgetName = circleMenuGetWidgetName(iOptionToArrayNum);
 
 	//send commands to menu
@@ -700,14 +700,14 @@ void Player::circleMenuDialogSet(int iOption, str sText, str sThread, str sImage
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - clears dialog options from circle menu
-void Player::circleMenuDialogClearEvent(Event* ev)
+void Player::upgCircleMenuDialogClearEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
-	circleMenuDialogClear(iOption);
+	upgCircleMenuDialogClear(iOption);
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu for player
-void Player::circleMenuDialogClear(int iOption)
+void Player::upgCircleMenuDialogClear(int iOption)
 {
 	if (upgCircleMenu.active <= 0) {
 		gi.Printf(va("%s.circleMenuDialogClear() - Can only be used while menu active.\n", targetname.c_str()));
@@ -722,18 +722,18 @@ void Player::circleMenuDialogClear(int iOption)
 
 	if (iOption != 0) {
 		//reset specific
-		circleMenuDialogSet(iOption, "", "", "");
+		upgCircleMenuDialogSet(iOption, "", "", "");
 	}
 	else {
 		//reset all
 		for (int i = 1; i <= CIRCLEMENU_MAX_OPTIONSDIALOG; i++) {
-			circleMenuDialogSet(i, "", "", "");
+			upgCircleMenuDialogSet(i, "", "", "");
 		}
 	}
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu for player
-void Player::circleMenuSetEvent(Event* ev)
+void Player::upgCircleMenuSetEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
 	str sText = ev->GetString(2);
@@ -756,11 +756,11 @@ void Player::circleMenuSetEvent(Event* ev)
 		iCost = ev->GetInteger(7);
 		sCostType = ev->GetInteger(8);
 	}
-	circleMenuSet(iOption, sText, sThread, sImage, bIsThread, iAmmount, iCost, sCostType);
+	upgCircleMenuSet(iOption, sText, sThread, sImage, bIsThread, iAmmount, iCost, sCostType);
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
-void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType)
+void Player::upgCircleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType)
 {
 	//range 1 to CIRCLEMENU_MAX_OPTIONS
 	if (iOption < 1 || iOption > CIRCLEMENU_MAX_OPTIONS) {
@@ -770,7 +770,7 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 
 	//[b60021] chrissstrahl - disabled - we want to use circlemenu in conjunction with class !ability
 	//if (upgCircleMenu.active <= 0) {
-		//gi.Printf(va("%s.circleMenuSet() - Can only be used while menu active.\n", targetname.c_str()));
+		//gi.Printf(va("%s.upgCircleMenuSet() - Can only be used while menu active.\n", targetname.c_str()));
 	//}
 
 	if (!sImage.length()) { sImage = "weapons/empty"; }
@@ -787,7 +787,7 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 	upgCircleMenu.optionCost[iOptionToArrayNum] = iCost;
 	upgCircleMenu.optionCostType[iOptionToArrayNum] = sCostType;
 
-	//gi.Printf("Player::circleMenuSet()->circleMenuGetWidgetName\n");
+	//gi.Printf("Player::upgCircleMenuSet()->circleMenuGetWidgetName\n");
 	str sWidgetName = circleMenuGetWidgetName(iOptionToArrayNum);
 
 	//send commands to menu
@@ -808,14 +808,14 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
-void Player::circleMenuClearEvent(Event* ev)
+void Player::upgCircleMenuClearEvent(Event* ev)
 {
 	int iOption = ev->GetInteger(1);
-	circleMenuClear(iOption);
+	upgCircleMenuClear(iOption);
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - clears dialog option from circle menu
-void Player::circleMenuClear(int iOption)
+void Player::upgCircleMenuClear(int iOption)
 {
 	if (upgCircleMenu.active <= 0) {
 		gi.Printf(va("%s.circleMenuClear() - Can only be used while menu active.\n", targetname.c_str()));
@@ -830,12 +830,12 @@ void Player::circleMenuClear(int iOption)
 
 	if (iOption != 0) {
 		//reset specific
-		circleMenuSet(iOption, "", "", "", false, 999999, 0, "");
+		upgCircleMenuSet(iOption, "", "", "", false, 999999, 0, "");
 	}
 	else {
 		//reset all
 		for (int i = 1; i <= CIRCLEMENU_MAX_OPTIONS; i++) {
-			circleMenuSet(i, "", "", "", false, 999999, 0, "");
+			upgCircleMenuSet(i, "", "", "", false, 999999, 0, "");
 		}
 	}
 }
