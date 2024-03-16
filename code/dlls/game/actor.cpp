@@ -7304,24 +7304,8 @@ void Actor::Dead( Event *ev )
 		PostEvent( EV_Actor_Fade, .5f );
 	}	
 	else {
-		//[b607] chrissstrahl - this prevents actors from fading out just like that on death
-		//
-		////CancelEventsOfType(EV_Actor_Fade);
-		// /*&& (last_time_active + 10.0f) > level.time*/
-		//
-		//- based on a suggestion and quick ai-data files mod from MJ
-
-		// deactivated - because we get gamestate issues - cl_ParseGamestate: bad command byte -1 (last 4) on m4l1a
-		//client shows as connecting but is then dropped with the above error
-		
+		//[b608] - exit here to prevent Fade Event being posted, this makes the actor stay on the level after death
 		if (coop_actorDeadBodiesHandle( (Entity*)this )) {
-			//[b608] chrissstrahl - stop electrified effect on dead body
-			Event *newEvent;
-			newEvent = new Event(EV_ClearCustomShader);
-			newEvent->AddString("electriclines");
-			Entity *eAct = (Entity*)this;
-			eAct->PostEvent(newEvent, 5.0f);
-			//[b608] end
 			return;
 		}
 		
