@@ -2211,7 +2211,8 @@ bool coop_playerKilled( const Player *killedPlayer , const Entity *attacker , co
 
 	//[b60011] chrissstrahl - changed: player is now starting the thread, player number removed
 	//notify level scripts that the player just spawned - this is used on custom map scripts
-	ExecuteThread("coop_justDiedplayer", true, (Entity*)killedPlayer);
+	//[b60021] chrissstrahl - fixed bad thread name
+	ExecuteThread("coop_justDied", true, (Entity*)killedPlayer);
 
 //check uservars of inflictor, should we have a custom killmessage ?
 //should we use a custom name for the inflictor ?	
