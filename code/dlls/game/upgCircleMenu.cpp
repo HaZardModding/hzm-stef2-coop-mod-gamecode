@@ -803,6 +803,8 @@ void Player::circleMenuSet(int iOption, str sText, str sThread, str sImage, bool
 		sText = upgStrings.getReplacedForLabeltext(sText);
 		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 	}
+
+	gi.Printf(va("COOPDEBUG - EV_Player_circleMenuSet %d %s\n", iOptionToArrayNum, upgCircleMenu.optionThreadOrCommand[iOptionToArrayNum].c_str()));
 }
 
 //hzm gameupdate chrissstrahl [b60011]  - adds dialog option to circle menu
