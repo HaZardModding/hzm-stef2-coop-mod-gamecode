@@ -14,6 +14,7 @@
 #include "_pch_cpp.h"
 
 //check if player has german game version
+bool coop_checkDeadBodiesStayDisabled();
 bool coop_checkCharsInsideString( str sSource , str sObjectsOfIntrest );
 str coop_checkPlayerCoopIdExistInIni(Player* player, str sClientId);
 bool coop_checkStringInUservarsOf( Entity * ent , str sStringPart );

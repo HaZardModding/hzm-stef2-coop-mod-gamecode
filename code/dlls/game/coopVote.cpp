@@ -663,6 +663,11 @@ int coop_vote_deadbodiesValidate(Player* player, const str &command, const str &
 		return 0;
 	}
 
+	//[b60021] chrissstrahl - inform player that it is disabled on this level
+	if (coop_checkDeadBodiesStayDisabled()) {
+		multiplayerManager.HUDPrint(player->entnum,"^5Info:^3 coop_deadbodies is disabled on this level.\n");
+	}
+
 	if (!stricmp(arg.c_str(), "")){
 		multiplayerManager.HUDPrint(player->entnum,va("^2$$Usage$$:^8 coop_deadbodies 0 - 25, current: %i\n", game.coop_deadBodiesPerArea));
 		return 1;
@@ -1666,10 +1671,10 @@ bool coop_vote_maxspeedSet(const str _voteString)
 }
 
 //========================================================= [b607]
-// Name:        coop_vote_teamiconSet
+// Name:        coop_vote_challengeSet
 // Class:       -
 //              
-// Description: Handles team icon/arrow
+// Description: Handles team sNumOfBodies/arrow
 //              
 // Parameters:	str _voteString
 //              
@@ -1721,7 +1726,7 @@ bool coop_vote_deadbodiesSet(const str _voteString)
 	if (Q_stricmpn(_voteString, "coop_deadbodies", 15) != 0) {
 		return false;
 	}
-	str icon;
+	str sNumOfBodies;
 	int i;
 
 	int iStart = upgStrings.containsAt(_voteString, " ");
@@ -1729,15 +1734,15 @@ bool coop_vote_deadbodiesSet(const str _voteString)
 	else { return true; }
 
 	for (i = iStart; i < _voteString.length(); i++) {
-		icon += _voteString[i];
+		sNumOfBodies += _voteString[i];
 	}
 
 	//save to ini
-	icon = atoi(icon);
-	coop_parserIniSet(coopServer.getServerDataIniFilename(), "deadbodies", icon.c_str(), "server");
+	sNumOfBodies = atoi(sNumOfBodies);
+	coop_parserIniSet(coopServer.getServerDataIniFilename(), "deadbodies", sNumOfBodies.c_str(), "server");
 
 	//set to glkobal var
-	game.coop_deadBodiesPerArea = atoi(icon);
+	game.coop_deadBodiesPerArea = atoi(sNumOfBodies);
 
 	//[b607] chrissstrahl - update callvote ui
 	coop_huds_callvoteOptionChangedUI("Dead Bodies per Area", game.coop_deadBodiesPerArea, "coopGpoDb");

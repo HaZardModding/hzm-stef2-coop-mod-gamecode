@@ -24,6 +24,27 @@
 #include "program.h"
 
 
+//========================================================[b60021]
+// Name:        coop_checkDeadBodiesStayDisabled
+// Class:       -
+//              
+// Description: Checks if dead bodies are allowed to stay on this level
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//              
+//================================================================
+bool coop_checkDeadBodiesStayDisabled()
+{
+	ScriptVariable* entityData = NULL;
+	entityData = world->entityVars.GetVariable("coop_disableDeadBodies");
+	if (entityData == NULL) {
+		return false;
+	}
+	return ((bool)entityData->floatValue());
+}
+	
 //================================================================
 // Name:        coop_checkEntityInsideDoor
 // Class:       -
