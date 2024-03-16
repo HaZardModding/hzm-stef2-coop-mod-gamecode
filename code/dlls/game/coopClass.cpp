@@ -99,7 +99,7 @@ void Player::coop_classAbilityRecoverHud()
 	Event* recover100 = new Event(EV_Player_RecoverAbilityHud);
 	recover100->AddString("coop_class100");
 	//recover100->AddString("enable");
-	PostEvent(recover100, ((COOP_CLASS_REGENERATION_COOLDOWN / 4) * 4) - 0.1); // make sure the hud reappaers just a lil bit earlier so it won't overlap
+	PostEvent(recover100, COOP_CLASS_REGENERATION_COOLDOWN - 0.05); // make sure the hud reappaers just a lil bit earlier so it won't overlap
 }
 
 //========================================================[b60021]
