@@ -282,18 +282,18 @@ class Player : public Sentient
 	private:
 		str					circleMenuGetWidgetName(int iDirection);
 		int					circleMenuGetSegmentNumForAngle(float fAngle);
-		void				circleMenuThink(void);
-		void				circleMenuSelect(int iSelection);
-		void				circleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType);
-		void				circleMenuClear(int iOption);
-		void				circleMenuDialogSet(int iOption, str sText, str sThread, str sImage);
-		void				circleMenuDialogClear(int iOption);
-		void				circleMenuHud(bool show);
-		void				circleMenuSetEvent(Event* ev);
-		void				circleMenuClearEvent(Event* ev);
-		void				circleMenuDialogSetEvent(Event* ev);
-		void				circleMenuDialogClearEvent(Event* ev);
-		void				circleMenuEvent(Event* ev);
+		void				upgCircleMenuThink(void);
+		void				upgCircleMenuSelect(int iSelection);
+		void				upgCircleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType);
+		void				upgCircleMenuClear(int iOption);
+		void				upgCircleMenuDialogSet(int iOption, str sText, str sThread, str sImage);
+		void				upgCircleMenuDialogClear(int iOption);
+		void				upgCircleMenuHud(bool show);
+		void				upgCircleMenuSetEvent(Event* ev);
+		void				upgCircleMenuClearEvent(Event* ev);
+		void				upgCircleMenuDialogSetEvent(Event* ev);
+		void				upgCircleMenuDialogClearEvent(Event* ev);
+		void				upgCircleMenuEvent(Event* ev);
 		void				circleMenuSwitchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
 	public:
 		//--------------------------------------------------------------
@@ -307,6 +307,8 @@ class Player : public Sentient
 		//--------------------------------------------------------------
 		friend class		UpgPlayer;
 		UpgPlayer			upgPlayer;
+		//[b60021] chrissstrahl
+		bool				upgPlayerDoUseIgnore(Entity* e);
 		//[b60017] chrissstrahl
 		bool				upgPlayerCanTaunt();
 		//[b60014] chrissstrahl

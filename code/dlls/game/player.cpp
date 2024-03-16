@@ -1558,11 +1558,11 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//--------------------------------------------------------------
 	// GAMEUPGRADE PLAYER CIRCLEMENU //[b60011] - chrissstrahl
 	//--------------------------------------------------------------
-	{ &EV_Player_circleMenu,					&Player::circleMenuEvent},
-	{ &EV_Player_circleMenuDialogSet,			&Player::circleMenuDialogSetEvent},
-	{ &EV_Player_circleMenuDialogClear,			&Player::circleMenuDialogClearEvent },
-	{ &EV_Player_circleMenuSet,					&Player::circleMenuSetEvent },
-	{ &EV_Player_circleMenuClear,				&Player::circleMenuClearEvent },
+	{ &EV_Player_circleMenu,					&Player::upgCircleMenuEvent},
+	{ &EV_Player_circleMenuDialogSet,			&Player::upgCircleMenuDialogSetEvent},
+	{ &EV_Player_circleMenuDialogClear,			&Player::upgCircleMenuDialogClearEvent },
+	{ &EV_Player_circleMenuSet,					&Player::upgCircleMenuSetEvent },
+	{ &EV_Player_circleMenuClear,				&Player::upgCircleMenuClearEvent },
 	//--------------------------------------------------------------
 	// GAMEUPGRADE PLAYER - chrissstrahl - mostly script related
 	//--------------------------------------------------------------
@@ -4272,6 +4272,13 @@ void Player::DoUse( Event *ev )
 		if ( hit->entity->getSolidType() == SOLID_NOT )
 			continue;
 
+
+		//[b60021] chrissstrahl - make sure that holdable items still work even if we are around script objects
+		//unless that script object can actually really be used
+		if (upgPlayerDoUseIgnore(hit->entity)) {
+			continue;
+		}
+
 		entityActuallyUsed = true;
 	}
 
@@ -5756,16 +5763,19 @@ void Player::ClientThink( Event *ev )
 	client->cmd_angles[1] = SHORT2ANGLE(current_ucmd->angles[1]);
 	client->cmd_angles[2] = SHORT2ANGLE(current_ucmd->angles[2]);
 
-	//[b60014] chrissstrahl - check if player needs to be equiped
-	upgPlayerSpEquip();
 
-	//[b60011] chrissstrahl - check if circle menu is active, if so react
-	circleMenuThink();
-	//hzm coop mod chrissstrahl - handle coop specific stuff in here
+	//--------------------------------------------------------------
+	// [b600xx] chrissstrahl - handle coop specific stuff in here
+	//--------------------------------------------------------------
 	coop_playerThink(this);
 
-	//[GAMEUPGRADE][b60014] chrissstrahl
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl
+	//--------------------------------------------------------------
+	upgCircleMenuThink();  //[b60011]
 	upgPlayerClientThink();
+	upgPlayerSpEquip();
+
 
 	if ( client->ps.pm_flags & PMF_CAMERA_VIEW )
 	{

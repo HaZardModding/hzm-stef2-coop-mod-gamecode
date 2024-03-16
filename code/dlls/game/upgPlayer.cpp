@@ -425,6 +425,48 @@ Event EV_Player_getViewtraceEndpos
 );
 
 
+//=========================================================[b60021]
+// Name:        upgPlayerDoUseIgnore
+// Class:       Player
+//              
+// Description: Check if this entity should be ignored on a use event
+//				This is used to fix a issue when a script_object object
+//				has a large bounding box, like a patch but it is not
+//				set to SOLID_NOT, players don't colide with that boundingbox
+//				they colide with the surfaces, how ever for Player::DoUse(EVENT)
+//				Bounding Boxes are used, we want script_objects to only be
+//				valid for that event, if they have a actual onUse thread set.
+//				-
+//				Otherwhise you could not use Holdable Items on coop_bugs
+//				while being on the ship. There could ve other levels with
+//				the same issue, how ever, this fixes it now
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool Player::upgPlayerDoUseIgnore(Entity *e)
+{
+	//[b60021] chrissstrahl - make sure that holdable items still work even if we are around script objects
+	//unless that script object can actually really be used
+	str sClassName = e->getClassname();
+	if (!Q_stricmpn(sClassName.c_str(), "ScriptSlave", 11)) {
+		ScriptSlave* ScriptObject = (ScriptSlave*)e;
+		if (!ScriptObject->upgScriptSlaveGetUseLabel().length()) {
+			return true;
+		}
+	}
+	
+	//I need to look into this in the future perhaps - I am not willing now to spend 2 more hours on it figuring all the spawnflags out and getting accsess to all the related classes
+	// 
+	//unsure if we should ignore touchfields, because of doors check it
+	//if (!Q_stricmpn(sClassName.c_str(), "TouchField", 10)) {
+		//return false;
+	//}
+
+	return false;
+}
+
 //=========================================================[b60017]
 // Name:        upgPlayerCanTaunt
 // Class:       Player

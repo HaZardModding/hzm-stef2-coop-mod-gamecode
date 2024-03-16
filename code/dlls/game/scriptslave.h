@@ -42,6 +42,7 @@ class ScriptSlave : public Trigger
 	// GAMEUPGRADE SCRIPTSLAVE	[b60021] - allow to accsess activator
 	//--------------------------------------------------------------
 	public:
+		str					upgScriptSlaveGetUseLabel();
 		void				upgGetLastActivatingEntity(Event* ev);
 		EntityPtr			upgGetLastActivatingEntity();
 

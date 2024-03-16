@@ -31,6 +31,13 @@ Event EV_ScriptSlave_GetLastActivatingEntity
 );
 
 
+//[b60021] chrissstrahl - get use label - script_object has onUse set
+//-----------------------------------------------------
+str ScriptSlave::upgScriptSlaveGetUseLabel()
+{
+	return uselabel;
+}
+
 //[b60021] chrissstrahl - return last activator for script/event usage
 //-----------------------------------------------------
 void ScriptSlave::upgGetLastActivatingEntity(Event* ev)
