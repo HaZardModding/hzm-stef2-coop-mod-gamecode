@@ -672,9 +672,7 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 		if ( &g_entities[i].inuse && g_entities[i].entity && g_entities[i].client ){
 			Player *playerValid = ( Player * )g_entities[i].entity;
 			if (playerValid){
-				//keep it in two lines
-				gi.SendServerCommand( i , "stufftext \"disconnect;freeze 4;reconnect\"\n" );
-				gi.SendServerCommand( i , "stufftext \"exec coop_mod/cfg/reconnect\"\n" );	
+				gi.SendServerCommand( i , "stufftext \"disconnect;exec coop_mod/cfg/reconnect\"\n" );	
 			}
 		}
 	}
