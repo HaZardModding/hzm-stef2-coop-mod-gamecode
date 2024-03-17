@@ -11464,7 +11464,8 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 	float fDialogEngLength = 0;
 	float fDialogDeuLength = 0;
 	//[b60015] chrissstrahl - quick fix to eliminate loadFile error on vlp files for playdialog when used by cinematics for playing .wav files
-	if (g_gametype->integer != GT_SINGLE_PLAYER && upgStrings.getFileExtension(sLazyCodingSolutionHack).tolower() == ".mp3") {
+	str sFileExt = upgStrings.getFileExtension(sLazyCodingSolutionHack).tolower();
+	if (g_gametype->integer != GT_SINGLE_PLAYER && sFileExt == ".mp3") {
 		sLazyCodingSolutionHack = upgStrings.getStartingFrom(sLazyCodingSolutionHack,13);
 		if (sLazyCodingSolutionHack[0] == '/') {
 			sLazyCodingSolutionHack = upgStrings.getStartingFrom(sLazyCodingSolutionHack,2);
@@ -11475,7 +11476,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 		//read contents of file into string - the first line contains the dialog length
 		str buffer = "";
 		str value = "";
-		if (coop_parserReadFile("loc/deu/" + sLazyCodingSolutionHack, buffer)) {
+		if (coop_parserReadFile("loc/Deu/" + sLazyCodingSolutionHack, buffer)) {
 			//get string from buffer until first line or end of file/buffer
 			for (int i = 0; i < buffer.length(); i++) {
 				value += buffer[i];
@@ -11493,7 +11494,7 @@ void Actor::PlayDialog( Sentient *user, float volume, float min_dist, const char
 //ENGLISH DIALOG
 		//read contents of file into string - the first line contains the dialog length
 		buffer = "";
-		if (coop_parserReadFile("loc/eng/" + sLazyCodingSolutionHack, buffer)) {
+		if (coop_parserReadFile("loc/Eng/" + sLazyCodingSolutionHack, buffer)) {
 			//get string from buffer until first line or end of file/buffer
 			for (int i = 0; i < buffer.length(); i++) {
 				value += buffer[i];
