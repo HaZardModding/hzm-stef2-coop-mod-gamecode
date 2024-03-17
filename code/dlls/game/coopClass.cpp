@@ -425,7 +425,7 @@ void coop_classSet( Player *player , str classToSet )
 
 		player->coopPlayer.className = classToSet;
 
-		gi.Printf(va("COOPDEBUG coop_classSet %s for %s\n", classToSet.c_str(), player->client->pers.netname));
+		gi.Printf(va("%s: %s\n", classToSet.c_str(), player->client->pers.netname));
 	}
 }
 
