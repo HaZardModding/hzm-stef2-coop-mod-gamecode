@@ -54,8 +54,8 @@ public:
 	str		optionIcon				[CIRCLEMENU_MAX_OPTIONS];
 	bool	optionIsScript			[CIRCLEMENU_MAX_OPTIONS];
 	int		optionAmmount			[CIRCLEMENU_MAX_OPTIONS];
-	bool	optionCost				[CIRCLEMENU_MAX_OPTIONS];
-	bool	optionCostType			[CIRCLEMENU_MAX_OPTIONS];
+	int		optionCost				[CIRCLEMENU_MAX_OPTIONS];
+	str		optionCostType			[CIRCLEMENU_MAX_OPTIONS];
 
 	//circlemenu dialog options  - used for dialog selection
 	str		optionDialogThread	[CIRCLEMENU_MAX_OPTIONSDIALOG];
@@ -63,7 +63,7 @@ public:
 	str		optionDialogIcon	[CIRCLEMENU_MAX_OPTIONSDIALOG];
 };
 
-//UpgCircleMenu::circleMenu();
+//UpgCircleMenu::upgCircleMenuCall();
 
 
 /* THIS WAS ADDED TO: player.cpp at CLASS_DECLARATION( Sentient , Player , "player" )
@@ -82,10 +82,10 @@ public:
 		friend class		UpgCircleMenu;
 	private:
 		void				CircleMenuSetup();
-		void				circleMenu(int iType);
-		bool				circleMenuIsActive(void);
-		float				circleMenuLastTimeActive();
-		str					circleMenuGetWidgetName(int iDirection);
+		void				upgCircleMenuCall(int iType);
+		bool				upgCircleMenuIsActive(void);
+		float				upgCircleMenuLastTimeActive();
+		str					upgCircleMenuGetWidgetName(int iDirection);
 		int					getSegmentNumForAngle(float fAngle);
 		void				upgCircleMenuThink(void);
 		void				upgCircleMenuSelect(int iSelection);

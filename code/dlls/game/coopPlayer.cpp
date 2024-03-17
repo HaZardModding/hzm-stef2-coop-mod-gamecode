@@ -128,6 +128,15 @@ Event EV_Player_coopMessageUpdateYourMod
 
 //[b60021] chrissstrahl
 //================================================================
+// cleanup vars and what ever on level end/change
+//================================================================
+void Player::coopPlayerCleanUp()
+{
+
+}
+
+//[b60021] chrissstrahl
+//================================================================
 // handle setup of circle menu-hud
 //================================================================
 void Player::coopPlayerCircleMenuSetup()
@@ -166,19 +175,17 @@ void Player::coopPlayerCircleMenuSetup()
 	evCircleSet2->AddString(circleCmd2.c_str());
 	evCircleSet2->AddString(circleImg2.c_str());
 	evCircleSet2->AddInteger(0);
-	PostEvent(evCircleSet2,2.2f);
-	
+	ProcessEvent(evCircleSet2);
+
 	Event* evCircleSet3;
 	evCircleSet3 = new Event(EV_Player_circleMenuSet);
 	evCircleSet3->AddInteger(3);
-
 	if(upgPlayerHasLanguageGerman()){evCircleSet3->AddString(circleText3_deu.c_str());}
 	else{evCircleSet3->AddString(circleText3_eng.c_str());}
-	
 	evCircleSet3->AddString(circleCmd3.c_str());
 	evCircleSet3->AddString(circleImg3.c_str());
 	evCircleSet3->AddInteger(0);
-	PostEvent(evCircleSet3,2.3f);
+	ProcessEvent(evCircleSet3);
 
 	Event* evCircleSet4;
 	evCircleSet4 = new Event(EV_Player_circleMenuSet);
@@ -187,7 +194,7 @@ void Player::coopPlayerCircleMenuSetup()
 	evCircleSet4->AddString(circleCmd4.c_str());
 	evCircleSet4->AddString(circleImg4.c_str());
 	evCircleSet4->AddInteger(0);
-	PostEvent(evCircleSet4,2.4f);
+	ProcessEvent(evCircleSet4);
 }
 
 //[b60021] chrissstrahl
@@ -1546,6 +1553,9 @@ bool coop_playerSetup(Player* player)
 	//[b60014] chrissstrahl - we don't want to handle bots
 	if (multiplayerManager.inMultiplayer() && player->upgPlayerIsBot()) { return true; }
 
+	//[b60021] chrissstrahl
+	player->coopPlayerCleanUp();
+
 	//[b60014] chrissstrahl - temorarly disable sv_floodprotect to allow setup commands
 	//from client which are send fast in groups, floodprotect actually discards them (as it should)
 	coopServer.svFloodProtectDisable();
@@ -1570,7 +1580,7 @@ bool coop_playerSetup(Player* player)
 	}
 
 	//[b60021] chrissstrahl - init vars
-	player->circleMenuSetup();
+	player->upgCircleMenuSetup();
 
 	//[b60013] chrissstrahl - moved here - execute clientside inizialisation for coop - for all clients
 	upgPlayerDelayedServerCommand(player->entnum, "exec coop_mod/cfg/init.cfg");
@@ -2647,7 +2657,7 @@ void coop_playerPlaceableThink(Player* player)
 		player->coopPlayer.ePlacable->ProcessEvent(event);
 
 		//wait after the placable is shown to player before the click counts at placing it
-		if (player->circleMenuLastTimeActive() + (0.45) < level.time && player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
+		if (player->upgCircleMenuLastTimeActive() + (0.45) < level.time && player->GetLastUcmd().buttons & (BUTTON_ATTACKLEFT | BUTTON_ATTACKRIGHT)) {
 			//perevent weapon firing
 			Event* StopFireEvent;
 			StopFireEvent = new Event(EV_Sentient_StopFire);
@@ -3142,7 +3152,7 @@ void Player::coop_playerMessageUpdateYourMod(Event* ev)
 	extern Event EV_Player_coopMessageUpdateYourMod;
 
 	//on missionfailure, stop
-	if (level.mission_failed == qtrue || coop_getInstalledVersion() >= COOP_BUILD) {
+	if (level.mission_failed == (qboolean)qtrue || coop_getInstalledVersion() >= COOP_BUILD) {
 		return;
 	}
 	

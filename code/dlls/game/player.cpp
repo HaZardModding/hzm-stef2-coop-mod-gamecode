@@ -1751,7 +1751,7 @@ qboolean Player::checkattackleft( Conditional &condition )
 		return false;
 
 	//[b60011] Chrissstrahl - do not fire if we are in circle menu
-	if ((circleMenuLastTimeActive() + 0.35) > level.time) {
+	if ((upgCircleMenuLastTimeActive() + 0.35) > level.time) {
 		return false;
 	}
 
@@ -1828,7 +1828,7 @@ qboolean Player::checkattackright( Conditional &condition )
 		return false;
 
 	//[b60011] Chrissstrahl - do not fire if we are in circle menu
-	if ((circleMenuLastTimeActive() + 0.35) > level.time) {
+	if ((upgCircleMenuLastTimeActive() + 0.35) > level.time) {
 		return false;
 	}
 
@@ -3442,7 +3442,6 @@ Player::Player()
 	//[GAMEUPGRADE][b60014] chrissstrahl - run setup
 	//--------------------------------------------------------------
 	upgPlayerSetup();
-
 	
 	//--------------------------------------------------------------
 	//[b60014] chrissstrahl - run setup

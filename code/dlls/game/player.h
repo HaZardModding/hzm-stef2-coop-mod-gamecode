@@ -190,6 +190,7 @@ class Player : public Sentient
 		// COOP PLAYER - Specific to the Coop Mod
 		//--------------------------------------------------------------
 		//[b60021] chrissstrahl
+		void				coopPlayerCleanUp();
 		void				coopPlayerCircleMenuSetup();
 		void				coopClassRecoverAbilityHud(Event* ev);
 		void				coop_classPlayerKilled();
@@ -275,13 +276,14 @@ class Player : public Sentient
 	public:
 		friend class		UpgCircleMenu;
 		UpgCircleMenu		upgCircleMenu;
-		void				circleMenu(int iType);
-		bool				circleMenuIsActive(void);
-		float				circleMenuLastTimeActive();
-		void				circleMenuSetup(); //[b60021]
+		void				upgCircleMenuReset(); //[b60021]
+		void				upgCircleMenuSetup(); //[b60021]
+		void				upgCircleMenuCall(int iType);
+		bool				upgCircleMenuIsActive(void);
+		float				upgCircleMenuLastTimeActive();
 	private:
-		str					circleMenuGetWidgetName(int iDirection);
-		int					circleMenuGetSegmentNumForAngle(float fAngle);
+		str					upgCircleMenuGetWidgetName(int iDirection);
+		int					upgCircleMenuGetSegmentNumForAngle(float fAngle);
 		void				upgCircleMenuThink(void);
 		void				upgCircleMenuSelect(int iSelection);
 		void				upgCircleMenuSet(int iOption, str sText, str sThread, str sImage, bool bThread, int iAmmount, int iCost, str sCostType);
@@ -294,7 +296,7 @@ class Player : public Sentient
 		void				upgCircleMenuDialogSetEvent(Event* ev);
 		void				upgCircleMenuDialogClearEvent(Event* ev);
 		void				upgCircleMenuEvent(Event* ev);
-		void				circleMenuSwitchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
+		void				upgCircleMenuSwitchWidgets(str widget1, str widget2, str widget1Cmd, str widget2Cmd);
 	public:
 		//--------------------------------------------------------------
 		// GAMEUPGRADE BRANCHDIALOG
@@ -309,6 +311,7 @@ class Player : public Sentient
 		UpgPlayer			upgPlayer;
 		//[b60021] chrissstrahl
 		bool				upgPlayerDoUseIgnore(Entity* e);
+		void				upgPlayerCleanUp();
 		//[b60017] chrissstrahl
 		bool				upgPlayerCanTaunt();
 		//[b60014] chrissstrahl

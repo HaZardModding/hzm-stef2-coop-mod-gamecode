@@ -390,7 +390,7 @@ qboolean G_circleMenu(const gentity_t* ent)
 		return qtrue;
 	}
 
-	player->circleMenu(1);
+	player->upgCircleMenuCall(1);
 	return qtrue;
 }
 
@@ -418,7 +418,7 @@ qboolean G_circleDialog(const gentity_t* ent)
 		return qtrue;
 	}
 	
-	player->circleMenu(2);
+	player->upgCircleMenuCall(2);
 	return qtrue;
 }
 
