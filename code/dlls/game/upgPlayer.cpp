@@ -426,6 +426,21 @@ Event EV_Player_getViewtraceEndpos
 
 
 //=========================================================[b60021]
+// Name:        upgPlayerCleanUp
+// Class:       Player
+//              
+// Description: Cleans up Variables and stuff we don't want to carry over to the next level
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void Player::upgPlayerCleanUp()
+{
+	upgCircleMenuReset();
+}
+
+//=========================================================[b60021]
 // Name:        upgPlayerDoUseIgnore
 // Class:       Player
 //              
@@ -587,7 +602,7 @@ void Player::upgPlayerMessageOfTheDay(Event* ev)
 	if (!multiplayerManager.inMultiplayer()) { return; }
 	
 	//on missionfailure, stop
-	if (level.mission_failed == qtrue) {
+	if (level.mission_failed == (qboolean)qtrue) {
 		return;
 	}
 
@@ -1121,6 +1136,9 @@ void Player::upgPlayerSetup()
 	if (level.spawn_bot) { edict->svflags |= SVF_BOT; }
 
 	upgPlayerSetLevelTimeEntered();
+
+	//[b60021] chrissstrahl - reset data
+	upgPlayerCleanUp();
 
 	//tell player to give us his cl_maxpackets and language
 	if (upgPlayerIsHost()) {
@@ -1915,7 +1933,6 @@ void Player::upgPlayerGetNameEvent(Event* ev)
 
 		//filter color codes
 		if (filterOption == 2 || filterOption == 3) {
-			bool skipNext = false;
 			for (int i = 0; i < playerName.length(); i++) {
 				if (playerName[i] == '^' && playerName.length() > (i + 1) && IsNumeric(str(playerName[i + 1]))) {
 					i++;
@@ -2074,7 +2091,7 @@ void upgPlayerDelayedServerCommand(int entNum,const char* commandText)
 		{
 			temp = temp->next;
 		}
-		gi.Printf("upgPlayerDelayedServerCommand (%s): %s\n", player->client->pers.netname, command->command);
+//gi.Printf("upgPlayerDelayedServerCommand (%s): %s\n", player->client->pers.netname, command->command);
 		temp->next = command;
 	}
 }
