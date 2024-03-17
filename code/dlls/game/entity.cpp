@@ -2153,7 +2153,6 @@ void Entity::traceHitsSky(Event* ev)
 	trace = G_Trace(start, vec_zero, vec_zero, end, NULL, MASK_SHOT, false, "traceHitsEntity");
 
 	// Determine if we hit this surface
-	bool bHit = false;
 	if (trace.ent && trace.ent->entity && trace.surfaceFlags & SURF_SKY) {
 		ev->ReturnVector(trace.endpos);
 		return;	
