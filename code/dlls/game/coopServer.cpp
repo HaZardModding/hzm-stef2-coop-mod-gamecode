@@ -1667,17 +1667,9 @@ void coop_serverCleanup(bool restart)
 		return;
 	}
 
-	//hzm coop mod chrissstrahl - save client data
-	if (game.coop_isActive) {
-		coop_serverSaveAllClientData();
-	}
-
 	//[b60011] chrissstrahl
 	coopChallenges.cleanUp(restart);
 	coopNpcTeam.cleanUp(restart);
-	//[b60016] chrissstrahl - fix camera crash issues when changing levels
-	upgGame.cleanUp(restart);
-
 
 	//be smart, clean these at the very end
 	game.coop_author = "";

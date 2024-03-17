@@ -299,8 +299,16 @@ void Level::CleanUp( qboolean restart )
 	
 	_earthquakes.ClearObjectList();
 
+
+	//--------------------------------------------------------------
 	//[b60011] chrissstrahl - added cleanup func
+	//--------------------------------------------------------------
 	coop_serverCleanup(restart);
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60016] chrissstrahl - fix camera crash issues when changing levels
+	//--------------------------------------------------------------
+	upgGame.cleanUp(restart);
 	
 	_cleanup = false;
 }
