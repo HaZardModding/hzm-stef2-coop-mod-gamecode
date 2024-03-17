@@ -822,10 +822,10 @@ void Teleporter::Teleport( Event *ev )
 		Player *player = ( Player* )other;
 		player->hudPrint(va("Teleport trigger $%s (%i %i %i) has no valid target (func_teleportdest)\n", targetname.c_str(), (int)origin[0], (int)origin[1], (int)origin[2]));
 
-		Event* newEvent = new Event(EV_DisplayEffect);
-		newEvent->AddString("TransportIn");
-		newEvent->AddString("Multiplayer");
-		other->PostEvent(newEvent, 0.0f);
+		Event* beamInAgain = new Event(EV_DisplayEffect);
+		beamInAgain->AddString("TransportIn");
+		beamInAgain->AddString("Multiplayer");
+		other->PostEvent(beamInAgain, 0.0f);
 		in_use = false;
 		wait = 4;
 //hzm eof
