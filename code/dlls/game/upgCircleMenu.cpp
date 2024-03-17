@@ -528,7 +528,9 @@ void Player::upgCircleMenuThink()
 	if (sWidgetName != "" && sWidgetName != upgCircleMenu.lastWidget) {
 		str sCmd;
 		G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 0 0 0 1", sWidgetName.c_str()));
-		G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 0.5 0.5 0.5 1", upgCircleMenu.lastWidget.c_str()));
+		if (upgCircleMenu.lastWidget.length()) {
+			G_SendCommandToPlayer(this->edict, va("globalwidgetcommand %s shadercolor 0.5 0.5 0.5 1", upgCircleMenu.lastWidget.c_str()));
+		}
 	}
 
 	//gi.Printf(va("Reset: %s\n", upgCircleMenu.lastWidget));
