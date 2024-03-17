@@ -425,7 +425,7 @@ void coop_classSet( Player *player , str classToSet )
 
 		player->coopPlayer.className = classToSet;
 
-		gi.Printf(va("COOPDEBUG coop_classSet to %s to %s\n", player->client->pers.netname, classToSet.c_str()));
+		gi.Printf(va("COOPDEBUG coop_classSet %s for %s\n", classToSet.c_str(), player->client->pers.netname));
 	}
 }
 
@@ -541,7 +541,7 @@ void coop_classApplayAttributes( Player *player , bool changeOnly )
 		evCircleSet1->AddString("!ability");
 		evCircleSet1->AddString(circleImg1.c_str());
 		evCircleSet1->AddInteger(0);
-		player->PostEvent(evCircleSet1,1.2f);
+		player->ProcessEvent(evCircleSet1);
 
 		//DelayedServerCommand( player->entnum , va( "globalwidgetcommand classBg shader coop_%s" , currentClass.c_str() ) );
 		upgPlayerDelayedServerCommand( player->entnum , va( "exec coop_mod/cfg/%s.cfg" , currentClass.c_str() ) );
