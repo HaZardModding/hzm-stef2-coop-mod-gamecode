@@ -69,10 +69,12 @@ bool coop_parserReadFile( const str sFile , str &buffer )
 	// Make sure the file exists
 	sFileExt = sFileExt.tolower();
 
-	if ( !gi.FS_Exists( sFile.c_str() ) && sFileExt != ".vlp") { //[b60015] chrissstrahl - fixed back check
-		gi.Printf( "=============================================\n" );
-		gi.Printf( va( "WARNING: coop_phraserReadFile FILE NOT FOUND (%s) \n" , sFile.c_str() ) );
-		gi.Printf( "=============================================\n" );
+	if (!gi.FS_Exists(sFile.c_str())) {
+		if (sFileExt != ".vlp") { //[b60021] chrissstrahl
+			gi.Printf("=============================================\n");
+			gi.Printf(va("WARNING: coop_phraserReadFile FILE NOT FOUND (%s) \n", sFile.c_str()));
+			gi.Printf("=============================================\n");
+		}
 		return false;
 	}
 
