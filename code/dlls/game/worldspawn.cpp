@@ -680,6 +680,11 @@ World::World()
 	groupcoordinator = new GroupCoordinator;
 
 	_canShakeCamera = false;
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60021] chrissstrahl - testing - this might fix model cache overload issues
+	//--------------------------------------------------------------
+	upgGame.flushTikisServer();
 }
 
 void World::UpdateConfigStrings( void )
