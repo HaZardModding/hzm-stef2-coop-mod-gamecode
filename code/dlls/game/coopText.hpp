@@ -19,6 +19,9 @@ constexpr auto COOP_TEXT_CLASS_TECHNICIAN_ABILITY_DEU = "Schilde aufladen";
 constexpr auto COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_ENG = "Charge Team ammo";
 constexpr auto COOP_TEXT_CLASS_HEAVYWEAPONS_ABILITY_DEU = "Munition aufladen";
 
+constexpr auto COOP_TEXT_SECRETSHIP_FOUND_BY_ENG = "^5Secret golden Starship^2 found by:^8 ";
+constexpr auto COOP_TEXT_SECRETSHIP_FOUND_BY_DEU = "^5Geheimes goldenes Raumschiff^2 gefunden von:^8 ";
+
 //[b60011] chrissstrahl - text for variouse outputs
 #define COOP_TEXT_CLASS_MEDIC_ONLY_DEU "Benutzen nur durch: ^5$$Medic$$^8!\n"
 #define COOP_TEXT_CLASS_MEDIC_ONLY_ENG "To use, you need to be: ^5$$Medic$$^8!\n"
