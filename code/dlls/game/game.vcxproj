@@ -657,6 +657,7 @@
     <ClCompile Include="coopGame.cpp" />
     <ClCompile Include="coopGamecmds.cpp" />
     <ClCompile Include="coopHuds.cpp" />
+    <ClCompile Include="coopItem.cpp" />
     <ClCompile Include="coopModel.cpp" />
     <ClCompile Include="coopNpcTeam.cpp" />
     <ClCompile Include="coopObjectives.cpp" />
@@ -1332,6 +1333,7 @@
     <ClCompile Include="upgCoopInterface.cpp" />
     <ClCompile Include="upgEntity.cpp" />
     <ClCompile Include="upgGame.cpp" />
+    <ClCompile Include="upgItem.cpp" />
     <ClCompile Include="upgMp_manager.cpp" />
     <ClCompile Include="upgPlayer.cpp" />
     <ClCompile Include="upgPlaydialog.cpp" />
@@ -1496,6 +1498,7 @@
     <ClInclude Include="coopGame.hpp" />
     <ClInclude Include="coopGamecmds.hpp" />
     <ClInclude Include="coopHuds.hpp" />
+    <ClInclude Include="coopItem.hpp" />
     <ClInclude Include="coopModel.hpp" />
     <ClInclude Include="coopNpcTeam.hpp" />
     <ClInclude Include="coopObjectives.hpp" />
@@ -1554,6 +1557,7 @@
     <ClInclude Include="upgCoopInterface.hpp" />
     <ClInclude Include="upgEntity.hpp" />
     <ClInclude Include="upgGame.hpp" />
+    <ClInclude Include="upgItem.hpp" />
     <ClInclude Include="upgMp_manager.hpp" />
     <ClInclude Include="upgPlayer.hpp" />
     <ClInclude Include="upgCircleMenu.hpp" />
