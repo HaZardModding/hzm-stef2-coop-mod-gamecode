@@ -40,6 +40,7 @@ CoopServer coopServer;
 #include "coopNpcTeam.hpp"//[b60011] chrissstrahl
 #include "coopChallenges.hpp"
 
+extern CoopServer coopServer;
 extern Event EV_ScriptThread_StuffCommand;
 
 //[b60011] chrissstrahl
