@@ -281,7 +281,7 @@ Item::Item()
 		//--------------------------------------------------------------
 		// GAMEUPGRADE [b60021] chrissstrahl - make sure that items in regular multiplayer have no shadow
 		//--------------------------------------------------------------
-//		upgItem.upgItemNoShadow(this);
+		upgItem.upgItemNoShadow(this);
 	}
 
 	//
