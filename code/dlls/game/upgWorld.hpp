@@ -19,7 +19,7 @@ private:
 public:
 					UpgWorld();
 	void			upgWorldSetPlayersReconnecting(bool reconnecting);
-	bool			upgWorldSetPlayersGetReconnecting();
+	bool			upgWorldGetPlayersReconnecting();
 	bool			upgWorldGetUpdateDynamicLights();
 	void			upgWorldSetUpdateDynamicLights(bool bUpdate);
 	void			upgWorldFlushTikisLevelStart();

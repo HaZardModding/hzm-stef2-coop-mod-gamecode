@@ -196,9 +196,8 @@ void UpgWorld::upgWorldSetPlayersReconnecting(bool reconnecting)
 	world->entityVars.SetVariable("coop_playersReconnecting", (float)reconnecting);
 }
 
-
 //================================================================
-// Name:        upgWorldSetPlayersGetReconnecting
+// Name:        upgWorldGetPlayersReconnecting
 // Class:       World
 //              
 // Description: gets if we should wait for players that are reconnecting
@@ -207,7 +206,7 @@ void UpgWorld::upgWorldSetPlayersReconnecting(bool reconnecting)
 //              
 // Returns:     bool     
 //================================================================
-bool UpgWorld::upgWorldSetPlayersGetReconnecting()
+bool UpgWorld::upgWorldGetPlayersReconnecting()
 {
 	ScriptVariable* entityData = NULL;
 	entityData = world->entityVars.GetVariable("coop_playersReconnecting");
