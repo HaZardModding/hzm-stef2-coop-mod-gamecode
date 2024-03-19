@@ -26,6 +26,10 @@
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
 
+//[b60021] chrissstrahl
+#include "coopItem.hpp"
+#include "upgItem.hpp"
+
 
 // for bot code
 #include "g_local.h"
@@ -264,11 +268,20 @@ Item::Item()
 	setRespawn( false );
 	setRespawnTime( 20 );
 
-	//hzm coop mod chrissstrahl - try to keep it s singleplayer alike as we can
-	if ( multiplayerManager.inMultiplayer() && !game.coop_isActive )
-	{
-		setRespawn( true );
-		edict->s.renderfx |= RF_FULLBRIGHT;
+	if ( multiplayerManager.inMultiplayer()){
+		//--------------------------------------------------------------
+		//[b60021] chrissstrahl - try to keep it as singleplayer alike as we can
+		//			Do not respawn and not set to fullbright during coop
+		//--------------------------------------------------------------
+		if (!coopItem.coopItemSingleplayerHandling()) {
+			setRespawn(true);
+			edict->s.renderfx |= RF_FULLBRIGHT;
+		}
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b60021] chrissstrahl - make sure that items in regular multiplayer have no shadow
+		//--------------------------------------------------------------
+//		upgItem.upgItemNoShadow(this);
 	}
 
 	//
@@ -1120,41 +1133,28 @@ Item* SecretItem::ItemPickup( Entity *other, qboolean add_to_inventory = true, q
 	level.found_specialItems++;
 	levelVars.SetVariable( "found_specialItems" , level.found_specialItems );
 
-	//[b60014] chrissstrahl - print message to all player during coop
-	if (game.coop_isActive && multiplayerManager.inMultiplayer()) {
-		for (int i = 0; i < maxclients->integer; i++) {
-			if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
-				Player* player = (Player*)g_entities[i].entity;
+	//--------------------------------------------------------------
+	// GAMEFIX - [b60021] chrissstrahl - make sure we never handle NULL or wootEva
+	//--------------------------------------------------------------
+	if (other && other->isSubclassOf(Player)) {
+		
+		pickupSoundName = GetRandomAlias( "snd_pickup" );
+		if ( pickupSoundName.length() > 1 ){
+			other->Sound( pickupSoundName, CHAN_ITEM );
+		}
 
-				if (player) {
-					str sMessage = "^5Secret golden Starship^2 found by:^8 ";
-					if (player->upgPlayerHasLanguageGerman()) {
-						sMessage = "^5Geheimes goldenes Raumschiff^2 gefunden von:^8 ";
-					}
+		if (other->isSubclassOf(Player)) {
+			Player* player = (Player*)other;
+			player->incrementSecretsFound();
 
-					gi.centerprintf(player->edict, CENTERPRINT_IMPORTANCE_NORMAL, va("%s%s", sMessage.c_str(), other->client->pers.netname));
-				}
+			//--------------------------------------------------------------
+			// [b60021] chrissstrahl - print message to all player during coop
+			//--------------------------------------------------------------
+			if (coopItem.coopItemGoldenShipFound((Player*)other)) {
+				gi.centerprintf(other->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$FoundSecretItem$$");
 			}
 		}
 	}
-	else {
-		gi.centerprintf(other->edict, CENTERPRINT_IMPORTANCE_NORMAL, "$$FoundSecretItem$$");
-	}
-
-	pickupSoundName = GetRandomAlias( "snd_pickup" );
-
-	if ( pickupSoundName.length() > 1 )
-	{
-		other->Sound( pickupSoundName, CHAN_ITEM );
-	}
-
-	if ( other && other->isSubclassOf( Player ) )
-	{
-		Player *player = (Player *)other;
-
-		player->incrementSecretsFound();
-	}
-
 	return NULL;
 }
 
