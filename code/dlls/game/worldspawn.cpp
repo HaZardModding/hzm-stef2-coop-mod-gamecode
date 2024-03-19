@@ -684,7 +684,7 @@ World::World()
 	//--------------------------------------------------------------
 	// GAMEUPGRADE [b60021] chrissstrahl - testing - this might fix model cache overload issues
 	//--------------------------------------------------------------
-	upgGame.flushTikisServer();
+	upgWorld.upgWorldFlushTikisLevelStart();
 }
 
 void World::UpdateConfigStrings( void )
@@ -1196,6 +1196,13 @@ Entity * World::GetNextEntity( const str &targetname, Entity * ent )
 World::~World()
 {
 	world_dying = true;
+
+	//[b60021] chrissstrahl - moved up here, because I think down there it had no effect
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b60014] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
+	//--------------------------------------------------------------
+	upgGame.flushTikisServer();
+
 	FreeTargetList();
 
 	if ( groupcoordinator )
@@ -1204,11 +1211,6 @@ World::~World()
 	groupcoordinator = NULL;
 
 	freeAllBrokenThings();
-
-	//--------------------------------------------------------------
-	// GAMEUPGRADE [b60014] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
-	//--------------------------------------------------------------
-	upgGame.flushTikisServer();
 }
 
 void World::FreeTargetList( void )

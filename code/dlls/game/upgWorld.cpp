@@ -7,6 +7,9 @@
 #include "upgWorld.hpp"
 UpgWorld upgWorld;
 
+#include "upgGame.hpp"
+#include "upgStrings.hpp"
+
 #include "worldspawn.h"
 
 
@@ -22,6 +25,25 @@ Event EV_World_GetPhysicsVar
 	"returns gravity, airaccelerate and maxspeed Physics values"
 );
 
+//================================================================
+// Name:        UpgWorld
+// Class:       UpgWorld
+//              
+// Description:
+//              
+// Parameters:  void
+//              
+// Returns:     void     
+//================================================================
+UpgWorld::UpgWorld()
+{
+	flushTikiMaps[0] = "m2l2-sfa";
+	flushTikiMaps[1] = "m4l1a-attrexian_station";
+	flushTikiMaps[2] = "m4l2b-attrexian_station";
+	flushTikiMaps[3] = "m7l1a-attrexian_colony";
+	flushTikiMaps[4] = "m9l1a-klingon_base";
+	flushTikiMaps[5] = "m11l3b-drull_ruins3_boss";
+}
 
 //================================================================
 // Name:        upgWorldAdjustForLevelScript
@@ -130,8 +152,8 @@ bool World::upgWorldUpdateDynamicLights()
 }
 
 //================================================================
-// Name:        upgWorld
-// Class:       World
+// Name:        upgWorldGetUpdateDynamicLights
+// Class:       UpgWorld
 //              
 // Description: returns if dynamic lights need updating
 //              
@@ -146,7 +168,7 @@ bool UpgWorld::upgWorldGetUpdateDynamicLights()
 
 //================================================================
 // Name:        upgWorldSetUpdateDynamicLights
-// Class:       World
+// Class:       UpgWorld
 //              
 // Description: sets if dynamic lights need updating
 //              
@@ -157,4 +179,69 @@ bool UpgWorld::upgWorldGetUpdateDynamicLights()
 void UpgWorld::upgWorldSetUpdateDynamicLights(bool bUpdate)
 {
 	updateDynamicLights = bUpdate;
+}
+
+//================================================================
+// Name:        upgWorldSetPlayersSetReconnecting
+// Class:       World
+//              
+// Description: sets if we should wait for players that are reconnecting
+//              
+// Parameters:  bool
+//              
+// Returns:     void     
+//================================================================
+void UpgWorld::upgWorldSetPlayersSetReconnecting(bool reconnecting)
+{
+	world->entityVars.SetVariable("coop_playersReconnecting", (float)reconnecting);
+}
+
+
+//================================================================
+// Name:        upgWorldSetPlayersGetReconnecting
+// Class:       World
+//              
+// Description: gets if we should wait for players that are reconnecting
+//              
+// Parameters:  void
+//              
+// Returns:     bool     
+//================================================================
+bool UpgWorld::upgWorldSetPlayersGetReconnecting()
+{
+	ScriptVariable* entityData = NULL;
+	entityData = world->entityVars.GetVariable("coop_playersReconnecting");
+	if (entityData == NULL) {
+		return false;
+	}
+	return ((bool)entityData->floatValue());
+}
+
+//================================================================
+// Name:        upgWorldFlushTikisLevelStart
+// Class:       UpgWorld
+//              
+// Description: handle flushtikis on level start
+//              
+// Parameters:  void
+//              
+// Returns:     bool     
+//================================================================
+void UpgWorld::upgWorldFlushTikisLevelStart()
+{
+	bool bFlush = false;
+
+	for (int i = 0; i < UPGWORLD_FLUSHTIKI_MAPLISTSIZE;i++) {
+		if (upgStrings.contains(level.mapname.tolower(), flushTikiMaps[i])) {
+			bFlush = true;
+			break;
+		}
+	}
+	if (bFlush) {
+		upgGame.flushTikisServer();
+		upgWorldSetPlayersSetReconnecting(true);
+	}
+	else {
+		upgWorldSetPlayersSetReconnecting(false);
+	}
 }
