@@ -22,6 +22,33 @@
 #include "coopClass.hpp"
 
 //================================================================
+// Name:        coop_lmsRevivePlayer
+// Class:       -
+//              
+// Description: revives given player and give them 1 life
+//              
+// Parameters:  Player*
+//              
+// Returns:     bool
+//              
+//================================================================
+bool coop_lmsRevivePlayer(Player* player)
+{
+	if (game.coop_lastmanstanding) {
+		if (player->coopPlayer.lmsDeaths >= coop_lmsGetLives()) {
+			player->coopPlayer.lmsDeaths = coop_lmsGetLives();
+			player->coopPlayer.lmsDeaths--;
+
+			//try spawn player
+			multiplayerManager.respawnPlayer(player, true);
+
+			return true;
+		}
+	}
+	return false;
+}
+	
+//================================================================
 // Name:        coop_lmsCheckReconnectHack
 // Class:       Player
 //              

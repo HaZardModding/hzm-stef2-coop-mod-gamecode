@@ -6,6 +6,7 @@
 //-----------------------------------------------------------------------------------
 #pragma once
 
+bool coop_lmsRevivePlayer(Player* player);
 void coop_lmsSetLives(int iLives);
 int coop_lmsGetLives(void);
 bool coop_lmsActive(void);

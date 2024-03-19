@@ -19,7 +19,7 @@
 #include "upgGame.hpp"
 
 //=========================================================[b60021]
-// Name:        G_coopCom_transferlive
+// Name:        G_coopCom_classability
 // Class:       -
 //              
 // Description: takes 1 live from player and gives it to a dead player
@@ -124,32 +124,26 @@ qboolean G_coopCom_transferlive(const gentity_t* ent)
 		for (int i = 0; i < maxclients->integer; i++) {
 			playerOther = (Player*)g_entities[i].entity;
 			if (!hasTransferedLive && playerOther  && player  != playerOther && playerOther->isSubclassOf(Player) && !playerOther->upgPlayerIsBot() ) {
-				if (playerOther->coopPlayer.lmsDeaths >= coop_lmsGetLives()) {
-					playerOther->coopPlayer.lmsDeaths--;
-
-					//print message to let player know whats going on
+				if (coop_lmsRevivePlayer(playerOther)) {
+					//THE RECEIVER
 					if (playerOther->upgPlayerHasLanguageGerman()) {
 						multiplayerManager.HUDPrint(playerOther->entnum, va("^5Coop ^2Last Man Standing^8 %s ^2hat 1 Leben transferiert.\n", player->client->pers.netname));
 					}
 					else {
 						multiplayerManager.HUDPrint(playerOther->entnum, va("^5Coop ^2Last Man Standing^8 %s ^2has transfered 1 live to you.\n", player->client->pers.netname));
 					}
-					//print info
+					//print info - of lives
 					playerOther->coop_lmsInfo();
 
-					//try spawn player
-					multiplayerManager.respawnPlayer(playerOther, true);
-
-					
+					//THE DONOR
 					player->coopPlayer.lmsDeaths++;
-					//print message to let player know whats going on
 					if (player->upgPlayerHasLanguageGerman()) {
 						multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing^5 1 ^2Leben transferiert an^8 %s.\n", playerOther->client->pers.netname));
 					}
 					else {
 						multiplayerManager.HUDPrint(player->entnum, va("^5Coop ^2Last Man Standing^5 1 ^2live transfered to^8 %s.\n", playerOther->client->pers.netname));
 					}
-					//print info
+					//print info - of lives
 					player->coop_lmsInfo();
 
 					hasTransferedLive = true;
