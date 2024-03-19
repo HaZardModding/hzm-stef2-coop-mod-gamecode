@@ -18,7 +18,7 @@ private:
 	str				flushTikiMaps[UPGWORLD_FLUSHTIKI_MAPLISTSIZE];
 public:
 					UpgWorld();
-	void			upgWorldSetPlayersSetReconnecting(bool reconnecting);
+	void			upgWorldSetPlayersReconnecting(bool reconnecting);
 	bool			upgWorldSetPlayersGetReconnecting();
 	bool			upgWorldGetUpdateDynamicLights();
 	void			upgWorldSetUpdateDynamicLights(bool bUpdate);

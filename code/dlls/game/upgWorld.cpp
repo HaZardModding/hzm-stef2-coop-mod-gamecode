@@ -182,7 +182,7 @@ void UpgWorld::upgWorldSetUpdateDynamicLights(bool bUpdate)
 }
 
 //================================================================
-// Name:        upgWorldSetPlayersSetReconnecting
+// Name:        upgWorldSetPlayersReconnecting
 // Class:       World
 //              
 // Description: sets if we should wait for players that are reconnecting
@@ -191,7 +191,7 @@ void UpgWorld::upgWorldSetUpdateDynamicLights(bool bUpdate)
 //              
 // Returns:     void     
 //================================================================
-void UpgWorld::upgWorldSetPlayersSetReconnecting(bool reconnecting)
+void UpgWorld::upgWorldSetPlayersReconnecting(bool reconnecting)
 {
 	world->entityVars.SetVariable("coop_playersReconnecting", (float)reconnecting);
 }
@@ -239,9 +239,9 @@ void UpgWorld::upgWorldFlushTikisLevelStart()
 	}
 	if (bFlush) {
 		upgGame.flushTikisServer();
-		upgWorldSetPlayersSetReconnecting(true);
+		upgWorldSetPlayersReconnecting(true);
 	}
 	else {
-		upgWorldSetPlayersSetReconnecting(false);
+		upgWorldSetPlayersReconnecting(false);
 	}
 }
