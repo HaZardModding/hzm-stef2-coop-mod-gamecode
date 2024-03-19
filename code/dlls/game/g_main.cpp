@@ -2367,8 +2367,11 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		
 		
 		if( isBot ) {
-			//[b607] chrissstrahl - set that this is a bot
+			//--------------------------------------------------------------
+			// GAMEUPGRADE [b60007] chrissstrahl - set that this is a bot
+			//--------------------------------------------------------------
 			ent->svflags |= SVF_BOT;
+			
 			//ent->inuse = qtrue;
 			if( !G_BotConnect( clientNum, !firstTime ) ) {
 				return "BotConnectfailed";
@@ -2380,12 +2383,15 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		
 		G_ClientUserinfoChanged( ent, userinfo );
 
-		if ( firstTime && ( game.maxclients > 1 ) && !isBot) //[b60014] chrissstrahl - we don't want to know when a bot connects
+		if ( firstTime && ( game.maxclients > 1 ) )
 		{
-			gi.Printf( "%s connected\n", ent->client->pers.netname );
+			gi.Printf("%s connected\n", client->pers.netname);
 
-			//hzm gameupdate chrissstrahl -  Inform all of the players that a player is about to connect
-			multiplayerManager.HUDPrintAllClients( va( "%s ^8is connecting!\n" , ent->client->pers.netname ) );
+			//--------------------------------------------------------------
+			// GAMEUPGRADE [b60021] chrissstrahl - notify upgrade code that player is connecting
+			//--------------------------------------------------------------
+			Player* player = (Player*)ent->entity;
+			player->upgPlayerConnecting(isBot);
 		}
 
 		LoadingServer = false;
@@ -2396,7 +2402,9 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		G_ExitWithError( error );
 	}
 	
-	//hzm gamefix daggolin - pending server commands
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6000x] & gamefix daggolin - pending server commands
+	//--------------------------------------------------------------
 	upgPlayerclearDelayedServerCommands( clientNum );
 
 	return NULL;
@@ -2430,7 +2438,7 @@ extern "C" void G_ClientDisconnect( gentity_t *ent )
 
 
 		//--------------------------------------------------------------
-		// [b6xx] Coop Mod chrissstrahl - notify the coop mod that a player has left the game
+		// [b600xx] chrissstrahl - notify the coop mod that a player has left the game
 		//--------------------------------------------------------------
 		coop_playerLeft( player );
 

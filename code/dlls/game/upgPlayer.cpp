@@ -504,6 +504,24 @@ bool Player::upgPlayerCanTaunt()
 	return true;
 }
 
+//=========================================================[b60021]
+// Name:        upgPlayerConnecting
+// Class:       Player
+//              
+// Description: Executed when the player is about to connect/connecting
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void Player::upgPlayerConnecting(bool isBot)
+{
+	if (!isBot) { //[b60014] chrissstrahl - we don't want to know when a bot connects
+		//hzm gameupdate chrissstrahl -  Inform all of the players that a player is about to connect
+		multiplayerManager.HUDPrintAllClients(va("%s ^8is connecting!\n", client->pers.netname));
+	}
+}
+
 //=========================================================[b60014]
 // Name:        upgPlayerDisconnecting
 // Class:       Player
