@@ -231,8 +231,9 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 		
 		G_AllocGameData();
 
-		//[b607] chrissstrahl - moved code down here used to be after CVAR_Init(); 
-		//[b60012] chrissstrahl - moved to server code
+		//--------------------------------------------------------------
+		//[b60007] chrissstrahl - load map that was last saved/run (before reboot)
+		//--------------------------------------------------------------
 		coopServer.mapLoadEnforce();
 	}
 	

@@ -211,7 +211,7 @@ void CoopServer::svFloodProtectEnable()
 // Name:        maploadEnforce
 // Class:       -
 //              
-// Description: checks if the seerver should bee loading a different map than it currently is, forces mapload
+// Description: checks if the server should be loading a different map than it currently is, forces mapload
 //              
 // Parameters:  str sMapToLoad
 //              
