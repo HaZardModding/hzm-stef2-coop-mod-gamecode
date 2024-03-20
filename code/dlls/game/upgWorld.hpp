@@ -13,7 +13,7 @@ constexpr auto UPGWORLD_FLUSHTIKI_MAPLISTSIZE = 6;
 class UpgWorld
 {
 private:
-					
+	float			thinkLastInterval = 0.0f;
 	bool			updateDynamicLights = false;
 	str				flushTikiMaps[UPGWORLD_FLUSHTIKI_MAPLISTSIZE];
 public:

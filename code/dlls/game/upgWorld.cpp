@@ -11,6 +11,7 @@ UpgWorld upgWorld;
 #include "upgStrings.hpp"
 
 #include "worldspawn.h"
+#include "mp_manager.hpp"
 
 
 //-----------------------------------------------------------------------------------
@@ -42,7 +43,7 @@ UpgWorld::UpgWorld()
 	flushTikiMaps[2] = "m4l2b-attrexian_station";
 	flushTikiMaps[3] = "m7l1a-attrexian_colony";
 	flushTikiMaps[4] = "m9l1a-klingon_base";
-	flushTikiMaps[5] = "m11l3b-drull_ruins3_boss";
+	flushTikiMaps[5] = "m11l1a-drull_ruins3";
 }
 
 //=========================================================[b60014]
@@ -57,8 +58,16 @@ UpgWorld::UpgWorld()
 //================================================================
 void UpgWorld::upgWorldThink()
 {
-	if (level.time < 0) { //level.time
-	
+	//3 sec interval
+	if ((thinkLastInterval + 3) < level.time) {
+		if (level.time < 15) { //level.time		
+			ScriptVariable* entityData = NULL;
+			entityData = world->entityVars.GetVariable("coop_playersReconnecting");
+			if (entityData && entityData->intValue() > 0) {
+				multiplayerManager.centerPrintAllClients("=/\\= Please Standby =/\\=\nWaiting for reconnecting Players.", CENTERPRINT_IMPORTANCE_CRITICAL);
+			}
+		}
+		thinkLastInterval = level.time;
 	}
 }
 	
@@ -253,6 +262,7 @@ bool UpgWorld::upgWorldGetPlayersReconnecting()
 //================================================================
 void UpgWorld::upgWorldFlushTikisLevelStart()
 {
+	thinkLastInterval = 0.0f;
 	bool bFlush = false;
 
 	for (int i = 0; i < UPGWORLD_FLUSHTIKI_MAPLISTSIZE;i++) {
