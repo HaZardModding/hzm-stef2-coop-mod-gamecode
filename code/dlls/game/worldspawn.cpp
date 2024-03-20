@@ -1347,6 +1347,12 @@ void World::Think( void )
 
 	//--------------------------------------------------------------
 	//[b6xx] chrissstrahl - check for certain server settings and do other things
+	// GAMEUPGRADE [b60021] chrissstrahl
+	//--------------------------------------------------------------
+	upgWorld.upgWorldThink();
+
+	//--------------------------------------------------------------
+	//[b600xx] chrissstrahl - check for certain server settings and do other things
 	//--------------------------------------------------------------
 	coop_serverThink();
 }
