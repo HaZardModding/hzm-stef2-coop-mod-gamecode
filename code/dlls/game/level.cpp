@@ -192,12 +192,17 @@ void Level::CleanUp( qboolean restart )
 {
 	_cleanup = true;
 
+
+	//--------------------------------------------------------------
+	//[b60011] chrissstrahl - added cleanup func
+	//--------------------------------------------------------------
+	coop_serverCleanup(restart);
+
 	//[b60021] chrissstrahl - moved up here, because I think down there it had no effect
 	//--------------------------------------------------------------
-	// GAMEUPGRADE [b60014] chrissstrahl - flushtikis - fixing animation issues of actor and other models - just to be sure
+	// GAMEUPGRADE [b60016] chrissstrahl - fix camera crash issues when changing levels
 	//--------------------------------------------------------------
-	upgGame.flushTikisServer();
-	upgGame.flushTikisPlayers();
+	upgGame.cleanUp(restart);
 	
 	if ( multiplayerManager.inMultiplayer() )
 	{
@@ -305,17 +310,6 @@ void Level::CleanUp( qboolean restart )
 	gi.cvar_set( "bosshealth", "0" );
 	
 	_earthquakes.ClearObjectList();
-
-
-	//--------------------------------------------------------------
-	//[b60011] chrissstrahl - added cleanup func
-	//--------------------------------------------------------------
-	coop_serverCleanup(restart);
-
-	//--------------------------------------------------------------
-	// GAMEUPGRADE [b60016] chrissstrahl - fix camera crash issues when changing levels
-	//--------------------------------------------------------------
-	upgGame.cleanUp(restart);
 	
 	_cleanup = false;
 }

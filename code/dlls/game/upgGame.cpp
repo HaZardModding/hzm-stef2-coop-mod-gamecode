@@ -59,6 +59,7 @@ str UpgGame::getEnvironment()
 // Class:       UpgGame
 //              
 // Description: Resets and cleans up UpgGame class related stuff
+//				-> void Level::CleanUp( qboolean restart )
 //              
 // Parameters:  bool
 //              
@@ -67,6 +68,12 @@ str UpgGame::getEnvironment()
 void UpgGame::cleanUp(bool restart)
 {
 	setCameraCurrent(NULL);
+
+	//--------------------------------------------------------------
+	//[b60021] chrissstrahl - clean up the models cache
+	//--------------------------------------------------------------
+	upgGame.flushTikisServer();
+	upgGame.flushTikisPlayers();
 }
 	
 //===========================================================[b607]
