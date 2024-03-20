@@ -12,8 +12,8 @@
 #include "mp_manager.hpp"
 #include <qcommon/gameplaymanager.h>
 
-#include "upgGame.hpp"
 #include "upgPlayer.hpp"
+#include "upgGame.hpp"
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
 #include "upgStrings.hpp"
@@ -21,6 +21,8 @@
 #include "upgWorld.hpp"
 
 #include "coopClass.hpp"
+
+UpgPlayer upgPlayer;
 
 extern Event EV_Player_ActivateNewWeapon;
 extern Event EV_Player_DeactivateWeapon;
@@ -31,6 +33,14 @@ pendingServerCommand* pendingServerCommandList[MAX_CLIENTS];
 //-----------------------------------------------------------------------------------
 // Events, these have external Dependencies
 //-----------------------------------------------------------------------------------
+Event EV_Player_reconnect
+(
+	"upgPlayerReconnect",
+	EV_DEFAULT,
+	"",
+	"",
+	"send reconnect command to player"
+);
 //[GAMEUPGRADE][b60014] chrissstrahl - print message of the day (delayed)
 Event EV_Player_upgPlayerMessageOfTheDay
 (
@@ -505,26 +515,91 @@ bool Player::upgPlayerCanTaunt()
 }
 
 //=========================================================[b60021]
-// Name:        upgPlayerConnecting
+// Name:        upgPlayerReconnectEvent
 // Class:       Player
 //              
-// Description: Executed when the player is about to connect/connecting
+// Description: Used to make player reconnect with a delay
 //              
-// Parameters:  void
+// Parameters:  Event*
 //              
 // Returns:     void
 //================================================================
-void Player::upgPlayerConnecting(bool isBot)
+void Player::upgPlayerReconnectEvent(Event *ev)
 {
-	if (!isBot) { //[b60014] chrissstrahl - we don't want to know when a bot connects
-		//hzm gameupdate chrissstrahl -  Inform all of the players that a player is about to connect
-		multiplayerManager.HUDPrintAllClients(va("%s ^8is connecting!\n", client->pers.netname));
+	gi.SendServerCommand(entnum, "stufftext reconnect");
+}
+
+// //=========================================================[b60021]
+// Name:        upgPlayerSetReconnect
+// Class:       UpgPlayer
+//              
+// Description: set that player should be reconnecting
+//              
+// Parameters:  clientnum, doreconnect
+//              
+// Returns:     void
+//================================================================
+void UpgPlayer::upgPlayerSetReconnect(int clientNum,bool reconnect)
+{
+	upgPlayer.reconnectRequired[clientNum] = reconnect;
+}
+
+//=========================================================[b60021]
+// Name:        upgPlayerGetReconnect
+// Class:       UpgPlayer
+//              
+// Description: get if player should be reconnecting
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool UpgPlayer::upgPlayerGetReconnect(int clientNum)
+{
+	//Client is host, don't even atempt to reconnect
+	if (clientNum == 0 && dedicated->integer == 0) {
+		return false;
 	}
+
+	return upgPlayer.reconnectRequired[clientNum];
+}
+
+//=========================================================[b60021]
+// Name:        upgPlayerConnecting
+// Class:       UpgPlayer
+//              
+// Description: Executed when the player is about to connect/connecting
+//				Player does not exist yet, we can NOT accsess the player from here
+//              
+// Parameters:  firstconnect, isbot, name, clientnum
+//              
+// Returns:     void
+//================================================================
+void UpgPlayer::upgPlayerConnecting(bool firstTime,bool isBot, str netname,int clientnum)
+{
+	upgPlayer.upgPlayerSetReconnect(clientnum,false);
+
+	if (firstTime) {
+		if (!isBot) {
+			//[b60014] chrissstrahl - we don't want to know when a bot connects - Inform all of the players that a player is about to connect
+			multiplayerManager.HUDPrintAllClients(va("%s ^8is connecting!\n", netname.c_str()));
+		}
+	}
+	else {
+		if (!isBot && upgWorld.upgWorldGetPlayersReconnecting()) {
+			upgPlayer.upgPlayerSetReconnect(clientnum, true);
+		}
+	}
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE [b6000x] & gamefix daggolin - pending server commands
+	//--------------------------------------------------------------
+	upgPlayerclearDelayedServerCommands(clientnum);
 }
 
 //=========================================================[b60014]
 // Name:        upgPlayerDisconnecting
-// Class:       Player
+// Class:       UpgPlayer
 //              
 // Description: Executed when the player is about to disconnect/leaving/left
 //              
@@ -532,8 +607,9 @@ void Player::upgPlayerConnecting(bool isBot)
 //              
 // Returns:     void
 //================================================================
-void Player::upgPlayerDisconnecting()
+void UpgPlayer::upgPlayerDisconnecting(Player* player)
 {
+
 }
 
 //=========================================================[b60014]
@@ -1195,6 +1271,20 @@ void Player::upgPlayerSetup()
 		}
 
 		upgPlayerDelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
+	}
+
+	//[b60021] chrissstrahl - reconnect player if required
+	if (upgPlayer.upgPlayerGetReconnect(entnum)){
+		if(upgPlayerHasLanguageGerman()){
+			multiplayerManager.centerPrint(entnum, UPG_RECONNECTING_YOU_MODEL_FIX_DEU, CENTERPRINT_IMPORTANCE_CRITICAL);
+		}
+		else {
+			multiplayerManager.centerPrint(entnum, UPG_RECONNECTING_YOU_MODEL_FIX_ENG, CENTERPRINT_IMPORTANCE_CRITICAL);
+		}
+		
+		Event* reconnectEV = new Event(EV_Player_reconnect);
+		PostEvent(reconnectEV, 3.0f);
+		return;
 	}
 
 	if (multiplayerManager.inMultiplayer()) {

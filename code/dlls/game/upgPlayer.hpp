@@ -6,10 +6,14 @@
 //-----------------------------------------------------------------------------------
 
 #pragma once
+
+#include "_pch_cpp.h"
+
 //[GAMEUPGRADE][b60014] chrissstrahl - used to seperate code bases better
 class UpgPlayer
 {
 	friend class Player;
+private:
 	int			clMaxPackets = -1;
 	float		chatTimeLimit = 0.0f;
 	float		chatTimeLastSpamInfo = -999.0f;
@@ -25,6 +29,12 @@ class UpgPlayer
 	str			scanData1 = "";
 	str			scanData2 = "";
 	float		lastTimeSkipCinematic = -970.0f;
+public:
+	bool		reconnectRequired[MAX_CLIENTS];
+	void		upgPlayerDisconnecting(Player* player);
+	void		upgPlayerConnecting(bool firstTime, bool isBot, str netname, int clientNum);
+	void		upgPlayerSetReconnect(int clientNum, bool reconnect);
+	bool		upgPlayerGetReconnect(int clientNum);
 };
 
 void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);
@@ -33,6 +43,7 @@ void	upgPlayerclearDelayedServerCommands(int entNum);
 
 extern UpgPlayer upgPlayer;
 
+extern Event EV_Player_reconnect;
 extern Event EV_Player_getViewtraceEndpos;
 extern Event EV_Player_getUserFov;
 extern Event EV_Player_GetScriptVariablesCommand;

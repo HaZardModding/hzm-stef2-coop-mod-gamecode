@@ -310,13 +310,12 @@ class Player : public Sentient
 		friend class		UpgPlayer;
 		UpgPlayer			upgPlayer;
 		//[b60021] chrissstrahl
-		void				upgPlayerConnecting(bool isBot);
+		void				upgPlayerReconnectEvent(Event* ev);
 		bool				upgPlayerDoUseIgnore(Entity* e);
 		void				upgPlayerCleanUp();
 		//[b60017] chrissstrahl
 		bool				upgPlayerCanTaunt();
 		//[b60014] chrissstrahl
-		void				upgPlayerDisconnecting();
 		void				upgPlayerLoadingSavegame();
 		bool				upgPlayerSkipCinematic();
 		void				upgPlayerMessageOfTheDay(Event* ev);

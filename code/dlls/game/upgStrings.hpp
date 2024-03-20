@@ -32,4 +32,7 @@ public:
 	str				getFileExtension(const str& sPath);
 };
 
+constexpr auto UPG_RECONNECTING_YOU_MODEL_FIX_ENG = "^5Reconnecting you now^8, to fix issues with Models.\n";
+constexpr auto UPG_RECONNECTING_YOU_MODEL_FIX_DEU = "^5Sie werden erneut verbunden^8, behebt Model Probleme.\n";
+
 extern UpgStrings upgStrings;

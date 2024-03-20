@@ -1542,6 +1542,7 @@ CLASS_DECLARATION( Sentient , Player , "player" )
 	//--------------------------------------------------------------
 	// HAZARDMODDING COOP MOD //[b60021] - chrissstrahl - 
 	//--------------------------------------------------------------
+	{ &EV_Player_reconnect ,					&Player::upgPlayerReconnectEvent },
 	{ &EV_Player_RecoverAbilityHud ,			&Player::coopClassRecoverAbilityHud},
 	//--------------------------------------------------------------
 	// HAZARDMODDING COOP MOD //[b60014] - chrissstrahl - mostly script related
