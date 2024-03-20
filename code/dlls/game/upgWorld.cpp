@@ -269,7 +269,7 @@ void UpgWorld::upgWorldFlushTikisLevelStart()
 		Event* ev = new Event(EV_SetFloatVar);
 		ev->AddString("coop_playersReconnectingWait");
 		ev->AddFloat(0.0f);
-		world->PostEvent(ev,10.0f);
+		world->PostEvent(ev,15.0f);
 	}
 	else {
 		upgWorldSetPlayersReconnecting(false);
