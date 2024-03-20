@@ -210,7 +210,8 @@ void UpgWorld::upgWorldSetUpdateDynamicLights(bool bUpdate)
 //================================================================
 void UpgWorld::upgWorldSetPlayersReconnecting(bool reconnecting)
 {
-	world->entityVars.SetVariable("coop_playersReconnecting", (float)reconnecting);
+	world->entityVars.SetVariable("coop_playersReconnecting", (float)reconnecting);		//stays like that during the entire level
+	world->entityVars.SetVariable("coop_playersReconnectingWait", (float)reconnecting);	//used to signal scripts - will be set to 0 after 10 sec or so on level
 }
 
 //================================================================
@@ -225,6 +226,13 @@ void UpgWorld::upgWorldSetPlayersReconnecting(bool reconnecting)
 //================================================================
 bool UpgWorld::upgWorldGetPlayersReconnecting()
 {
+	//do not reconnect during coop level testing diagnostics
+	cvar_t* cvar1 = gi.cvar_get("coop_diag");
+	cvar_t* cvar2 = gi.cvar_get("coop_dev");
+	if (cvar1 && cvar2 && cvar1->integer > 0 && cvar2->integer > 0) {
+		return false;
+	}
+
 	ScriptVariable* entityData = NULL;
 	entityData = world->entityVars.GetVariable("coop_playersReconnecting");
 	if (entityData == NULL) {
@@ -256,6 +264,12 @@ void UpgWorld::upgWorldFlushTikisLevelStart()
 	if (bFlush) {
 		upgGame.flushTikisServer();
 		upgWorldSetPlayersReconnecting(true);
+
+		//STOP waiting for players to reconnect after X sec - and start the cinematic or what ever
+		Event* ev = new Event(EV_SetFloatVar);
+		ev->AddString("coop_playersReconnectingWait");
+		ev->AddFloat(0.0f);
+		world->PostEvent(ev,10.0f);
 	}
 	else {
 		upgWorldSetPlayersReconnecting(false);
