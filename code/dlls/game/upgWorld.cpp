@@ -38,7 +38,7 @@ Event EV_World_GetPhysicsVar
 //================================================================
 UpgWorld::UpgWorld()
 {
-	flushTikiMaps[0] = "m2l2-sfa";
+	flushTikiMaps[0] = "m2l0-sfa";
 	flushTikiMaps[1] = "m4l1a-attrexian_station";
 	flushTikiMaps[2] = "m4l2b-attrexian_station";
 	flushTikiMaps[3] = "m7l1a-attrexian_colony";
@@ -60,7 +60,7 @@ void UpgWorld::upgWorldThink()
 {
 	//3 sec interval
 	if ((thinkLastInterval + 3) < level.time) {
-		if (level.time < 15) { //level.time		
+		if (level.time < reconnectTime) {	
 			ScriptVariable* entityData = NULL;
 			entityData = world->entityVars.GetVariable("coop_playersReconnecting");
 			if (entityData && entityData->intValue() > 0) {
@@ -276,10 +276,19 @@ void UpgWorld::upgWorldFlushTikisLevelStart()
 		upgWorldSetPlayersReconnecting(true);
 
 		//STOP waiting for players to reconnect after X sec - and start the cinematic or what ever
+		cvar_t* cvar1 = gi.cvar_get("coop_reconnectTime");
+		if (cvar1 && cvar1->integer > 10) {
+			reconnectTime = cvar1->integer;
+
+		}
+		if (reconnectTime <= 0) { reconnectTime = 15; }
+		if (reconnectTime < 10) { reconnectTime = 10; }
+		if (reconnectTime > 60) { reconnectTime = 60; }
+
 		Event* ev = new Event(EV_SetFloatVar);
 		ev->AddString("coop_playersReconnectingWait");
 		ev->AddFloat(0.0f);
-		world->PostEvent(ev,15.0f);
+		world->PostEvent(ev,(float)reconnectTime);
 	}
 	else {
 		upgWorldSetPlayersReconnecting(false);
