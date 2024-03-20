@@ -45,6 +45,23 @@ UpgWorld::UpgWorld()
 	flushTikiMaps[5] = "m11l3b-drull_ruins3_boss";
 }
 
+//=========================================================[b60014]
+// Name:        upgWorldAdjustForLevelScript
+// Class:       World
+//              
+// Description:  Called every frame from World
+//              
+// Parameters:  void
+//              
+// Returns:     void     
+//================================================================
+void UpgWorld::upgWorldThink()
+{
+	if (level.time < 0) { //level.time
+	
+	}
+}
+	
 //================================================================
 // Name:        upgWorldAdjustForLevelScript
 // Class:       World
