@@ -34,6 +34,7 @@
 #include "teammateroster.hpp"
 
 #include "upgPlayer.hpp"
+
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
 #include "upgStrings.hpp"
@@ -41,7 +42,6 @@
 
 //[b60012] chrissstrahl
 #include "coopServer.hpp"
-extern CoopServer coopServer;
 #include "coopPlayer.hpp"
 #include "coopReturn.hpp"
 #include "coopParser.hpp"
@@ -2378,20 +2378,23 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 			}
 		}
 
-		//[b607] chrissstrahl - handle stuff when a player connects
-		coop_playerConnect(ent->entity);
-		
 		G_ClientUserinfoChanged( ent, userinfo );
+
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b60021] chrissstrahl - notify upgrade code that player is connecting
+		//--------------------------------------------------------------
+		upgPlayer.upgPlayerConnecting((bool)(int)firstTime, (bool)(int)isBot,client->pers.netname,clientNum);
+
+		//--------------------------------------------------------------
+		//[b60007] chrissstrahl - handle coop stuff when a player connects
+		//--------------------------------------------------------------
+		coop_playerConnect((bool)(int)isBot);
+
 
 		if ( firstTime && ( game.maxclients > 1 ) )
 		{
 			gi.Printf("%s connected\n", client->pers.netname);
-
-			//--------------------------------------------------------------
-			// GAMEUPGRADE [b60021] chrissstrahl - notify upgrade code that player is connecting
-			//--------------------------------------------------------------
-			Player* player = (Player*)ent->entity;
-			player->upgPlayerConnecting(isBot);
 		}
 
 		LoadingServer = false;
@@ -2405,7 +2408,8 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 	//--------------------------------------------------------------
 	// GAMEUPGRADE [b6000x] & gamefix daggolin - pending server commands
 	//--------------------------------------------------------------
-	upgPlayerclearDelayedServerCommands( clientNum );
+	//upgPlayerclearDelayedServerCommands( clientNum );
+	//[b60021] chrissstrahl - moved to upgPlayerConnecting - this should be fine, it will how ever not rest if connect fails
 
 	return NULL;
 }
@@ -2434,7 +2438,7 @@ extern "C" void G_ClientDisconnect( gentity_t *ent )
 		//--------------------------------------------------------------
 		// GAMEUPGRADE [b60014] chrissstrahl - notify upgrade code that player left
 		//--------------------------------------------------------------
-		player->upgPlayerDisconnecting();
+		upgPlayer.upgPlayerDisconnecting(player);
 
 
 		//--------------------------------------------------------------
