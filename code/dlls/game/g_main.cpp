@@ -1842,22 +1842,15 @@ extern "C" void G_ClientBegin( gentity_t *ent, const usercmd_t *cmd )
 			ent->client->pers.enterTime = level.time;
 			// send effect if in a multiplayer game
 
-			if ( g_gametype->integer > GT_SINGLE_PLAYER )
-			{
-				//hzm gameupdate chrissstrahl - request current status of server/players, for debugging and overview reasons
-				//[b607] chrissstrahl - only print this in coop - it spams only in regular multi
-				if (game.coop_isActive) {
-					gi.SendConsoleCommand("status\n");
-				}
-				//hzm gameupdate chrissstrahl - targetname all players by client id
-				str printOut;
-				str setTargetname;
+			//--------------------------------------------------------------
+			//[GAMEUPGRADE][b60021] chrissstrahl
+			//--------------------------------------------------------------
+			upgPlayer.upgPlayerBegin((Player*)ent->client);
 
-				setTargetname = "player";
-				setTargetname += ent - g_entities;
-				ent->entity->SetTargetName( setTargetname );
-				gi.Printf( "%s entered the game and was targetnamed '$%s'\n" , ent->client->pers.netname , setTargetname.c_str() );
-			}
+			//--------------------------------------------------------------
+			//[b60021] chrissstrahl
+			//--------------------------------------------------------------
+			coopPlayer.coopPlayerBegin((Player*)ent->client);
 		}
 
 		// make sure all view stuff is valid
@@ -2440,11 +2433,10 @@ extern "C" void G_ClientDisconnect( gentity_t *ent )
 		//--------------------------------------------------------------
 		upgPlayer.upgPlayerDisconnecting(player);
 
-
 		//--------------------------------------------------------------
 		// [b600xx] chrissstrahl - notify the coop mod that a player has left the game
 		//--------------------------------------------------------------
-		coop_playerLeft( player );
+		coopPlayer.coopPlayerDisconnecting( player );
 
 
 		player->Disconnect();

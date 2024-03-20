@@ -153,6 +153,10 @@ public:
 	bool classChangingDisabled = false;
 	//[b60011] chrissstrahl - player is already handled by CoopNpcTeam
 	bool coopNpcTeamHandled = false;
+
+	//[b60021] chrissstrahl
+	void coopPlayerBegin(Player* player);
+	void coopPlayerDisconnecting( Player *player );
 };
 
 extern CoopPlayer coopPlayer;
@@ -193,4 +197,3 @@ void coop_playerDamaged( Player *damagedPlayer , Player *attackingPlayer , float
 void coop_playerEnterArena( int entnum , float health );
 void coop_playerSpectator( Player *player );
 void coop_playerThink( Player *player );
-void coop_playerLeft( Player *player );

@@ -47,6 +47,8 @@ extern int iTIKIS;
 extern int iSKAS;
 extern int iSPRITES;
 
+//[b60021] chrissstrahl - this was missing
+CoopPlayer coopPlayer;
 
 
 //-----------------------------------------------------------------------------------
@@ -128,9 +130,12 @@ Event EV_Player_coopMessageUpdateYourMod
 
 //[b60021] chrissstrahl
 //================================================================
-// cleanup vars and what ever on level end/change
+// called when a client has finished connecting, and is ready
+// to be placed into the game.This will happen every level load.
+// 
+// -> extern "C" void G_ClientBegin( gentity_t *ent, const usercmd_t *cmd )
 //================================================================
-void Player::coopPlayerCleanUp()
+void CoopPlayer::coopPlayerBegin(Player* player)
 {
 
 }
@@ -1545,6 +1550,8 @@ bool coop_playerSetup( gentity_t *ent )
 }
 bool coop_playerSetup(Player* player)
 {
+	player->upgCircleMenuReset();
+
 	//[b607] chrissstrahl - allow cancelation of pending Missionfailure event (only if autofail because of empty server)
 	if (game.coop_autoFailPending) {
 		world->CancelEventsOfType(EV_World_AutoFailure);
@@ -1552,9 +1559,6 @@ bool coop_playerSetup(Player* player)
 
 	//[b60014] chrissstrahl - we don't want to handle bots
 	if (multiplayerManager.inMultiplayer() && player->upgPlayerIsBot()) { return true; }
-
-	//[b60021] chrissstrahl
-	player->coopPlayerCleanUp();
 
 	//[b60014] chrissstrahl - temorarly disable sv_floodprotect to allow setup commands
 	//from client which are send fast in groups, floodprotect actually discards them (as it should)
@@ -2849,18 +2853,12 @@ void coop_playerConnect(bool isBot)
 	}
 }
 
-//================================================================
-// Name:        coop_playerLeft
-// Class:       -
-//              
+//================================================================          
 // Description: executed when a player disconnects, quits or times out, reliable since it is called by the player destructor
-//              
-// Parameters:  
-//              
-// Returns:     void
-//              
+//
+// -> extern "C" void G_ClientDisconnect( gentity_t *ent )
 //================================================================
-void coop_playerLeft( Player *player )
+void CoopPlayer::coopPlayerDisconnecting( Player *player )
 {
 	if ( !game.coop_isActive || !player ){
 		return;

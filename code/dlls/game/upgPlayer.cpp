@@ -435,19 +435,31 @@ Event EV_Player_getViewtraceEndpos
 );
 
 
-//=========================================================[b60021]
-// Name:        upgPlayerCleanUp
-// Class:       Player
-//              
-// Description: Cleans up Variables and stuff we don't want to carry over to the next level
-//              
-// Parameters:  void
-//              
-// Returns:     void
+//=========================================================[b60021]      
+// called when a client has finished connecting, and is ready
+// to be placed into the game.This will happen every level load.
+// THIS HAPPENS AFTER -> Player::Player()
+//
+// -> extern "C" void G_ClientBegin( gentity_t *ent, const usercmd_t *cmd )
 //================================================================
-void Player::upgPlayerCleanUp()
+void UpgPlayer::upgPlayerBegin(Player* player)
 {
-	upgCircleMenuReset();
+	if (g_gametype->integer > GT_SINGLE_PLAYER)
+	{
+		//hzm gameupdate chrissstrahl - request current status of server/players, for debugging and overview reasons
+		//[b607] chrissstrahl - only print this in coop - it spams only in regular multi
+		if (game.coop_isActive) {
+			gi.SendConsoleCommand("status\n");
+		}
+		//hzm gameupdate chrissstrahl - targetname all players by client id
+		str printOut;
+		str setTargetname;
+
+		setTargetname = "player";
+		setTargetname += va("%d", player->entnum);
+		player->SetTargetName(setTargetname);
+		gi.Printf("%s entered the game and was targetnamed '$%s'\n", player->client->pers.netname, setTargetname.c_str());
+	}
 }
 
 //=========================================================[b60021]
@@ -597,15 +609,10 @@ void UpgPlayer::upgPlayerConnecting(bool firstTime,bool isBot, str netname,int c
 	upgPlayerclearDelayedServerCommands(clientnum);
 }
 
-//=========================================================[b60014]
-// Name:        upgPlayerDisconnecting
-// Class:       UpgPlayer
-//              
+//=========================================================[b60014]         
 // Description: Executed when the player is about to disconnect/leaving/left
-//              
-// Parameters:  void
-//              
-// Returns:     void
+// 
+// -> extern "C" void G_ClientDisconnect( gentity_t *ent )
 //================================================================
 void UpgPlayer::upgPlayerDisconnecting(Player* player)
 {
@@ -1230,9 +1237,6 @@ void Player::upgPlayerSetup()
 	if (level.spawn_bot) { edict->svflags |= SVF_BOT; }
 
 	upgPlayerSetLevelTimeEntered();
-
-	//[b60021] chrissstrahl - reset data
-	upgPlayerCleanUp();
 
 	//tell player to give us his cl_maxpackets and language
 	if (upgPlayerIsHost()) {
