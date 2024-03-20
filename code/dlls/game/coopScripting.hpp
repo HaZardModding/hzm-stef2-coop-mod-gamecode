@@ -19,6 +19,7 @@ private:
 	bool includedMom = false;
 	bool includedNoscript = false;
 public:
+	void coopScriptingRunCoopMain(CThread* gamescript);
 	bool getIncludedCoop();
 	bool getIncludedMrm();
 	bool getIncludedMom4();

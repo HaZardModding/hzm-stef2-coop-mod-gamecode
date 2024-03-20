@@ -412,17 +412,11 @@ void Level::Start( void )
 			// Run the main thread
 			gamescript->DelayedStart( 0.0f );
 
-			//hzm coop mod chrissstrahl - start the hzm coop mod main thread
-			if ( gamescript->labelExists( "globalCoop_main" ) )
-			{
-				CThread *coopMod_script;
-				coopMod_script = Director.CreateThread( "globalCoop_main" );
+			//--------------------------------------------------------------
+			//[b60021] chrissstrahl - execute globalCoop_main main coop script thread
+			//--------------------------------------------------------------
+			coopScripting.coopScriptingRunCoopMain(gamescript);
 
-				if ( coopMod_script ){
-					//gi.Printf( "Starting HZM Coop Mod Main thread: globalCoop_main\n" );
-					coopMod_script->DelayedStart( 0.0f );
-				}
-			}
 		}
 	}
 	loadLevelStrings();

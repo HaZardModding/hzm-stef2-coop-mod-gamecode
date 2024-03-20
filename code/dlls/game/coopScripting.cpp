@@ -43,6 +43,21 @@ void CoopScripting::init()
 	includedNoscript = false;
 }
 
+void CoopScripting::coopScriptingRunCoopMain(CThread* gamescript)
+{
+	//hzm coop mod chrissstrahl - start the hzm coop mod main thread
+	if (gamescript->labelExists("globalCoop_main"))
+	{
+		CThread* coopMod_script;
+		coopMod_script = Director.CreateThread("globalCoop_main");
+
+		if (coopMod_script) {
+			//gi.Printf( "Starting HZM Coop Mod Main thread: globalCoop_main\n" );
+			coopMod_script->DelayedStart(0.0f);
+		}
+	}
+}
+
 str CoopScripting::checkIncludedFiles(str sLex)
 {
 	//[b60011] chrissstrahl - check and remember if special scripts are used
