@@ -2829,16 +2829,17 @@ void coop_playerThink( Player *player )
 // Class:       -
 //              
 // Description: executed when a player connects
+//				Player does not exist yet, we can NOT accsess the player from here
 //              
-// Parameters:  Entity*
+// Parameters:  void
 //              
 // Returns:     void
 //              
 //================================================================
-void coop_playerConnect(Entity *ePlayer)
+void coop_playerConnect(bool isBot)
 {
-	//[b60014] chrissstrahl - also check if entity is of class Player
-	if (!game.coop_isActive || !ePlayer || !ePlayer->isSubclassOf(Player)) {
+	//[b60021] chrissstrahl - we don't handlde bots
+	if (!game.coop_isActive || isBot){
 		return;
 	}
 
