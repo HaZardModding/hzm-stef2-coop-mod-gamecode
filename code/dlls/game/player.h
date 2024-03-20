@@ -311,7 +311,6 @@ class Player : public Sentient
 		//[b60021] chrissstrahl
 		void				upgPlayerReconnectEvent(Event* ev);
 		bool				upgPlayerDoUseIgnore(Entity* e);
-		void				upgPlayerCleanUp();
 		//[b60017] chrissstrahl
 		bool				upgPlayerCanTaunt();
 		//[b60014] chrissstrahl
@@ -337,7 +336,6 @@ class Player : public Sentient
 		void				upgPlayerDeathTimeUpdate();
 		void				upgPlayerDeathTimeSet(int iTime);
 		int					upgPlayerDeathTime();
-		void				upgPlayerSetup();
 		bool				upgPlayerKilled(const Entity* attacker, const Entity* inflictor, const int meansOfDeath);
 		bool				upgPlayerSay(str sayString);
 		void				upgPlayerSaySpamfilterCountdown();

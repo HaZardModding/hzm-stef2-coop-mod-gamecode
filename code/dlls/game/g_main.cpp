@@ -1845,12 +1845,12 @@ extern "C" void G_ClientBegin( gentity_t *ent, const usercmd_t *cmd )
 			//--------------------------------------------------------------
 			//[GAMEUPGRADE][b60021] chrissstrahl
 			//--------------------------------------------------------------
-			upgPlayer.upgPlayerBegin((Player*)ent->client);
+			upgPlayer.upgPlayerBegin(ent);
 
 			//--------------------------------------------------------------
 			//[b60021] chrissstrahl
 			//--------------------------------------------------------------
-			coopPlayer.coopPlayerBegin((Player*)ent->client);
+			coopPlayer.coopPlayerBegin(ent);
 		}
 
 		// make sure all view stuff is valid

@@ -35,7 +35,8 @@ public:
 	void		upgPlayerConnecting(bool firstTime, bool isBot, str netname, int clientNum);
 	void		upgPlayerSetReconnect(int clientNum, bool reconnect);
 	bool		upgPlayerGetReconnect(int clientNum);
-	void		upgPlayerBegin(Player* player);
+	void		upgPlayerBegin(gentity_t* ent);
+	void		upgPlayerSetup(Player* player);
 };
 
 void	upgPlayerDelayedServerCommand(int entNum, const char* commandText);

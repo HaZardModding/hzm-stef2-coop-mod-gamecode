@@ -3442,7 +3442,7 @@ Player::Player()
 	//--------------------------------------------------------------
 	//[GAMEUPGRADE][b60014] chrissstrahl - run setup
 	//--------------------------------------------------------------
-	upgPlayerSetup();
+	upgPlayer.upgPlayerSetup(this);
 	
 	//--------------------------------------------------------------
 	//[b60014] chrissstrahl - run setup

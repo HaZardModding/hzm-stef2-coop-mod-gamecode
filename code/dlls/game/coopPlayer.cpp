@@ -135,7 +135,7 @@ Event EV_Player_coopMessageUpdateYourMod
 // 
 // -> extern "C" void G_ClientBegin( gentity_t *ent, const usercmd_t *cmd )
 //================================================================
-void CoopPlayer::coopPlayerBegin(Player* player)
+void CoopPlayer::coopPlayerBegin(gentity_t* ent)
 {
 
 }
@@ -1550,8 +1550,6 @@ bool coop_playerSetup( gentity_t *ent )
 }
 bool coop_playerSetup(Player* player)
 {
-	player->upgCircleMenuReset();
-
 	//[b607] chrissstrahl - allow cancelation of pending Missionfailure event (only if autofail because of empty server)
 	if (game.coop_autoFailPending) {
 		world->CancelEventsOfType(EV_World_AutoFailure);

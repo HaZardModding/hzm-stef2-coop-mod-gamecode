@@ -442,7 +442,7 @@ Event EV_Player_getViewtraceEndpos
 //
 // -> extern "C" void G_ClientBegin( gentity_t *ent, const usercmd_t *cmd )
 //================================================================
-void UpgPlayer::upgPlayerBegin(Player* player)
+void UpgPlayer::upgPlayerBegin(gentity_t* ent)
 {
 	if (g_gametype->integer > GT_SINGLE_PLAYER)
 	{
@@ -452,13 +452,9 @@ void UpgPlayer::upgPlayerBegin(Player* player)
 			gi.SendConsoleCommand("status\n");
 		}
 		//hzm gameupdate chrissstrahl - targetname all players by client id
-		str printOut;
-		str setTargetname;
-
-		setTargetname = "player";
-		setTargetname += va("%d", player->entnum);
-		player->SetTargetName(setTargetname);
-		gi.Printf("%s entered the game and was targetnamed '$%s'\n", player->client->pers.netname, setTargetname.c_str());
+		str setTargetname = va("player%d", ent - g_entities);
+		ent->entity->SetTargetName(setTargetname.c_str());
+		gi.Printf("%s entered the game and was targetnamed '$%s'\n", ent->client->pers.netname, setTargetname.c_str());
 	}
 }
 
@@ -1230,19 +1226,20 @@ int Player::upgPlayerDeathTime()
 //              
 // Returns:     void
 //================================================================
-void Player::upgPlayerSetup()
+void UpgPlayer::upgPlayerSetup(Player* player)
 {
 	//[b607] daggolin - Restore bot state on player object
-	gentity_t* ent = edict; if (!ent) { return; }
-	if (level.spawn_bot) { edict->svflags |= SVF_BOT; }
+	gentity_t* ent = player->edict; if (!ent) { return; }
+	if (level.spawn_bot) { player->edict->svflags |= SVF_BOT; }
 
-	upgPlayerSetLevelTimeEntered();
+	player->upgPlayerSetLevelTimeEntered();
+	player->upgCircleMenuReset();
 
 	//tell player to give us his cl_maxpackets and language
-	if (upgPlayerIsHost()) {
+	if (player->upgPlayerIsHost()) {
 		cvar_t* cvar = gi.cvar_get("local_language");
 		str sCvar = (cvar ? cvar->string : "Eng");
-		upgPlayerSetLanguage(sCvar);
+		player->upgPlayerSetLanguage(sCvar);
 
 		cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
 		str sCvar2 = (cvar2 ? cvar2->string : "0");
@@ -1250,14 +1247,14 @@ void Player::upgPlayerSetup()
 			sCvar2 = "60";
 			gi.cvar_set("cl_maxpackets",va("%s", sCvar2.c_str()));
 		}
-		upgPlayer.clMaxPackets = atoi(sCvar2);
+		player->upgPlayer.clMaxPackets = atoi(sCvar2);player->upgCircleMenuReset();
 	}
 	else {
 		//[b60011] chrissstrahl - make sure we do not handle bots
-		if (multiplayerManager.inMultiplayer() && upgPlayerIsBot()) {
+		if (multiplayerManager.inMultiplayer() && player->upgPlayerIsBot()) {
 			cvar_t* cvar = gi.cvar_get("local_language");
 			str sCvar = (cvar ? cvar->string : "Eng");
-			upgPlayerSetLanguage(sCvar);
+			player->upgPlayerSetLanguage(sCvar);
 
 			cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
 			int iCvar2 = (cvar2 ? cvar2->integer : 0);
@@ -1270,31 +1267,31 @@ void Player::upgPlayerSetup()
 			if (iCvar3 > 0) {
 				gi.cvar_set("cl_packetdup", "0");
 			}
-			coop_classSet(this, "HeavyWeapon");
+			coop_classSet(player, "HeavyWeapon");
 			return;
 		}
 
-		upgPlayerDelayedServerCommand(entnum, "vstr cl_maxpackets;vstr local_language");
+		upgPlayerDelayedServerCommand(player->entnum, "vstr cl_maxpackets;vstr local_language");
 	}
 
 	//[b60021] chrissstrahl - reconnect player if required
-	if (upgPlayer.upgPlayerGetReconnect(entnum)){
-		if(upgPlayerHasLanguageGerman()){
-			multiplayerManager.centerPrint(entnum, UPG_RECONNECTING_YOU_MODEL_FIX_DEU, CENTERPRINT_IMPORTANCE_CRITICAL);
+	if (upgPlayer.upgPlayerGetReconnect(player->entnum)){
+		if(player->upgPlayerHasLanguageGerman()){
+			multiplayerManager.centerPrint(player->entnum, UPG_RECONNECTING_YOU_MODEL_FIX_DEU, CENTERPRINT_IMPORTANCE_CRITICAL);
 		}
 		else {
-			multiplayerManager.centerPrint(entnum, UPG_RECONNECTING_YOU_MODEL_FIX_ENG, CENTERPRINT_IMPORTANCE_CRITICAL);
+			multiplayerManager.centerPrint(player->entnum, UPG_RECONNECTING_YOU_MODEL_FIX_ENG, CENTERPRINT_IMPORTANCE_CRITICAL);
 		}
 		
 		Event* reconnectEV = new Event(EV_Player_reconnect);
-		PostEvent(reconnectEV, 3.0f);
+		player->PostEvent(reconnectEV, 3.0f);
 		return;
 	}
 
 	if (multiplayerManager.inMultiplayer()) {
 		//print message of the day
 		Event* newEvent = new Event(EV_Player_upgPlayerMessageOfTheDay);
-		PostEvent(newEvent, 10.0f);
+		player->PostEvent(newEvent, 10.0f);
 	}
 }
 

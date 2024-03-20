@@ -155,7 +155,7 @@ public:
 	bool coopNpcTeamHandled = false;
 
 	//[b60021] chrissstrahl
-	void coopPlayerBegin(Player* player);
+	void coopPlayerBegin(gentity_t* ent);
 	void coopPlayerDisconnecting( Player *player );
 };
 
