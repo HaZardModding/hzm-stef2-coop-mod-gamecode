@@ -400,7 +400,7 @@ void CoopChallenges::updateStickTogether(float frameTime)
 			Event *event = new Event(EV_Pain);
 			event->AddFloat(COOP_CHALLENGE_STICKTOGETHER_DAMAGE);
 			event->AddEntity(player);
-			event->AddInteger(0);
+			event->AddInteger(MOD_SUICIDE);
 			player->ProcessEvent(event);
 
 			//substract health - make it ignore armor
