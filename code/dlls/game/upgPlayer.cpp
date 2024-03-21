@@ -1292,7 +1292,7 @@ void UpgPlayer::upgPlayerSetup(Player* player)
 	if (multiplayerManager.inMultiplayer()) {
 		//print message of the day
 		Event* newEvent = new Event(EV_Player_upgPlayerMessageOfTheDay);
-		player->PostEvent(newEvent, 10.0f);
+		player->PostEvent(newEvent, 12.0f);
 	}
 }
 
