@@ -305,6 +305,7 @@ GOBJ =\
     $(B)/game/weaputils.o \
     $(B)/game/worldspawn.o \
     \
+	$(B)/game/upgItem.o \
 	$(B)/game/upgCircleMenu.o \
 	$(B)/game/upgMp_manager.o \
 	$(B)/game/upgPlayer.o \
@@ -319,6 +320,7 @@ GOBJ =\
 	$(B)/game/upgScriptSlave.o \
 	$(B)/game/upgPuzzleObject.o \
     \
+	$(B)/game/coopItem.o \
 	$(B)/game/coopLMS.o \
 	$(B)/game/coopPuzzleobject.o \
 	$(B)/game/coopWorld.o \
@@ -514,6 +516,7 @@ $(B)/game/WeaponDualWield.o : $(GDIR)/WeaponDualWield.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/weaputils.o : $(GDIR)/weaputils.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/worldspawn.o : $(GDIR)/worldspawn.cpp; $(DO_GAME_SHLIB_CC)
 
+$(B)/game/upgItem.o : $(GDIR)/upgItem.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgCircleMenu.o : $(GDIR)/upgCircleMenu.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgMp_manager.o : $(GDIR)/upgMp_manager.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgPlayer.o : $(GDIR)/upgPlayer.cpp; $(DO_GAME_SHLIB_CC)
@@ -528,6 +531,7 @@ $(B)/game/upgActor.o : $(GDIR)/upgActor.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgScriptSlave.o : $(GDIR)/upgScriptSlave.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/upgPuzzleObject.o : $(GDIR)/upgPuzzleObject.cpp; $(DO_GAME_SHLIB_CC)
 
+$(B)/game/coopItem.o : $(GDIR)/coopItem.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopLMS.o : $(GDIR)/coopLMS.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopPuzzleobject.o : $(GDIR)/coopPuzzleobject.cpp; $(DO_GAME_SHLIB_CC)
 $(B)/game/coopWorld.o : $(GDIR)/coopWorld.cpp; $(DO_GAME_SHLIB_CC)
