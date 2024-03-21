@@ -62,9 +62,9 @@ bool CoopServer::coopServerDiagoneRunning()
 	cvar_t* cvar1 = gi.cvar_get("coop_diag");
 	cvar_t* cvar2 = gi.cvar_get("coop_dev");
 	if (cvar1 && cvar2 && cvar1->integer > 0 && cvar2->integer > 0) {
-		return false;
+		return true;
 	}
-	return true;
+	return false;
 }
 
 //========================================================[b60014]
