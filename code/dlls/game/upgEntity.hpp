@@ -13,6 +13,10 @@
 class UpgEntity
 {
 public:
+	float		upgEntityGetFloatVar(Entity* ent, str varname);
+	int			upgEntityGetIntegerVar(Entity* ent, str varname);
+	Vector		upgEntityGetVectorVar(Entity* ent, str varname);
+	str			upgEntityGetStringVar(Entity* ent, str varname);
 };
 
 

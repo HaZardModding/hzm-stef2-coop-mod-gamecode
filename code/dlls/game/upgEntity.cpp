@@ -6,15 +6,66 @@
 //-----------------------------------------------------------------------------------
 #include "upgEntity.hpp"
 
-
 #include "mp_manager.hpp"
 
+UpgEntity upgEntity;
 
 //-----------------------------------------------------------------------------------
 // Events, these have external Dependencies
 //-----------------------------------------------------------------------------------
 //NONE
 
+
+//=========================================================[b60014]
+// Name:        upgEntityGetFloatVar
+// Class:       UpgEntity
+//              
+// Description: Gets EntityVar from Entity returns it in desired type
+//              
+// Parameters:  void
+//              
+// Returns:     float
+//================================================================
+float UpgEntity::upgEntityGetFloatVar(Entity* ent, str varname)
+{
+	if (ent) {
+		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%"));
+		if (entityData) {
+			return entityData->floatValue();
+		}
+	}
+	return 0.0f;
+}
+int UpgEntity::upgEntityGetIntegerVar(Entity* ent, str varname)
+{
+	if (ent) {
+		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%"));
+		if (entityData) {
+			return entityData->intValue();
+		}
+	}
+	return 0;
+}
+Vector UpgEntity::upgEntityGetVectorVar(Entity* ent, str varname)
+{
+	if (ent) {
+		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%"));
+		if (entityData) {
+			return entityData->vectorValue();
+		}
+	}
+	return Vector(0.0f,0.0f,0.0f);
+}
+str UpgEntity::upgEntityGetStringVar(Entity* ent, str varname)
+{
+	if (ent) {
+		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%"));
+		if (entityData) {
+			return entityData->stringValue();
+		}
+	}
+	return "";
+}
 
 //=========================================================[b60014]
 // Name:        upgEntityMakeSolidAsap
