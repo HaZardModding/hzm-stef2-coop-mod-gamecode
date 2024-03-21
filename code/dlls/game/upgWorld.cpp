@@ -7,8 +7,10 @@
 #include "upgWorld.hpp"
 UpgWorld upgWorld;
 
+#include "upgEntity.hpp"
 #include "upgGame.hpp"
 #include "upgStrings.hpp"
+#include "upgCoopInterface.hpp"
 
 #include "worldspawn.h"
 #include "mp_manager.hpp"
@@ -62,7 +64,7 @@ void UpgWorld::upgWorldThink()
 	if ((thinkLastInterval + 3) < level.time) {
 		if (level.time < upgGame.upgGameGetReconnectTime()) {
 			ScriptVariable* entityData = NULL;
-			entityData = world->entityVars.GetVariable("coop_playersReconnecting");
+			entityData = world->entityVars.GetVariable("upg_playersReconnecting");
 			if (entityData && entityData->intValue() > 0) {
 				multiplayerManager.centerPrintAllClients("=/\\= Please Standby =/\\=\nWaiting for reconnecting Players.", CENTERPRINT_IMPORTANCE_CRITICAL);
 			}
@@ -219,8 +221,8 @@ void UpgWorld::upgWorldSetUpdateDynamicLights(bool bUpdate)
 //================================================================
 void UpgWorld::upgWorldSetPlayersReconnecting(bool reconnecting)
 {
-	world->entityVars.SetVariable("coop_playersReconnecting", (float)reconnecting);		//stays like that during the entire level
-	world->entityVars.SetVariable("coop_playersReconnectingWait", (float)reconnecting);	//used to signal scripts - will be set to 0 after 10 sec or so on level
+	world->entityVars.SetVariable("upg_playersReconnecting", (float)reconnecting);		//stays like that during the entire level
+	world->entityVars.SetVariable("upg_playersReconnectingWait", (float)reconnecting);	//used to signal scripts - will be set to 0 after 10 sec or so on level
 }
 
 //================================================================
@@ -235,19 +237,10 @@ void UpgWorld::upgWorldSetPlayersReconnecting(bool reconnecting)
 //================================================================
 bool UpgWorld::upgWorldGetPlayersReconnecting()
 {
-	//do not reconnect during coop level testing diagnostics
-	cvar_t* cvar1 = gi.cvar_get("coop_diag");
-	cvar_t* cvar2 = gi.cvar_get("coop_dev");
-	if (cvar1 && cvar2 && cvar1->integer > 0 && cvar2->integer > 0) {
+	if (upgCoopInterface.upgCoopInterfaceDiagnoseRunning()) {
 		return false;
-	}
-
-	ScriptVariable* entityData = NULL;
-	entityData = world->entityVars.GetVariable("coop_playersReconnecting");
-	if (entityData == NULL) {
-		return false;
-	}
-	return ((bool)entityData->floatValue());
+	}	
+	return (bool)upgEntity.upgEntityGetIntegerVar(world,"upg_playersReconnecting");
 }
 
 //================================================================
@@ -275,7 +268,7 @@ void UpgWorld::upgWorldFlushTikisLevelStart()
 		upgGame.flushTikisServer();
 		upgWorldSetPlayersReconnecting(true);
 
-		//Clear handling of "coop_playersReconnectingWait" is in: void UpgGame::upgGameStartMatch()
+		//Clear handling of "upg_playersReconnectingWait" is in: void UpgGame::upgGameStartMatch()
 		cvar_t* cvar1 = gi.cvar_get("coop_reconnectTime");
 		if (cvar1 && cvar1->integer > 10) {
 			upgGame.upgGameSetReconnectTime(cvar1->integer);
