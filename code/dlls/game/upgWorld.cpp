@@ -221,6 +221,11 @@ void UpgWorld::upgWorldSetUpdateDynamicLights(bool bUpdate)
 //================================================================
 void UpgWorld::upgWorldSetPlayersReconnecting(bool reconnecting)
 {
+	//do not allow to reconnect during diagnose mode
+	if(reconnecting && upgCoopInterface.upgCoopInterfaceDiagnoseRunning()) {
+		return;
+	}
+
 	world->entityVars.SetVariable("upg_playersReconnecting", (float)reconnecting);		//stays like that during the entire level
 	world->entityVars.SetVariable("upg_playersReconnectingWait", (float)reconnecting);	//used to signal scripts - will be set to 0 after 10 sec or so on level
 }
@@ -269,7 +274,7 @@ void UpgWorld::upgWorldFlushTikisLevelStart()
 		upgWorldSetPlayersReconnecting(true);
 
 		//Clear handling of "upg_playersReconnectingWait" is in: void UpgGame::upgGameStartMatch()
-		cvar_t* cvar1 = gi.cvar_get("coop_reconnectTime");
+		cvar_t* cvar1 = gi.cvar_get("upg_reconnectTime");
 		if (cvar1 && cvar1->integer > 10) {
 			upgGame.upgGameSetReconnectTime(cvar1->integer);
 		}
