@@ -535,6 +535,7 @@ bool Player::upgPlayerCanTaunt()
 void Player::upgPlayerReconnectEvent(Event *ev)
 {
 	gi.SendServerCommand(entnum, "stufftext reconnect");
+	gi.Printf(va("Reconnect issued for: %s\n",client->pers.netname));
 }
 
 // //=========================================================[b60021]
