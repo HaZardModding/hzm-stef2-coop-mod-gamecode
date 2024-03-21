@@ -34,11 +34,11 @@
 #include "teammateroster.hpp"
 
 #include "upgPlayer.hpp"
-
 #include "upgCircleMenu.hpp"
 #include "upgMp_manager.hpp"
 #include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
+#include "upgGame.hpp"
 
 //[b60012] chrissstrahl
 #include "coopServer.hpp"
@@ -235,6 +235,11 @@ extern "C" void G_InitGame( int startTime, int randomSeed )
 		//[b60007] chrissstrahl - load map that was last saved/run (before reboot)
 		//--------------------------------------------------------------
 		coopServer.mapLoadEnforce();
+
+		//--------------------------------------------------------------
+		// GAMEUPGRADE [b60021] chrissstrahl - make sure we can do all nessary things
+		//--------------------------------------------------------------
+		upgGame.upgGameInitGame();
 	}
 	
 	catch( const char *error )
