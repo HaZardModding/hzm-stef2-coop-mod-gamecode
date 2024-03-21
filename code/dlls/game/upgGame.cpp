@@ -27,6 +27,91 @@ Event EV_ScriptThread_ConfigstringRemove
 
 
 //========================================================[b60021]
+// Name:        upgGameIinitGame 
+// Class:       UpgGame
+//              
+// Description: Started as soon as the game is initialised
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void UpgGame::upgGameInitGame()
+{
+	upgGameResetMapsLoaded();
+}
+
+
+//========================================================[b60021]
+// Name:        upgGameResetMapsLoaded 
+// Class:       UpgGame
+//              
+// Description: Resets number of loadad maps
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void UpgGame::upgGameResetMapsLoaded()
+{
+	reconnectMapsLoaded = 0;
+}
+
+//========================================================[b60021]
+// Name:        upgGameCountMapsLoaded 
+// Class:       UpgGame
+//              
+// Description: Counts up loaded maps + 1
+//              
+// Parameters:  void
+//              
+// Returns:     void
+//================================================================
+void UpgGame::upgGameCountMapsLoaded()
+{
+	reconnectMapsLoaded++;
+}
+
+//========================================================[b60021]
+// Name:        upgGameGetMapsLoadedSinceReconnect 
+// Class:       UpgGame
+//              
+// Description: Returns how many levels where loaded since the last reconnect event
+//              
+// Parameters:  void
+//              
+// Returns:     int
+//================================================================
+int UpgGame::upgGameGetMapsLoadedSinceReconnect()
+{
+	return reconnectMapsLoaded;
+}
+
+//========================================================[b60021]
+// Name:        upgGameGetCvarReconnectTime 
+// Class:       UpgGame
+//              
+// Description: Sets time given to player to reconnect before game continues
+//              
+// Parameters:  void
+//              
+// Returns:     int
+//================================================================
+int UpgGame::upgGameGetCvarReconnectTime()
+{
+	int cvarReconnectTime = 0;
+	cvar_t* cvar1 = gi.cvar_get("upg_reconnectTime");
+	if (cvar1 && cvar1->integer > 10) {
+		cvarReconnectTime = cvar1->integer;
+	}
+
+	if (cvarReconnectTime <= 0) { cvarReconnectTime = 15; }
+	if (cvarReconnectTime  < 10) { cvarReconnectTime = 10; }
+	if (cvarReconnectTime > 60) { cvarReconnectTime = 60; }
+	return cvarReconnectTime;
+}
+
+//========================================================[b60021]
 // Name:        upgGameSetReconnectTime 
 // Class:       UpgGame
 //              

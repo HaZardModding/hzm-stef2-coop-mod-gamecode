@@ -244,8 +244,8 @@ bool UpgWorld::upgWorldGetPlayersReconnecting()
 {
 	if (upgCoopInterface.upgCoopInterfaceDiagnoseRunning()) {
 		return false;
-	}	
-	return (bool)upgEntity.upgEntityGetIntegerVar(world,"upg_playersReconnecting");
+	}
+	return (bool)upgEntity.upgEntityGetIntegerVar(world, "upg_playersReconnecting");
 }
 
 //================================================================
@@ -271,18 +271,17 @@ void UpgWorld::upgWorldFlushTikisLevelStart()
 	}
 	if (bFlush) {
 		upgGame.flushTikisServer();
-		upgWorldSetPlayersReconnecting(true);
 
-		//Clear handling of "upg_playersReconnectingWait" is in: void UpgGame::upgGameStartMatch()
-		cvar_t* cvar1 = gi.cvar_get("upg_reconnectTime");
-		if (cvar1 && cvar1->integer > 10) {
-			upgGame.upgGameSetReconnectTime(cvar1->integer);
+		//This is not done if the server has just started
+		if (upgGame.upgGameGetMapsLoadedSinceReconnect() > 0) {
+			upgWorldSetPlayersReconnecting(true);
+			upgGame.upgGameSetReconnectTime(upgGame.upgGameGetCvarReconnectTime());
+			upgGame.upgGameResetMapsLoaded();
+			//Clear handling of "upg_playersReconnectingWait" is in: void UpgGame::upgGameStartMatch()
 		}
-		if (upgGame.upgGameGetReconnectTime() <= 0) { upgGame.upgGameSetReconnectTime(15); }
-		if (upgGame.upgGameGetReconnectTime() < 10) { upgGame.upgGameSetReconnectTime(10); }
-		if (upgGame.upgGameGetReconnectTime() > 60) { upgGame.upgGameSetReconnectTime(60); }
 	}
 	else {
 		upgWorldSetPlayersReconnecting(false);
 	}
+	upgGame.upgGameCountMapsLoaded();
 }

@@ -16,7 +16,13 @@ private:
 	str				environmentName = "";
 	int				reconnectTime = 15;
 	int				reconnectPlayerCount = 0;
+	int				reconnectMapsLoaded = 0;
 public:
+	void			upgGameInitGame();
+	void			upgGameCountMapsLoaded();
+	void			upgGameResetMapsLoaded();
+	int				upgGameGetCvarReconnectTime();
+	int				upgGameGetMapsLoadedSinceReconnect();
 	void			upgGameStartMatch();
 	void			upgGameSetReconnectTime(int time);
 	int				upgGameGetReconnectTime();
