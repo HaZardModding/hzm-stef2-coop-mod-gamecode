@@ -22,6 +22,7 @@
 #include "upgMp_manager.hpp"
 #include "upgStrings.hpp"
 #include "upgCoopInterface.hpp"
+#include "upgEntity.hpp"
 
 //[b60011] chrissstrahl
 #include "coopGame.hpp"
@@ -2042,16 +2043,10 @@ void coop_playerEnterArena(int entnum, float health)
 		}
 
 		//[b60011] chrissstrahl - execute command if one is attached - usually to exec a cfg or to handle globalwidgetcommands for ui elements
-		sValue = "";
-		entityData = NULL;
-		entityData = world->entityVars.GetVariable(va("coop_registredHud%d_command", iHuds));
-		if (entityData != NULL) {
-			sValue = entityData->stringValue();
-			if (sValue != "") {
-				upgPlayerDelayedServerCommand(player->entnum, sValue.c_str());
-			}
+		sValue = upgEntity.upgEntityGetStringVar(world,va("coop_registredHud%d_command", iHuds));
+		if (sValue.length()) {
+			upgPlayerDelayedServerCommand(player->entnum, sValue.c_str());
 		}
-
 	}
 
 	//hzm coop mod chrissstrahl - sometimes the timer hud reactivates
