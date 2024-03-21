@@ -29,7 +29,7 @@ UpgEntity upgEntity;
 float UpgEntity::upgEntityGetFloatVar(Entity* ent, str varname)
 {
 	if (ent) {
-		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%"));
+		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%s", varname.c_str()));
 		if (entityData) {
 			return entityData->floatValue();
 		}
@@ -39,7 +39,7 @@ float UpgEntity::upgEntityGetFloatVar(Entity* ent, str varname)
 int UpgEntity::upgEntityGetIntegerVar(Entity* ent, str varname)
 {
 	if (ent) {
-		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%"));
+		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%s", varname.c_str()));
 		if (entityData) {
 			return entityData->intValue();
 		}
@@ -49,7 +49,7 @@ int UpgEntity::upgEntityGetIntegerVar(Entity* ent, str varname)
 Vector UpgEntity::upgEntityGetVectorVar(Entity* ent, str varname)
 {
 	if (ent) {
-		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%"));
+		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%s", varname.c_str()));
 		if (entityData) {
 			return entityData->vectorValue();
 		}
@@ -59,7 +59,7 @@ Vector UpgEntity::upgEntityGetVectorVar(Entity* ent, str varname)
 str UpgEntity::upgEntityGetStringVar(Entity* ent, str varname)
 {
 	if (ent) {
-		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%"));
+		ScriptVariable* entityData = ent->entityVars.GetVariable(va("%s", varname.c_str()));
 		if (entityData) {
 			return entityData->stringValue();
 		}
