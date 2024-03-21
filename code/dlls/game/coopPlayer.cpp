@@ -2028,19 +2028,11 @@ void coop_playerEnterArena(int entnum, float health)
 	ScriptVariable *entityData;
 	int iHuds;
 	for ( iHuds = 0; iHuds < 8; iHuds++ ){
-
-		sValue = "";
-		entityData = NULL;
-		entityData = world->entityVars.GetVariable( va( "coop_registredHud%d" , iHuds ) );
-
-		if ( entityData == NULL ){
+		sValue = upgEntity.upgEntityGetStringVar(world, va("coop_registredHud%d", iHuds));
+		if (!sValue.length()) {
 			continue;
 		}
-		
-		sValue = entityData->stringValue();
-		if ( sValue  != ""){
-			coop_hudsAdd( player , sValue );
-		}
+		coop_hudsAdd( player , sValue );
 
 		//[b60011] chrissstrahl - execute command if one is attached - usually to exec a cfg or to handle globalwidgetcommands for ui elements
 		sValue = upgEntity.upgEntityGetStringVar(world,va("coop_registredHud%d_command", iHuds));
@@ -2049,12 +2041,7 @@ void coop_playerEnterArena(int entnum, float health)
 		}
 	}
 
-	//hzm coop mod chrissstrahl - sometimes the timer hud reactivates
-	//if ( game.coop_isActive ) {
-		//DelayedServerCommand( player->entnum , "globalwidgetcommand dmTimer disable" );
-	//}
-
-	//hzm coop mod chrissstrahl - retore health, armor and ammo to previouse state
+	//hzm coop mod chrissstrahl - restore health, armor and ammo to previouse state
 	coop_playerRestore(player);
 
 //[b60011] chrissstrahl - handle NPC / AI Teammates
