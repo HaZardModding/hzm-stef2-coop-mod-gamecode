@@ -62,7 +62,7 @@ void UpgWorld::upgWorldThink()
 {
 	//3 sec interval
 	if ((thinkLastInterval + 3) < level.time) {
-		if (level.time < upgGame.upgGameGetReconnectTime()) {
+		if (level.time < (upgGame.upgGameGetReconnectTime() + mp_warmUpTime->integer)) {
 			ScriptVariable* entityData = NULL;
 			entityData = world->entityVars.GetVariable("upg_playersReconnecting");
 			if (entityData && entityData->intValue() > 0) {
