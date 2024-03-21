@@ -19,10 +19,10 @@
 
 #include "coopPlayer.hpp"
 #include "coopReturn.hpp"
-
-//[b60013] chrissstrahl - handle coop spawn location stuff
 #include "coopSpawnlocation.hpp"
-extern CoopSpawnlocation coopSpawnlocation;
+#include "coopGame.hpp"
+
+#include "upgGame.hpp"
 
 #include "mp_manager.hpp"
 #include "mp_modeBase.hpp"
@@ -1142,13 +1142,26 @@ void MultiplayerModeBase::startMatch( void )
 		}
 	}
 
-//hzm coop mod chrissstrahl - do not execute the lines bellow during coop
-//hzm gameupdate chrissstrahl - we don't want this during cinematic eigther
-	if ( game.coop_isActive || level.cinematic == 1 )
-	{
+	//--------------------------------------------------------------
+	// GAMEUPGRADE - [b60021] chrissstrahl
+	//--------------------------------------------------------------
+	upgGame.upgGameStartMatch();
+
+	//--------------------------------------------------------------
+	// [b60021] chrissstrahl - handle coop related
+	//--------------------------------------------------------------
+	coopGame.coopGameStartMatch();
+	if (coopServer.coopIsActive()) {
 		return;
 	}
-//end of hzm
+
+	//--------------------------------------------------------------
+	// GAMEUPGRADE - [b6000x] chrissstrahl - we don't want this during cinematic eigther
+	//--------------------------------------------------------------
+	if ( level.cinematic == 1 ){
+		return;
+	}
+
 
 	// Tell everyone the match started
 	multiplayerManager.centerPrintAllClients( "$$MatchStarted$$", CENTERPRINT_IMPORTANCE_HIGH );
