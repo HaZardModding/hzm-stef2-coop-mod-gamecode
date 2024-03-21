@@ -69,15 +69,11 @@ int UpgGame::upgGameGetReconnectTime()
 //================================================================
 void UpgGame::upgGameStartMatch()
 {
-	if (upgWorld.upgWorldGetPlayersReconnecting()) {
-		//reconnectPlayerCount
-		// 
-		//STOP waiting for players to reconnect after X sec - and start the cinematic or what ever
-		Event* ev = new Event(EV_SetFloatVar);
-		ev->AddString("upg_playersReconnectingWait");
-		ev->AddFloat(0.0f);
-		world->PostEvent(ev, ((float)upgGameGetReconnectTime() + (float)mp_warmUpTime->integer));
-	}
+	//STOP waiting for players to reconnect after X sec - and start the cinematic or what ever
+	Event* ev = new Event(EV_SetFloatVar);
+	ev->AddString("upg_playersReconnectingWait");
+	ev->AddFloat(0.0f);
+	world->PostEvent(ev, ((float)upgGameGetReconnectTime() + (float)mp_warmUpTime->integer));
 }
 
 //========================================================[b60016]
