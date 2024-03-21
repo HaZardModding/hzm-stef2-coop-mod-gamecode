@@ -60,7 +60,7 @@ void UpgWorld::upgWorldThink()
 {
 	//3 sec interval
 	if ((thinkLastInterval + 3) < level.time) {
-		if (level.time < reconnectTime) {	
+		if (level.time < upgGame.upgGameGetReconnectTime()) {
 			ScriptVariable* entityData = NULL;
 			entityData = world->entityVars.GetVariable("coop_playersReconnecting");
 			if (entityData && entityData->intValue() > 0) {
@@ -275,20 +275,14 @@ void UpgWorld::upgWorldFlushTikisLevelStart()
 		upgGame.flushTikisServer();
 		upgWorldSetPlayersReconnecting(true);
 
-		//STOP waiting for players to reconnect after X sec - and start the cinematic or what ever
+		//Clear handling of "coop_playersReconnectingWait" is in: void UpgGame::upgGameStartMatch()
 		cvar_t* cvar1 = gi.cvar_get("coop_reconnectTime");
 		if (cvar1 && cvar1->integer > 10) {
-			reconnectTime = cvar1->integer;
-
+			upgGame.upgGameSetReconnectTime(cvar1->integer);
 		}
-		if (reconnectTime <= 0) { reconnectTime = 15; }
-		if (reconnectTime < 10) { reconnectTime = 10; }
-		if (reconnectTime > 60) { reconnectTime = 60; }
-
-		Event* ev = new Event(EV_SetFloatVar);
-		ev->AddString("coop_playersReconnectingWait");
-		ev->AddFloat(0.0f);
-		world->PostEvent(ev,(float)reconnectTime);
+		if (upgGame.upgGameGetReconnectTime() <= 0) { upgGame.upgGameSetReconnectTime(15); }
+		if (upgGame.upgGameGetReconnectTime() < 10) { upgGame.upgGameSetReconnectTime(10); }
+		if (upgGame.upgGameGetReconnectTime() > 60) { upgGame.upgGameSetReconnectTime(60); }
 	}
 	else {
 		upgWorldSetPlayersReconnecting(false);

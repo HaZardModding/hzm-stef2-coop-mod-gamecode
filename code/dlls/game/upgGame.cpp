@@ -24,6 +24,64 @@ Event EV_ScriptThread_ConfigstringRemove
 );
 
 
+//========================================================[b60021]
+// Name:        upgGameSetReconnectTime 
+// Class:       UpgGame
+//              
+// Description: Sets time given to player to reconnect before game continues
+//              
+// Parameters:  int
+//              
+// Returns:     void
+//================================================================
+void UpgGame::upgGameSetReconnectTime(int time)
+{
+	reconnectTime = time;
+}
+
+//========================================================[b60021]
+// Name:        upgGameGetReconnectTime 
+// Class:       UpgGame
+//              
+// Description: Returns time given to player to reconnect before game continues
+//              
+// Parameters:  -
+//              
+// Returns:     int
+//================================================================
+int UpgGame::upgGameGetReconnectTime()
+{
+	return reconnectTime;
+}
+
+//========================================================[b60021]
+// Name:        upgGameStartMatch 
+// Class:       UpgGame
+//              
+// Description: Executed when the game starts the match - Multiplayer only
+//              
+// Parameters:  -
+//              
+// Returns:     void
+// -> MultiplayerModeBase::startMatch
+//================================================================
+void UpgGame::upgGameStartMatch()
+{
+
+	if (1) {
+		//reconnectPlayerCount
+		// 
+		//STOP waiting for players to reconnect after X sec - and start the cinematic or what ever
+		Event* ev = new Event(EV_SetFloatVar);
+		ev->AddString("coop_playersReconnectingWait");
+		ev->AddFloat(0.0f);
+		world->PostEvent(ev, ((float)upgGameGetReconnectTime() + (float)mp_warmUpTime->integer));
+	}
+
+
+
+}
+
 //========================================================[b60016]
 // Name:        setEnvironment 
 // Class:       UpgGame

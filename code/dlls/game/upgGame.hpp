@@ -11,9 +11,15 @@
 
 class UpgGame
 {
+private:
 	Entity*			cinematicCurrentCam = NULL;
 	str				environmentName = "";
+	int				reconnectTime = 15;
+	int				reconnectPlayerCount = 0;
 public:
+	void			upgGameStartMatch();
+	void			upgGameSetReconnectTime(int time);
+	int				upgGameGetReconnectTime();
 	void			setEnvironment(str name);
 	str				getEnvironment();
 	void			cleanUp(bool restart);

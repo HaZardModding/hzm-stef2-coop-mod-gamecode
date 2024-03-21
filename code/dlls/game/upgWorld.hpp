@@ -14,7 +14,6 @@ class UpgWorld
 {
 private:
 	float			thinkLastInterval = 0.0f;
-	int				reconnectTime = 15;
 	bool			updateDynamicLights = false;
 	str				flushTikiMaps[UPGWORLD_FLUSHTIKI_MAPLISTSIZE];
 public:
