@@ -40,13 +40,32 @@ CoopServer coopServer;
 #include "coopNpcTeam.hpp"//[b60011] chrissstrahl
 #include "coopChallenges.hpp"
 
-extern CoopServer coopServer;
 extern Event EV_ScriptThread_StuffCommand;
 
 //[b60011] chrissstrahl
 #define COOP_SERVER_PHYSICS_BUG_MAX_FPS 80
 #define COOP_SERVER_PHYSICS_BUG_MAX_FPS_MESSAGE "Server: Your com_maxFps has been set to 80 to fix a game bug on this level.\n"
 #define COOP_SERVER_MASTERSERVER "master.hazardmodding.com"
+
+//========================================================[b60014]
+// Name:        coopServerDiagoneRunning
+// Class:       CoopServer
+//              
+// Description: used to check if the coop mod is currently in diagnose mode - basically loading all maps and checking if they error out
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool CoopServer::coopServerDiagoneRunning()
+{
+	cvar_t* cvar1 = gi.cvar_get("coop_diag");
+	cvar_t* cvar2 = gi.cvar_get("coop_dev");
+	if (cvar1 && cvar2 && cvar1->integer > 0 && cvar2->integer > 0) {
+		return false;
+	}
+	return true;
+}
 
 //========================================================[b60014]
 // Name:        coopIsActive

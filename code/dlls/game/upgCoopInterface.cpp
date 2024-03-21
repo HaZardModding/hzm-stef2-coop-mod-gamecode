@@ -14,9 +14,22 @@
 #include "coopServer.hpp"
 #include "coopText.hpp"
 
-extern CoopServer coopServer;
-
 UpgCoopInterface upgCoopInterface;
+
+//================================================================
+// Name:        upgCoopInterfaceDiagnoseRunning
+// Class:       UpgCoopInterface
+//              
+// Description:	checks if the coop mod is currently running in diagone mode - basically loading every level to see if they error out
+//              
+// Parameters:  void
+//              
+// Returns:     bool
+//================================================================
+bool UpgCoopInterface::upgCoopInterfaceDiagnoseRunning()
+{
+	return coopServer.coopServerDiagoneRunning();
+}
 
 //================================================================
 // Name:        isCoopActive

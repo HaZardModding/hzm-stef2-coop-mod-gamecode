@@ -58,6 +58,7 @@ static int iSPRITES = 0;
 class CoopServer
 {
 public:
+	bool coopServerDiagoneRunning();
 	bool coopIsActive();
 	void enforceLevelSpecificSettings();
 	void mapLoadEnforce();

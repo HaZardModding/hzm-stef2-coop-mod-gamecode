@@ -18,6 +18,7 @@ class UpgCoopInterface
 private:
 
 public:
+	bool				upgCoopInterfaceDiagnoseRunning();
 	bool				isCoopActive();
 	bool				playerHasCoop(Player* player);
 	Player*				playerClosestTo(Entity* ent);
