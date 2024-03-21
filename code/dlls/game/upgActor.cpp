@@ -106,7 +106,10 @@ int  UpgActor::setHeadWatchTarget(Entity* entity,str watchTarget)
 	if (!player) {
 		player = coop_returnPlayerClosestTo(entity);
 	}
-	return player->entnum;
+	if (player) {
+		return player->entnum;
+	}
+	return 0;
 }
 
 //================================================================
