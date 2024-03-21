@@ -20,6 +20,34 @@ class MultiplayerManager;
 //DEPENDENCIES TO REMOVE
 
 
+int MultiplayerModeBase::upgPlayerGetKills(Player* player)
+{
+	int index;
+
+	index = findPlayer(player);
+
+	if (index >= 0)
+	{
+		return _playerGameData[index]._numKills;
+	}
+
+	return 0;
+}
+
+int MultiplayerModeBase::upgPlayerGetDeaths(Player* player)
+{
+	int index;
+
+	index = findPlayer(player);
+
+	if (index >= 0)
+	{
+		return _playerGameData[index]._numDeaths;
+	}
+
+	return 0;
+}
+
 //hzm coop mod daggolin - we need access to the frags (_numKills)
 void MultiplayerManager::addKills(int entnum, int kills)
 {

@@ -216,34 +216,6 @@ int MultiplayerModeBase::getPoints( Player *player )
 	return 0;
 }
 
-int MultiplayerModeBase::upgPlayerGetKills( Player *player )
-{
-	int index;
-
-	index = findPlayer( player );
-
-	if ( index >= 0 )
-	{
-		return _playerGameData[ index ]._numKills;
-	}
-
-	return 0;
-}
-
-int MultiplayerModeBase::upgPlayerGetDeaths( Player *player )
-{
-	int index;
-
-	index = findPlayer( player );
-
-	if ( index >= 0 )
-	{
-		return _playerGameData[ index ]._numDeaths;
-	}
-
-	return 0;
-}
-
 Team* MultiplayerModeBase::getPlayersTeam( const Player *player )
 {
 	int index;
