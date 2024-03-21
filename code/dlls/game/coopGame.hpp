@@ -14,6 +14,7 @@
 class CoopGame
 {
 public:
+	void			coopGameStartMatch();
 	str				missionFailureString(const str& reason);
 	void			missionFailureHud(const str& reason);
 	void			missionFailureEmptyServer();

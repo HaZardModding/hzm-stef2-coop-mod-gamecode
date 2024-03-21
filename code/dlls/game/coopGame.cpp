@@ -16,6 +16,22 @@
 
 CoopGame coopGame;
 
+//=========================================================[b60021]
+// Name:        upgGameStartMatch
+// Class:       CoopGame
+//              
+// Description: Executed when the game starts the match - Multiplayer only
+//              
+// Parameters:  -
+//              
+// Returns:     void
+// -> MultiplayerModeBase::startMatch
+//================================================================
+void CoopGame::coopGameStartMatch()
+{
+	
+}
+
 //================================================================
 // Name:        missionFailureString
 // Class:       CoopGame
