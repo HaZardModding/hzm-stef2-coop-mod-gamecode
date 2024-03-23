@@ -30,6 +30,7 @@
 #include "upgStrings.hpp"
 #include "upgGame.hpp"
 #include "upgWorld.hpp"
+#include "upgCoopInterface.hpp"
 
 #include "coopPlayer.hpp"
 
@@ -734,9 +735,13 @@ bool MultiplayerManager::inMultiplayer( void )
 
 bool MultiplayerManager::checkFlag( unsigned int flag )
 {
-	//hzm coop mod chrissstrahl - beware possible error, this action might have unknown sideeffects
-	//hzm coop mod chrissstrahl - do not apply mp_flags during coop
-	if ( !_inMultiplayerGame || game.coop_isActive )
+	//[b60021] chrissstrahl - do not apply mp_flags during coop
+	if (upgCoopInterface.isCoopActive()) {
+		return false;
+	}
+
+	
+	if ( !_inMultiplayerGame )
 		return false;
 	
 
@@ -810,19 +815,20 @@ void MultiplayerManager::addPlayer( Player *player )
 	_awardSystem->addPlayer ( player );
 
 	//--------------------------------------------------------------
-	// [GAMEUPGRADE][b60014] chrissstrahl - we don't need that for bots on level start
-	//--------------------------------------------------------------
-	if (player->upgPlayerIsBot() && level.time < (mp_warmUpTime->integer + 2))
-		return;
-
-	//--------------------------------------------------------------
 	// COOP PLAYER - [b60021] chrissstrahl - add player to game/coop handle
 	//--------------------------------------------------------------
 	player->coop_playerAdd();
 
+	//--------------------------------------------------------------
+	// [GAMEUPGRADE][b60014] chrissstrahl - Update Dynamic lights - or they will stay black for new player joing midgame
+	//--------------------------------------------------------------
+	upgWorld.upgWorldSetUpdateDynamicLights(!player->upgPlayerIsBot());
 
-	//Update Dynamic lights - or they will stay black for player joing midgame
-	upgWorld.upgWorldSetUpdateDynamicLights(true);
+	//--------------------------------------------------------------
+	// [GAMEUPGRADE][b60014] chrissstrahl - we don't need that for bots on level start
+	//--------------------------------------------------------------
+	if (player->upgPlayerIsBot() && level.time < (mp_warmUpTime->integer + 2))
+		return;
 
 	// Inform all of the players that the player has joined the game
 	HUDPrintAllClients( va( "%s $$JoinedGame$$\n" , player->client->pers.netname ) );
