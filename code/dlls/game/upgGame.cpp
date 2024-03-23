@@ -38,6 +38,10 @@ Event EV_ScriptThread_ConfigstringRemove
 //================================================================
 void UpgGame::upgGameInitGame()
 {
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return;
+	}
+
 	upgGameResetMapsLoaded();
 }
 
@@ -69,6 +73,10 @@ void UpgGame::upgGameResetMapsLoaded()
 //================================================================
 void UpgGame::upgGameCountMapsLoaded()
 {
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return;
+	}
+
 	reconnectMapsLoaded++;
 }
 
@@ -84,6 +92,10 @@ void UpgGame::upgGameCountMapsLoaded()
 //================================================================
 int UpgGame::upgGameGetMapsLoadedSinceReconnect()
 {
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return 0;
+	}
+
 	return reconnectMapsLoaded;
 }
 
@@ -99,6 +111,10 @@ int UpgGame::upgGameGetMapsLoadedSinceReconnect()
 //================================================================
 int UpgGame::upgGameGetCvarReconnectTime()
 {
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return 0;
+	}
+
 	int cvarReconnectTime = 0;
 	cvar_t* cvar1 = gi.cvar_get("upg_reconnectTime");
 	if (cvar1 && cvar1->integer > 10) {
@@ -138,6 +154,10 @@ void UpgGame::upgGameSetReconnectTime(int time)
 //================================================================
 int UpgGame::upgGameGetReconnectTime()
 {
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return 0;
+	}
+
 	return reconnectTime;
 }
 
@@ -209,8 +229,11 @@ void UpgGame::cleanUp(bool restart)
 	//--------------------------------------------------------------
 	//[b60021] chrissstrahl - clean up the models cache
 	//--------------------------------------------------------------
-	upgGame.flushTikisServer();
-	upgGame.flushTikisPlayers();
+	//[b60021] chrissstrahl - make sure this is executed only in multiplayer
+	if (g_gametype->integer == GT_MULTIPLAYER) {
+		upgGame.flushTikisServer();
+		upgGame.flushTikisPlayers();		
+	}
 }
 	
 //===========================================================[b607]
@@ -333,6 +356,11 @@ void UpgGame::checkMpGametype()
 //================================================================
 void UpgGame::flushTikisPlayers()
 {
+	//[b60021] chrissstrahl - make sure this is executed only in multiplayer
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return;
+	}
+
 	//flush also clients
 	for (int i = 0; i < maxclients->integer; i++) {
 		if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
@@ -358,6 +386,11 @@ void UpgGame::flushTikisPlayers()
 //================================================================
 void UpgGame::flushTikisServer()
 {
+	//[b60021] chrissstrahl - make sure this is executed only in multiplayer
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return;
+	}
+
 	//[b60011] chrissstrahl - refined the handling, handle dedicated server as before
 	if (dedicated->integer > 0) {
 		Engine_TIKI_FreeAll(1);//call to function pointer
@@ -414,7 +447,10 @@ Entity* UpgGame::getCameraCurrent()
 //================================================================
 void UpgGame::startCinematic()
 {
-	if (!multiplayerManager.inMultiplayer()) { return; }
+	//[b60021] chrissstrahl - make sure this is executed only in multiplayer
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return;
+	}
 
 	gentity_t* other;
 	Player* player;
