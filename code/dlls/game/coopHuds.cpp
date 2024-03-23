@@ -168,6 +168,3 @@ void coop_hudsRemove( Player *player , str hudName )
 
 //add huds that have been specified for this mission or map only
 //$world.getStringvar( "coop_registredHud" + fIndex );
-//cvar_bool_coop_disClass = getCvarInt( "coop_disClass" );
-//$world.setFloatVar("globalCoop_disableBuildTransporter",1);//disable technican class teleporter build ability
-
