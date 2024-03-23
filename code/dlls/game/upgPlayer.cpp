@@ -566,8 +566,10 @@ void UpgPlayer::upgPlayerSetReconnect(int clientNum,bool reconnect)
 bool UpgPlayer::upgPlayerGetReconnect(int clientNum)
 {
 	//Client is host, don't even atempt to reconnect
-	if (clientNum == 0 && dedicated->integer == 0) {
-		return false;
+	if (clientNum == 0){
+		if (dedicated->integer == 0 || g_gametype->integer != GT_MULTIPLAYER) {
+			return false;
+		}
 	}
 
 	return upgPlayer.reconnectRequired[clientNum];
@@ -1275,25 +1277,27 @@ void UpgPlayer::upgPlayerSetup(Player* player)
 		upgPlayerDelayedServerCommand(player->entnum, "vstr cl_maxpackets;vstr local_language");
 	}
 
-	//[b60021] chrissstrahl - reconnect player if required
-	if (upgPlayer.upgPlayerGetReconnect(player->entnum)){
-		if(player->upgPlayerHasLanguageGerman()){
-			multiplayerManager.centerPrint(player->entnum, UPG_RECONNECTING_YOU_MODEL_FIX_DEU, CENTERPRINT_IMPORTANCE_CRITICAL);
-		}
-		else {
-			multiplayerManager.centerPrint(player->entnum, UPG_RECONNECTING_YOU_MODEL_FIX_ENG, CENTERPRINT_IMPORTANCE_CRITICAL);
-		}
+	if (g_gametype->integer == GT_MULTIPLAYER)
+	{
+		//[b60021] chrissstrahl - reconnect player if required
+		if (upgPlayer.upgPlayerGetReconnect(player->entnum)){
+			if(player->upgPlayerHasLanguageGerman()){
+				multiplayerManager.centerPrint(player->entnum, UPG_RECONNECTING_YOU_MODEL_FIX_DEU, CENTERPRINT_IMPORTANCE_CRITICAL);
+			}
+			else {
+				multiplayerManager.centerPrint(player->entnum, UPG_RECONNECTING_YOU_MODEL_FIX_ENG, CENTERPRINT_IMPORTANCE_CRITICAL);
+			}
 		
-		Event* reconnectEV = new Event(EV_Player_reconnect);
-		player->PostEvent(reconnectEV, 3.0f);
-		return;
-	}
+			Event* reconnectEV = new Event(EV_Player_reconnect);
+			player->PostEvent(reconnectEV, 3.0f);
+			return;
+		}
 
-	if (multiplayerManager.inMultiplayer()) {
 		//print message of the day
 		Event* newEvent = new Event(EV_Player_upgPlayerMessageOfTheDay);
 		player->PostEvent(newEvent, 12.0f);
 	}
+
 }
 
 //=========================================================[b60014]
@@ -2274,7 +2278,7 @@ void upgPlayerHandleDelayedServerCommands(void)
 				if (sNewText.length() > 287) {
 					sNewText = upgStrings.getSubStr(sNewText, 0, 286);
 					gi.Printf("handleDelayedServerCommands: String to long, was cut down to 286\n");
-					gi.Printf("%s", sCmd.c_str());
+					gi.Printf("%s", sNewText.c_str());
 				}
 				sCmd += sNewText;
 				sCmd += "\"\n";
