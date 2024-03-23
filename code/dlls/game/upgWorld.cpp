@@ -40,16 +40,6 @@ Event EV_World_GetPhysicsVar
 //================================================================
 UpgWorld::UpgWorld()
 {
-	if (g_gametype->integer != GT_MULTIPLAYER) {
-		flushTikiMaps[0] = "";
-		flushTikiMaps[1] = "";
-		flushTikiMaps[2] = "";
-		flushTikiMaps[3] = "";
-		flushTikiMaps[4] = "";
-		flushTikiMaps[5] = "";
-		return;
-	}
-
 	flushTikiMaps[0] = "m2l0-sfa";
 	flushTikiMaps[1] = "m4l1a-attrexian_station";
 	flushTikiMaps[2] = "m4l2b-attrexian_station";
