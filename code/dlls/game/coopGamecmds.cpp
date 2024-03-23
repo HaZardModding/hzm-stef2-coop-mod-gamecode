@@ -738,13 +738,12 @@ qboolean G_coopCom_info(const gentity_t* ent)
 
 	//[b60014] chrissstrahl printout the info to menu
 	if (player->coop_getInstalledVersion() >= 60014) {
-		str sInfoPrint = "YOU:\n";
-		sInfoPrint += va("Coop Ver.: %i, C-Id: %d\n",player->coop_getInstalledVersion(),player->entnum);
-		sInfoPrint += va("Coop Class: %s - LMS Lives: %d of %d\n", player->coopPlayer.className.c_str(),coop_lmsGetLives() - player->coopPlayer.lmsDeaths, coop_lmsGetLives());
-		sInfoPrint += va("Lang.: %s, Entered: %.2f\n", player->upgPlayerGetLanguage().c_str(),player->client->pers.enterTime);
+		str sInfoPrint = va("Ver.: %i, C-Id: %d\n",player->coop_getInstalledVersion(),player->entnum);
+		sInfoPrint += va("Class: %s - Lives: %d of %d\n", player->coopPlayer.className.c_str(),coop_lmsGetLives() - player->coopPlayer.lmsDeaths, coop_lmsGetLives());
+		sInfoPrint += va("Lang.: %s, Entered: %.2f ", player->upgPlayerGetLanguage().c_str(),player->client->pers.enterTime);
 		sInfoPrint += va("Pers.Id: %s\n", player->coop_getId().c_str());
 	
-		sInfoPrint += "\nSERVER:\n";
+		sInfoPrint += "\nSERVER Info:\n";
 		cvar_t* cvarTemp = gi.cvar_get("local_language");
 		if (cvarTemp != NULL) {
 			s = cvarTemp->string;
@@ -758,7 +757,7 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		else
 			s2 = "VeryHard";
 
-		sInfoPrint += va("Lang: %s, Skill: %s, FF.:  %.2f\n", s.c_str(),s2.c_str(),game.coop_friendlyFire);
+		sInfoPrint += va("Lang: %s Skill: %s FF: %.2f\n", s.c_str(),s2.c_str(),game.coop_friendlyFire);
 
 #ifdef WIN32
 		str sys2 = "Win";
@@ -766,7 +765,17 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		str sys2 = "Lin";
 #endif
 		sInfoPrint += va("%i %s [%s %s]\n", COOP_BUILD, sys2.c_str(), __DATE__, __TIME__);
-		sInfoPrint += va("Map: %s\n", level.mapname.c_str());
+		sInfoPrint += va("Map: %s ", level.mapname.c_str());
+		//[b60021] chrissstrahl - added mapchecksum printout
+		str sChecksum = "ERROR";
+		cvar_t* var;
+		var = gi.cvar("sv_mapchecksum", "", 0);
+		if (var) {
+			if (var->string) {
+				sChecksum = var->string;
+			}
+		}
+		sInfoPrint += va("- %s\n", sChecksum.c_str());
 		sInfoPrint = upgStrings.getReplacedForLabeltext(sInfoPrint);
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_comCmdI0 labeltext %s", sInfoPrint.c_str()));
 		return true;
