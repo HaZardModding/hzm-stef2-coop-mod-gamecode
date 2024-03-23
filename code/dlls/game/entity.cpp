@@ -9958,7 +9958,7 @@ void Entity::CreateEarthquake( Event *ev )
 	//hzm coop mod chrissstrahl - TEST see if we can ignore this issue or need to fix it
 	if ( origin == vec_zero )
 	{
-		gi.Printf( "DEVDEBUG HZM TEST: Earthquake failed: %f,%f,%f\n" , magnitude , duration, distance ); //[b60021] chrissstrahl - let us see how often this is the case
+		//gi.Printf( "DEVDEBUG HZM TEST: Earthquake failed: %f,%f,%f\n" , magnitude , duration, distance ); //[b60021] chrissstrahl - let us see how often this is the case
 		return;
 	}
 
