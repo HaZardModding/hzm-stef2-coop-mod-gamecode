@@ -240,16 +240,17 @@ void CoopServer::svFloodProtectEnable()
 //================================================================
 void CoopServer::mapLoadEnforce()
 {
-	//[b60012][cleanup] chrissstrahl - pretty sure this could be done better
-	// 
+	//[b60021] chrissstrahl - make sure this is executed only in multiplayer
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return;
+	}
+
 	//[b607] chrissstrahl - moved code down here used to be after CVAR_Init(); 
 	//but it will not load the map in linux since we use the killserver method
 	//instead of the actual quit, but creating a error, so maybe this fixes it
 	//ERROR READS:
 	// Error in `./linuxef2ded': malloc(): smallbin double linked list corrupted: 0x0956cde0 
 	// Aborted
-	//
-	//hzm coop mod chrissstrahl - restore map to continue coop on
 	cvar_t* temp_dedicated;
 	cvar_t* temp_gametype;
 	temp_dedicated = gi.cvar_get("dedicated");
@@ -692,6 +693,8 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 		if ( &g_entities[i].inuse && g_entities[i].entity && g_entities[i].client ){
 			Player *playerValid = ( Player * )g_entities[i].entity;
 			if (playerValid){
+				//Event* reconnectEV = new Event(EV_Player_reconnect);
+				//player->PostEvent(reconnectEV, 3.0f);
 				gi.SendServerCommand( i , "stufftext \"disconnect;exec coop_mod/cfg/reconnect\"\n" );	
 			}
 		}
