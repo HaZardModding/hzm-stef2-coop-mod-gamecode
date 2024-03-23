@@ -209,8 +209,10 @@ void Player::coopPlayerCircleMenuSetup()
 //================================================================
 void Player::coop_playerAdd()
 {
-	coop_lmsInfo();
-	coop_lmsCheckReconnectHack();
+	if (!upgPlayerIsBot()) {
+		coop_lmsInfo();
+		coop_lmsCheckReconnectHack();
+	}
 }
 
 //[b60014] chrissstrahl - used to autospawn npc teammates
