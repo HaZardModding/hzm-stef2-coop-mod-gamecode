@@ -40,6 +40,16 @@ Event EV_World_GetPhysicsVar
 //================================================================
 UpgWorld::UpgWorld()
 {
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		flushTikiMaps[0] = "";
+		flushTikiMaps[1] = "";
+		flushTikiMaps[2] = "";
+		flushTikiMaps[3] = "";
+		flushTikiMaps[4] = "";
+		flushTikiMaps[5] = "";
+		return;
+	}
+
 	flushTikiMaps[0] = "m2l0-sfa";
 	flushTikiMaps[1] = "m4l1a-attrexian_station";
 	flushTikiMaps[2] = "m4l2b-attrexian_station";
@@ -61,15 +71,17 @@ UpgWorld::UpgWorld()
 void UpgWorld::upgWorldThink()
 {
 	//3 sec interval
-	if ((thinkLastInterval + 3) < level.time) {
-		if (level.time < (upgGame.upgGameGetReconnectTime() + mp_warmUpTime->integer)) {
-			ScriptVariable* entityData = NULL;
-			entityData = world->entityVars.GetVariable("upg_playersReconnecting");
-			if (entityData && entityData->intValue() > 0) {
-				multiplayerManager.centerPrintAllClients("=/\\= Please Standby =/\\=\nWaiting for reconnecting Players.", CENTERPRINT_IMPORTANCE_CRITICAL);
+	if (g_gametype->integer == GT_MULTIPLAYER) {
+		if ((thinkLastInterval + 3) < level.time) {
+			if (level.time < (upgGame.upgGameGetReconnectTime() + mp_warmUpTime->integer)) {
+				ScriptVariable* entityData = NULL;
+				entityData = world->entityVars.GetVariable("upg_playersReconnecting");
+				if (entityData && entityData->intValue() > 0) {
+					multiplayerManager.centerPrintAllClients("=/\\= Please Standby =/\\=\nWaiting for reconnecting Players.", CENTERPRINT_IMPORTANCE_CRITICAL);
+				}
 			}
+			thinkLastInterval = level.time;
 		}
-		thinkLastInterval = level.time;
 	}
 }
 	
@@ -260,6 +272,11 @@ bool UpgWorld::upgWorldGetPlayersReconnecting()
 //================================================================
 void UpgWorld::upgWorldFlushTikisLevelStart()
 {
+	//[b60021] chrissstrahl - only do that in mp
+	if (g_gametype->integer != GT_MULTIPLAYER) {
+		return;
+	}
+
 	thinkLastInterval = 0.0f;
 	bool bFlush = false;
 
