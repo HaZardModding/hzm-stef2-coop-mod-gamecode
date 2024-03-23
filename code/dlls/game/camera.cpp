@@ -785,7 +785,9 @@ Camera::Camera()
 	showcamera = sv_showcameras->integer;
 	if ( showcamera )
 	{
-		setModel( "func_camera.tik" );
+		//[b60021] chrissstrahl - allow us to see cameras when using sv_showcameras
+		//setModel( "func_camera.tik" );
+		setModel( "hud/radar_arrow.tik" );
 		showModel();
 	}
 	else
