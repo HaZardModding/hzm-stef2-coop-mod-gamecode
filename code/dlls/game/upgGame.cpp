@@ -232,7 +232,7 @@ void UpgGame::cleanUp(bool restart)
 	//[b60021] chrissstrahl - make sure this is executed only in multiplayer
 	if (g_gametype->integer == GT_MULTIPLAYER) {
 		upgGame.flushTikisServer();
-		upgGame.flushTikisPlayers();		
+		//upgGame.flushTikisPlayers(); //chrissstrahl - deactivated - I think this does not work
 	}
 }
 	
@@ -366,8 +366,6 @@ void UpgGame::flushTikisPlayers()
 		if (&g_entities[i] && g_entities[i].client && g_entities[i].inuse) {
 			Player* playerValid = (Player*)g_entities[i].entity;
 			if (playerValid && !(playerValid->edict->svflags & SVF_BOT)) {
-				//[b60014] chrissstrahl - changed so it will instantly transmit
-				//DelayedServerCommand(i, "flushtikis");
 				gi.SendServerCommand(i, "stufftext flushtikis\n");
 			}
 		}
