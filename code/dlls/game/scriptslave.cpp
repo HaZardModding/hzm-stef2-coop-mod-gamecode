@@ -2622,7 +2622,8 @@ void ScriptSkyOrigin::Think( void )
 			//.translationmult
 			//.maxtranslationdist
 
-			if (!player) {
+			//[b60022] chrissstrahl - Fixed: Crash, using player origin if no player was present
+			if (player) {
 				player_origin = player->origin;
 			}
 			
