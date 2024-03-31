@@ -12541,7 +12541,7 @@ void Actor::SpawnItems( void )
 			// See what he player needs
 
 			//--------------------------------------------------------------
-			// GAMNEFIX [b6xx] chrissstrahl - make sure if it is called it does not crash
+			// GAMEFIX [b6000x] chrissstrahl - make sure if it is called it does not crash
 			//--------------------------------------------------------------
 			if (g_gametype->integer == GT_SINGLE_PLAYER) {
 				player = (Player*)g_entities[0].entity;
@@ -12553,6 +12553,14 @@ void Actor::SpawnItems( void )
 				else {
 					player = (Player*)(Entity*)lastAttacker;
 				}
+			}
+			//--------------------------------------------------------------
+			// GAMEFIX [b60022] chrissstrahl - Fixed: Crash if no valid player is present
+			//--------------------------------------------------------------
+			if (!player) {
+				player_health = G_Random(100);
+				player_plasma = G_Random(50);
+				player_bullets = G_Random(100);
 			}
 
 
