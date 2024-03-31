@@ -12562,11 +12562,12 @@ void Actor::SpawnItems( void )
 				player_plasma = G_Random(50);
 				player_bullets = G_Random(100);
 			}
-
-
-			player_health  = player->health;
-			player_plasma  = player->AmmoCount( "Plasma" );
-			player_bullets = player->AmmoCount( "Bullet" );
+			else {
+				player_health  = player->health;
+				player_plasma  = player->AmmoCount( "Plasma" );
+				player_bullets = player->AmmoCount( "Bullet" );
+			}
+			
 
 			// See if the player is low on health
 
