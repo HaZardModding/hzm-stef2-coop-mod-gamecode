@@ -2601,7 +2601,9 @@ void ScriptSkyOrigin::Think( void )
 	Vector delta;
 	Entity *player;
 	Vector new_origin;
-	Vector player_origin = Vector(0.0f,0.0f,0.0f);
+
+	//[b60022] chrissstrahl - Fixed: Crash, using player origin if no player was present
+	Vector player_origin = origin;
 	
 	new_origin = origin;
 	
