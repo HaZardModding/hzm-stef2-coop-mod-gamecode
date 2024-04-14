@@ -799,6 +799,7 @@ Entity* coop_returnEntityPlayerFavored( void )
 		{
 			return player;
 		}
+		return nullptr; //[b60022] chrissstrahl - Fixed: Forgot to return nullptr in Singleplayer
 	}
 
 	for ( i = 0; i < maxclients->integer; i++ )
