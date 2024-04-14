@@ -1620,7 +1620,7 @@ qboolean G_LanguageDeu(const gentity_t* ent)
 	Player* player = (Player*)ent->entity;
 	player->upgPlayerSetLanguage("Deu");
 	if ((player->client->pers.enterTime + 5) < level.time) {
-		player->hudPrint("Ihre Sprache wurde auf deutsch gesetzt\n");
+		player->hudPrint("Ihre Sprache wurde auf deutsch festgelegt\n");
 	}
 	return true;
 }
