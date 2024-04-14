@@ -1024,20 +1024,18 @@ void Player::upgPlayerSetTargetedEntityLast(Entity * eLast)
 //              
 // Returns:     bool           
 //================================================================
-bool Player::upgPlayerIsHost()
+bool Player::upgPlayerIsHost() //[b60022] chrissstrahl - Cleaned up Player::upgPlayerIsHost() a little
 {
+#ifdef __linux__
+	return false;
+#endif
+
 	if (g_gametype->integer == GT_SINGLE_PLAYER || g_gametype->integer == GT_BOT_SINGLE_PLAYER) {
 		return true;
 	}
 
-#ifdef WIN32
-	bool bWindows = true;
-#else
-	bool bWindows = false;
-#endif
-
 	cvar_t* cl_running = gi.cvar_get("cl_running");
-	if (dedicated->integer == 0 && entnum == 0 && bWindows && (cl_running ? cl_running->integer : 0)) {
+	if (dedicated->integer == 0 && entnum == 0 && (cl_running ? cl_running->integer : 0)) {
 		return true;
 	}
 	return false;
