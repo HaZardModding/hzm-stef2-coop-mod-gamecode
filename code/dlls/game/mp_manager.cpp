@@ -4399,6 +4399,18 @@ void MultiplayerManager::checkModifiedCvars( bool informPlayers )
 		else{
 		//hzm gameupdate chrissstrahl - check if skill has been changed
 			checkCvar( skill, "skill", MP_CVAR_TYPE_INTEGER );
+			//[b60022] chrissstrahl - Fixed: Skill not properly updating to level and player when changed without restarting the level
+			if (skill->modified) {
+				level.setSkill(skill->integer);
+
+				Player* player = nullptr;
+				for (int i = 0; i < maxclients->integer; i++) {
+					player = getPlayer(i);
+					if (player) {
+						player->setSkill(skill->integer);
+					}
+				}
+			}
 		}
 
 		checkCvar( mp_itemRespawnMultiplier, "$$ItemRespawnMultiplier$$", MP_CVAR_TYPE_FLOAT );
