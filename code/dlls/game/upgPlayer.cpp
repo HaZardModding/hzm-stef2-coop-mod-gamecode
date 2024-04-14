@@ -1126,9 +1126,9 @@ void Player::upgPlayerGetLanguageEvent(Event* ev)
 str Player::upgPlayerGetLanguage()
 {
 	//[b60014] chrissstrahl - make sure using that command in singleplayer does not make it go boom
-	if (g_gametype->integer != GT_SINGLE_PLAYER && !multiplayerManager.inMultiplayer()) {
-		cvar_t* cvar = gi.cvar_get("local_language");
-		return (cvar ? cvar->string : "Eng");
+	if (g_gametype->integer == GT_SINGLE_PLAYER ) { //[b60022] chrissstrahl - Fixed bad check
+		//[b60022] chrissstrahl - updated to use the cvar
+		return local_language->string;
 	}
 	return upgPlayer.language;
 }
@@ -1238,9 +1238,7 @@ void UpgPlayer::upgPlayerSetup(Player* player)
 
 	//tell player to give us his cl_maxpackets and language
 	if (player->upgPlayerIsHost()) {
-		cvar_t* cvar = gi.cvar_get("local_language");
-		str sCvar = (cvar ? cvar->string : "Eng");
-		player->upgPlayerSetLanguage(sCvar);
+		player->upgPlayerSetLanguage(local_language->string); //[b60022] chrissstrahl - updated to use the cvar
 
 		cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
 		str sCvar2 = (cvar2 ? cvar2->string : "0");
@@ -1253,9 +1251,7 @@ void UpgPlayer::upgPlayerSetup(Player* player)
 	else {
 		//[b60011] chrissstrahl - make sure we do not handle bots
 		if (multiplayerManager.inMultiplayer() && player->upgPlayerIsBot()) {
-			cvar_t* cvar = gi.cvar_get("local_language");
-			str sCvar = (cvar ? cvar->string : "Eng");
-			player->upgPlayerSetLanguage(sCvar);
+			player->upgPlayerSetLanguage(local_language->string); //[b60022] chrissstrahl - updated to use the cvar
 
 			cvar_t* cvar2 = gi.cvar_get("cl_maxpackets");
 			int iCvar2 = (cvar2 ? cvar2->integer : 0);

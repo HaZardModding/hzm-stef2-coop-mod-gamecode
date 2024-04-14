@@ -744,10 +744,10 @@ qboolean G_coopCom_info(const gentity_t* ent)
 		sInfoPrint += va("Pers.Id: %s\n", player->coop_getId().c_str());
 	
 		sInfoPrint += "\nSERVER Info:\n";
-		cvar_t* cvarTemp = gi.cvar_get("local_language");
-		if (cvarTemp != NULL) {
-			s = cvarTemp->string;
-		}
+
+		//[b60022] chrissstrahl - updated to use the cvar
+		s = local_language->string;
+
 		if (skill->integer == 0)
 			s2 = "Easy";
 		else if (skill->integer == 1)
@@ -797,11 +797,10 @@ qboolean G_coopCom_info(const gentity_t* ent)
 	player->hudPrint("===SERVER Informations ===\n");
 	player->hudPrint(va("^5Map:^8 %s\n", level.mapname.c_str()));
 
-	cvar_t* cvarTemp = gi.cvar_get("local_language");
-	if (cvarTemp != NULL) {
-		s = cvarTemp->string;
-		player->hudPrint(va("^5Language:^8 %s, ", s.c_str()));
-	}
+	//[b60022] chrissstrahl - updated to use the cvar
+	s = local_language->string;
+	player->hudPrint(va("^5Language:^8 %s, ", s.c_str()));
+	
 	if (skill->integer == 0)
 		s = " [$$Easy$$]";
 	else if (skill->integer == 1)
