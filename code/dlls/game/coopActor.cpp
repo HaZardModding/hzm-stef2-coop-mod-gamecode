@@ -77,6 +77,8 @@ void coop_actorUsedByEquipment(Actor* actor, Entity* entityEquipment)
 	if (actor->actortype == IS_INANIMATE ||
 		actor->actortype == IS_MONSTER ||
 		actor->actortype == IS_ENEMY ||
+		actor->edict->solid == SOLID_NOT ||	//[b60022] chrissstrahl - Fixed: Actors getting healed by Player With Tricoder that are notsolid or hidden
+		actor->hidden() ||					//[b60022] chrissstrahl - Fixed: Actors getting healed by Player With Tricoder that are notsolid or hidden
 		interactiveType == "Enemy")
 	{
 		return;
