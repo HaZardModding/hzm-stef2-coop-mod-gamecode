@@ -165,6 +165,8 @@ extern cvar_t *sv_floodprotect;
 //[b607] chrissstrahl
 extern cvar_t *coop_autoFailtime;
 extern cvar_t *sv_maxbots; //max num of bots that can be added via vote
+//[b60022] chrissstrahl - Added: Cvar local_language to gamecode logic
+extern cvar_t* local_language;
 
 void CVAR_Init( void );
 

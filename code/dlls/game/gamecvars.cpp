@@ -168,8 +168,15 @@ cvar_t *coop_admin;
 cvar_t *sv_maxbots;
 cvar_t *coop_autoFailtime;
 
+//[b60022] chrissstrahl - Added: Cvar local_language to gamecode logic
+cvar_t* local_language;
+
+
 void CVAR_Init( void )
 {
+	//[b60022] chrissstrahl - Added: Cvar local_language to gamecode logic
+	local_language = gi.cvar("local_language", "Eng", CVAR_USERINFO);
+
 	//hzm coop mod chrissstrahl - add new cvars that are especially made for coop
 	coop_ver = gi.cvar("coop_ver","0", 0 );
 	coop_admin = gi.cvar("coop_admin", "0", 0);
