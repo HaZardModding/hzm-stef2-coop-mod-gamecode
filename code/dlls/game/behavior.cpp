@@ -5376,7 +5376,11 @@ BehaviorReturnCode_t	FlyToNodeNearestPlayer::Evaluate
 				}
 			else
 				{
-				Entity* player = g_entities[0].entity;
+				//[b60022] chrissstrahl - Fixed: Client 0 being used
+				Entity* player = coop_returnPlayerClosestTo(&self);
+				if (!self.IsEntityAlive(player)) { return BEHAVIOR_SUCCESS; }
+
+
 				dir = Pnode->origin - player->centroid;
 				}
 
