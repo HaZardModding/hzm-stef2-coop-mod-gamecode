@@ -2863,24 +2863,22 @@ void CircleStrafeEntity::End ( Actor &self	)
 //--------------------------------------------------------------
 Entity* CircleStrafeEntity::_getStrafeTarget( Actor &self, const str &target )
 {
-	Entity *ent = NULL;
-
-//hzm gameupdate chrissstrahl make this work in multiplayer
-	if ( Q_stricmpn( "player" , target.c_str() , 6 ) == 0 ){
-		if ( g_gametype->integer == GT_SINGLE_PLAYER ){
-			ent = GetPlayer( 0 );
-		}else{
-			if ( target.length() > 6 ){
-				str sPlayerNum = target[5];
-				ent = GetPlayer( atoi( sPlayerNum ) );
+	//[b60022] chrissstrahl - Grabbing next best player if given player is not valid
+	Entity *enemy = nullptr;
+	if ( target == "enemy" ){
+		enemy = self.enemyManager->GetCurrentEnemy();
+	}
+	//[b60022] chrissstrahl - will pretty much accept everything - meant to retrive players by their targetname
+	if (!enemy) {
+		enemy = coop_returnEntity(target.c_str());
+		if (!enemy || enemy->health <= 0 ||
+			enemy->isSubclassOf(Player) && multiplayerManager.inMultiplayer() && multiplayerManager.isPlayerSpectator((Player*)enemy)) {
+			if (Q_stricmpn(target, "player", 6) == 0) {
+				enemy = coop_returnPlayerClosestTo(&self);
 			}
 		}
 	}
-//hzm gameupdate chrissstrahl - this also grabs the ai its enemy when there was no valid player issued
-	if ( target == "enemy" || ent == NULL ){
-		ent = self.enemyManager->GetCurrentEnemy();
-	}
-	return ent;
+	return enemy;
 }
 
 
