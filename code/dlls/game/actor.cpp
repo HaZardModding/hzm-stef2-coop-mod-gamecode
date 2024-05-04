@@ -10226,7 +10226,8 @@ qboolean Actor::checkplayerranged()
 		if ( currentEnemy && currentEnemy->isSubclassOf(Player) ){
 			player = ( Player* )currentEnemy;
 		}
-		else if ( followTarget.specifiedFollowTarget ){
+		//[b60023] chrissstrahl - added check for player class
+		else if ( followTarget.specifiedFollowTarget && followTarget.specifiedFollowTarget->isSubclassOf(Player) ){
 			player = ( Player* )(Entity *)followTarget.specifiedFollowTarget;
 		}
 		else{
@@ -10597,7 +10598,8 @@ qboolean Actor::checkInAbsoluteRange( Conditional &condition )
 			if ( enemy && enemy->isSubclassOf( Player ) ){
 				player = ( Player* )enemy;
 			}
-			else if ( followTarget.specifiedFollowTarget ){
+			//[b60022] chrissstrahl - added check for player class
+			else if ( followTarget.specifiedFollowTarget && followTarget.specifiedFollowTarget->isSubclassOf(Player)){
 				player = ( Player* )( Entity * )followTarget.specifiedFollowTarget;
 			}
 			else{
@@ -18756,7 +18758,15 @@ qboolean Actor::checkPlayerWeaponNamed( const str& name )
 	
 	Entity *enemy;
 	enemy = enemyManager->GetCurrentEnemy();
-	Player *player = (Player *)enemy;
+	
+	//[b60022] chrissstrahl - added check for player class
+	Player *player = nullptr;
+	if (enemy->isSubclassOf(Player)){
+		player = (Player*)enemy;
+	}
+	else {
+		player = coop_returnPlayerFavored();
+	}
 
 	if ( player )
 	{
