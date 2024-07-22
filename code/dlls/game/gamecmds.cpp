@@ -695,6 +695,12 @@ qboolean G_TellCmd( const gentity_t *ent )
 	
 	for ( i = 2 ; i < gi.argc() ; i++ )
 	{
+		//[b60022] chrissstrahl - Fixed: Command tell discarding space char, gluing words together
+		if (i != 2) {
+			text += " ";
+		}
+
+
 		p = gi.argv( i );
 	
 		if ( *p == '"' )
