@@ -2234,8 +2234,7 @@ void upgPlayerHandleDelayedServerCommands(void)
 			//the lower the number the potentially faster the commands get send, which is good for tricorder puzzles
 			if (gi.GetNumFreeReliableServerCommands(player->entnum) > 90) { //chrissstrahl - used to be 105 changed, due to cyceling out cmds, was 32, 32 is to low! 105 might be to high... ...but coop mod used 122 for ages, 128 are usually the max
 				//gi.Printf( va( "command: %s\n" , pendingCommand->command ) );
-
-				int foundSpace = 0;
+				
 				int startIndex = 0;
 				str sCmd;
 				str sNewText = "";
@@ -2243,10 +2242,9 @@ void upgPlayerHandleDelayedServerCommands(void)
 
 				//[b607] chrissstrahl - optimize data string by not adding stufftext when not needed
 				//[b608] chrissstrahl - popmenu with a menuname does not work purly clientside, it needs stufftext prefix which is why it has been removed from the checks
-				foundSpace = upgStrings.containsAt(pendingCommand->command, " ");
-				if (Q_stricmpn("hudprint ", pendingCommand->command, foundSpace) == 0 ||
-					Q_stricmpn("status ", pendingCommand->command, foundSpace) == 0 ||
-					Q_stricmpn("score ", pendingCommand->command, foundSpace) == 0
+				if (Q_stricmp("hudprint ", pendingCommand->command) == 0 ||
+					Q_stricmp("status", pendingCommand->command) == 0 ||
+					Q_stricmp("score", pendingCommand->command) == 0
 					)
 				{
 					sCmd = upgStrings.getUntilChar(pendingCommand->command," ");
@@ -2254,7 +2252,6 @@ void upgPlayerHandleDelayedServerCommands(void)
 				}
 				else {
 					sCmd = "stufftext";
-					startIndex = 0;
 				}
 				sCmd += " \"";
 
