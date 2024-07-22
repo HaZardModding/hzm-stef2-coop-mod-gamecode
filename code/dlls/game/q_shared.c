@@ -1012,7 +1012,9 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks )
 		c = *data;
 		if ( c == '\n' )
 			com_lines++;
-	} while (c>32);
+	}
+	//[b60022] chrissstrahl - Added: Umlauts to the list of valid chars
+	while (c>32 || c == '\xE4' || c == '\xF6' || c == '\xFC' || c == '\xC4' || c == '\xD6' || c == '\xDC' || c == '\xDF');
 
 	if (len == MAX_TOKEN_CHARS)
 	{
