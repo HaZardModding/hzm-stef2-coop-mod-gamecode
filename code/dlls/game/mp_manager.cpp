@@ -1986,9 +1986,15 @@ void MultiplayerManager::callVote( Player *player , const str &command , const s
 
 	// Make sure everything is ok
 
-	if ( strchr( command.c_str() , ';' ) || strchr( arg.c_str() , ';' ) )
+	//--------------------------------------------------------------
+	//[b60022] chrissstrahl - Added: check for illegal vote command/argument - chrissstrahl
+	//--------------------------------------------------------------
+	if (strchr(command.c_str(), ';')	||
+		strchr(arg.c_str(), ';')		||
+		strchr(command.c_str(), '%')	||
+		strchr(arg.c_str(), '%')		)
 	{
-		HUDPrint( player->entnum , "$$InvalidVote$$\n" );
+		HUDPrint(player->entnum, "$$InvalidVote$$\n");
 		return;
 	}
 
