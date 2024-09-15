@@ -2242,7 +2242,7 @@ void upgPlayerHandleDelayedServerCommands(void)
 
 				//[b607] chrissstrahl - optimize data string by not adding stufftext when not needed
 				//[b608] chrissstrahl - popmenu with a menuname does not work purly clientside, it needs stufftext prefix which is why it has been removed from the checks
-				if (Q_stricmp("hudprint ", pendingCommand->command) == 0 ||
+				if (Q_stricmpn("hudprint ", pendingCommand->command,9) == 0 ||
 					Q_stricmp("status", pendingCommand->command) == 0 ||
 					Q_stricmp("score", pendingCommand->command) == 0
 					)
