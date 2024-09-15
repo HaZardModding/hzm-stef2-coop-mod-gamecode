@@ -252,7 +252,7 @@ void MultiplayerManager::update( float frameTime )
 	}
 
 	//[b60011] chrissstrahl - update coop challenges
-	coopChallenges.update(frameTime);
+	//coopChallenges.update(frameTime); 	//[b60022] chrissstrahl - all challenges have been disabled, nobody really liked them
 
 	// Start the game if not started already
 
