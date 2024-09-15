@@ -2492,6 +2492,11 @@ void Sentient::ArmorDamage( float damage, Entity *inflictor, Entity *attacker, c
 			if (g_gametype->integer == GT_MULTIPLAYER && game.coop_isActive) {
 				//damage sets freeze time
 				damage = game.coop_stasisTime;
+
+				//[b60023] chrissstrahl - don't do player to player freeze
+				if (this->isSubclassOf(Player)) {
+					return;
+				}
 			}
 			startStasis();
 			PostEvent(EV_StopStasis, damage);
