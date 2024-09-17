@@ -1322,7 +1322,8 @@ void coop_playerCommunicator(Player* player, int iAdd)
 			str sListName;
 			Player *listPlayer = (Player *)g_entities[j].entity;
 
-			if (!listPlayer || !listPlayer->isClient() || iAdd <= 0 ) {
+			//[b60024] chrissstrahl - Fixed: Communicator Transport deleting all names if a player leaves
+			if (!listPlayer || !listPlayer->isClient() || j == player->entnum && iAdd <= 0 ) {
 				sListName = "$$Empty$$";
 			}
 			else {
