@@ -42,7 +42,14 @@ void Player::coopClassRecoverAbilityHud(Event* ev)
 	if (ev->NumArgs() < 1) {
 		return;
 	}
-	upgPlayerWidgetCommand(ev->GetString(1), "enable");
+	str sWidgetName = ev->GetString(1);
+	upgPlayerWidgetCommand(sWidgetName, "enable");
+	
+	//[b60024] chrissstrahl - moved here from coop_class.urc
+	//if fully regenerated execute CFG
+	if (sWidgetName == "coop_class100") {
+		upgPlayerDelayedServerCommand(this->entnum, "exec coop_mod/cfg/coop_classReady.cfg");
+	}
 }
 
 //========================================================[b60021]
