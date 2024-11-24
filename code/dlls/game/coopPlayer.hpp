@@ -21,6 +21,35 @@
 #define COOP_MAX_HW_AMMO_PLASMA 500
 #define COOP_MAX_HW_AMMO_IDRYLL 500
 
+
+//--------------------------------------------------------------
+// [b60025] GAMEFIX - Added: Information we want to persist over level changes and restarts - chrissstrahl
+//--------------------------------------------------------------
+struct gamefix_client_persistant_s
+{
+	/*
+	bool			isBot = false;
+	str				language = "Eng";
+	bool			admin = false;
+	str				commandsStalled = "";
+	int				commands = 0;
+	float			commandsLast = 0.0f;
+	int				chats = 0;
+	float			chatsLast = 0.0f;
+	str				currentModel = "models/char/munro.tik";
+	str				currentTeam = "none";
+	*/
+
+
+	//--------------------------------------------------------------
+	// GAMEFIX - Fixed: Phaser shots and hits being count on a per bullet rather as per beam basis - chrissstrahl
+	//--------------------------------------------------------------
+	EntityPtr		heuristicsWeap = nullptr;
+	long int		heuristicsShots = 0;
+	bool			heuristicsHit = false;
+};
+extern gamefix_client_persistant_s gamefix_client_persistant_t[MAX_CLIENTS];
+
 typedef struct pendingServerCommand_s
 {
 	char					*command;

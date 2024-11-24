@@ -52,6 +52,12 @@ extern int iSPRITES;
 CoopPlayer coopPlayer;
 
 
+//--------------------------------------------------------------
+// [b60025] GAMEFIX - Added: Information we want to persist over level changes and restarts - chrissstrahl
+//--------------------------------------------------------------
+gamefix_client_persistant_s gamefix_client_persistant_t[MAX_CLIENTS];
+
+
 //-----------------------------------------------------------------------------------
 // Events, these have external Dependencies
 //-----------------------------------------------------------------------------------

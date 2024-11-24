@@ -2391,6 +2391,17 @@ extern "C" const char *G_ClientConnect( int clientNum, qboolean firstTime, qbool
 		coop_playerConnect((bool)(int)isBot);
 
 
+		//--------------------------------------------------------------
+		// [b60025] GAMEFIX - Fixed: Phaser shots and hits being count on a per bullet rather as per beam basis - chrissstrahl
+		//--------------------------------------------------------------
+		if (firstTime) {
+			gamefix_client_persistant_t[clientNum].heuristicsWeap = nullptr;
+			gamefix_client_persistant_t[clientNum].heuristicsShots = 0;
+			gamefix_client_persistant_t[clientNum].heuristicsHit = false;
+			//gi.Printf("####### client heuristics reset\n");
+		}
+
+
 		if ( firstTime && ( game.maxclients > 1 ) )
 		{
 			gi.Printf("%s connected\n", client->pers.netname);

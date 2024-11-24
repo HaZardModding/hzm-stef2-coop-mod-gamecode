@@ -995,6 +995,17 @@ void Sentient::StopFireWeapon( Event *ev )
 	int         number=0;
 	str         side;
 	
+
+	//--------------------------------------------------------------
+	// [b60025] GAMEFIX - Fixed: Phaser shots and hits being count on a per bullet rather as per beam basis - chrissstrahl
+	//--------------------------------------------------------------
+	if (this->isSubclassOf(Player)) {
+		gamefix_client_persistant_t[this->entnum].heuristicsHit = false;
+		gamefix_client_persistant_t[this->entnum].heuristicsShots = 0;
+		//gi.Printf("####### STOP FIRE\n");
+	}
+
+
 	if ( ev->NumArgs() > 0 )
 	{
 		side = ev->GetString( 1 );

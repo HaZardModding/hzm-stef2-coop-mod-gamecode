@@ -31,6 +31,13 @@ Event EV_ScriptSlave_GetLastActivatingEntity
 );
 
 
+//[b60025] chrissstrahl - get damage label - script_object has onDamage set
+//-----------------------------------------------------
+str ScriptSlave::upgScriptSlaveGetDamageLabel()
+{
+	return damagelabel;
+}
+
 //[b60021] chrissstrahl - get use label - script_object has onUse set
 //-----------------------------------------------------
 str ScriptSlave::upgScriptSlaveGetUseLabel()

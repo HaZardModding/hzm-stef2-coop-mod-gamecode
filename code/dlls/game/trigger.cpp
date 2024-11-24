@@ -432,6 +432,20 @@ CLASS_DECLARATION( Entity, Trigger, "trigger_multiple" )
 	{ NULL, NULL }
 };
 
+
+//--------------------------------------------------------------
+// [b60025] GAMEFIX - Fixed: Weapon accuracy bug, not counting destructibles. - chrissstrahl
+//--------------------------------------------------------------
+bool Trigger::GetDestructible()
+{
+	return destructible;
+}
+bool Trigger::GetTriggerOnDamage()
+{
+	return triggerondamage;
+}
+
+
 Trigger::Trigger()
 {
 	if ( LoadingSavegame )

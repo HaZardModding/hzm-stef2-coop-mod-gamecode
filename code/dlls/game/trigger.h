@@ -97,6 +97,15 @@ class Trigger : public Entity
 
 	  //hzm gameupdate - allow to get and set trigger thread from outside the trigger class
 	  void				RemoveSelfOnCountHit( void );
+
+
+	  //--------------------------------------------------------------
+	  // [b60025] GAMEFIX - Fixed: Weapon accuracy bug, not counting destructibles. - chrissstrahl
+	  //--------------------------------------------------------------
+	  bool				GetDestructible( void );
+	  bool				GetTriggerOnDamage( void );
+
+
 	  str				GetThread( void );
 	  void				SetThread( str threadname );
 	  EntityPtr			GetLastActivatingEntity();
