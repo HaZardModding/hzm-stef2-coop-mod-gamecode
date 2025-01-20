@@ -14036,7 +14036,10 @@ void Actor::ArmorDamage( Event *ev )
 	{
 		//Teammates don't count MOD explosion, because it might
 		//be splash damage
-		if ( actortype == IS_TEAMMATE )
+		
+		//[b60025] chrissstrahl - Actortypes Friend and Civilian will no longer get aggressive by Splashdamage from Player
+		//if ( actortype == IS_TEAMMATE || )
+		if ( actortype == IS_TEAMMATE || actortype == IS_CIVILIAN || actortype == IS_FRIEND )
 		{
 			int MOD = ev->GetInteger( 9 );
 			//--------------------------------------------------------------
@@ -16690,7 +16693,9 @@ void Actor::_notifyGroupOfEnemy()
       {
       act = ActiveList.ObjectAt( i );
 		
-		if ( act->GetGroupID() == GetGroupID() )
+		//[b60025] chrissstrahl - Fixed enemy being shared from different actortypes, making Friendly AI hate whom ever the Enemy AI hates currently, resulting in hating the player or them self
+		//if ( act->GetGroupID() == GetGroupID() )
+		if ( act->GetGroupID() == GetGroupID() && act->actortype == this->actortype && currentEnemy != this)
          {
          act->sensoryPerception->Stimuli(STIMULI_ALL);
          act->enemyManager->TryToAddToHateList( currentEnemy );
@@ -16703,9 +16708,11 @@ void Actor::_notifyGroupOfEnemy()
       {
       act = SleepList.ObjectAt( i );
 		
-		if ( act->GetGroupID() == GetGroupID() )
+		//[b60025] chrissstrahl - Fixed enemy being shared from different actortypes, making Friendly AI hate whom ever the Enemy AI hates currently, resulting in hating the player or them self
+		//if ( act->GetGroupID() == GetGroupID() )
+		if ( act->GetGroupID() == GetGroupID() && act->actortype == this->actortype && currentEnemy != this)
          {
-			act->sensoryPerception->Stimuli(STIMULI_ALL);
+		 act->sensoryPerception->Stimuli(STIMULI_ALL);
          act->enemyManager->TryToAddToHateList( currentEnemy );
          act->enemyManager->SetCurrentEnemy( currentEnemy );
          act->personality->SetAggressiveness( 1.0f);
