@@ -1713,7 +1713,43 @@ HelperNode* HelperNode::FindClosestHelperNode( Actor &self , int mask , float ma
 	FindMovementPath find;
 	Path            *path;
 	int              nodeID;
-	
+
+
+	//[b60025] chrissstrahl - Added: Upgraded to work without client 0 being present
+	//Maybe add: closest xy, path check
+	Player* player = nullptr;
+	if ( g_gametype->integer != GT_SINGLE_PLAYER ) {
+		Actor* actSelf = &self;
+		Entity* actCurrentEnemy = actSelf->enemyManager->GetCurrentEnemy();
+		Entity* actFollow = actSelf->followTarget.specifiedFollowTarget;
+		Player* playerClosest = nullptr;
+		//Determine distance check be checked against this player
+		//actor has a PLAYER as current enemy
+		if (actCurrentEnemy) {
+			if (actCurrentEnemy->getHealth() > 0 && actCurrentEnemy->isSubclassOf(Player) && !multiplayerManager.isPlayerSpectator((Player*)actCurrentEnemy)) {
+				playerClosest = (Player*)actCurrentEnemy;
+			}
+		}
+		//actor has no PLAYER enemy - check against player actor is following
+		if (!playerClosest) {
+			if (actFollow && actFollow->getHealth() && actFollow->isSubclassOf(Player) && !multiplayerManager.isPlayerSpectator((Player*)actFollow)) {
+				playerClosest = (Player*)actFollow;
+			}
+		}
+		//actor has no PLAYER enemy/followtarget - use the closest PLAYER - closest XY would have been prefered
+		if (!playerClosest) {
+			playerClosest = coop_returnPlayerClosestTo(actSelf);
+		}
+		//make sure the player is actually valid
+		if (!playerClosest) {
+			return nullptr;
+		}
+		player = playerClosest;
+	}
+	else {
+		player = GetPlayer(0);
+	}
+
 	
 	// Set up our pathing heuristics
 	find.heuristic.self = &self;
@@ -1766,10 +1802,10 @@ HelperNode* HelperNode::FindClosestHelperNode( Actor &self , int mask , float ma
 			if ( node->isReserved() )
 				continue;
 			
-			Player* player;
-			player = GetPlayer(0);
-			if ( !player )
-				return NULL; //[b607] chrissstrahl - returned false, fixed now - thanks to daggolin
+			//[b60025] chrissstrahl - we took care of this outside the loop
+			//Check if node is within the minimum distance of the player
+			//Player* player;
+			//player = GetPlayer(0);
 
 			if ( player->WithinDistance( node->origin , minDistanceFromPlayer ) )
 				continue;
@@ -2246,6 +2282,42 @@ HelperNode* HelperNode::FindClosestHelperNodeThatCannotSeeEntity( Actor &self , 
 	int					nodeID;
 	trace_t				trace;
 	
+
+	//[b60025] chrissstrahl - Added: Upgraded to work without client 0 being present
+	//Maybe add: closest xy, path check
+	Player* player = nullptr;
+	if (g_gametype->integer != GT_SINGLE_PLAYER) {
+		Actor* actSelf = &self;
+		Entity* actCurrentEnemy = actSelf->enemyManager->GetCurrentEnemy();
+		Entity* actFollow = actSelf->followTarget.specifiedFollowTarget;
+		Player* playerClosest = nullptr;
+		//Determine distance check be checked against this player
+		//actor has a PLAYER as current enemy
+		if (actCurrentEnemy) {
+			if (actCurrentEnemy->getHealth() > 0 && actCurrentEnemy->isSubclassOf(Player) && !multiplayerManager.isPlayerSpectator((Player*)actCurrentEnemy)) {
+				playerClosest = (Player*)actCurrentEnemy;
+			}
+		}
+		//actor has no PLAYER enemy - check against player actor is following
+		if (!playerClosest) {
+			if (actFollow && actFollow->getHealth() && actFollow->isSubclassOf(Player) && !multiplayerManager.isPlayerSpectator((Player*)actFollow)) {
+				playerClosest = (Player*)actFollow;
+			}
+		}
+		//actor has no PLAYER enemy/followtarget - use the closest PLAYER - closest XY would have been prefered
+		if (!playerClosest) {
+			playerClosest = coop_returnPlayerClosestTo(actSelf);
+		}
+		//make sure the player is actually valid
+		if (!playerClosest) {
+			return nullptr;
+		}
+		player = playerClosest;
+	}
+	else {
+		player = GetPlayer(0);
+	}
+	
 	
 	// Set up our pathing heuristics
 	find.heuristic.self = &self;
@@ -2297,30 +2369,9 @@ HelperNode* HelperNode::FindClosestHelperNodeThatCannotSeeEntity( Actor &self , 
 				continue;
 
 			//Check if node is within the minimum distance of the player
-			Player* player;
-
-			//[b607] chrissstrahl - make coop compatible
-			//
-			//this did create a infinity loop and froze the game, figure out what went wrong
-			//
-			/*Player* coopPlayer;
-			if (g_gametype->integer != GT_SINGLE_PLAYER) {
-				for (i = 0; i < maxclients->integer; i++) {
-					coopPlayer = (Player *)g_entities[i].entity;
-					if (coopPlayer && coopPlayer->client && coopPlayer->isSubclassOf(Player) && coopPlayer->health > 0 && !multiplayerManager.isPlayerSpectator(coopPlayer)) {
-						if (!coopPlayer->WithinDistance(node->origin, minDistFromPlayer)) {
-							player = coopPlayer;
-							break;
-						}
-					}
-				}
-			}
-			else {*/
-				player = GetPlayer(0);
-			/*}*/
-
-			if ( !player )
-				return NULL; //[b607] chrissstrahl - returned false, fixed now - thanks to daggolin
+			//[b60025] chrissstrahl - we took care of this outside the loop
+			//Player* player;
+			//player = GetPlayer(0);
 
 			if ( player->WithinDistance( node->origin , minDistFromPlayer ) )
 				continue;
