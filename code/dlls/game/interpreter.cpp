@@ -757,6 +757,29 @@ void Interpreter::Execute( Event *e )
 			break;
 			
 		case OP_ADD_S:
+			//[b60025] Chrissstrahl - fix game crashing if a string operation with a deleted entity is done in the scripts
+			//EXAMPLE from m10l1: aliasName = e.getrawtargetname()+"generalDialog1";
+			if (a->string < 0 || b->string < 0) {
+				gi.Printf("Interpreter::Execute - Attempting to concatenate an empty or invalid string in OP_ADD_S\n");
+				if (c->string > 0) {
+					gi.Printf("C reads (could be unrelated): %s\n", program->strings[c->string].s);
+				}
+
+				if (a->string < 0 && b->string > 0) {
+					gi.Printf("A bad, B reads: %s\n", program->strings[b->string].s);
+					RunError("Interpreter::Execute - Attempting to concatenate an empty or invalid string in OP_ADD_S\nA bad, B reads: %s", program->strings[b->string].s);
+				}
+				else if (b->string < 0 && a->string > 0)
+				{
+					gi.Printf("B bad, A reads: %s\n", program->strings[a->string].s);
+					RunError("Interpreter::Execute - Attempting to concatenate an empty or invalid string in OP_ADD_S\nB bad, A reads: %s", program->strings[a->string].s);
+				}
+				else {
+					gi.Printf("A+B bad\n");
+					RunError("Interpreter::Execute - Attempting to concatenate an empty or invalid string in OP_ADD_S\nA+B bad");
+				}
+				return;
+			}
             program->strings[ c->string ].s = program->strings[ a->string ].s + program->strings[ b->string ].s;
 			break;
 			
