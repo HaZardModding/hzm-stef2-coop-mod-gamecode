@@ -67,7 +67,7 @@ void UpgWorld::upgWorldThink()
 				ScriptVariable* entityData = NULL;
 				entityData = world->entityVars.GetVariable("upg_playersReconnecting");
 				if (entityData && entityData->intValue() > 0) {
-					multiplayerManager.centerPrintAllClients("=/\\= Please Standby =/\\=\nWaiting for reconnecting Players.", CENTERPRINT_IMPORTANCE_CRITICAL);
+					multiplayerManager.centerPrintAllClients("=/\\= Waiting for reconnecting Players =/\\=\nESCAPE abborts reconnect.", CENTERPRINT_IMPORTANCE_CRITICAL);
 				}
 			}
 			thinkLastInterval = level.time;
