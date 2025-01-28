@@ -9013,13 +9013,17 @@ qboolean Actor::checkcanseeplayer( Conditional &condition )
 	qboolean real_can_see;
 
 	// Get our current enemy
+	//[b60025] chrissstrahl - Fix: CAN_SEE_PLAYER not working anymore
 	Entity *player;
 	player = enemyManager->GetCurrentEnemy();
 
-	if ( !player )
-		enemyManager->FindHighestHateEnemy();
+	if (!player || !player->isSubclassOf(Player))
+		player = followTarget.specifiedFollowTarget;
 
-	player = enemyManager->GetCurrentEnemy();
+	if (!player || !player->isSubclassOf(Player))
+		player = coop_returnPlayerClosestTo(this);
+
+
 	if ( !player )
 		return false;
 
