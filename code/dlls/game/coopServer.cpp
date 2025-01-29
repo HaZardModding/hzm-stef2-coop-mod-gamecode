@@ -695,7 +695,9 @@ bool coop_serverManageReboot(str sMapToLoad, Player* player) //[b607] chrisstrah
 			if (playerValid){
 				//Event* reconnectEV = new Event(EV_Player_reconnect);
 				//player->PostEvent(reconnectEV, 3.0f);
-				gi.SendServerCommand( i , "stufftext \"disconnect;exec coop_mod/cfg/reconnect\"\n" );	
+				gi.SendServerCommand( i , "stufftext \"disconnect;exec coop_mod/cfg/reconnect\"\n" );
+				//[b60025] chrissstrahl - remove entity next frame or so - to prevent player from still being on the server while trying to connect
+				playerValid->PostEvent(EV_Remove, FRAMETIME );
 			}
 		}
 	}
