@@ -10347,7 +10347,7 @@ void Entity::SetGroupID( Event *ev )
 	//[b60011] chrissstrahl - gamefix make sure dead actors are not added to the group
 	//they are alerady killed, and won't trigger again, getting the game stuck
 	if (this->isSubclassOf(Actor) && this->health <= 0) {
-		gi.Printf(va("Entity::SetGroupID - Could not add dead Actor (%s) to Group %d\n",this->targetname.c_str(), ev->GetInteger(1)));
+		gi.Printf(va("Entity::SetGroupID - Dead Actor (%s) rejected from GroupID %d\n", this->targetname.c_str(), ev->GetInteger(1)));
 		return;
 	}
 	AddToGroup( ev->GetInteger( 1 ) );
