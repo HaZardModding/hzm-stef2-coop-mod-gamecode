@@ -30,7 +30,7 @@ void CoopChallenges::init(void)
 //on level start, init all challenges
 {
 	fLastDamageTime					= (level.time + COOP_CHALLENGE_STICKTOGETHER_CYCLE);
-	challenesAreDisabled			= false;
+	challenesAreDisabled			= true;
 
 	//populate lists
 	CoopChallengeTypes.AddObject("sticktogether");
@@ -47,7 +47,7 @@ void CoopChallenges::cleanUp(bool restart)
 	}
 
 	fLastDamageTime = -1.0f;
-	challenesAreDisabled		= false;
+	challenesAreDisabled		= true;
 
 	//clean up lists
 	CoopChallengeTypes.FreeObjectList();
@@ -475,9 +475,9 @@ void CThread::challengesDisabled(Event* ev)
 //also returns the status of the challenge 0=enabled 1=disabled
 {
 	if (ev->NumArgs() > 0) {
-		bool challenesAreDisabled = (bool)ev->GetInteger(1);
-		coopChallenges.disabled(challenesAreDisabled);
-		gi.Printf(va("challengeDisabled: Challages set to %d (0=on/1=off)\n", (int)challenesAreDisabled));
+		bool challenesDisabled = (bool)ev->GetInteger(1);
+		coopChallenges.disabled(challenesDisabled);
+		gi.Printf(va("challengeDisabled: Challages set to %d (0=on/1=off)\n", (int)challenesDisabled));
 	}
 	ev->ReturnInteger(coopChallenges.isDisabled());
 }
