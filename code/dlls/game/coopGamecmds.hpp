@@ -9,6 +9,10 @@
 qboolean G_coopCom_notransferlive(const gentity_t* ent);
 //hzm coop mod chrissstrahl - allwoing players to signal that they have the coop mod installed
 qboolean G_coopInstalled(const gentity_t* ent);
+
+//[b60025] chrissstrahl - allow detection of radar scale
+qboolean G_coopRadarScale(const gentity_t* ent);
+
 //hzm coop mod chrissstrahl - allow client to send a idendification string
 qboolean G_coopClientId(const gentity_t* ent);
 //[b60011] chrissstrahl - allowing players to make use of special coop inventory

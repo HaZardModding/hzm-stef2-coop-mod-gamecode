@@ -1784,6 +1784,44 @@ qboolean G_coopThread(const gentity_t* ent)
 }
 
 //================================================================
+// Name:        G_coopRadarScale
+// Class:       -
+//              
+// Description: Scales the radar calculation to fit the hud scale
+//              
+// Parameters:  int entNum
+//              
+// Returns:     qboolean
+//              
+//================================================================
+qboolean G_coopRadarScale(const gentity_t* ent)
+{
+	if (!ent || !ent->inuse || !ent->client)
+		return qfalse;
+
+	Player* player = (Player*)ent->entity;
+	const char* coopRadarScale = gi.argv(1);
+
+	if (strlen(coopRadarScale)) { //[b60011] Chrissstrahl - fixed bad check
+		float scale = atoi(coopRadarScale);
+		if (scale > 6) {
+			scale = 6;
+		}
+		else if (scale < 1) {
+			scale = 1;
+		}
+
+		player->entityVars.SetVariable("coop_radarScale", float(scale));
+		//force update of blips in the next frame
+		for (int iBlip = 0; iBlip < COOP_RADAR_MAX_BLIPS;iBlip++) {
+			player->coopPlayer.radarBlipLastPosition[iBlip] = Vector( float(iBlip), 0.22, 0.33 );
+		}
+	}
+
+	return qtrue;
+}
+
+//================================================================
 // Name:        G_coopInstalled
 // Class:       -
 //              

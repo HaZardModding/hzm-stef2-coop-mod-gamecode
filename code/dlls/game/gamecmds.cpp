@@ -50,7 +50,8 @@ consolecmd_t G_ConsoleCmds[] =
 //[b60011] chrissstrahl - coop commands 
 	{ "coopthread",G_coopThread,			true }, //[b60011] chrissstrahl - allowing players to start a script thread
 	{ "coopitem",G_coopItem,				true }, //[b60011] chrissstrahl - allowing players to make use of special coop inventory
-	{ "coopinstalled",G_coopInstalled,		true },	//[b600] chrissstrahl - allow deetection if mod is installed
+	{ "coopinstalled",G_coopInstalled,		true },	//[b600] chrissstrahl - allow detection if mod is installed
+	{ "coopradarscale",G_coopRadarScale,		true },	//[b60025] chrissstrahl - allow detection of radar scale
 	{ "coopinput",G_coopInput	,			true }, //[b60011] chrissstrahl - allowing players to send text to server
 	{ "coopcid",G_coopClientId	,			true }, //[b60011] chrissstrahl - allowing players to send idendification string
 //[b60011] chrissstrahl - ! text commands moved here from coop_playerSay in coopPlayer.cpp
