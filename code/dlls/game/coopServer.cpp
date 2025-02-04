@@ -1395,10 +1395,16 @@ void coop_serverSetup( void )
 	//[b60011] chrissstrahl - make sure at least 4 players are able to play from the get go (this is in Coop)
 	if ( coop_returnCvarInteger( "sv_maxclients" ) < 2 )
 	{
-		gi.SendConsoleCommand("set sv_maxclients 4\n"); //can't set this cvar directly or game crashes
+		//[b60025] chrissstrahl - this fixes issues with maxclients and game.maxclients, previous sv_maxclients value < 1
+		//causing certain functions not working, clients > 0 not getting equipt
+		// - we have to think very carefully about this if we should keep this feature
+		// - this could create issues we are not yet aware of
+		gi.SendConsoleCommand("seta sv_maxclients 4\n");
+		gi.SendConsoleCommand("exec coop_mod/cfg/server/killserver\n");
+		//correctingTheseSettingsRequiresMapload = true;
+		
 		coop_serverWarningBadSetting("BAD SETTING");
 		coop_serverWarningBadSetting("sv_maxclients is < 2\nPLEASE START SERVER WITH sv_maxclients SET BEWTEEN 2 AND 8");
-		correctingTheseSettingsRequiresMapload = true;
 	}
 
 	if ( correctingTheseSettingsRequiresMapload == true )
