@@ -118,6 +118,21 @@ void coop_radarUpdateBlip(Player* player,
 	vRadarBlipLastPosition[0] = fBlipAxisX;
 	vRadarBlipLastPosition[1] = fBlipAxisY;
 
+	//[b60025] chrissstrahl - scale for user specific scaled radar hud
+	int userScaleFactor = coop_returnEntityIntegerVar(player,"coop_radarScale");
+	if (userScaleFactor <= 0) {
+		userScaleFactor = 1;
+	}
+	else if (userScaleFactor > 6) {
+		userScaleFactor = 6;
+	}
+	fBlipAxisX = fBlipAxisX * userScaleFactor;
+	fBlipAxisY = fBlipAxisY * userScaleFactor;
+	//scale 6 (what we use now as max) total hud size -> 768 924
+	//we have to shift (on x axis) huds scaled smaller than 6 to the right to make them align with the right edge
+	fBlipAxisX += COOP_RADAR_HUD_REAL_WIDTH - (COOP_RADAR_HUD_SCALE_WIDTH * userScaleFactor);
+
+
 	//hzm coop mod chrissstrahl - construct client command
 	if (player->coopPlayer.radarBlipLastPosition[iMiObjEntityItemNumber] != vRadarBlipLastPosition) {
 		player->coopPlayer.radarBlipLastPosition[iMiObjEntityItemNumber] = vRadarBlipLastPosition;
@@ -128,7 +143,7 @@ void coop_radarUpdateBlip(Player* player,
 		//no one will ever notice this, and if they do then there are nettraffic issues anyway
 		//used to be send via DelayedServerCommand 
 		if (gi.GetNumFreeReliableServerCommands(player->entnum) > 120) { //64
-			gi.SendServerCommand(player->entnum, va("stufftext \"globalwidgetcommand cr%i rect %i %i %i %i\"\n", iMiObjEntityItemNumber, (int)fBlipAxisX, (int)fBlipAxisY, COOP_RADAR_BLIP_SIZE, COOP_RADAR_BLIP_SIZE));
+			gi.SendServerCommand(player->entnum, va("stufftext \"globalwidgetcommand cr%i rect %i %i %i %i\"\n", iMiObjEntityItemNumber, (int)fBlipAxisX, (int)fBlipAxisY, COOP_RADAR_BLIP_SIZE * userScaleFactor, COOP_RADAR_BLIP_SIZE * userScaleFactor));
 		}
 
 		if (target) {
@@ -139,7 +154,7 @@ void coop_radarUpdateBlip(Player* player,
 				//no one will ever notice this, and if they do then there are nettraffic issues anyway
 				//used to be send via DelayedServerCommand 
 				if (gi.GetNumFreeReliableServerCommands(player->entnum) > 120) { //64
-					gi.SendServerCommand(player->entnum, va("stufftext \"globalwidgetcommand crs rect %i %i %i %i\"\n", (int)fBlipAxisX, (int)fBlipAxisY, COOP_RADAR_BLIP_SIZE, COOP_RADAR_BLIP_SIZE));
+					gi.SendServerCommand(player->entnum, va("stufftext \"globalwidgetcommand crs rect %i %i %i %i\"\n", (int)fBlipAxisX, (int)fBlipAxisY, COOP_RADAR_BLIP_SIZE * userScaleFactor, COOP_RADAR_BLIP_SIZE * userScaleFactor));
 				}
 			}
 		}
@@ -199,7 +214,7 @@ void coop_radarUpdate( Player *player )
 	//keep track of last update time
 	player->coopPlayer.lastTimeRadarUpdated = level.time;
 
-	//radar COOP_RADAR_CIRCLE_START at: 09 09 of hud
+	//radar COOP_RADAR_CIRCLE_START at: 10 10 of hud
 	//radar COOP_RADAR_BLIP_SIZE /2 = precise blip pos
 	//radar center pos = 55 55
 	//centerpos (55 55) plus radar circle start (55 + 9 - 55 + 9 = 64 64)
@@ -207,7 +222,8 @@ void coop_radarUpdate( Player *player )
 	//radar centerpos = 52 52
 	//calculate offset dynamicly
 	///////////////////////////////////////////////////////////////////
-	Vector	vRadarCenterPos( 55.0f , 55.0f , 0.0f );
+
+	Vector	vRadarCenterPos( 55.0f, 55.0f, 0.0f );
 	vRadarCenterPos[0] = ( ( vRadarCenterPos[0] + COOP_RADAR_CIRCLE_START ) - ( COOP_RADAR_BLIP_SIZE / 2 ) );
 	vRadarCenterPos[1] = ( ( vRadarCenterPos[1] + COOP_RADAR_CIRCLE_START ) - ( COOP_RADAR_BLIP_SIZE / 2 ) );
 
