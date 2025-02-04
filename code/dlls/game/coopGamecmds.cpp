@@ -1201,6 +1201,8 @@ qboolean G_coopCom_stuck(const gentity_t* ent)
 // Returns:     qboolean
 //              
 //================================================================
+extern Event EV_Player_DeactivateWeapon;
+extern Event EV_Player_ActivateNewWeapon;
 qboolean G_coopCom_transport(const gentity_t* ent)
 {
 	Player* player = (Player*)ent->entity;
@@ -1326,12 +1328,38 @@ qboolean G_coopCom_transport(const gentity_t* ent)
 
 	player->entityVars.SetVariable("!transport", level.time);
 
-	//holster weapon, prevent beam killing
-	weaponhand_t	hand = WEAPON_ANY;//get player weapon, we might want to utilize that further
-	player->getActiveWeaponName(hand, player->coopPlayer.transportUnholsterWeaponName);
-	player->coopPlayer.transportUnholster = true;
-	player->SafeHolster(true);
-	//player->upgPlayerDisableUseWeapon(true); //[b60020] chrissstrahl - there is no event yet to have weapons enabled with delay, not sure there should be
+
+	//[b60025] chrissstrahl - use the circle menu code to make the weapon go away and reapear after transport
+	str lastWeapon = "None";
+	player->getActiveWeaponName(WEAPON_ANY, lastWeapon);
+
+	Event* StopFireEvent;
+	StopFireEvent = new Event(EV_Sentient_StopFire);
+	StopFireEvent->AddString("dualhand");
+	player->ProcessEvent(StopFireEvent);
+
+	Event* deactivateWeaponEv;
+	deactivateWeaponEv = new Event(EV_Player_DeactivateWeapon);
+	deactivateWeaponEv->AddString("dualhand");
+	player->PostEvent(deactivateWeaponEv, 0.05);
+
+	player->disableInventory();
+
+	//[b60025] chrissstrahl - set code to restore weapon
+	Event* useWeaponEv;
+	useWeaponEv = new Event(EV_Player_UseItem);
+	useWeaponEv->AddString(lastWeapon);
+	useWeaponEv->AddString("dualhand");
+	player->PostEvent(useWeaponEv,2.0f);
+
+	StopFireEvent = new Event(EV_Sentient_StopFire);
+	StopFireEvent->AddString("dualhand");
+	player->PostEvent(StopFireEvent, 1.9f);
+
+	Event* activateWeaponEv;
+	activateWeaponEv = new Event(EV_Player_ActivateNewWeapon);
+	player->PostEvent(activateWeaponEv, 1.9f);
+
 
 	player->client->ps.pm_time = 100;
 	player->client->ps.pm_flags |= PMF_TIME_TELEPORT;
