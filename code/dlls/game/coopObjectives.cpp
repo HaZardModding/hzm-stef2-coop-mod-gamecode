@@ -241,7 +241,7 @@ void coop_objectivesSetup( Player *player)
 		}
 	}
 	game.coop_author = upgStrings.getReplacedForLabeltext(game.coop_author);
-	upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor labeltext %s" , game.coop_author.c_str() ) );
+	upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objAuthor labeltext %s" , game.coop_author.c_str() ) );
 	
 	//hzm coop mod chrissstrahl - set story right away, need to do this differently in mp see coop_playerSay
 	coop_objectivesStorySet( player );
@@ -273,7 +273,7 @@ void coop_objectivesUpdateUservar( int iUservar )
 		player = ( Player * )g_entities[0].entity;
 		if ( player ){
 			if ( iUservar == 1){
-				upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor title %s" , game.coop_author.c_str() ) );
+				upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objAuthor title %s" , game.coop_author.c_str() ) );
 			}else if ( iUservar == 2){
 				upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story.c_str() ) );
 			}else if ( iUservar == 3 ){
@@ -293,7 +293,7 @@ void coop_objectivesUpdateUservar( int iUservar )
 			player = ( Player * )gentity->entity;
 			if ( player && player->coop_getInstalled() ){
 				if ( iUservar == 1){
-					upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesMapAuthor title %s" , game.coop_author.c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objAuthor title %s" , game.coop_author.c_str() ) );
 				}
 				else if ( iUservar == 2 ){
 					upgPlayerDelayedServerCommand( player->entnum , va( "set coop_story %s" , game.coop_story.c_str() ) );

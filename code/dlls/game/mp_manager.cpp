@@ -244,7 +244,7 @@ void MultiplayerManager::update( float frameTime )
 			if ( player && player->client && player->isSubclassOf( Player ) ){
 				if ( player->coop_getInstalled() ) {
 					upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coopGpoSkill title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
-					upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objectivesSkillValue title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
+					upgPlayerDelayedServerCommand( player->entnum , va( "globalwidgetcommand coop_objSkill title %s" , coop_returnStringSkillname( skill->integer ).c_str() ) );
 				}
 			}
 		}

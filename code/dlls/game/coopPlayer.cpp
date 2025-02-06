@@ -160,7 +160,7 @@ void Player::coopPlayerCircleMenuSetup()
 	str circleText3_deu = "Kommunikator";
 	str circleText4 = "";
 	str circleCmd1 = "";
-	str circleCmd2 = "togglemenu coop_objectives";
+	str circleCmd2 = "togglemenu coop_obj";
 	str circleCmd3 = "togglemenu coop_com";
 	str circleCmd4 = "";
 	str circleImg1 = "";
@@ -1103,10 +1103,10 @@ void Player::upgPlayerSpEquip()
 		gi.SendServerCommand(entnum, "stufftext \"set coop_oExc score\"\n");
 	}
 	else {
-		gi.SendServerCommand(entnum, "stufftext \"set coop_oExc pushmenu coop_objectives\"\n");
-		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMapAuthor title %s", game.coop_author.c_str()));
-		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str()));
-		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
+		gi.SendServerCommand(entnum, "stufftext \"set coop_oExc pushmenu coop_obj\"\n");
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objAuthor title %s", game.coop_author.c_str()));
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objMap title %s", level.mapname.c_str()));
+		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand coop_objSkill title %s", coop_returnStringSkillname(skill->integer).c_str()));
 	}
 }
 
@@ -1803,8 +1803,8 @@ void coop_playerSetupCoop( Player *player )
 	//because the command can and will be executed even if there is no coop
 	if (game.coop_isActive) {
 		//hzm coop mod chrissstrahl - update mission objective hud and callvote, once	
-		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesMap title %s", level.mapname.c_str())); //[b60012] chrissstrahl - fix missing .c_str()
-		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objectivesSkillValue title %s", coop_returnStringSkillname(skill->integer).c_str()));
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objMap title %s", level.mapname.c_str())); //[b60012] chrissstrahl - fix missing .c_str()
+		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coop_objSkill title %s", coop_returnStringSkillname(skill->integer).c_str()));
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoSkill title %s", coop_returnStringSkillname(skill->integer).c_str()));
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoMvSpd title %d", game.coop_maxspeed));
 		upgPlayerDelayedServerCommand(player->entnum, va("globalwidgetcommand coopGpoRspwt title %d", game.coop_respawnTime));
