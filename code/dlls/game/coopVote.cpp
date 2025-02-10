@@ -467,39 +467,26 @@ int coop_vote_mapValidate(Player* player, const str &command, const str &arg, st
 	//hzm gamefix chrissstrahl - make also sure the next map exist, or the game crashes!
 	if (stricmp(command.c_str(), "map") == 0)
 	{
-		str fullMapName;
-
-		//hzm gameupdate chrissstrahl - just to be sure, and to support $ als map var indicator
-		int iVarPos;
-		str sMapRealName = arg;
-		iVarPos = upgStrings.containsAt(sMapRealName, "$");
-		if (iVarPos > 0) {
-			sMapRealName = upgStrings.getSubStr(sMapRealName, 0, iVarPos);
-		}
-
-		fullMapName = "maps/";
-		fullMapName += sMapRealName;
-		fullMapName += ".bsp";
-
-		if (!gi.FS_Exists(fullMapName.c_str())){
-			multiplayerManager.HUDPrint(player->entnum, va("%s $$NotFoundOnServer$$ !!!\n",fullMapName.c_str()));
+		str sMapName = upgStrings.getMapName(arg);
+		if (!coopServer.coopServerLevelExists(sMapName)){
+			multiplayerManager.HUDPrint(player->entnum, va("maps/%s.bsp $$NotFoundOnServer$$ !!!\n", sMapName.c_str()));
 			return 1;
 		}
 
 		//[b608] chrissstrahl - if a non coop map is voted during coop and it is disabled do not allow it
 		if (coop_returnCvarInteger("coop_votedisable") == 1) {
-			if (strnicmp(sMapRealName.c_str(), "coop_",5) != 0 && //maps starting with coop_
-				strnicmp(sMapRealName.c_str(), "prf_",4) != 0 && //maps starting with prf_
-				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"singlePlayerMission") != true &&
-				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"singlePlayerIgm") != true &&
-				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"singlePlayerSecret") != true &&
-				coop_parserIsItemInCategory("maplist.ini", sMapRealName.c_str(),"coopIncluded") != true
+			if (strnicmp(sMapName.c_str(), "coop_",5) != 0 && //maps starting with coop_
+				strnicmp(sMapName.c_str(), "prf_",4) != 0 && //maps starting with prf_
+				coop_parserIsItemInCategory("maplist.ini", sMapName.c_str(),"singlePlayerMission") != true &&
+				coop_parserIsItemInCategory("maplist.ini", sMapName.c_str(),"singlePlayerIgm") != true &&
+				coop_parserIsItemInCategory("maplist.ini", sMapName.c_str(),"singlePlayerSecret") != true &&
+				coop_parserIsItemInCategory("maplist.ini", sMapName.c_str(),"coopIncluded") != true
 			) {
 				if (player->upgPlayerHasLanguageGerman()) {
-					multiplayerManager.HUDPrint(player->entnum, va("%s Ist kein Coop Level! Server erlaubt nur Coop Levels!\n", sMapRealName.c_str()));
+					multiplayerManager.HUDPrint(player->entnum, va("%s Ist kein Coop Level! Server erlaubt nur Coop Levels!\n", sMapName.c_str()));
 				}
 				else {
-					multiplayerManager.HUDPrint(player->entnum, va("%s is not a Coop Level! Server allowes only Coop Levels!\n", sMapRealName.c_str()));
+					multiplayerManager.HUDPrint(player->entnum, va("%s is not a Coop Level! Server allowes only Coop Levels!\n", sMapName.c_str()));
 				}
 				return 1;
 			}
