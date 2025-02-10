@@ -209,6 +209,19 @@ void Player::coopPlayerCircleMenuSetup()
 	ProcessEvent(evCircleSet4);
 }
 
+//[b60025] chrissstrahl
+//================================================================
+// make player with coop mod reconnect automatically - used before server restart
+//================================================================
+void Player::coop_playerReconnect()
+{
+	if (!upgPlayerIsBot()) {
+		if (coop_getInstalled()) {
+			gi.SendServerCommand(entnum, "stufftext \"exec coop_mod/cfg/coop_reconnect.cfg\"\n");
+		}
+	}
+}
+
 //[b60021] chrissstrahl
 //================================================================
 // handle for new player being added to the game

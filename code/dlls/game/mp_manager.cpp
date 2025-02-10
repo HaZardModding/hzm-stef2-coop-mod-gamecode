@@ -2601,7 +2601,8 @@ void MultiplayerManager::say( Player *player, const str &text, bool team )
 //hzm gamefix chrissstrahl - do not print "Server: score" when a player connects while he has the score still displayed, this can happen when a map changes, and scores are shown
 		if (	Q_stricmp( "score" , tempText.c_str()) == 0 ||
 				Q_stricmpn("!class", tempText.c_str(),6) == 0 ||
-				Q_stricmpn("vote ", tempText.c_str(), 5) == 0) //[b60011] chrissstrahl - also filter class and vote command
+				Q_stricmpn("kill", tempText.c_str(),6) == 0 ||
+				Q_stricmpn("vote ", tempText.c_str(), 5) == 0)
 		{
 			return;
 		}
