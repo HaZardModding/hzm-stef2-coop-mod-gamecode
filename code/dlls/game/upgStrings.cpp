@@ -612,6 +612,62 @@ str UpgStrings::getFileName(const str& sPath)
 }
 
 //================================================================
+// Name:        getFileName
+// Class:       UpgStrings
+//              
+// Description:  returns the actual mapfilename
+//              
+// Parameters:  str sMapname
+//              
+// Returns:     str             
+//================================================================
+str UpgStrings::getMapName(const str& sMapname)
+{
+	//Don't filter the path, so we can use this function more widely
+	//filter parameter, file ext, bad char
+	str sFinalName = "";
+	int iCnt = 0;
+	while (iCnt < sMapname.length()) {
+		if (sMapname[iCnt] == '$' || sMapname[iCnt] == '.' || sMapname[iCnt] == '%') {
+			break;
+		}
+		else {
+			sFinalName += sMapname[iCnt];
+			iCnt++;
+		}
+	}
+	return sFinalName;
+}
+
+//================================================================
+// Name:        getFileNameKeepParameter
+// Class:       UpgStrings
+//              
+// Description:  returns the mapname with parameters
+//              
+// Parameters:  str sMapname
+//              
+// Returns:     str             
+//================================================================
+str UpgStrings::getFileNameKeepParameter(const str& sMapname)
+{
+	//Don't filter the path, so we can use this function more widely
+	//filter parameter, file ext, bad char
+	str sFinalName = "";
+	int iCnt = 0;
+	while (iCnt < sMapname.length()) {
+		if (sMapname[iCnt] == '.' || sMapname[iCnt] == '%') {
+			break;
+		}
+		else {
+			sFinalName += sMapname[iCnt];
+			iCnt++;
+		}
+	}
+	return sFinalName;
+}
+
+//================================================================
 // Name:        coop_returnStringFileExtensionOnly
 // Class:       UpgStrings
 //              

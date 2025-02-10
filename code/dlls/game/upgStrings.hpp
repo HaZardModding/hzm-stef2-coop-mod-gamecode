@@ -29,6 +29,8 @@ public:
 	str				getTrimmed(str sTrim, const str sTrimMatch);
 	str				getSubStr(str sString, const int& iStart, int iEnd);
 	str				getFileName(const str& sPath);
+	str				getMapName(const str& sMapname); //[b60025] chrissstrahl
+	str				getFileNameKeepParameter(const str& sMapname);  //[b60025] chrissstrahl
 	str				getFileExtension(const str& sPath);
 };
 
