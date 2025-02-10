@@ -189,6 +189,8 @@ class Player : public Sentient
 		//--------------------------------------------------------------
 		// COOP PLAYER - Specific to the Coop Mod
 		//--------------------------------------------------------------
+		//[b60025] chrissstrahl
+		void				coop_playerReconnect();
 		//[b60021] chrissstrahl
 		void				coopPlayerCircleMenuSetup();
 		void				coopClassRecoverAbilityHud(Event* ev);
