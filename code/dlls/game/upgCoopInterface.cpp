@@ -28,7 +28,7 @@ UpgCoopInterface upgCoopInterface;
 //================================================================
 bool UpgCoopInterface::upgCoopInterfaceDiagnoseRunning()
 {
-	return coopServer.coopServerDiagoneRunning();
+	return coopServer.coopServerDiagnoseRunning();
 }
 
 //================================================================
