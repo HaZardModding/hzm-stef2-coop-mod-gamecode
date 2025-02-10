@@ -2609,7 +2609,8 @@ void CThread::EventWaitForAnimation( Event *ev )
 	
 	if ( animNum < 0 )
 	{
-		gi.WDPrintf( "Waiting for animation %s, but %s doesn't have this anim!\n", animName.c_str(), ent->model.c_str() );
+		//[b60025] chrissstrahl - always print this info
+		gi.Printf( "Waiting for animation %s, but %s doesn't have this anim!\n", animName.c_str(), ent->model.c_str() );
 		return;
 	}
 	
