@@ -1273,6 +1273,12 @@ void UpgPlayer::upgPlayerSetup(Player* player)
 
 	if (g_gametype->integer == GT_MULTIPLAYER)
 	{
+		/*
+		* [b60025] chrissstrahl - we rather like to reconnect players upon mapchange
+		* that way we can killserver and make it load the level and resources fresh
+		* while the clients sit in the reconnect menu and wait for the game to reconnect
+		* after a few sec. This should also fix issues with host of a listen server
+		* 
 		//[b60021] chrissstrahl - reconnect player if required
 		if (upgPlayer.upgPlayerGetReconnect(player->entnum)){
 			if(player->upgPlayerHasLanguageGerman()){
@@ -1286,6 +1292,7 @@ void UpgPlayer::upgPlayerSetup(Player* player)
 			player->PostEvent(reconnectEV, 3.0f);
 			return;
 		}
+		*/
 
 		//print message of the day
 		Event* newEvent = new Event(EV_Player_upgPlayerMessageOfTheDay);
