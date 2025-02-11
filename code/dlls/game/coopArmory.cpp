@@ -68,7 +68,8 @@ void coop_armoryEquipPlayer(Player *player)
 	sUseThisWeapon = "";
 
 	//hzm coop mod chrissstrahl - equip the player, give weapons specified by script
-	for ( iTemporary = 8; iTemporary > 0; iTemporary-- ){
+	//[b60025] chrissstrahl - fixed armory equiping only 8 weapons - M11l1a was missing weapons if player collected secret weapons
+	for ( iTemporary = COOP_PLAYER_ARMORY_MAXWEAPONS; iTemporary > 0; iTemporary-- ){
 		sVariableName = "coop_string_weapon";
 		sVariableName += iTemporary;
 		sTikiName = program.getVariableValueAsString( sVariableName.c_str() );
