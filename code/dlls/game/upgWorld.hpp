@@ -8,7 +8,7 @@
 
 #include "_pch_cpp.h"
 
-constexpr auto UPGWORLD_FLUSHTIKI_MAPLISTSIZE = 6;
+constexpr auto UPGWORLD_FLUSHTIKI_MAPLISTSIZE = 7;
 
 class UpgWorld
 {

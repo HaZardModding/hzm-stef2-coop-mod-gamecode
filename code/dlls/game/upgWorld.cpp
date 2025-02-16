@@ -46,6 +46,7 @@ UpgWorld::UpgWorld()
 	flushTikiMaps[3] = "m7l1a-attrexian_colony";
 	flushTikiMaps[4] = "m9l1a-klingon_base";
 	flushTikiMaps[5] = "m11l1a-drull_ruins3";
+	flushTikiMaps[6] = "m11l3b-drull_ruins3_boss";
 }
 
 //=========================================================[b60014]
@@ -67,7 +68,7 @@ void UpgWorld::upgWorldThink()
 				ScriptVariable* entityData = NULL;
 				entityData = world->entityVars.GetVariable("upg_playersReconnecting");
 				if (entityData && entityData->intValue() > 0) {
-					multiplayerManager.centerPrintAllClients("=/\\= Waiting for reconnecting Players =/\\=\nESCAPE abborts reconnect.", CENTERPRINT_IMPORTANCE_CRITICAL);
+					multiplayerManager.centerPrintAllClients("=/\\= Waiting for reconnecting Players =/\\=", CENTERPRINT_IMPORTANCE_CRITICAL);
 				}
 			}
 			thinkLastInterval = level.time;
