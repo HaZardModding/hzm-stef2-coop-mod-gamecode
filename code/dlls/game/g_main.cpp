@@ -1357,94 +1357,57 @@ void G_ExitLevel( void )
 		gi.SendConsoleCommand( command );
 	}
 	
-	//[b60012][cleanup] - This code could be further splitup in other functions, maybe put into upgradeserver functions or something
+	//[b60025] chrissstrahl - cleaned up a bit
 	if ( multiplayerManager.inMultiplayer() )
 	{
-		if ( strlen(sv_nextmap->string) )
-		{
-			// The nextmap cvar was set (possibly by a vote - so go ahead and use it)
-			//hzm gamefix chrissstrahl - make sure the map we want to load actually exists, or the game crashes
-			str fullMapName = va("maps/%s.bsp",sv_nextmap->string);
-			if ( !gi.FS_Exists( fullMapName.c_str() ) ){
-				gi.Printf( va("%s $$NotFoundOnServer$$ !!!\n",fullMapName.c_str()) );
-			}else{
-				level.nextmap = sv_nextmap->string;
-				gi.cvar_set( "nextmap", "" );			
+		if (game.coop_reboot) {
+			gi.Printf("G_ExitLevel EXIT - REBBOT IN PROGRESS\n");
+		}
+		else {
+			str sMapToLoad = "";
+			str sCleanedUpMapname = "";
+
+			//check nextmap cVar - overwrite levelVar only if map exists
+			if (strlen(sv_nextmap->string)) {
+				sCleanedUpMapname = upgStrings.getMapName(sv_nextmap->string);
+				if (coopServer.coopServerLevelExists(sCleanedUpMapname)) {
+					level.nextmap = sv_nextmap->string;
+					gi.cvar_set("nextmap", "");
+				}
 			}
-		}
 
-		//hzm coop mod chrissstrahl - make sure the map exist here, if nextmap was set elese where, or it will chrash
-		str fullMapName2 = va("maps/%s.bsp", level.nextmap.c_str());
-
-		//hzm coop mod chrissstrahl - do not load next map if the server is rebooting
-		//this would interrupt the reboot and just load the next map, which could also
-		//create strange side effects
-		if ( game.coop_reboot )
-		{
-			gi.Printf( "G_ExitLevel EXIT - REBBOT IN PROGRESS\n" );
-			return;
-		}
-		//hzm eof
-
-		//hzm coop mod chrissstrahl - check also if the map actually exists
-		//[b60011] chrissstrahl - fixed maps not loading if their name contained a spawnspot
-		int iVarPos;
-		str sCleanMapname;
-		str sMapRealName = level.nextmap;
-		iVarPos = upgStrings.containsAt(sMapRealName, "$");
-		if (iVarPos > 0) {
-			sMapRealName = upgStrings.getSubStr(sMapRealName, 0, iVarPos);
-		}
-		sCleanMapname = va("maps/%s.bsp",sMapRealName.c_str());
-
-		if ( level.nextmap.length() == 0 || !gi.FS_Exists(sCleanMapname.c_str()) )
-		{
-			//[b60011] chrissstrahl - let us know whats going on
-			if (level.nextmap.length() == 0) {
+			//check nextmap levelVar
+			sCleanedUpMapname = upgStrings.getMapName(level.nextmap);
+			if (level.nextmap.length() == 0 || !coopServer.coopServerLevelExists(sCleanedUpMapname)) {
 				gi.Printf("G_ExitLevel - No nextmap set, reloading same map.\n");
+
+				// Stay on the same map since no nextmap was set
+				sMapToLoad = level.mapname;
 			}
-			else {
-				gi.Printf((va("G_ExitLevel - Map cound not be found: %s\n", fullMapName2.c_str())));
+			else // use the level.nextmap variable
+			{
+				sMapToLoad = level.nextmap;
 			}
 
-			// Stay on the same map since no nextmap was set
-			Com_sprintf( command, sizeof( command ), "gamemap \"%s\"\n", level.mapname.c_str() );
-			gi.SendConsoleCommand( command );
-		}
-		else // use the level.nextmap variable
-		{
-			Com_sprintf( command, sizeof( command ), "gamemap \"%s\"\n", level.nextmap.c_str() );
-			gi.SendConsoleCommand( command );
+			//check if reboot in progress
+			if (!coop_serverManageReboot(sMapToLoad, nullptr)) {
+				Com_sprintf(command, sizeof(command), "gamemap \"%s\"\n", upgStrings.getFileNameKeepParameter(sMapToLoad).c_str());
+				gi.SendConsoleCommand(command);
+			}
 		}
 	}
 	else
 	{
-		//hzm gamefix chrissstrahl - make sure the map we want to load actually exists, or the game crashes
-		str sFileSystemMapname;
-		sFileSystemMapname	= "maps/";
-		int iCnt = 0;
-		while ( iCnt < level.nextmap.length() ){
-			if ( level.nextmap[iCnt] == '$' ){
-				iCnt = 999;
-			}
-			else{
-				sFileSystemMapname += level.nextmap[iCnt];
-				iCnt++;
-			}
-		}
-		sFileSystemMapname += ".bsp";
-
-		if ( !gi.FS_Exists( sFileSystemMapname.c_str() ) ){
-			gi.Printf( va( "^3%s $$NotFoundOnServer$$ !!!\n" , sFileSystemMapname.c_str() ) );
+		//[b60025] chrissstrahl - cleaned up a bit
+		//make sure the map we want to load actually exists, or the game crashes
+		if (!coopServer.coopServerLevelExists(level.nextmap)) {
 			gi.Printf( "^3No valid map set to load, disconnecting now!\n" );
-			gi.SendConsoleCommand( "disconnect\n" );
-			return;
+			gi.SendConsoleCommand("disconnect\n");
 		}
-		//hzm eof
-
-
-		Com_sprintf( command, sizeof( command ), "gamemap \"%s\"\n", level.nextmap.c_str() );
-		gi.SendConsoleCommand( command );
+		else {
+			Com_sprintf( command, sizeof( command ), "gamemap \"%s\"\n", upgStrings.getFileNameKeepParameter(level.nextmap).c_str() );
+			gi.SendConsoleCommand( command );
+		}
 	}
 	
 	// Tell all the clients that the level is done
