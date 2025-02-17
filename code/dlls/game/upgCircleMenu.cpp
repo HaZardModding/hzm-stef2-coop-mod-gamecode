@@ -733,7 +733,7 @@ void Player::upgCircleMenuSetEvent(Event* ev)
 		sCostType = ev->GetString(8);
 	}
 
-	gi.Printf(va("upgCircleMenuSetEvent[%d]: %s, %s, %s, %d, %d, %d, %s, %s\n", iOption, sText.c_str(), sThread.c_str(),sImage.c_str(),(int)bIsThread,iAmmount,iCost,sCostType.c_str(),client->pers.netname));
+	//gi.Printf(va("upgCircleMenuSetEvent[%d]: %s, %s, %s, %d, %d, %d, %s, %s\n", iOption, sText.c_str(), sThread.c_str(),sImage.c_str(),(int)bIsThread,iAmmount,iCost,sCostType.c_str(),client->pers.netname));
 	
 	upgCircleMenuSet(iOption, sText, sThread, sImage, bIsThread, iAmmount, iCost, sCostType);
 }
