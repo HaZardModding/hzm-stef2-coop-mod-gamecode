@@ -9935,7 +9935,7 @@ void Player::JumpXY( Event *ev )
 void Player::StartFakePlayer( void )
 {
 	//hzm coop mod chrissstrahl - make sure this is not executed in mp, until we have a work arround for crashing players
-	if ( g_gametype->value != GT_SINGLE_PLAYER ){
+	if ( g_gametype->integer != GT_SINGLE_PLAYER ){
 		printf( "============WARNING================\n" );
 		//[b607] chrissstrahl - fixed \c instead of \n - thanks to daggolin
 		printf( "fakeplayer script command used\nThis is not working in multiplayer\ncontact hazardmodding for help\nor look in coop_gbs3\nor other gbs map scripts\n");
@@ -10003,7 +10003,7 @@ void Player::FakePlayer( qboolean holster )
 	}
 
 	//hzm coop mod chrissstrahl - make sure this is not executed in mp, until we have a work arround for crashing players
-	if ( g_gametype->value != GT_SINGLE_PLAYER ) {
+	if ( g_gametype->integer != GT_SINGLE_PLAYER ) {
 		printf( "============WARNING================\n" );
 		//[b607] chrissstrahl - fixed \c instead of \n - thanks to daggolin
 		printf( "fakeplayer script command used\nThis is not working in multiplayer\ncontact hazardmodding for help\nor look in coop_gbs3\nor other gbs map scripts\n" );
@@ -10032,7 +10032,7 @@ void Player::FakePlayer( qboolean holster )
 void Player::RemoveFakePlayer( void )
 {
 	//hzm coop mod chrissstrahl - make sure this is not executed in mp, until we have a work arround for crashing players
-	if ( g_gametype->value != GT_SINGLE_PLAYER ) {
+	if ( g_gametype->integer != GT_SINGLE_PLAYER ) {
 		printf( "============WARNING================\n" );
 		//[b607] chrissstrahl - fixed \c instead of \n - thanks to daggolin
 		printf( "RemoveFakePlayer script command used\nThis is not working in multiplayer\ncontact hazardmodding for help\nor look in coop_gbs3\nor other gbs map scripts\n" );
