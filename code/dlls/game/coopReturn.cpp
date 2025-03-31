@@ -1266,8 +1266,7 @@ int coop_returnCvarInteger( str cvarName )
 	
 	cvar_t* cvar = gi.cvar_get(cvarName.c_str());
 	if (!cvar || !strlen(cvar->string)) {
-		gi.Printf(va("coopReturn.cpp - coop_returnCvarInteger(%s) - CVar did not Exist or was empty!\nCausing function to return -1\n", cvarName.c_str())); //[b60014] chrissstrahl - added cvar name
-		return -1;
+		return 0;
 	}
 
 	return gi.Cvar_VariableIntegerValue(cvarName.c_str());
@@ -1561,7 +1560,6 @@ bool coop_returnLevelType( str sLevelname, bool &standard, int &type )
 	//check if it is a custom coop (or testmap) map, it is faster if we can check the name prefix first - reduce file read
 	if (Q_stricmpn( sLevelname.c_str() , "coop_", 5 ) == 0 ||
 		Q_stricmpn( sLevelname.c_str() , "sp_" , 4 ) == 0 || //new added support for singleplayer maps
-		Q_stricmpn( sLevelname.c_str() , "prf_" , 4 ) == 0 ||
 		Q_stricmpn( sLevelname.c_str() , "rpg_" , 4 ) == 0 )
 	{
 
