@@ -2029,7 +2029,7 @@ void Player::upgPlayerGetNameEvent(Event* ev)
 	//filter 
 	str new_playerName = "";
 	str sReplace = "_";
-	if (ev->NumArgs() > 0) {
+	if (ev->NumArgs() > 0 && ev->GetInteger(1) > 0) {
 		int filterOption = ev->GetInteger(1);
 
 		//filter space
