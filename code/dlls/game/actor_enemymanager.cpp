@@ -355,7 +355,7 @@ qboolean EnemyManager::Hates( Entity *ent )
 qboolean EnemyManager::IsValidEnemy( Entity *enemy )
 {
 	//[b60018] chrissstrahl - ignore actors that have thair ai off
-	/* //Disabled because we need them to attack ai_off guys in prf_pointAndClick use notarget instead
+	/* //Disabled because we need them to attack ai_off guys in coop_test-pointAndClick use notarget instead
 	if (enemy->isSubclassOf(Actor)) {
 		Actor* enemyActor = (Actor*)(Entity*)enemy;
 		if (!enemyActor->GetActorFlag(ACTOR_FLAG_AI_ON)) {

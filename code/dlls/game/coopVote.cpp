@@ -476,7 +476,6 @@ int coop_vote_mapValidate(Player* player, const str &command, const str &arg, st
 		//[b608] chrissstrahl - if a non coop map is voted during coop and it is disabled do not allow it
 		if (coop_returnCvarInteger("coop_votedisable") == 1) {
 			if (strnicmp(sMapName.c_str(), "coop_",5) != 0 && //maps starting with coop_
-				strnicmp(sMapName.c_str(), "prf_",4) != 0 && //maps starting with prf_
 				coop_parserIsItemInCategory("maplist.ini", sMapName.c_str(),"singlePlayerMission") != true &&
 				coop_parserIsItemInCategory("maplist.ini", sMapName.c_str(),"singlePlayerIgm") != true &&
 				coop_parserIsItemInCategory("maplist.ini", sMapName.c_str(),"singlePlayerSecret") != true &&
