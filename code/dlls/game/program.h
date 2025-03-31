@@ -25,16 +25,16 @@ class Lexer;
 #define	MAX_STRINGS		4096
 //#define	MAX_STATEMENTS	65536
 
-//hzm gameupdate chrissstrahl 
+//[b60025] chrissstrahl - upped the limits so the coop mod scripts still work
 //#define	MAX_STATEMENTS	16384
+//#define	MAX_FUNCTIONS	2560
 #define	MAX_STATEMENTS	20480
-//end of hzm
+#define	MAX_FUNCTIONS	3072
 
-#define	MAX_FUNCTIONS	2560
 
 #define	MAX_PARMS	   16
 #define	MAX_NAME		   64		// chars long
-#define	MAX_REGS		   16384
+#define	MAX_REGS		16384
 
 #define	OFS_NULL		   0
 #define	OFS_RETURN		1
