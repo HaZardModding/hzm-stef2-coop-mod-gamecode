@@ -774,9 +774,9 @@ void Player::upgCircleMenuSet(int iOption, str sText, str sThread, str sImage, b
 		upgCircleMenu.optionIconLastSend[iOptionToArrayNum] = sImage;
 		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sIcon shader %s", sWidgetName.c_str(), sImage.c_str()));
 	}
-	else {
-		gi.Printf("upgCircleMenuSet already set: %d\n", iOptionToArrayNum);
-	}
+	//else {
+		//gi.Printf("upgCircleMenuSet already set: %d\n", iOptionToArrayNum);
+	//}
 
 	//replace withespace and newline to make it work with labeltext
 
@@ -785,9 +785,9 @@ void Player::upgCircleMenuSet(int iOption, str sText, str sThread, str sImage, b
 		sText = upgStrings.getReplacedForLabeltext(sText);
 		upgPlayerDelayedServerCommand(entnum, va("globalwidgetcommand %sText labeltext %s", sWidgetName.c_str(), sText.c_str()));
 	}
-	else {
-		gi.Printf("upgCircleMenuSet already set: %d\n", iOptionToArrayNum);
-	}
+	//else {
+		//gi.Printf("upgCircleMenuSet already set: %d\n", iOptionToArrayNum);
+	//}
 
 	//gi.Printf(va("COOPDEBUG - EV_Player_circleMenuSet[%d] %s\n", iOptionToArrayNum, upgCircleMenu.optionThreadOrCommand[iOptionToArrayNum].c_str()));
 }
